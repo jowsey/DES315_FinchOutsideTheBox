@@ -1,59 +1,45 @@
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+[RequireComponent(typeof(Rigidbody))]
 public class HoverboardController : MonoBehaviour
 {
-    [Header("Components")]
-    [SerializeField]
-    private Rigidbody _rb;
+    [Header("Components")] private Rigidbody _rb;
 
-    [SerializeField]
-    private Transform _boardMesh;
+    [SerializeField] private Transform _boardMesh;
 
-    [Header("Input")]
-    [SerializeField]
-    private InputActionReference _moveAction;
+    [Header("Input")] [SerializeField] private InputActionReference _moveAction;
 
-    [Header("Camera")]
-    [SerializeField]
+    [Header("Camera")] [SerializeField] [Required]
     private CinemachineCamera _camera;
 
-    [SerializeField]
-    private CinemachineOrbitalFollow _cameraFollow;
+    [SerializeField] [Required] private CinemachineOrbitalFollow _cameraFollow;
 
-    [SerializeField]
-    private float _cameraZoomOutFactor = 1.2f;
+    [SerializeField] private float _cameraZoomOutFactor = 1.2f;
 
-    [SerializeField]
-    private float _cameraZoomOutMaxSpeed = 20f;
+    [SerializeField] private float _cameraZoomOutMaxSpeed = 20f;
 
     private float _cameraDefaultRadius;
 
-    [Header("Floating")]
-    [SerializeField]
-    [Tooltip("A set of local points that will be sampled for pushing the board upwards")]
+    [Header("Floating")] [SerializeField] [Tooltip("A set of local points that will be sampled for pushing the board upwards")]
     private List<Vector3> _pushPoints = new();
 
-    [SerializeField]
-    [Tooltip("Amount of force applied when pushing upwards by each point")]
+    [SerializeField] [Tooltip("Amount of force applied when pushing upwards by each point")]
     private float _pushForce = 100f;
 
-    [SerializeField]
-    [Tooltip("The height above ground the points will try and reach")]
+    [SerializeField] [Tooltip("The height above ground the points will try and reach")]
     private float _pushDistance = 0.5f;
 
-    [SerializeField]
-    [Tooltip("Exponential factor applied to the distance. Increasing this reduces bobbing up and down, but reduces the height at which it stabilises")]
+    [SerializeField] [Tooltip("Exponential factor applied to the distance. Increasing this reduces bobbing up and down, but reduces the height at which it stabilises")]
     private float _pushExponent = 3.0f;
 
-    [SerializeField]
-    [Tooltip("Amplitude of push force sine wave")]
+    [SerializeField] [Tooltip("Amplitude of push force sine wave")]
     private float _sinForce = 0.15f;
 
-    [SerializeField]
-    [Tooltip("Wavelength of push force sine wave")]
+    [SerializeField] [Tooltip("Wavelength of push force sine wave")]
     private float _sinSpeed = 2f;
 
     [Header("Movement")]
@@ -61,38 +47,32 @@ public class HoverboardController : MonoBehaviour
     [Tooltip("Amount of forward force applied by movement. Max speed and acceleration are both computed as a mix of this value and the linear damping value in the Rigidbody.")]
     private float _moveForce = 150f;
 
-    [SerializeField]
-    [Tooltip("Speed factor at which hoverboard rotates to face movement direction")]
+    [SerializeField] [Tooltip("Speed factor at which hoverboard rotates to face movement direction")]
     private float _rotationSpeed = 3f;
 
-    [SerializeField]
-    [Tooltip("Maximum amount of sideways leaning in degrees")]
+    [SerializeField] [Tooltip("Maximum amount of sideways leaning in degrees")]
     private float _maxLeanAngle = 15f;
 
-    [SerializeField]
-    [Tooltip("Rotation speed in degrees/sec at which the board will fully lean")]
+    [SerializeField] [Tooltip("Rotation speed in degrees/sec at which the board will fully lean")]
     private float _rotSpeedForMaxLean = 90f;
 
-    [SerializeField]
-    [Tooltip("Speed of lean angle smoothing")]
+    [SerializeField] [Tooltip("Speed of lean angle smoothing")]
     private float _leanSpeed = 3f;
 
-    [SerializeField]
-    [Tooltip("Maximum amount of backwards leaning in degrees")]
+    [SerializeField] [Tooltip("Maximum amount of backwards leaning in degrees")]
     private float _maxBackwardLeanAngle = 5f;
 
-    [SerializeField]
-    [Tooltip("Speed in meters/sec at which the board will fully lean backwards")]
+    [SerializeField] [Tooltip("Speed in meters/sec at which the board will fully lean backwards")]
     private float _speedForMaxBackwardLean = 15f;
+
+    [SerializeField] [Tooltip("If true, the board will rotate to face the movement direction when no input is held")]
+    private bool _rotateTowardsForward = true;
 
     private float _angularVelocityY;
 
-    private void OnValidate()
+    private void Awake()
     {
-        if (!_rb)
-        {
-            _rb = GetComponent<Rigidbody>();
-        }
+        _rb = GetComponent<Rigidbody>();
     }
 
     private void Start()
@@ -133,7 +113,7 @@ public class HoverboardController : MonoBehaviour
         // Point towards input direction, or velocity direction if no input and moving
         var pointDir = inputDir != Vector3.zero
             ? inputDir
-            : flatVel.magnitude > 0.35f
+            : _rotateTowardsForward && flatVel.magnitude > 0.5f
                 ? flatVel.normalized
                 : Vector3.zero;
 
