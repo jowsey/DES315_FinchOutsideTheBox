@@ -7,9 +7,6 @@ public class HoverboardController : MonoBehaviour
 {
     [Header("Components")]
     [SerializeField]
-    private CinemachineCamera _camera;
-
-    [SerializeField]
     private Rigidbody _rb;
 
     [SerializeField]
@@ -18,6 +15,21 @@ public class HoverboardController : MonoBehaviour
     [Header("Input")]
     [SerializeField]
     private InputActionReference _moveAction;
+
+    [Header("Camera")]
+    [SerializeField]
+    private CinemachineCamera _camera;
+
+    [SerializeField]
+    private CinemachineOrbitalFollow _cameraFollow;
+
+    [SerializeField]
+    private float _cameraZoomOutFactor = 1.2f;
+
+    [SerializeField]
+    private float _cameraZoomOutMaxSpeed = 20f;
+
+    private float _cameraDefaultRadius;
 
     [Header("Floating")]
     [SerializeField]
@@ -86,6 +98,7 @@ public class HoverboardController : MonoBehaviour
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
+        _cameraDefaultRadius = _cameraFollow.Radius;
     }
 
     private void FixedUpdate()
@@ -117,8 +130,14 @@ public class HoverboardController : MonoBehaviour
         var flatVel = Vector3.Scale(_rb.linearVelocity, new Vector3(1, 0, 1));
         var prevY = _rb.rotation.eulerAngles.y;
 
-        var pointDir = inputDir.sqrMagnitude > Mathf.Epsilon ? inputDir : flatVel.normalized;
-        if (pointDir.sqrMagnitude > Mathf.Epsilon)
+        // Point towards input direction, or velocity direction if no input and moving
+        var pointDir = inputDir != Vector3.zero
+            ? inputDir
+            : flatVel.magnitude > 0.35f
+                ? flatVel.normalized
+                : Vector3.zero;
+
+        if (pointDir != Vector3.zero)
         {
             var targetRotation = Quaternion.LookRotation(pointDir, Vector3.up);
             var newRot = Quaternion.Slerp(_rb.rotation, targetRotation, Time.fixedDeltaTime * _rotationSpeed);
@@ -140,8 +159,8 @@ public class HoverboardController : MonoBehaviour
         var newSidewaysLean = Mathf.Lerp(currentLean, targetLean, Time.deltaTime * _leanSpeed);
 
         // X-axis leaning
-        var speed = _rb.linearVelocity.magnitude;
-        var targetBackwardLean = Mathf.Clamp(-speed / _speedForMaxBackwardLean * _maxBackwardLeanAngle, -_maxBackwardLeanAngle, 0f);
+        var flatVel = Vector3.Scale(_rb.linearVelocity, new Vector3(1, 0, 1));
+        var targetBackwardLean = Mathf.Clamp(-flatVel.magnitude / _speedForMaxBackwardLean * _maxBackwardLeanAngle, -_maxBackwardLeanAngle, 0f);
 
         var currentBackwardLean = _boardMesh.localEulerAngles.x;
         if (currentBackwardLean > 180f) currentBackwardLean -= 360f;
@@ -150,6 +169,10 @@ public class HoverboardController : MonoBehaviour
 
         // apply
         _boardMesh.localEulerAngles = new Vector3(newBackwardLean, _boardMesh.localEulerAngles.y, newSidewaysLean);
+
+        // Camera zoom out based on speed
+        var speedFactor = Mathf.Clamp01(flatVel.magnitude / _cameraZoomOutMaxSpeed);
+        _cameraFollow.Radius = Mathf.Lerp(_cameraDefaultRadius, _cameraDefaultRadius * _cameraZoomOutFactor, speedFactor);
     }
 
     private void OnDrawGizmosSelected()
