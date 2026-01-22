@@ -106,7 +106,7 @@ public class GrappleController : MonoBehaviour
         if (_highlightedObject && _grappleAction.action.WasPressedThisFrame())
         {
             _grappledObject = _highlightedObject;
-            _hitTargetPos = _highlightedObject.position;
+            _hitTargetPos = hit.point;
 
             _grapplingHook = Instantiate(_grapplingHookPrefab, _grappleOrigin);
         }
