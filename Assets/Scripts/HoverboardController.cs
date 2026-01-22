@@ -74,7 +74,7 @@ public class HoverboardController : MonoBehaviour
 
     [Tooltip("If true, uses an alternative movement system more akin to driving a car")]
     [InfoBox("The alternate movement system requires a much higher rotation speed than the main one. Try multiplying by 30x!")]
-    [SerializeField] private bool _useAlternateMovement;
+    [SerializeField] private bool _useNewMovement;
 
     // [Tooltip("How much upwards force will be applied when jumping")]
     // [SerializeField] private float _jumpForce = 300f;
@@ -119,7 +119,7 @@ public class HoverboardController : MonoBehaviour
         // Movement force
         var moveInput = _moveAction.action.ReadValue<Vector2>();
 
-        if (_useAlternateMovement)
+        if (_useNewMovement)
         {
             // Forward
             _rb.AddForce(transform.forward * (moveInput.y * _moveForce));
@@ -162,31 +162,31 @@ public class HoverboardController : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (_useAlternateMovement)
+        if (_useNewMovement)
         {
             // alternate movement sets torque so we can just read directly
             _angularVelocityY = _rb.angularVelocity.y * Mathf.Rad2Deg;
         }
 
         // Z-axis leaning
-        var targetLean = Mathf.Clamp(-_angularVelocityY / _rotSpeedForMaxLean * _maxLeanAngle, -_maxLeanAngle, _maxLeanAngle);
+        var targetSidewaysLean = Mathf.Clamp(-_angularVelocityY / _rotSpeedForMaxLean * _maxLeanAngle, -_maxLeanAngle, _maxLeanAngle);
 
-        var currentLean = _boardMesh.localEulerAngles.z;
-        if (currentLean > 180f) currentLean -= 360f; // [-180, 180]
+        var currentSidewaysLean = _boardMesh.localEulerAngles.z;
+        if (currentSidewaysLean > 180f) currentSidewaysLean -= 360f; // [-180, 180]
 
-        var newSidewaysLean = Mathf.Lerp(currentLean, targetLean, Time.deltaTime * _leanSpeed);
+        var newSidewaysLean = Mathf.Lerp(currentSidewaysLean, targetSidewaysLean, Time.deltaTime * _leanSpeed);
 
         // X-axis leaning
         var flatVel = Vector3.Scale(_rb.linearVelocity, new Vector3(1, 0, 1));
         var targetBackwardLean = Mathf.Clamp(-flatVel.magnitude / _speedForMaxBackwardLean * _maxBackwardLeanAngle, -_maxBackwardLeanAngle, 0f);
 
-        var currentBackwardLean = _boardMesh.localEulerAngles.x;
-        if (currentBackwardLean > 180f) currentBackwardLean -= 360f;
+        var currentBackwardsLean = _boardMesh.localEulerAngles.x;
+        if (currentBackwardsLean > 180f) currentBackwardsLean -= 360f;
 
-        var newBackwardLean = Mathf.Lerp(currentBackwardLean, targetBackwardLean, Time.deltaTime * _leanSpeed);
+        var newBackwardsLean = Mathf.Lerp(currentBackwardsLean, targetBackwardLean, Time.deltaTime * _leanSpeed);
 
         // apply
-        _boardMesh.localEulerAngles = new Vector3(newBackwardLean, _boardMesh.localEulerAngles.y, newSidewaysLean);
+        _boardMesh.localEulerAngles = new Vector3(newBackwardsLean, _boardMesh.localEulerAngles.y, newSidewaysLean);
 
         // Camera zoom out based on speed
         var speedFactor = Mathf.Clamp01(flatVel.magnitude / _cameraZoomOutMaxSpeed);
