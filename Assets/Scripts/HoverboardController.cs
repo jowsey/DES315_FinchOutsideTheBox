@@ -70,14 +70,18 @@ public class HoverboardController : MonoBehaviour
     [SerializeField] [SuffixLabel("m/s")] private float _speedForMaxBackwardLean = 15f;
 
     [Tooltip("If true, the board will rotate to face the movement direction when no input is held")]
-    [SerializeField] private bool _rotateTowardsForward = false;
-    
+    [SerializeField] private bool _idlyRotateTowardsForward;
+
+    [Tooltip("If true, uses an alternative movement system more akin to driving a car")]
+    [InfoBox("The alternate movement system requires a much higher rotation speed than the main one. Try multiplying by 30x!")]
+    [SerializeField] private bool _useAlternateMovement;
+
     // [Tooltip("How much upwards force will be applied when jumping")]
     // [SerializeField] private float _jumpForce = 300f;
     //
     // [Tooltip("How big of a dip will be applied before jumping (visual)")]
     // [SerializeField] private float _jumpDipAmount = 0.2f;
-    
+
     // [Tooltip("Whether to allow moving while in mid-air")]
     // [SerializeField] private bool _canMoveInMidAir = true;
     //
@@ -100,7 +104,7 @@ public class HoverboardController : MonoBehaviour
     private void FixedUpdate()
     {
         var sinFactor = 1 + Mathf.Sin(Time.time * _sinSpeed) * _sinForce;
-        
+
         foreach (var point in _pushPoints)
         {
             var worldPoint = transform.TransformPoint(point);
@@ -111,41 +115,59 @@ public class HoverboardController : MonoBehaviour
             var expFactor = Mathf.Pow(factor, _pushExponent);
             _rb.AddForceAtPosition(transform.up * (_pushForce * expFactor * sinFactor), worldPoint);
         }
-        
+
         // Movement force
         var moveInput = _moveAction.action.ReadValue<Vector2>();
 
-        var orientation = _camera.State.GetFinalOrientation();
-        var cameraForward = Vector3.Scale(orientation * Vector3.forward, new Vector3(1, 0, 1)).normalized;
-        var cameraRight = orientation * Vector3.right;
-
-        var inputDir = (cameraForward * moveInput.y + cameraRight * moveInput.x).normalized;
-        _rb.AddForce(inputDir * _moveForce);
-
-        // Rotation
-        var flatVel = Vector3.Scale(_rb.linearVelocity, new Vector3(1, 0, 1));
-        var prevY = _rb.rotation.eulerAngles.y;
-
-        // Point towards input direction, or velocity direction if no input and moving
-        var pointDir = inputDir != Vector3.zero
-            ? inputDir
-            : _rotateTowardsForward && flatVel.magnitude > 0.5f
-                ? flatVel.normalized
-                : Vector3.zero;
-
-        if (pointDir != Vector3.zero)
+        if (_useAlternateMovement)
         {
-            var targetRotation = Quaternion.LookRotation(pointDir, Vector3.up);
-            var newRot = Quaternion.Slerp(_rb.rotation, targetRotation, Time.fixedDeltaTime * _rotationSpeed);
-            _rb.MoveRotation(newRot);
-        }
+            // Forward
+            _rb.AddForce(transform.forward * (moveInput.y * _moveForce));
 
-        var newY = _rb.rotation.eulerAngles.y;
-        _angularVelocityY = Mathf.DeltaAngle(prevY, newY) / Time.fixedDeltaTime;
+            // Rotation
+            _rb.AddTorque(transform.up * (moveInput.x * _rotationSpeed));
+        }
+        else
+        {
+            var orientation = _camera.State.GetFinalOrientation();
+            var cameraForward = Vector3.Scale(orientation * Vector3.forward, new Vector3(1, 0, 1)).normalized;
+            var cameraRight = orientation * Vector3.right;
+
+            // Forward
+            var inputDir = (cameraForward * moveInput.y + cameraRight * moveInput.x).normalized;
+            _rb.AddForce(inputDir * _moveForce);
+
+            // Rotation
+            var flatVel = Vector3.Scale(_rb.linearVelocity, new Vector3(1, 0, 1));
+            var prevY = _rb.rotation.eulerAngles.y;
+
+            // Point towards input direction, or velocity direction if no input and moving
+            var pointDir = inputDir != Vector3.zero
+                ? inputDir
+                : _idlyRotateTowardsForward && flatVel.magnitude > 0.5f
+                    ? flatVel.normalized
+                    : Vector3.zero;
+
+            if (pointDir != Vector3.zero)
+            {
+                var targetRotation = Quaternion.LookRotation(pointDir, Vector3.up);
+                var newRot = Quaternion.Slerp(_rb.rotation, targetRotation, Time.fixedDeltaTime * _rotationSpeed);
+                _rb.MoveRotation(newRot);
+            }
+
+            var newY = _rb.rotation.eulerAngles.y;
+            _angularVelocityY = Mathf.DeltaAngle(prevY, newY) / Time.fixedDeltaTime;
+        }
     }
 
     private void LateUpdate()
     {
+        if (_useAlternateMovement)
+        {
+            // alternate movement sets torque so we can just read directly
+            _angularVelocityY = _rb.angularVelocity.y * Mathf.Rad2Deg;
+        }
+
         // Z-axis leaning
         var targetLean = Mathf.Clamp(-_angularVelocityY / _rotSpeedForMaxLean * _maxLeanAngle, -_maxLeanAngle, _maxLeanAngle);
 
