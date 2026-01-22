@@ -7,14 +7,18 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(Rigidbody))]
 public class HoverboardController : MonoBehaviour
 {
-    [Header("Components")] private Rigidbody _rb;
+    [Header("Components")]
+    private Rigidbody _rb;
 
     [SerializeField] private Transform _boardMesh;
 
-    [Header("Input")] [SerializeField] private InputActionReference _moveAction;
+    [Header("Input")]
+    [SerializeField] private InputActionReference _moveAction;
 
-    [Header("Camera")] [SerializeField] [Required]
-    private CinemachineCamera _camera;
+    [SerializeField] private InputActionReference _jumpAction;
+
+    [Header("Camera")]
+    [SerializeField] [Required] private CinemachineCamera _camera;
 
     [SerializeField] [Required] private CinemachineOrbitalFollow _cameraFollow;
 
@@ -24,49 +28,61 @@ public class HoverboardController : MonoBehaviour
 
     private float _cameraDefaultRadius;
 
-    [Header("Floating")] [SerializeField] [Tooltip("A set of local points that will be sampled for pushing the board upwards")]
-    private List<Vector3> _pushPoints = new();
+    [Header("Floating")]
+    [Tooltip("A set of local points that will be sampled for pushing the board upwards")]
+    [SerializeField] private List<Vector3> _pushPoints = new();
 
-    [SerializeField] [Tooltip("Amount of force applied when pushing upwards by each point")]
-    private float _pushForce = 100f;
+    [Tooltip("Amount of force applied when pushing upwards by each point")]
+    [SerializeField] private float _pushForce = 100f;
 
-    [SerializeField] [Tooltip("The height above ground the points will try and reach")]
-    private float _pushDistance = 0.5f;
+    [Tooltip("The height above ground the points will try and reach")]
+    [SerializeField] [SuffixLabel("m")] private float _pushDistance = 0.5f;
 
-    [SerializeField] [Tooltip("Exponential factor applied to the distance. Increasing this reduces bobbing up and down, but reduces the height at which it stabilises")]
-    private float _pushExponent = 3.0f;
+    [Tooltip("Exponential factor applied to the distance. Increasing this reduces bobbing up and down, but reduces the height at which it stabilises")]
+    [SerializeField] private float _pushExponent = 3.0f;
 
-    [SerializeField] [Tooltip("Amplitude of push force sine wave")]
-    private float _sinForce = 0.15f;
+    [Tooltip("Amplitude of push force sine wave")]
+    [SerializeField] private float _sinForce = 0.15f;
 
-    [SerializeField] [Tooltip("Wavelength of push force sine wave")]
-    private float _sinSpeed = 2f;
+    [Tooltip("Wavelength of push force sine wave")]
+    [SerializeField] private float _sinSpeed = 2f;
 
     [Header("Movement")]
-    [SerializeField]
     [Tooltip("Amount of forward force applied by movement. Max speed and acceleration are both computed as a mix of this value and the linear damping value in the Rigidbody.")]
-    private float _moveForce = 150f;
+    [SerializeField] private float _moveForce = 150f;
 
-    [SerializeField] [Tooltip("Speed factor at which hoverboard rotates to face movement direction")]
-    private float _rotationSpeed = 3f;
+    [Tooltip("Speed factor at which hoverboard rotates to face movement direction")]
+    [SerializeField] private float _rotationSpeed = 3f;
 
-    [SerializeField] [Tooltip("Maximum amount of sideways leaning in degrees")]
-    private float _maxLeanAngle = 15f;
+    [Tooltip("Maximum amount of sideways leaning")]
+    [SerializeField] [SuffixLabel("degrees")] private float _maxLeanAngle = 15f;
 
-    [SerializeField] [Tooltip("Rotation speed in degrees/sec at which the board will fully lean")]
-    private float _rotSpeedForMaxLean = 90f;
+    [Tooltip("Rotation speed at which the board will fully lean")]
+    [SerializeField] [SuffixLabel("degrees/sec")] private float _rotSpeedForMaxLean = 90f;
 
-    [SerializeField] [Tooltip("Speed of lean angle smoothing")]
-    private float _leanSpeed = 3f;
+    [Tooltip("Speed of lean angle smoothing")]
+    [SerializeField] private float _leanSpeed = 3f;
 
-    [SerializeField] [Tooltip("Maximum amount of backwards leaning in degrees")]
-    private float _maxBackwardLeanAngle = 5f;
+    [Tooltip("Maximum amount of backwards leaning")]
+    [SerializeField] [SuffixLabel("degrees")] private float _maxBackwardLeanAngle = 5f;
 
-    [SerializeField] [Tooltip("Speed in meters/sec at which the board will fully lean backwards")]
-    private float _speedForMaxBackwardLean = 15f;
+    [Tooltip("Speed at which the board will fully lean backwards")]
+    [SerializeField] [SuffixLabel("m/s")] private float _speedForMaxBackwardLean = 15f;
 
-    [SerializeField] [Tooltip("If true, the board will rotate to face the movement direction when no input is held")]
-    private bool _rotateTowardsForward = true;
+    [Tooltip("If true, the board will rotate to face the movement direction when no input is held")]
+    [SerializeField] private bool _rotateTowardsForward = false;
+    
+    // [Tooltip("How much upwards force will be applied when jumping")]
+    // [SerializeField] private float _jumpForce = 300f;
+    //
+    // [Tooltip("How big of a dip will be applied before jumping (visual)")]
+    // [SerializeField] private float _jumpDipAmount = 0.2f;
+    
+    // [Tooltip("Whether to allow moving while in mid-air")]
+    // [SerializeField] private bool _canMoveInMidAir = true;
+    //
+    // [Tooltip("How far up counts as being in the air?")]
+    // [SerializeField] [EnableIf("_canMoveInMidAir")] private float _midAirHeightThreshold = 5f;
 
     private float _angularVelocityY;
 
@@ -84,7 +100,7 @@ public class HoverboardController : MonoBehaviour
     private void FixedUpdate()
     {
         var sinFactor = 1 + Mathf.Sin(Time.time * _sinSpeed) * _sinForce;
-
+        
         foreach (var point in _pushPoints)
         {
             var worldPoint = transform.TransformPoint(point);
@@ -95,7 +111,7 @@ public class HoverboardController : MonoBehaviour
             var expFactor = Mathf.Pow(factor, _pushExponent);
             _rb.AddForceAtPosition(transform.up * (_pushForce * expFactor * sinFactor), worldPoint);
         }
-
+        
         // Movement force
         var moveInput = _moveAction.action.ReadValue<Vector2>();
 
