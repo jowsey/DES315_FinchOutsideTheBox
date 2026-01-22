@@ -84,7 +84,7 @@ public class GrappleController : MonoBehaviour
         }
 
         // Aim + find grappleable objects
-        if (Physics.Raycast(_cam.transform.position, _cam.transform.forward, out RaycastHit hit, _range, grappleableLayer))
+        if (Physics.Raycast(_cam.transform.position, _cam.transform.forward, out RaycastHit hit, _range, grappleableLayer, QueryTriggerInteraction.Ignore))
         {
             hit.transform.GetComponent<Renderer>().material.color = Color.red; //todo: temp, replace with a cool shader
             _highlightedObject = hit.transform;

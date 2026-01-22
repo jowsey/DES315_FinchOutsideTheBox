@@ -109,7 +109,7 @@ public class HoverboardController : MonoBehaviour
         {
             var worldPoint = transform.TransformPoint(point);
             var ray = new Ray(worldPoint, -transform.up);
-            if (!Physics.Raycast(ray, out var hitInfo, _pushDistance)) continue;
+            if (!Physics.Raycast(ray, out var hitInfo, _pushDistance, ~0, QueryTriggerInteraction.Ignore)) continue;
 
             var factor = 1f - (hitInfo.distance / _pushDistance);
             var expFactor = Mathf.Pow(factor, _pushExponent);
