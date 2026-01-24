@@ -1,17 +1,13 @@
 using Sirenix.OdinInspector;
 using Unity.Cinemachine;
-using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UIElements;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private LayerMask playerLayer;
-
     [Header("Components")]
-    private Rigidbody _rb;
+    public Rigidbody Rb { get; private set; }
 
 
     [Header("Input")]
@@ -19,64 +15,101 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private InputActionReference _jumpAction;
 
-    [Tooltip("Percentage of gravity to negate when gliding")]
-    [SerializeField] [Range(0,100)] private float gravityNegationPercentage;
+    private bool _jumpPressed;
 
-    [SerializeField] private float rotationSmoothingSpeed;
+    [Tooltip("Percentage of gravity to negate when gliding")]
+    [SerializeField] [Range(0, 100)] private float gravityNegationPercentage = 90;
+
+    [SerializeField] private float rotationSmoothingSpeed = 8;
 
 
     [Header("Camera")]
-    [SerializeField] [Required] private CinemachineCamera _camera;
-
-    [SerializeField] [Required] private CinemachineOrbitalFollow _cameraFollow;
+    [SerializeField] private CinemachineCamera _camera;
 
 
     [Header("Movement")]
     [Tooltip("Amount of upwards force applied when jumping")]
-    [SerializeField] private float _jumpForce = 100f;
+    [SerializeField] private float _jumpForce = 200f;
 
     [Tooltip("Amount of forward force applied by movement")]
-    [SerializeField] private float _moveForce = 150f;
+    [SerializeField] private float _moveForce = 6f;
 
-    private Collider collider;
+    [Header("State")]
+    [SerializeField] [ReadOnly] private WheelSeat _seat;
+
+    [field: SerializeField] [field: ReadOnly] public Vector3 WorldSpaceMoveDir { get; private set; }
 
     private void Awake()
     {
-        _rb = GetComponent<Rigidbody>();
+        Rb = GetComponent<Rigidbody>();
     }
 
     private void Start()
     {
-        UnityEngine.Cursor.lockState = CursorLockMode.Locked;
-        collider = GetComponent<Collider>();
+        Cursor.lockState = CursorLockMode.Locked;
+    }
+
+    private void Update()
+    {
+        _jumpPressed |= _jumpAction.action.WasPressedThisFrame();
     }
 
     private void FixedUpdate()
     {
         //Movement
-        Quaternion cameraOrientation = _camera.State.GetFinalOrientation();
+        Quaternion cameraOrientation = _camera ? _camera.State.GetFinalOrientation() : Quaternion.identity;
         Vector3 cameraForward = Vector3.Scale(cameraOrientation * Vector3.forward, new Vector3(1, 0, 1)).normalized;
+
         Vector3 cameraRight = cameraOrientation * Vector3.right;
         Vector2 inputDirection = _moveAction.action.ReadValue<Vector2>();
-        Vector3 moveDirection = (cameraForward * inputDirection.y + cameraRight * inputDirection.x).normalized;
-        Vector3 movePositionDelta = new Vector3(moveDirection.x, 0.0f, moveDirection.z) * _moveForce * Time.fixedDeltaTime;
-        _rb.MovePosition(_rb.position + movePositionDelta);
 
-        //Camera
-        if (moveDirection.sqrMagnitude != 0.0f)
+        WorldSpaceMoveDir = (cameraForward * inputDirection.y + cameraRight * inputDirection.x).normalized;
+
+        if (WorldSpaceMoveDir.sqrMagnitude > 0)
         {
-            _rb.MoveRotation(Quaternion.Slerp(_rb.rotation, Quaternion.LookRotation(moveDirection, Vector3.up), Time.fixedDeltaTime * rotationSmoothingSpeed));
+            Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, Quaternion.LookRotation(WorldSpaceMoveDir, Vector3.up), Time.fixedDeltaTime * rotationSmoothingSpeed));
         }
 
-        //Jump
-        if (_jumpAction.action.WasPressedThisFrame() && Physics.CheckSphere(_rb.position, 0.1f, ~playerLayer))
+        if (_seat)
         {
-            _rb.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
+            if (_jumpPressed)
+            {
+                _seat.UnsitPlayer();
+                _seat = null;
+            }
         }
-        else if (_jumpAction.action.IsPressed() && _rb.linearVelocity.y < 0.0f)
+
+        if (!_seat)
         {
-            float gravityNegationPercentage01 = gravityNegationPercentage / 100.0f;
-            _rb.AddForce(-Physics.gravity * gravityNegationPercentage01, ForceMode.Acceleration);
+            Vector3 delta = new Vector3(WorldSpaceMoveDir.x, 0.0f, WorldSpaceMoveDir.z) * (Time.fixedDeltaTime * _moveForce);
+            Rb.MovePosition(Rb.position + delta);
+
+            //Jump
+            if (_jumpPressed && Physics.CheckSphere(Rb.position, 0.1f, ~gameObject.layer))
+            {
+                Rb.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
+            }
+            else if (_jumpAction.action.IsPressed() && Rb.linearVelocity.y < 0.0f)
+            {
+                float gravityNegationPercentage01 = gravityNegationPercentage / 100.0f;
+                Rb.AddForce(-Physics.gravity * gravityNegationPercentage01, ForceMode.Acceleration);
+            }
+        }
+
+        _jumpPressed = false;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        var newSeat = other.GetComponentInParent<WheelSeat>();
+        if (newSeat)
+        {
+            if (_seat) return;
+
+            if (newSeat.TrySitPlayer(this))
+            {
+                _seat = newSeat;
+            }
         }
     }
 }
