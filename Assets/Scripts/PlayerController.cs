@@ -57,7 +57,7 @@ public class PlayerController : MonoBehaviour
         Quaternion cameraOrientation = _camera.State.GetFinalOrientation();
         Vector3 cameraForward = Vector3.Scale(cameraOrientation * Vector3.forward, new Vector3(1, 0, 1)).normalized;
         Vector3 cameraRight = cameraOrientation * Vector3.right;
-        Vector2 inputDirection = _moveAction.action.ReadValue<Vector2>().normalized;
+        Vector2 inputDirection = _moveAction.action.ReadValue<Vector2>();
         Vector3 moveDirection = (cameraForward * inputDirection.y + cameraRight * inputDirection.x).normalized;
         Vector3 movePositionDelta = new Vector3(moveDirection.x, 0.0f, moveDirection.z) * _moveForce * Time.fixedDeltaTime;
         _rb.MovePosition(_rb.position + movePositionDelta);
