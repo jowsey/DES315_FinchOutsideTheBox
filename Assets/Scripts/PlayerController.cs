@@ -38,7 +38,10 @@ public class PlayerController : MonoBehaviour
     [Tooltip("Amount of forward force applied by movement")]
     [SerializeField] private float _moveForce = 150f;
 
-    private Collider collider;
+    //In the case where there are multiple Update loops per FixedUpdate, if jump action gets pressed in any of the update loops in a fixed update cycle, this flag is set to true
+    //It is used in the fixed update cycle for processing jumping
+    //At the end of fixed update, it is reset back to false
+    private bool jumpActionPressedThisFixedUpdateCycle = false;
 
     private void Awake()
     {
@@ -48,7 +51,14 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         UnityEngine.Cursor.lockState = CursorLockMode.Locked;
-        collider = GetComponent<Collider>();
+    }
+
+    private void Update()
+    {
+        if (_jumpAction.action.WasPressedThisFrame())
+        {
+            jumpActionPressedThisFixedUpdateCycle = true;
+        }
     }
 
     private void FixedUpdate()
@@ -69,7 +79,7 @@ public class PlayerController : MonoBehaviour
         }
 
         //Jump
-        if (_jumpAction.action.WasPressedThisFrame() && Physics.CheckSphere(_rb.position, 0.1f, ~playerLayer))
+        if (jumpActionPressedThisFixedUpdateCycle && Physics.CheckSphere(_rb.position, 0.1f, ~playerLayer))
         {
             _rb.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
         }
@@ -78,5 +88,7 @@ public class PlayerController : MonoBehaviour
             float gravityNegationPercentage01 = gravityNegationPercentage / 100.0f;
             _rb.AddForce(-Physics.gravity * gravityNegationPercentage01, ForceMode.Acceleration);
         }
+
+        jumpActionPressedThisFixedUpdateCycle = false;
     }
 }
