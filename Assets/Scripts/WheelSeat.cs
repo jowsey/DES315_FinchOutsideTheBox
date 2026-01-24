@@ -13,12 +13,17 @@ public class WheelSeat : MonoBehaviour
     [SerializeField] private float _sitCooldown = 2.0f;
 
     [Header("Components")]
-    [SerializeField] [Required] private Rigidbody _cartRb;
+    [Tooltip("The parent cart's rigidbody")]
+    [SerializeField] [RequiredIn(PrefabKind.InstanceInScene)] [DisableIn(PrefabKind.Regular)] private Rigidbody _cartRb;
 
+    [Tooltip("The rigidbody of the sphere that will rotate")]
     [SerializeField] [Required] private Rigidbody _wheelRb;
+
+    [Tooltip("The joint connecting the wheel to the cart")]
     [SerializeField] [Required] private ConfigurableJoint _wheelJoint;
 
     [Header("State")]
+    [Tooltip("The player currently sitting in this seat")]
     [ReadOnly] public PlayerController OwnedPlayer;
 
     private float _lastUnsitTime = -Mathf.Infinity;
