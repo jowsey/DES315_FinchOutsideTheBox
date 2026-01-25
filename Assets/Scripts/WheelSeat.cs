@@ -1,5 +1,6 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class WheelSeat : MonoBehaviour
 {
@@ -27,6 +28,7 @@ public class WheelSeat : MonoBehaviour
     [ReadOnly] public PlayerController OwnedPlayer;
 
     private float _lastUnsitTime = -Mathf.Infinity;
+    private ConfigurableJoint playerJoint;
 
     private void OnValidate()
     {
@@ -57,6 +59,9 @@ public class WheelSeat : MonoBehaviour
 
         var wheelTop = transform.position + Vector3.up * (_radius * transform.lossyScale.y);
         _wheelRb.AddForceAtPosition(OwnedPlayer.WorldSpaceMoveDir * _moveForce, wheelTop);
+        playerJoint.connectedBody = null;
+        OwnedPlayer.transform.position = wheelTop;
+        playerJoint.connectedBody = _cartRb;
     }
 
     private void OnDrawGizmosSelected()
@@ -74,14 +79,14 @@ public class WheelSeat : MonoBehaviour
         player.Rb.excludeLayers |= 1 << gameObject.layer;
         player.transform.position = transform.position + transform.up * (_radius * transform.lossyScale.y);
 
-        var joint = player.gameObject.AddComponent<ConfigurableJoint>();
-        joint.connectedBody = _cartRb;
-        joint.xMotion = ConfigurableJointMotion.Locked;
-        joint.yMotion = ConfigurableJointMotion.Locked;
-        joint.zMotion = ConfigurableJointMotion.Locked;
-        joint.angularXMotion = ConfigurableJointMotion.Free;
-        joint.angularYMotion = ConfigurableJointMotion.Free;
-        joint.angularZMotion = ConfigurableJointMotion.Free;
+        playerJoint = player.gameObject.AddComponent<ConfigurableJoint>();
+        playerJoint.connectedBody = _cartRb;
+        playerJoint.xMotion = ConfigurableJointMotion.Locked;
+        playerJoint.yMotion = ConfigurableJointMotion.Locked;
+        playerJoint.zMotion = ConfigurableJointMotion.Locked;
+        playerJoint.angularXMotion = ConfigurableJointMotion.Free;
+        playerJoint.angularYMotion = ConfigurableJointMotion.Free;
+        playerJoint.angularZMotion = ConfigurableJointMotion.Free;
 
         return true;
     }
