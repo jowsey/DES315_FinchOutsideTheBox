@@ -28,7 +28,7 @@ public class WheelSeat : MonoBehaviour
     [ReadOnly] public PlayerController OwnedPlayer;
 
     private float _lastUnsitTime = -Mathf.Infinity;
-    private ConfigurableJoint playerJoint;
+    private ConfigurableJoint _playerJoint;
 
     private void OnValidate()
     {
@@ -59,9 +59,10 @@ public class WheelSeat : MonoBehaviour
 
         var wheelTop = transform.position + Vector3.up * (_radius * transform.lossyScale.y);
         _wheelRb.AddForceAtPosition(OwnedPlayer.WorldSpaceMoveDir * _moveForce, wheelTop);
-        playerJoint.connectedBody = null;
-        OwnedPlayer.transform.position = wheelTop;
-        playerJoint.connectedBody = _cartRb;
+        
+        _playerJoint.connectedBody = null;
+        OwnedPlayer.transform.position = wheelTop; // todo manually setting transform kinda yucky, i think we can probably also remove joint + just make it kinematic given this?
+        _playerJoint.connectedBody = _cartRb;
     }
 
     private void OnDrawGizmosSelected()
@@ -79,14 +80,14 @@ public class WheelSeat : MonoBehaviour
         player.Rb.excludeLayers |= 1 << gameObject.layer;
         player.transform.position = transform.position + transform.up * (_radius * transform.lossyScale.y);
 
-        playerJoint = player.gameObject.AddComponent<ConfigurableJoint>();
-        playerJoint.connectedBody = _cartRb;
-        playerJoint.xMotion = ConfigurableJointMotion.Locked;
-        playerJoint.yMotion = ConfigurableJointMotion.Locked;
-        playerJoint.zMotion = ConfigurableJointMotion.Locked;
-        playerJoint.angularXMotion = ConfigurableJointMotion.Free;
-        playerJoint.angularYMotion = ConfigurableJointMotion.Free;
-        playerJoint.angularZMotion = ConfigurableJointMotion.Free;
+        _playerJoint = player.gameObject.AddComponent<ConfigurableJoint>();
+        _playerJoint.connectedBody = _cartRb;
+        _playerJoint.xMotion = ConfigurableJointMotion.Locked;
+        _playerJoint.yMotion = ConfigurableJointMotion.Locked;
+        _playerJoint.zMotion = ConfigurableJointMotion.Locked;
+        _playerJoint.angularXMotion = ConfigurableJointMotion.Free;
+        _playerJoint.angularYMotion = ConfigurableJointMotion.Free;
+        _playerJoint.angularZMotion = ConfigurableJointMotion.Free;
 
         return true;
     }
@@ -97,11 +98,9 @@ public class WheelSeat : MonoBehaviour
 
         OwnedPlayer.transform.SetParent(null);
         OwnedPlayer.Rb.excludeLayers &= ~(1 << gameObject.layer);
-
-        if (OwnedPlayer.TryGetComponent(out Joint joint))
-        {
-            Destroy(joint);
-        }
+        
+        _playerJoint.connectedBody = null; // explicitly disconnect so jump on the same-frame doesn't try to apply force to the cart since Destroy is delayed
+        Destroy(_playerJoint);
 
         OwnedPlayer = null;
 
