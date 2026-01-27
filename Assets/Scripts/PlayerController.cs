@@ -1,10 +1,12 @@
+using Mirror;
 using Sirenix.OdinInspector;
+using System.Linq;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody))]
-public class PlayerController : MonoBehaviour
+public class PlayerController : NetworkBehaviour
 {
     [Header("Components")]
     public Rigidbody Rb { get; private set; }
@@ -35,27 +37,40 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float _moveForce = 6f;
 
     [Header("State")]
-    [SerializeField] [ReadOnly] private WheelSeat _seat;
+    [SerializeField] [Sirenix.OdinInspector.ReadOnly] public WheelSeat _seat;
 
-    [field: SerializeField] [field: ReadOnly] public Vector3 WorldSpaceMoveDir { get; private set; }
+    [field: SerializeField] [field: Sirenix.OdinInspector.ReadOnly] public Vector3 WorldSpaceMoveDir { get; private set; }
 
     private void Awake()
     {
         Rb = GetComponent<Rigidbody>();
     }
 
-    private void Start()
+    public override void OnStartLocalPlayer()
     {
         Cursor.lockState = CursorLockMode.Locked;
+        _camera = FindObjectsByType<CinemachineCamera>(FindObjectsInactive.Include, FindObjectsSortMode.None).FirstOrDefault(); //GameObject.Find doesn't work because camera is inactive
+        _camera.gameObject.SetActive(true);
+        _camera.Follow = transform;
+        _camera.LookAt = transform;
+    }
+
+    public override void OnStopLocalPlayer()
+    {
+        Cursor.lockState = CursorLockMode.None;
     }
 
     private void Update()
     {
+        if (!isLocalPlayer) { return; }
+
         _jumpPressed |= _jumpAction.action.WasPressedThisFrame();
     }
 
     private void FixedUpdate()
     {
+        if (!isLocalPlayer) { return; }
+
         //Movement
         Quaternion cameraOrientation = _camera ? _camera.State.GetFinalOrientation() : Quaternion.identity;
         Vector3 cameraForward = Vector3.Scale(cameraOrientation * Vector3.forward, new Vector3(1, 0, 1)).normalized;
@@ -65,18 +80,17 @@ public class PlayerController : MonoBehaviour
 
         WorldSpaceMoveDir = (cameraForward * inputDirection.y + cameraRight * inputDirection.x).normalized;
 
+        CmdSetWorldSpaceMoveDir(WorldSpaceMoveDir);
+
         if (WorldSpaceMoveDir.sqrMagnitude > 0)
         {
             Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, Quaternion.LookRotation(WorldSpaceMoveDir, Vector3.up), Time.fixedDeltaTime * rotationSmoothingSpeed));
         }
 
-        if (_seat)
+        if (_seat && _jumpPressed)
         {
-            if (_jumpPressed)
-            {
-                _seat.UnsitPlayer();
-                _seat = null;
-            }
+            _seat.CmdUnsitPlayer();
+            _seat = null;
         }
 
         if (!_seat)
@@ -99,17 +113,21 @@ public class PlayerController : MonoBehaviour
         _jumpPressed = false;
     }
 
+    [Command]
+    private void CmdSetWorldSpaceMoveDir(Vector3 dir)
+    {
+        WorldSpaceMoveDir = dir;
+    }
+
     private void OnTriggerEnter(Collider other)
     {
-        var newSeat = other.GetComponentInParent<WheelSeat>();
-        if (newSeat)
-        {
-            if (_seat) return;
+        if (!isLocalPlayer) { return; }
 
-            if (newSeat.TrySitPlayer(this))
-            {
-                _seat = newSeat;
-            }
+        WheelSeat newSeat = other.GetComponentInParent<WheelSeat>();
+        if (newSeat && !_seat)
+        {
+            NetworkIdentity identity = GetComponent<NetworkIdentity>();
+            newSeat.CmdTrySitPlayer(identity);
         }
     }
 }

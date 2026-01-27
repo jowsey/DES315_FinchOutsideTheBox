@@ -1,14 +1,13 @@
 using Sirenix.OdinInspector;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class WheelSeat : MonoBehaviour
+public class WheelSeat : Mirror.NetworkBehaviour
 {
+    [Header("Ball Properties")]
     [Tooltip("How much driving force the wheel applies")]
     [SerializeField] private float _moveForce = 100f;
-
-    [Tooltip("Radius of the wheel")]
-    [SerializeField] private float _radius = 0.5f;
 
     [Tooltip("Cooldown time after player leaves before a player can sit again")]
     [SerializeField] private float _sitCooldown = 2.0f;
@@ -25,12 +24,55 @@ public class WheelSeat : MonoBehaviour
 
     [Header("State")]
     [Tooltip("The player currently sitting in this seat")]
-    [ReadOnly] public PlayerController OwnedPlayer;
+    [Mirror.SyncVar(hook = nameof(OnSeatedPlayerChanged))]
+    [ReadOnly] [ShowInInspector] private Mirror.NetworkIdentity _seatedPlayerIdentity;
+    public Mirror.NetworkIdentity GetSeatedPlayerIdentity() { return _seatedPlayerIdentity; }
 
+    private float _radius;
+    
+    private PlayerController _seatedPlayer;
     private float _lastUnsitTime = -Mathf.Infinity;
-    private ConfigurableJoint _playerJoint;
+    
 
-    private void OnValidate()
+    [Mirror.Command(requiresAuthority = false)]
+    public void CmdTrySitPlayer(Mirror.NetworkIdentity playerIdentity)
+    {
+        if (_seatedPlayer || Time.time < _lastUnsitTime + _sitCooldown) { return; }
+        _seatedPlayerIdentity = playerIdentity; //synced to all clients
+    }
+
+    [Mirror.Command(requiresAuthority = false)]
+    public void CmdUnsitPlayer()
+    {
+        if (!_seatedPlayer) { return; }
+        _seatedPlayerIdentity = null; //synced to all clients
+    }
+
+    private void OnSeatedPlayerChanged(Mirror.NetworkIdentity _old, Mirror.NetworkIdentity _new)
+    {
+        PlayerController oldPlayer = _seatedPlayer;
+        _seatedPlayer = _new ? _new.GetComponent<PlayerController>() : null;
+
+        if (_seatedPlayer != null)
+        {
+            //Player is getting on
+            _seatedPlayer.Rb.isKinematic = true;
+            _seatedPlayer.Rb.excludeLayers |= 1 << gameObject.layer;
+            _seatedPlayer._seat = this;
+        }
+        else if (oldPlayer != null)
+        {
+            //Player is getting off
+            oldPlayer.Rb.isKinematic = false;
+            oldPlayer.Rb.angularVelocity = Vector3.zero;
+            oldPlayer.Rb.excludeLayers &= ~(1 << gameObject.layer);
+            oldPlayer._seat = null;
+            _lastUnsitTime = Time.time;
+        }
+    }
+
+
+    protected override void OnValidate()
     {
         if (!_wheelRb)
         {
@@ -51,59 +93,28 @@ public class WheelSeat : MonoBehaviour
         {
             _wheelJoint.connectedBody = _cartRb;
         }
+
+        _radius = GetComponentInChildren<SphereCollider>().radius;
     }
 
     private void FixedUpdate()
     {
-        if (!OwnedPlayer) return;
+        if (!_seatedPlayer) return;
 
         var wheelTop = transform.position + Vector3.up * (_radius * transform.lossyScale.y);
-        _wheelRb.AddForceAtPosition(OwnedPlayer.WorldSpaceMoveDir * _moveForce, wheelTop);
-        
-        _playerJoint.connectedBody = null;
-        OwnedPlayer.transform.position = wheelTop; // todo manually setting transform kinda yucky, i think we can probably also remove joint + just make it kinematic given this?
-        _playerJoint.connectedBody = _cartRb;
+
+        //Only apply force if we have authority
+        if (isServer)
+        {
+            _wheelRb.AddForceAtPosition(_seatedPlayer.WorldSpaceMoveDir * _moveForce, wheelTop);
+        }
+
+        _seatedPlayer.Rb.MovePosition(wheelTop);
     }
 
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.cyan;
         Gizmos.DrawWireSphere(transform.position, _radius * transform.lossyScale.y);
-    }
-
-    public bool TrySitPlayer(PlayerController player)
-    {
-        if (OwnedPlayer || Time.time < _lastUnsitTime + _sitCooldown) return false;
-
-        OwnedPlayer = player;
-        player.transform.SetParent(_cartRb.transform);
-        player.Rb.excludeLayers |= 1 << gameObject.layer;
-        player.transform.position = transform.position + transform.up * (_radius * transform.lossyScale.y);
-
-        _playerJoint = player.gameObject.AddComponent<ConfigurableJoint>();
-        _playerJoint.connectedBody = _cartRb;
-        _playerJoint.xMotion = ConfigurableJointMotion.Locked;
-        _playerJoint.yMotion = ConfigurableJointMotion.Locked;
-        _playerJoint.zMotion = ConfigurableJointMotion.Locked;
-        _playerJoint.angularXMotion = ConfigurableJointMotion.Free;
-        _playerJoint.angularYMotion = ConfigurableJointMotion.Free;
-        _playerJoint.angularZMotion = ConfigurableJointMotion.Free;
-
-        return true;
-    }
-
-    public void UnsitPlayer()
-    {
-        if (!OwnedPlayer) return;
-
-        OwnedPlayer.transform.SetParent(null);
-        OwnedPlayer.Rb.excludeLayers &= ~(1 << gameObject.layer);
-        
-        _playerJoint.connectedBody = null; // explicitly disconnect so jump on the same-frame doesn't try to apply force to the cart since Destroy is delayed
-        Destroy(_playerJoint);
-
-        OwnedPlayer = null;
-
-        _lastUnsitTime = Time.time;
     }
 }

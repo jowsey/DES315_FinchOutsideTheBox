@@ -153,6 +153,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6683802848027508975}
   - component: {fileID: 1941705307562643170}
+  - component: {fileID: 265190037094596065}
   m_Layer: 7
   m_Name: Wheel
   m_TagString: Untagged
@@ -189,13 +190,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 925babb21fc946f490ae2c45009c471a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WheelSeat
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _moveForce: 100
-  _radius: 0.5
   _sitCooldown: 2
   _cartRb: {fileID: 0}
   _wheelRb: {fileID: 4411101685860761807}
   _wheelJoint: {fileID: 7903212125531569227}
-  OwnedPlayer: {fileID: 0}
+--- !u!114 &265190037094596065
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6520431643325327347}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 0
+  _assetId: 4243563869
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1 &6541864688386295560
 GameObject:
   m_ObjectHideFlags: 0
@@ -210,6 +229,7 @@ GameObject:
   - component: {fileID: 7162544277162453208}
   - component: {fileID: 4411101685860761807}
   - component: {fileID: 7903212125531569227}
+  - component: {fileID: 708922321090606517}
   m_Layer: 7
   m_Name: SpinningBall
   m_TagString: Untagged
@@ -442,6 +462,40 @@ ConfigurableJoint:
   m_EnablePreprocessing: 1
   m_MassScale: 1
   m_ConnectedMassScale: 1
+--- !u!114 &708922321090606517
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6541864688386295560}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb803efbe62c34d7baece46c9ffebad9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror.Components::Mirror.NetworkRigidbodyReliable
+  syncDirection: 1
+  syncMode: 0
+  syncInterval: 0
+  target: {fileID: 2233909209222072715}
+  syncPosition: 1
+  syncRotation: 1
+  syncScale: 0
+  onlySyncOnChange: 1
+  compressRotation: 1
+  interpolatePosition: 1
+  interpolateRotation: 1
+  interpolateScale: 1
+  coordinateSpace: 0
+  timelineOffset: 1
+  showGizmos: 0
+  showOverlay: 0
+  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+  onlySyncOnChangeCorrectionMultiplier: 2
+  useFixedUpdate: 0
+  rotationSensitivity: 0.01
+  positionPrecision: 0.01
+  scalePrecision: 0.01
 --- !u!1 &7365159719794600989
 GameObject:
   m_ObjectHideFlags: 0

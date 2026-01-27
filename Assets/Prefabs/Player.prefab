@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 5379210078007236453}
   - component: {fileID: 6402695614377241724}
   - component: {fileID: 8993189542338515069}
+  - component: {fileID: 2406511369735062858}
+  - component: {fileID: -6445594613808671869}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -75,6 +77,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eab1a43b414649e3b73847820159d6db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _moveAction: {fileID: -1680190386980627800, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
   _jumpAction: {fileID: -2099379676528639254, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
   gravityNegationPercentage: 90
@@ -84,6 +89,57 @@ MonoBehaviour:
   _moveForce: 6
   _seat: {fileID: 0}
   <WorldSpaceMoveDir>k__BackingField: {x: 0, y: 0, z: 0}
+--- !u!114 &2406511369735062858
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 123377547585072098}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 0
+  _assetId: 87594491
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
+--- !u!114 &-6445594613808671869
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 123377547585072098}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb803efbe62c34d7baece46c9ffebad9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror.Components::Mirror.NetworkRigidbodyReliable
+  syncDirection: 1
+  syncMode: 0
+  syncInterval: 0
+  target: {fileID: 5379210078007236453}
+  syncPosition: 1
+  syncRotation: 1
+  syncScale: 0
+  onlySyncOnChange: 1
+  compressRotation: 1
+  interpolatePosition: 1
+  interpolateRotation: 1
+  interpolateScale: 1
+  coordinateSpace: 0
+  timelineOffset: 1
+  showGizmos: 0
+  showOverlay: 0
+  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+  onlySyncOnChangeCorrectionMultiplier: 2
+  useFixedUpdate: 0
+  rotationSensitivity: 0.01
+  positionPrecision: 0.01
+  scalePrecision: 0.01
 --- !u!1 &1043394679905129444
 GameObject:
   m_ObjectHideFlags: 0
