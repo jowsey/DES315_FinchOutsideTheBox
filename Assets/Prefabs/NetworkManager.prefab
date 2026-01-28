@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4092902593690758719}
   - component: {fileID: -4724935825846393955}
   - component: {fileID: -5198553546801579664}
+  - component: {fileID: 4736147598668487178}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -111,3 +112,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EOSLobbyUI
   AttributeKeys:
   - lobby_name
+--- !u!114 &4736147598668487178
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 529094327343222544}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09c2b9adb023e6547aa45a0e8bf5fcfc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EpicTransport.EOSSDKComponent
+  apiKeys: {fileID: 11400000, guid: 4de96e8eddbf3f041b0b00e679705899, type: 2}
+  authInterfaceLogin: 0
+  authInterfaceCredentialType: 6
+  devAuthToolPort: 7878
+  devAuthToolCredentialName: 
+  connectInterfaceCredentialType: 10
+  deviceModel: PC Windows 64bit
+  displayName: User
+  epicLoggerLevel: 200
+  collectPlayerMetrics: 1
+  checkForEpicLauncherAndRestart: 0
+  delayedInitialization: 0
+  platformTickIntervalInSeconds: 0
+  tickBudgetInMilliseconds: 0
