@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 7729652477303338305}
   - component: {fileID: 4092902593690758719}
-  - component: {fileID: 1143413570617560082}
-  - component: {fileID: 4890904291501814360}
+  - component: {fileID: -4724935825846393955}
+  - component: {fileID: -5198553546801579664}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -54,7 +54,7 @@ MonoBehaviour:
   offlineScene: Assets/Scenes/Networking/Menu.unity
   onlineScene: Assets/Scenes/Networking/Game.unity
   offlineSceneLoadDelay: 0
-  transport: {fileID: 0}
+  transport: {fileID: -4724935825846393955}
   networkAddress: localhost
   maxConnections: 100
   disconnectInactiveConnections: 0
@@ -63,7 +63,8 @@ MonoBehaviour:
   playerPrefab: {fileID: 123377547585072098, guid: 9940fef59d2f8a047a17b5195be1c90f, type: 3}
   autoCreatePlayer: 1
   playerSpawnMethod: 1
-  spawnPrefabs: []
+  spawnPrefabs:
+  - {fileID: 6520431643325327347, guid: 8b8c9f45e21cb384e8500f79ec88e8bd, type: 3}
   exceptionsDisconnect: 1
   snapshotSettings:
     bufferTimeMultiplier: 2
@@ -79,7 +80,7 @@ MonoBehaviour:
   evaluationMethod: 0
   evaluationInterval: 3
   timeInterpolationGui: 0
---- !u!114 &1143413570617560082
+--- !u!114 &-4724935825846393955
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -88,27 +89,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 529094327343222544}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b0fecffa3f624585964b0d0eb21b18e, type: 3}
+  m_Script: {fileID: 11500000, guid: f5f2d307354f3ea49b3ea12e6763a9fe, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Mirror.Transports::kcp2k.KcpTransport
-  port: 7777
-  DualMode: 1
-  NoDelay: 1
-  Interval: 10
-  Timeout: 10000
-  RecvBufferSize: 7361536
-  SendBufferSize: 7361536
-  FastResend: 2
-  ReceiveWindowSize: 4096
-  SendWindowSize: 4096
-  MaxRetransmit: 40
-  MaximizeSocketBuffers: 1
-  ReliableMaxMessageSize: 297433
-  UnreliableMaxMessageSize: 1194
-  debugLog: 0
-  statisticsGUI: 0
-  statisticsLog: 0
---- !u!114 &4890904291501814360
+  m_EditorClassIdentifier: Assembly-CSharp::EpicTransport.EosTransport
+  Channels: 0200000000000000
+  timeout: 25
+  maxFragments: 55
+  ignoreCachedMessagesAtStartUpInSeconds: 2
+  relayControl: 1
+--- !u!114 &-5198553546801579664
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -117,8 +106,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 529094327343222544}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6442dc8070ceb41f094e44de0bf87274, type: 3}
+  m_Script: {fileID: 11500000, guid: db5efa10489208a44a5e560cc56f93ed, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Mirror::Mirror.NetworkManagerHUD
-  offsetX: 0
-  offsetY: 0
+  m_EditorClassIdentifier: Assembly-CSharp::EOSLobbyUI
+  AttributeKeys:
+  - lobby_name
