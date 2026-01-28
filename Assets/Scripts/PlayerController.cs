@@ -48,7 +48,8 @@ public class PlayerController : NetworkBehaviour
     public override void OnStartLocalPlayer()
     {
         Cursor.lockState = CursorLockMode.Locked;
-        _camera = FindObjectsByType<CinemachineCamera>(FindObjectsInactive.Include, FindObjectsSortMode.None).FirstOrDefault(); //GameObject.Find doesn't work because camera is inactive
+        
+        _camera = FindAnyObjectByType<CinemachineCamera>(FindObjectsInactive.Include); //GameObject.Find doesn't work because camera is inactive
         _camera.gameObject.SetActive(true);
         _camera.Follow = transform;
         _camera.LookAt = transform;

@@ -24,7 +24,6 @@ public class WheelSeat : Mirror.NetworkBehaviour
     [Tooltip("The player currently sitting in this seat")]
     [Mirror.SyncVar(hook = nameof(OnSeatedPlayerChanged))]
     [ReadOnly] [ShowInInspector] private Mirror.NetworkIdentity _seatedPlayerIdentity;
-    public Mirror.NetworkIdentity GetSeatedPlayerIdentity() { return _seatedPlayerIdentity; }
 
     private float _radius;
     
