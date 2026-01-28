@@ -1,8 +1,9 @@
+using Mirror;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody), typeof(ConfigurableJoint))]
-public class Flask : MonoBehaviour
+public class Flask : NetworkBehaviour
 {
     [SerializeField] private float _rimHeight = 1.0f;
     [SerializeField] private float _rimRadius = 0.5f;
@@ -24,12 +25,12 @@ public class Flask : MonoBehaviour
     [SerializeField] [SuffixLabel("degrees")] private float _maxSloshAngle = 5f;
 
     [Header("State")]
-    [SerializeField] [ReadOnly] [PropertyRange(0, "_maxLiquid")] private float _storedLiquid;
+    [SerializeField] [Sirenix.OdinInspector.ReadOnly] [PropertyRange(0, "_maxLiquid")] [SyncVar] private float _storedLiquid;
 
-    [SerializeField] [ReadOnly] private Vector2 _sloshAngle;
-    [SerializeField] [ReadOnly] private Vector2 _sloshVelocity;
+    [SerializeField] [Sirenix.OdinInspector.ReadOnly] private Vector2 _sloshAngle;
+    [SerializeField] [Sirenix.OdinInspector.ReadOnly] private Vector2 _sloshVelocity;
 
-    [SerializeField] private ParticleSystem _spillEffect;
+    [SerializeField] [Required] private ParticleSystem _spillEffect;
 
     private ConfigurableJoint _joint;
     private Cart _cart;
@@ -40,7 +41,7 @@ public class Flask : MonoBehaviour
         _cart = GetComponentInParent<Cart>();
     }
 
-    private void OnValidate()
+    protected override void OnValidate()
     {
         _storedLiquid = _maxLiquid;
 
@@ -64,6 +65,7 @@ public class Flask : MonoBehaviour
     {
         // todo look into some kind of basic low-res fluid sim & shader graph for this
 
+        // data
         var localDown = transform.InverseTransformDirection(Vector3.down);
         var liquidTargetAngle = new Vector2(
             Mathf.Atan2(-localDown.z, -localDown.y) * Mathf.Rad2Deg,
@@ -75,6 +77,18 @@ public class Flask : MonoBehaviour
         _sloshVelocity += sloshForce * Time.deltaTime;
         _sloshAngle += _sloshVelocity * Time.deltaTime;
 
+        var tiltMagnitudeRad = _sloshAngle.magnitude * Mathf.Deg2Rad;
+        var tiltRise = _rimRadius * Mathf.Tan(tiltMagnitudeRad);
+        var highestPointY = _liquidPlane.localPosition.y + tiltRise;
+
+        var overflowedY = highestPointY - _rimHeight;
+        if (isServer && _storedLiquid > 0 && overflowedY > 0)
+        {
+            var spillAmount = overflowedY / _rimRadius * _spillSpeed * Time.deltaTime;
+            _storedLiquid = Mathf.Max(0, _storedLiquid - spillAmount);
+        }
+
+        // visual
         var fillPercent = Mathf.Clamp01(_storedLiquid / _maxLiquid);
         var liquidHeight = fillPercent * _rimHeight;
         _liquidPlane.localPosition = new Vector3(0, liquidHeight, 0);
@@ -90,32 +104,19 @@ public class Flask : MonoBehaviour
             _rimRadius * 2f * scaleZ
         );
 
-        var tiltMagnitudeRad = _sloshAngle.magnitude * Mathf.Deg2Rad;
-        var tiltRise = _rimRadius * Mathf.Tan(tiltMagnitudeRad);
-        var highestPointY = _liquidPlane.localPosition.y + tiltRise;
-
-        var overflowedY = highestPointY - _rimHeight;
-        if (overflowedY > 0)
-        {
-            var spillAmount = overflowedY / _rimRadius * _spillSpeed * Time.deltaTime;
-            _storedLiquid = Mathf.Max(0, _storedLiquid - spillAmount);
-        }
-
-        if (_spillEffect)
-        {
-            _spillEffect.transform.position = GetLowestRimPoint();
-            
-            var emission = _spillEffect.emission;
-            emission.enabled = overflowedY > 0 && _storedLiquid > 0;
-        }
+        _spillEffect.transform.position = GetLowestRimPoint();
+        var emission = _spillEffect.emission;
+        emission.enabled = overflowedY > 0 && _storedLiquid > 0;
     }
 
     private void FixedUpdate()
     {
         // always try face world-upwards
-        // for some reason the joint comes pre-rotated? god knows
-        // _joint.targetRotation = Quaternion.Inverse(_cart.Rb.rotation);
-        _joint.targetRotation = _cart.Rb.rotation;
+        // _joint.targetRotation = Quaternion.Inverse(_cart.Rb.rotation); // for some reason the joint comes pre-rotated? god knows
+        if (isServer)
+        {
+            _joint.targetRotation = _cart.Rb.rotation;
+        }
     }
 
     private void OnDrawGizmosSelected()

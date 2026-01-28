@@ -1,5 +1,4 @@
 using Mirror;
-using Sirenix.OdinInspector;
 using System.Linq;
 using Unity.Cinemachine;
 using UnityEngine;
@@ -26,7 +25,7 @@ public class PlayerController : NetworkBehaviour
 
 
     [Header("Camera")]
-    [SerializeField] private CinemachineCamera _camera;
+    [SerializeField] [Sirenix.OdinInspector.ReadOnly] private CinemachineCamera _camera;
 
 
     [Header("Movement")]
