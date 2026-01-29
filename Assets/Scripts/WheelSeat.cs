@@ -23,39 +23,39 @@ public class WheelSeat : Mirror.NetworkBehaviour
     [Header("State")]
     [Tooltip("The player currently sitting in this seat")]
     [Mirror.SyncVar(hook = nameof(OnSeatedPlayerChanged))]
-    [ReadOnly] [ShowInInspector] private Mirror.NetworkIdentity _seatedPlayerIdentity;
+    [SerializeField] [ReadOnly] private Mirror.NetworkIdentity _seatedPlayerIdentity;
 
-    private float _radius;
-    
     private PlayerController _seatedPlayer;
+    
+    private float _radius;
     private float _lastUnsitTime = -Mathf.Infinity;
     
 
     [Mirror.Command(requiresAuthority = false)]
     public void CmdTrySitPlayer(Mirror.NetworkIdentity playerIdentity)
     {
-        if (_seatedPlayer || Time.time < _lastUnsitTime + _sitCooldown) { return; }
+        if (_seatedPlayer || Time.time < _lastUnsitTime + _sitCooldown) return;
         _seatedPlayerIdentity = playerIdentity; //synced to all clients
     }
 
     [Mirror.Command(requiresAuthority = false)]
     public void CmdUnsitPlayer()
     {
-        if (!_seatedPlayer) { return; }
+        if (!_seatedPlayer) return;
         _seatedPlayerIdentity = null; //synced to all clients
     }
 
-    private void OnSeatedPlayerChanged(Mirror.NetworkIdentity _old, Mirror.NetworkIdentity _new)
+    private void OnSeatedPlayerChanged(Mirror.NetworkIdentity oldValue, Mirror.NetworkIdentity newValue)
     {
         PlayerController oldPlayer = _seatedPlayer;
-        _seatedPlayer = _new ? _new.GetComponent<PlayerController>() : null;
+        _seatedPlayer = newValue ? newValue.GetComponent<PlayerController>() : null;
 
         if (_seatedPlayer != null)
         {
             //Player is getting on
             _seatedPlayer.Rb.isKinematic = true;
             _seatedPlayer.Rb.excludeLayers |= 1 << gameObject.layer;
-            _seatedPlayer._seat = this;
+            _seatedPlayer.Seat = this;
         }
         else if (oldPlayer != null)
         {
@@ -63,7 +63,8 @@ public class WheelSeat : Mirror.NetworkBehaviour
             oldPlayer.Rb.isKinematic = false;
             oldPlayer.Rb.angularVelocity = Vector3.zero;
             oldPlayer.Rb.excludeLayers &= ~(1 << gameObject.layer);
-            oldPlayer._seat = null;
+            oldPlayer.Seat = null;
+
             _lastUnsitTime = Time.time;
         }
     }
@@ -100,7 +101,7 @@ public class WheelSeat : Mirror.NetworkBehaviour
 
         var wheelTop = transform.position + Vector3.up * (_radius * transform.lossyScale.y);
 
-        //Only apply force if we have authority
+        //Only apply force on server
         if (isServer)
         {
             _wheelRb.AddForceAtPosition(_seatedPlayer.WorldSpaceMoveDir * _moveForce, wheelTop);

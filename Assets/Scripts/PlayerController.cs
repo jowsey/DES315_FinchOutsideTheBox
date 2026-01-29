@@ -36,7 +36,7 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private float _moveForce = 6f;
 
     [Header("State")]
-    [SerializeField] [Sirenix.OdinInspector.ReadOnly] public WheelSeat _seat;
+    [Sirenix.OdinInspector.ReadOnly] public WheelSeat Seat;
 
     [field: SerializeField] [field: Sirenix.OdinInspector.ReadOnly] public Vector3 WorldSpaceMoveDir { get; private set; }
 
@@ -87,13 +87,13 @@ public class PlayerController : NetworkBehaviour
             Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, Quaternion.LookRotation(WorldSpaceMoveDir, Vector3.up), Time.fixedDeltaTime * rotationSmoothingSpeed));
         }
 
-        if (_seat && _jumpPressed)
+        if (Seat && _jumpPressed)
         {
-            _seat.CmdUnsitPlayer();
-            _seat = null;
+            Seat.CmdUnsitPlayer();
+            Seat = null;
         }
 
-        if (!_seat)
+        if (!Seat)
         {
             Vector3 delta = new Vector3(WorldSpaceMoveDir.x, 0.0f, WorldSpaceMoveDir.z) * (Time.fixedDeltaTime * _moveForce);
             Rb.MovePosition(Rb.position + delta);
@@ -124,7 +124,7 @@ public class PlayerController : NetworkBehaviour
         if (!isLocalPlayer) { return; }
 
         WheelSeat newSeat = other.GetComponentInParent<WheelSeat>();
-        if (newSeat && !_seat)
+        if (newSeat && !Seat)
         {
             NetworkIdentity identity = GetComponent<NetworkIdentity>();
             newSeat.CmdTrySitPlayer(identity);
