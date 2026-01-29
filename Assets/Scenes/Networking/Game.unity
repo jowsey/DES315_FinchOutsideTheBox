@@ -2243,11 +2243,12 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _moveForce: 200
+  _moveForce: 140
   _sitCooldown: 2
   _cartRb: {fileID: 2167482201029142382}
   _wheelRb: {fileID: 45160777063032515}
   _wheelJoint: {fileID: 5781154547738778183}
+  _seatedPlayerIdentity: {fileID: 0}
 --- !u!1001 &2999321144733443723
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2555,7 +2556,7 @@ ConfigurableJoint:
     bounciness: 0
     contactDistance: 0
   m_AngularXLimitSpring:
-    spring: 50
+    spring: 25
     damper: 5
   m_LowAngularXLimit:
     limit: -45
@@ -2566,7 +2567,7 @@ ConfigurableJoint:
     bounciness: 0
     contactDistance: 0
   m_AngularYZLimitSpring:
-    spring: 50
+    spring: 25
     damper: 5
   m_AngularYLimit:
     limit: 0
@@ -3023,11 +3024,12 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _moveForce: 200
+  _moveForce: 140
   _sitCooldown: 2
   _cartRb: {fileID: 2167482201029142382}
   _wheelRb: {fileID: 8192730387210006207}
   _wheelJoint: {fileID: 2389393746576183867}
+  _seatedPlayerIdentity: {fileID: 0}
 --- !u!4 &6390708836092582948
 Transform:
   m_ObjectHideFlags: 0

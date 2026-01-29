@@ -25,10 +25,10 @@ public class Flask : NetworkBehaviour
     [SerializeField] [SuffixLabel("degrees")] private float _maxSloshAngle = 5f;
 
     [Header("State")]
-    [SerializeField] [Sirenix.OdinInspector.ReadOnly] [PropertyRange(0, "_maxLiquid")] [SyncVar] private float _storedLiquid;
+    [SerializeField] [PropertyRange(0, "_maxLiquid")] [SyncVar] private float _storedLiquid;
 
-    [SerializeField] [Sirenix.OdinInspector.ReadOnly] private Vector2 _sloshAngle;
-    [SerializeField] [Sirenix.OdinInspector.ReadOnly] private Vector2 _sloshVelocity;
+    [SerializeField] [Mirror.ReadOnly] private Vector2 _sloshAngle;
+    [SerializeField] [Mirror.ReadOnly] private Vector2 _sloshVelocity;
 
     [SerializeField] [Required] private ParticleSystem _spillEffect;
 
