@@ -1,5 +1,4 @@
 using Mirror;
-using Sirenix.OdinInspector;
 using System.Linq;
 using Unity.Cinemachine;
 using UnityEngine;
@@ -26,7 +25,7 @@ public class PlayerController : NetworkBehaviour
 
 
     [Header("Camera")]
-    [SerializeField] private CinemachineCamera _camera;
+    [SerializeField] [Sirenix.OdinInspector.ReadOnly] private CinemachineCamera _camera;
 
 
     [Header("Movement")]
@@ -37,7 +36,7 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private float _moveForce = 6f;
 
     [Header("State")]
-    [SerializeField] [Sirenix.OdinInspector.ReadOnly] public WheelSeat _seat;
+    [Sirenix.OdinInspector.ReadOnly] public WheelSeat Seat;
 
     [field: SerializeField] [field: Sirenix.OdinInspector.ReadOnly] public Vector3 WorldSpaceMoveDir { get; private set; }
 
@@ -49,7 +48,8 @@ public class PlayerController : NetworkBehaviour
     public override void OnStartLocalPlayer()
     {
         Cursor.lockState = CursorLockMode.Locked;
-        _camera = FindObjectsByType<CinemachineCamera>(FindObjectsInactive.Include, FindObjectsSortMode.None).FirstOrDefault(); //GameObject.Find doesn't work because camera is inactive
+        
+        _camera = FindAnyObjectByType<CinemachineCamera>(FindObjectsInactive.Include); //GameObject.Find doesn't work because camera is inactive
         _camera.gameObject.SetActive(true);
         _camera.Follow = transform;
         _camera.LookAt = transform;
@@ -87,13 +87,13 @@ public class PlayerController : NetworkBehaviour
             Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, Quaternion.LookRotation(WorldSpaceMoveDir, Vector3.up), Time.fixedDeltaTime * rotationSmoothingSpeed));
         }
 
-        if (_seat && _jumpPressed)
+        if (Seat && _jumpPressed)
         {
-            _seat.CmdUnsitPlayer();
-            _seat = null;
+            Seat.CmdUnsitPlayer();
+            Seat = null;
         }
 
-        if (!_seat)
+        if (!Seat)
         {
             Vector3 delta = new Vector3(WorldSpaceMoveDir.x, 0.0f, WorldSpaceMoveDir.z) * (Time.fixedDeltaTime * _moveForce);
             Rb.MovePosition(Rb.position + delta);
@@ -124,7 +124,7 @@ public class PlayerController : NetworkBehaviour
         if (!isLocalPlayer) { return; }
 
         WheelSeat newSeat = other.GetComponentInParent<WheelSeat>();
-        if (newSeat && !_seat)
+        if (newSeat && !Seat)
         {
             NetworkIdentity identity = GetComponent<NetworkIdentity>();
             newSeat.CmdTrySitPlayer(identity);
