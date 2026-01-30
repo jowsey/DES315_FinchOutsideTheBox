@@ -3,10 +3,10 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class Cart : MonoBehaviour
 {
-    private Rigidbody _rb;
+    public Rigidbody Rb { get; private set; }
 
     private void Awake()
     {
-        _rb = GetComponent<Rigidbody>();
+        Rb = GetComponent<Rigidbody>();
     }
 }
