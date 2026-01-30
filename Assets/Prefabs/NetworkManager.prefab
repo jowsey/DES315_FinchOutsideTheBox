@@ -11,8 +11,9 @@ GameObject:
   - component: {fileID: 7729652477303338305}
   - component: {fileID: 4092902593690758719}
   - component: {fileID: -4724935825846393955}
-  - component: {fileID: -5198553546801579664}
   - component: {fileID: 4736147598668487178}
+  - component: {fileID: 4706455835320552858}
+  - component: {fileID: 8025214025735236334}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -98,20 +99,6 @@ MonoBehaviour:
   maxFragments: 55
   ignoreCachedMessagesAtStartUpInSeconds: 2
   relayControl: 1
---- !u!114 &-5198553546801579664
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 529094327343222544}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: db5efa10489208a44a5e560cc56f93ed, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EOSLobbyUI
-  AttributeKeys:
-  - lobby_name
 --- !u!114 &4736147598668487178
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -138,3 +125,29 @@ MonoBehaviour:
   delayedInitialization: 0
   platformTickIntervalInSeconds: 0
   tickBudgetInMilliseconds: 0
+--- !u!114 &4706455835320552858
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 529094327343222544}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe875c761de36584ebe057dfddc7f360, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror.Transports::EOSLobby
+--- !u!114 &8025214025735236334
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 529094327343222544}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a7af265212451446a8130bf08677fb8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror.Transports::EOSLobbyHUD
+  manager: {fileID: 4092902593690758719}
+  lobbyName: My Lobby
