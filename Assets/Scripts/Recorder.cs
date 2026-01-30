@@ -6,16 +6,14 @@ using UnityEngine;
 
 public class Recorder : NetworkBehaviour
 {
-    // [ValueDropdown("@UnityEngine.Microphone.devices")]
-    // [ShowInInspector]
-    private string _device;
+    [ValueDropdown("@UnityEngine.Microphone.devices")]
+    [SerializeField] private string _device;
     [SerializeField] private int _frequency = 48000;
     [SerializeField] private AudioSource _source;
 
-    private float _samplesBufferSizeSeconds = 1.0f;
+    private float _samplesBufferSizeSeconds = 0.25f;
     
-    [SyncVar]
-    private bool _isStreaming = false;
+    private volatile bool _isStreaming = false;
 
     //Mic clip
     private AudioClip _micClip; //clip the mic will record into (loops)
@@ -23,17 +21,25 @@ public class Recorder : NetworkBehaviour
     private int _micReadPos = 0;
 
     //Samples buffer
-    [SyncVar]
     private float[] _samplesBuffer;
-    private int _samplesBufferWritePos = 0;
-    private int _samplesBufferReadPos = 0;
+    private volatile int _samplesBufferWritePos = 0;
+    private volatile int _samplesBufferReadPos = 0;
+
+    //Frame
+    private float _secondsPerFrame = 0.1f;
+    private int _samplesPerFrame;
+
+
+    void Awake()
+    {
+        _samplesBuffer = new float[(int)(_frequency * _samplesBufferSizeSeconds)];
+        _samplesPerFrame = (int)(_frequency * _secondsPerFrame);
+    }
 
 
     public void Start()
     {
         _device = Microphone.devices[0];
-
-        _samplesBuffer = new float[(int)(_frequency * _samplesBufferSizeSeconds)];
 
 
         if (isLocalPlayer)
@@ -49,6 +55,7 @@ public class Recorder : NetworkBehaviour
 
             _source.loop = true;
             _source.clip = dummy;
+            _source.spatialBlend = 0;
             _source.Play();
         }
     }
@@ -84,6 +91,7 @@ public class Recorder : NetworkBehaviour
 
     public void Update()
     {
+        if (!isLocalPlayer) { return; }
         if (!_isStreaming || !Microphone.IsRecording(_device)) { return; }
 
         int micClipSizeSamples = _micClipSizeSeconds * _frequency;
@@ -100,15 +108,15 @@ public class Recorder : NetworkBehaviour
             //Wraparound
             numAvailableSamples = micWritePos + micClipSizeSamples - _micReadPos;
         }
-        if (numAvailableSamples == 0) { return; }
+        if (numAvailableSamples < _samplesPerFrame) { return; }
 
 
-        //There are samples in the mic clip that can be copied into the samples buffer
-        float[] temp = new float[numAvailableSamples]; //todo: this triggers garbage collection, should probs preallocate
-        if (_micReadPos + numAvailableSamples <= micClipSizeSamples)
+        //There are at least _samplesPerFrame number of samples in the mic clip that can be copied into the samples buffer
+        float[] samples = new float[_samplesPerFrame]; //todo: this triggers garbage collection, should probs preallocate
+        if (_micReadPos + _samplesPerFrame <= micClipSizeSamples)
         {
             //Simple copy
-            _micClip.GetData(temp, _micReadPos);
+            _micClip.GetData(samples, _micReadPos);
         }
         else
         {
@@ -116,18 +124,34 @@ public class Recorder : NetworkBehaviour
             //Copy region spanning read pos to clip end
             float[] first = new float[micClipSizeSamples - _micReadPos];
             _micClip.GetData(first, _micReadPos);
-            System.Array.Copy(first, 0, temp, 0, first.Length);
+            System.Array.Copy(first, 0, samples, 0, first.Length);
 
             //Copy region spanning from clip start to write pos
-            float[] second = new float[micWritePos];
+            float[] second = new float[_samplesPerFrame - first.Length];
             _micClip.GetData(second, 0);
-            System.Array.Copy(second, 0, temp, 0, second.Length);
+            System.Array.Copy(second, 0, samples, first.Length, second.Length);
         }
-        _micReadPos = micWritePos;
+        _micReadPos = (_micReadPos + _samplesPerFrame) % micClipSizeSamples;
 
-        for (int i = 0; i < temp.Length; ++i)
+        CmdSendAudio(samples);
+    }
+
+
+    [Command]
+    void CmdSendAudio(float[] samples)
+    {
+        //Relay to all other clients
+        RpcReceiveAudio(samples);
+    }
+
+
+    [ClientRpc(includeOwner = false)]
+    void RpcReceiveAudio(float[] samples)
+    {
+        _isStreaming = true;
+        for (int i = 0; i < samples.Length; ++i)
         {
-            _samplesBuffer[_samplesBufferWritePos] = temp[i];
+            _samplesBuffer[_samplesBufferWritePos] = samples[i];
             _samplesBufferWritePos = (_samplesBufferWritePos + 1) % _samplesBuffer.Length;
 
             //If we're writing faster than the audio thread is reading, sacrifice the oldest unread sample by advancing the read position forward
