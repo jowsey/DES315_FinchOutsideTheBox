@@ -89,7 +89,7 @@ MonoBehaviour:
   _camera: {fileID: 0}
   _jumpForce: 250
   _moveForce: 6
-  _seat: {fileID: 0}
+  Seat: {fileID: 0}
   <WorldSpaceMoveDir>k__BackingField: {x: 0, y: 0, z: 0}
 --- !u!114 &2406511369735062858
 MonoBehaviour:
@@ -157,6 +157,7 @@ MonoBehaviour:
   syncDirection: 1
   syncMode: 0
   syncInterval: 0
+  _device: 
   _frequency: 48000
   _source: {fileID: 4479242599431745982}
 --- !u!82 &4479242599431745982
@@ -216,7 +217,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0

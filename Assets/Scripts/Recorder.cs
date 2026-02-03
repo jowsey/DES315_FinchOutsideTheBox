@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class Recorder : NetworkBehaviour
 {
+    OpusVOIP _opusVOIP;
+
     [ValueDropdown("@UnityEngine.Microphone.devices")]
     [SerializeField] private string _device;
     [SerializeField] private int _frequency = 48000;
@@ -26,14 +28,15 @@ public class Recorder : NetworkBehaviour
     private volatile int _samplesBufferReadPos = 0;
 
     //Frame
-    private float _secondsPerFrame = 0.1f;
+    private int _frameDurationMs = 20;
     private int _samplesPerFrame;
 
 
     void Awake()
     {
         _samplesBuffer = new float[(int)(_frequency * _samplesBufferSizeSeconds)];
-        _samplesPerFrame = (int)(_frequency * _secondsPerFrame);
+        _samplesPerFrame = (int)(_frequency * _frameDurationMs);
+        _opusVOIP = new OpusVOIP(24000, _frequency, 1, _frameDurationMs);
     }
 
 
@@ -55,7 +58,7 @@ public class Recorder : NetworkBehaviour
 
             _source.loop = true;
             _source.clip = dummy;
-            _source.spatialBlend = 0;
+            //_source.spatialBlend = 0;
             _source.Play();
         }
     }
@@ -124,31 +127,35 @@ public class Recorder : NetworkBehaviour
             //Copy region spanning read pos to clip end
             float[] first = new float[micClipSizeSamples - _micReadPos];
             _micClip.GetData(first, _micReadPos);
-            System.Array.Copy(first, 0, samples, 0, first.Length);
+            Array.Copy(first, 0, samples, 0, first.Length);
 
             //Copy region spanning from clip start to write pos
             float[] second = new float[_samplesPerFrame - first.Length];
             _micClip.GetData(second, 0);
-            System.Array.Copy(second, 0, samples, first.Length, second.Length);
+            Array.Copy(second, 0, samples, first.Length, second.Length);
         }
         _micReadPos = (_micReadPos + _samplesPerFrame) % micClipSizeSamples;
 
-        CmdSendAudio(samples);
+        byte[] opusFrame = _opusVOIP.Encode(samples);
+        CmdSendAudio(opusFrame);
     }
 
 
     [Command]
-    void CmdSendAudio(float[] samples)
+    void CmdSendAudio(byte[] opusFrame)
     {
         //Relay to all other clients
-        RpcReceiveAudio(samples);
+        RpcReceiveAudio(opusFrame);
     }
 
 
     [ClientRpc(includeOwner = false)]
-    void RpcReceiveAudio(float[] samples)
+    void RpcReceiveAudio(byte[] opusFrame)
     {
         _isStreaming = true;
+
+        float[] samples = _opusVOIP.Decode(opusFrame);
+
         for (int i = 0; i < samples.Length; ++i)
         {
             _samplesBuffer[_samplesBufferWritePos] = samples[i];
