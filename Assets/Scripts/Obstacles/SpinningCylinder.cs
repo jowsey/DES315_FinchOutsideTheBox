@@ -7,10 +7,18 @@ public class SpinningCylinder : NetworkBehaviour
     [SuffixLabel("deg/s")]
     [SerializeField] private float _spinSpeed;
 
-    void Update()
+    private Rigidbody rb;
+
+    private void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
+
+    void FixedUpdate()
     {
         if (!isServer) { return; }
 
-        transform.Rotate(0, _spinSpeed * Time.deltaTime, 0);
+        Quaternion turnOffset = Quaternion.Euler(0, _spinSpeed * Time.fixedDeltaTime, 0);
+        rb.MoveRotation(rb.rotation * turnOffset);
     }
 }
