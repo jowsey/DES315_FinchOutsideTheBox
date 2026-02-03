@@ -35,7 +35,7 @@ public class Recorder : NetworkBehaviour
     void Awake()
     {
         _samplesBuffer = new float[(int)(_frequency * _samplesBufferSizeSeconds)];
-        _samplesPerFrame = (int)(_frequency * _frameDurationMs);
+        _samplesPerFrame = (int)(_frequency * (_frameDurationMs / 1000.0f));
         _opusVOIP = new OpusVOIP(24000, _frequency, 1, _frameDurationMs);
     }
 
