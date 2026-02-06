@@ -18,8 +18,10 @@ namespace EpicTransport {
 
         public static Server CreateServer(EosTransport transport, int maxConnections) {
             Server s = new Server(transport, maxConnections);
-
+            
+#pragma warning disable CS0618 // Type or member is obsolete
             s.OnConnected += (id) => transport.OnServerConnected.Invoke(id);
+#pragma warning restore CS0618 // Type or member is obsolete
             s.OnDisconnected += (id) => transport.OnServerDisconnected.Invoke(id);
             s.OnReceivedData += (id, data, channel) => transport.OnServerDataReceived.Invoke(id, new ArraySegment<byte>(data), channel);
             s.OnReceivedError += (id, exception) => transport.OnServerError.Invoke(id, Mirror.TransportError.InvalidReceive, exception.Message);
