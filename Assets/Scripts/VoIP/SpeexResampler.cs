@@ -33,10 +33,9 @@ namespace VoIP
         }
         
         // Resample a frame, writing to the provided buffer
-        public int Resample(float[] input, float[] output)
+        public int Resample(float[] input, int inputLength, float[] output)
         {
-            // todo reuse buffers
-            var inLen = (uint)input.Length;
+            var inLen = (uint)inputLength;
             var outLen = (uint)output.Length;
             
             var err = SpeexResamplerInterop.speex_resampler_process_float(_state, 0, input, ref inLen, output, ref outLen);
