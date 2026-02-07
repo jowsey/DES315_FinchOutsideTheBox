@@ -9,7 +9,7 @@ namespace VoIP
         public const int FrameSize = 960;
         public const int MaxPacketSize = 1275;
         public const int Bitrate = 24000;
-        
+
         private readonly IOpusEncoder _opusEncoder;
         private readonly IOpusDecoder _opusDecoder;
 
@@ -18,37 +18,43 @@ namespace VoIP
             _opusEncoder = OpusCodecFactory.CreateEncoder(VoipClient.SampleRate, 1, OpusApplication.OPUS_APPLICATION_VOIP);
             _opusEncoder.Bitrate = Bitrate;
             _opusEncoder.Complexity = 5;
-            _opusEncoder.UseInbandFEC = false; //true requires bitrate < 40kbps
-            _opusEncoder.PacketLossPercent = 15; //not used unless above is true
+            // _opusEncoder.UseDTX = true; //todo look into - auto-detects and removes silence
+            // _opusEncoder.UseInbandFEC = false; //todo look into - error correction, requires bitrate < 40kbps
+            // _opusEncoder.PacketLossPercent = 15; //todo look into - hint, not used unless above is true
 
             _opusDecoder = OpusCodecFactory.CreateDecoder(VoipClient.SampleRate, 1);
         }
 
-
-        public byte[] Encode(float[] pcmFrame)
+        /**
+         * Encode a frame of PCM into the output buffer, returning the number of bytes written
+         * Ensure pcmFrame is FrameSize samples, and outputBuffer is MaxPacketSize bytes
+         */
+        public int Encode(Span<float> pcmFrame, byte[] outputBuffer)
         {
-            byte[] temp = new byte[MaxPacketSize]; // todo change these to be caller allocated so we can use arraypool
-            int len = _opusEncoder.Encode(pcmFrame, FrameSize, temp, temp.Length);
-            byte[] output = new byte[len];
-            Array.Copy(temp, output, len);
-            return output;
+            return _opusEncoder.Encode(pcmFrame, FrameSize, outputBuffer, MaxPacketSize);
         }
 
-
-        public float[] Decode(byte[] opusFrame)
+        /**
+         * Decode an Opus packet into the output buffer, returning the number of samples written
+         * Ensure outputBuffer is FrameSize samples
+         */
+        public int Decode(ReadOnlySpan<byte> opusPacket, float[] outputBuffer)
         {
-            float[] output = new float[FrameSize]; // todo see above
-            int len = _opusDecoder.Decode(opusFrame, output, FrameSize);
-            return output;
+            return _opusDecoder.Decode(opusPacket, outputBuffer, FrameSize);
         }
+
+        // todo use
+        // public float[] DecodePLC()
+        // {
+        //     float[] output = new float[FrameSize];
+        //     _opusDecoder.Decode(null, output, FrameSize, true);
+        //     return output;
+        // }
         
-
-        public float[] DecodePLC()
+        public void ResetDecoderState()
         {
-            float[] output = new float[FrameSize];
-            _opusDecoder.Decode(null, output, FrameSize, true);
-            return output;
-        }
+            _opusDecoder.ResetState();
+        }   
 
         public void Dispose()
         {
