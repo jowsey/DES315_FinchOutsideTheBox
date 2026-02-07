@@ -206,13 +206,13 @@ namespace VoIP
             {
                 int resampledSize = _resampler.GetResampledSize(OpusProcessor.FrameSize);
                 float[] resampled = ArrayPool<float>.Shared.Rent(resampledSize);
-                int newSampleCount = _resampler.Resample(samples, resampledSize, resampled);
+                int newSampleCount = _resampler.Resample(samples, OpusProcessor.FrameSize, resampled);
                 _receiveBuffer.Write(resampled, newSampleCount);
                 ArrayPool<float>.Shared.Return(resampled);
             }
             else
             {
-                _receiveBuffer.Write(samples);
+                _receiveBuffer.Write(samples, OpusProcessor.FrameSize);
             }
             
             ArrayPool<float>.Shared.Return(samples);
