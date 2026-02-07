@@ -75,16 +75,17 @@ namespace VoIP
             }
             else
             {
-                Debug.Log($"Speaker sample rate: {AudioSettings.outputSampleRate}");
+                int outputRate = AudioSettings.outputSampleRate;
 
-                if (AudioSettings.outputSampleRate != SampleRate)
+                Debug.Log($"Speaker sample rate: {outputRate}");
+                if (outputRate != SampleRate)
                 {
-                    _resampler = new SpeexResampler(SampleRate, (uint)AudioSettings.outputSampleRate);
-                    Debug.Log($"Received audio will be resampled from {SampleRate / 1000f}kHz to {AudioSettings.outputSampleRate / 1000f}kHz.");
+                    _resampler = new SpeexResampler(SampleRate, (uint)outputRate);
+                    Debug.Log($"Received audio will be resampled from {SampleRate / 1000f}kHz to {outputRate / 1000f}kHz.");
                 }
 
                 //To initiate OnAudioFilterRead()
-                AudioClip clip = AudioClip.Create("VoIP Playback", SampleRate, 1, SampleRate, false);
+                AudioClip clip = AudioClip.Create("VoIP Playback", SampleRate, 1, outputRate, false);
                 float[] silence = new float[SampleRate];
                 clip.SetData(silence, 0); // todo necessary?
 
