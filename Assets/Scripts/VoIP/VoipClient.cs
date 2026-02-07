@@ -27,7 +27,7 @@ namespace VoIP
         private int _micClipLengthSeconds = 5;
         private int _micReadPos;
         private int _micSampleRate;
-        
+
         private bool _isRecording;
         private volatile bool _playbackActive;
 
@@ -36,7 +36,7 @@ namespace VoIP
 
         //Buffer for incoming decoded audio samples
         private readonly RingBuffer<float> _receiveBuffer = new(SampleRate);
-        
+
         public void Start()
         {
             if (isLocalPlayer)
@@ -78,6 +78,8 @@ namespace VoIP
                 int outputRate = AudioSettings.outputSampleRate;
 
                 Debug.Log($"Speaker sample rate: {outputRate}");
+
+
                 if (outputRate != SampleRate)
                 {
                     _resampler = new SpeexResampler(SampleRate, (uint)outputRate);
@@ -140,12 +142,12 @@ namespace VoIP
             if (!isLocalPlayer || !_isRecording || !Microphone.IsRecording(_device)) return;
 
             int micWritePos = Microphone.GetPosition(_device);
-            
+
             if (!_pushToTalkAction.action.IsPressed())
             {
                 _micReadPos = micWritePos;
                 _accumulationBuffer.Clear();
-                return; 
+                return;
             }
 
             //Get available samples
@@ -154,7 +156,7 @@ namespace VoIP
                 : micWritePos + _micClip.samples - _micReadPos; //wraparound
 
             if (numAvailableSamples <= 0) return;
-            
+
             //Copy new samples into resampled buffer
             float[] micSamples = ArrayPool<float>.Shared.Rent(numAvailableSamples);
             _micClip.GetData(micSamples.AsSpan(0, numAvailableSamples), _micReadPos);
@@ -178,13 +180,13 @@ namespace VoIP
             {
                 float[] pcmBuffer = ArrayPool<float>.Shared.Rent(OpusProcessor.FrameSize);
                 _accumulationBuffer.ReadInto(pcmBuffer, OpusProcessor.FrameSize);
-                
+
                 byte[] opusPacket = ArrayPool<byte>.Shared.Rent(OpusProcessor.MaxPacketSize);
                 int packetSize = _opus.Encode(pcmBuffer, opusPacket);
-                
+
                 var packetSegment = new ArraySegment<byte>(opusPacket, 0, packetSize);
                 CmdSendAudio(packetSegment);
-                
+
                 ArrayPool<float>.Shared.Return(pcmBuffer);
                 ArrayPool<byte>.Shared.Return(opusPacket);
             }
@@ -214,7 +216,7 @@ namespace VoIP
             {
                 _receiveBuffer.Write(samples, OpusProcessor.FrameSize);
             }
-            
+
             ArrayPool<float>.Shared.Return(samples);
         }
 
@@ -231,7 +233,7 @@ namespace VoIP
                 {
                     return;
                 }
-                
+
                 _playbackActive = true;
             }
 
@@ -241,7 +243,7 @@ namespace VoIP
                 // _opus.ResetDecoderState(); // todo test difference with/without
                 return;
             }
-            
+
             float[] samples = ArrayPool<float>.Shared.Rent(samplesNeeded);
             int samplesRead = _receiveBuffer.ReadInto(samples, samplesNeeded);
 
