@@ -50,11 +50,11 @@ namespace VoIP
         //     _opusDecoder.Decode(null, output, FrameSize, true);
         //     return output;
         // }
-        
+
         public void ResetDecoderState()
         {
             _opusDecoder.ResetState();
-        }   
+        }
 
         public void Dispose()
         {
