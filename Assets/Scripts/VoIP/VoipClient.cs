@@ -74,7 +74,7 @@ namespace VoIP
             else
             {
                 Debug.Log($"Speaker sample rate: {AudioSettings.outputSampleRate}");
-                
+
                 if (AudioSettings.outputSampleRate != SampleRate)
                 {
                     _resampler = new SpeexResampler(SampleRate, (uint)AudioSettings.outputSampleRate);
@@ -172,14 +172,15 @@ namespace VoIP
 
             ArrayPool<float>.Shared.Return(micSamples);
 
-            if (_accumulationBuffer.Available < OpusProcessor.FrameSize) return;
+            while (_accumulationBuffer.Available >= OpusProcessor.FrameSize)
+            {
+                float[] frameBuffer = ArrayPool<float>.Shared.Rent(OpusProcessor.FrameSize);
+                _accumulationBuffer.ReadInto(frameBuffer, OpusProcessor.FrameSize);
+                byte[] opusFrame = _opus.Encode(frameBuffer);
+                ArrayPool<float>.Shared.Return(frameBuffer);
 
-            float[] frameBuffer = ArrayPool<float>.Shared.Rent(OpusProcessor.FrameSize);
-            _accumulationBuffer.ReadInto(frameBuffer, OpusProcessor.FrameSize);
-            byte[] opusFrame = _opus.Encode(frameBuffer);
-            ArrayPool<float>.Shared.Return(frameBuffer);
-
-            CmdSendAudio(opusFrame);
+                CmdSendAudio(opusFrame);
+            }
         }
 
         [Command(channel = Channels.Unreliable)]
