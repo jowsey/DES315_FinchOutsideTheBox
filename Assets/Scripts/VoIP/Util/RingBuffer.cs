@@ -67,5 +67,14 @@ namespace VOIP.Util
                 return itemsRead;
             }
         }
+
+        public void Clear()
+        {
+            lock (_lock)
+            {
+                _readPos = 0;
+                _writePos = 0;
+            }
+        }
     }
 }
