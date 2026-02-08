@@ -13,6 +13,7 @@ namespace VoIP
     {
         public const int SampleRate = 48000;
         public const int JitterBufferSamples = OpusProcessor.FrameSize * 3;
+        public const int MaxPlcFrames = 3;
 
         private readonly OpusProcessor _opus = new();
         [CanBeNull] private SpeexResampler _resampler;
@@ -37,6 +38,8 @@ namespace VoIP
 
         //Buffer for incoming decoded audio samples
         private readonly RingBuffer<float> _receiveBuffer = new(SampleRate);
+
+        private int _plcFramesGenerated;
 
         private readonly float[] _denoiseBuffer = new float[RnNoiseProcessor.FrameSize];
         private readonly float[] _opusFrameBuffer = new float[OpusProcessor.FrameSize];
@@ -145,12 +148,18 @@ namespace VoIP
 
             int micWritePos = Microphone.GetPosition(_device);
 
-            if (_usePushToTalk && !_pushToTalkAction.action.IsPressed())
+            if (_usePushToTalk)
             {
-                _micReadPos = micWritePos;
-                _accumulationBuffer.Clear();
-                _opus.ResetEncoderState();
-                return;
+                //Do nothing if PTT inactive
+                if (!_pushToTalkAction.action.IsPressed()) return;
+
+                //When starting a new PTT block, reset reading state
+                if (_pushToTalkAction.action.WasPressedThisFrame())
+                {
+                    _micReadPos = micWritePos;
+                    _accumulationBuffer.Clear();
+                    _opus.ResetEncoderState();
+                }
             }
 
             //Get available samples
@@ -183,12 +192,12 @@ namespace VoIP
             {
                 // 0-10ms
                 _accumulationBuffer.ReadInto(_denoiseBuffer, RnNoiseProcessor.FrameSize);
-                _denoiser.ProcessFrame(_denoiseBuffer, _denoiseBuffer);
+                _denoiser?.ProcessFrame(_denoiseBuffer, _denoiseBuffer);
                 Array.Copy(_denoiseBuffer, _opusFrameBuffer, RnNoiseProcessor.FrameSize);
 
                 // 10-20ms
                 _accumulationBuffer.ReadInto(_denoiseBuffer, RnNoiseProcessor.FrameSize);
-                _denoiser.ProcessFrame(_denoiseBuffer, _denoiseBuffer);
+                _denoiser?.ProcessFrame(_denoiseBuffer, _denoiseBuffer);
                 Array.Copy(_denoiseBuffer, 0, _opusFrameBuffer, RnNoiseProcessor.FrameSize, RnNoiseProcessor.FrameSize);
 
                 int packetSize = _opus.Encode(_opusFrameBuffer, _opusPacketBuffer);
@@ -207,6 +216,8 @@ namespace VoIP
         [ClientRpc(channel = Channels.Unreliable, includeOwner = false)]
         void RpcReceiveAudio(ArraySegment<byte> opusPacket)
         {
+            _plcFramesGenerated = 0;
+
             _opus.Decode(opusPacket, _opusFrameBuffer);
 
             if (_resampler != null)
@@ -225,13 +236,15 @@ namespace VoIP
         void OnAudioFilterRead(float[] data, int channels)
         {
             if (isLocalPlayer) return;
-
-            int samplesAvailable = _receiveBuffer.Available;
-            int samplesNeeded = data.Length / channels;
+            
+            //Clear entire buffer in case of gaps
+            Array.Clear(data, 0, data.Length);
+            
+            int samplesRequested = data.Length / channels;
 
             if (!_playbackActive)
             {
-                if (samplesAvailable < JitterBufferSamples)
+                if (_receiveBuffer.Available < JitterBufferSamples)
                 {
                     return;
                 }
@@ -239,15 +252,37 @@ namespace VoIP
                 _playbackActive = true;
             }
 
-            if (samplesAvailable == 0)
+            //Generate PLC frames to fill in gaps if necessary
+            while (_receiveBuffer.Available < samplesRequested && _plcFramesGenerated < MaxPlcFrames)
+            {
+                _opus.Decode(null, _opusFrameBuffer);
+                _plcFramesGenerated++;
+
+                // todo make reusable "resample or write" method
+                if (_resampler != null)
+                {
+                    float[] resampled = ArrayPool<float>.Shared.Rent(_resampler.GetResampledSize(OpusProcessor.FrameSize));
+                    int newSampleCount = _resampler.Resample(_opusFrameBuffer, OpusProcessor.FrameSize, resampled);
+                    _receiveBuffer.Write(resampled, newSampleCount);
+                    ArrayPool<float>.Shared.Return(resampled);
+                }
+                else
+                {
+                    _receiveBuffer.Write(_opusFrameBuffer, OpusProcessor.FrameSize);
+                }
+            }
+
+            if (_receiveBuffer.Available == 0)
             {
                 _playbackActive = false;
                 _opus.ResetDecoderState();
+                _plcFramesGenerated = 0;
                 return;
             }
 
-            float[] samples = ArrayPool<float>.Shared.Rent(samplesNeeded); // todo i think samplesNeeded is consistent per output device, could pre-allocate if/when device changes
-            int samplesRead = _receiveBuffer.ReadInto(samples, samplesNeeded);
+            // todo i think samplesNeeded is consistent per output device, could pre-allocate if/when device changes
+            float[] samples = ArrayPool<float>.Shared.Rent(samplesRequested);
+            int samplesRead = _receiveBuffer.ReadInto(samples, samplesRequested);
 
             //Copy samples into data, duplicating for each channel
             for (int s = 0; s < samplesRead; s++)
