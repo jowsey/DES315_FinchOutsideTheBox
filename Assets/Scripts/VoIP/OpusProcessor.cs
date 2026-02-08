@@ -18,9 +18,6 @@ namespace VoIP
             _opusEncoder = OpusCodecFactory.CreateEncoder(VoipClient.SampleRate, 1, OpusApplication.OPUS_APPLICATION_VOIP);
             _opusEncoder.Bitrate = Bitrate;
             _opusEncoder.Complexity = 5;
-            // _opusEncoder.UseDTX = true; //todo look into - auto-detects and removes silence
-            // _opusEncoder.UseInbandFEC = false; //todo look into - error correction, requires bitrate < 40kbps
-            // _opusEncoder.PacketLossPercent = 15; //todo look into - hint, not used unless above is true
 
             _opusDecoder = OpusCodecFactory.CreateDecoder(VoipClient.SampleRate, 1);
         }
