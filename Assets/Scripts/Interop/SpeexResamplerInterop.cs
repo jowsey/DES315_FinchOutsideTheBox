@@ -31,20 +31,6 @@ namespace Interop
         );
 
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int speex_resampler_set_rate(
-            IntPtr state,
-            uint inRate,
-            uint outRate
-        );
-
-        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        public static extern void speex_resampler_get_ratio(
-            IntPtr state,
-            out uint numRate,
-            out uint denRate
-        );
-
-        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
         public static extern int speex_resampler_skip_zeros(IntPtr state);
 
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
