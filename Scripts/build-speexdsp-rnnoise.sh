@@ -15,7 +15,7 @@ cp .libs/librnnoise.dylib ../out/osx-arm64/
 make clean
 
 # RNNoise Windows
-./configure --host=x86_64-w64-mingw32 --disable-static --disable-examples --disable-doc
+./configure --host=x86_64-w64-mingw32 --disable-static --disable-examples --disable-doc --enable-x86-rtcd
 make -j$(sysctl -n hw.ncpu)
 cp .libs/librnnoise-0.dll ../out/win-x64/rnnoise.dll
 cd ..
@@ -32,7 +32,7 @@ cp libspeexdsp/.libs/libspeexdsp.dylib ../out/osx-arm64/
 make clean
 
 # SpeexDSP Windows
-./configure --host=x86_64-w64-mingw32 --disable-static
+./configure --host=x86_64-w64-mingw32 --disable-static --enable-sse
 make -j$(sysctl -n hw.ncpu)
 cp libspeexdsp/.libs/libspeexdsp-1.dll ../out/win-x64/speexdsp.dll
 cd ..
