@@ -48,6 +48,17 @@ namespace VoIP
         //     return output;
         // }
 
+        /**
+         * Flush the encoder state, such that the next encoded packet will not be based on the previous frame
+         */
+        public void ResetEncoderState()
+        {
+            _opusEncoder.ResetState();
+        }
+
+        /**
+         * Flush the decoder state, such that the next decoded packet will not be based on the previous frame
+         */
         public void ResetDecoderState()
         {
             _opusDecoder.ResetState();
