@@ -12,7 +12,7 @@ namespace VoIP
     public class VoipClient : NetworkBehaviour
     {
         public const int SampleRate = 48000;
-        public const int JitterBufferSamples = OpusProcessor.FrameSize * 2;
+        public const int JitterBufferSamples = OpusProcessor.FrameSize * 3;
 
         private readonly OpusProcessor _opus = new();
         [CanBeNull] private SpeexResampler _resampler;
@@ -24,7 +24,6 @@ namespace VoIP
 
         //Mic clip
         private AudioClip _micClip; //clip the mic will record into (loops)
-        private int _micClipLengthSeconds = 5;
         private int _micReadPos;
         private int _micSampleRate;
 
@@ -76,9 +75,7 @@ namespace VoIP
             else
             {
                 int outputRate = AudioSettings.outputSampleRate;
-
                 Debug.Log($"Speaker sample rate: {outputRate}");
-
 
                 if (outputRate != SampleRate)
                 {
@@ -88,8 +85,6 @@ namespace VoIP
 
                 //To initiate OnAudioFilterRead()
                 AudioClip clip = AudioClip.Create("VoIP Playback", SampleRate, 1, outputRate, false);
-                float[] silence = new float[SampleRate];
-                clip.SetData(silence, 0); // todo necessary?
 
                 _source.clip = clip;
                 _source.loop = true;
@@ -110,7 +105,7 @@ namespace VoIP
             if (_isRecording || Microphone.IsRecording(_device)) return;
             _isRecording = true;
 
-            _micClip = Microphone.Start(_device, true, _micClipLengthSeconds, _micSampleRate);
+            _micClip = Microphone.Start(_device, true, 1, _micSampleRate);
 
             if (!_micClip)
             {
