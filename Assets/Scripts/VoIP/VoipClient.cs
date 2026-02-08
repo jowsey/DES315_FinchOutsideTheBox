@@ -83,8 +83,6 @@ namespace VoIP
             else
             {
                 int outputRate = AudioSettings.outputSampleRate;
-                Debug.Log($"Speaker sample rate: {outputRate}");
-
                 if (outputRate != SampleRate)
                 {
                     _resampler = new SpeexResampler(SampleRate, (uint)outputRate);
