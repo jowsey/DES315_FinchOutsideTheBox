@@ -14,8 +14,9 @@ namespace VoIP
         public const int SampleRate = 48000;
         public const int JitterBufferSamples = OpusProcessor.FrameSize * 3;
 
-        private readonly OpusProcessor _opus = new();
         [CanBeNull] private SpeexResampler _resampler;
+        private readonly RnNoiseProcessor _denoiser = new();
+        private readonly OpusProcessor _opus = new();
 
         [SerializeField] private string _device; // todo user chooses at runtime, save to file
         [SerializeField] private AudioSource _source;
@@ -36,6 +37,10 @@ namespace VoIP
 
         //Buffer for incoming decoded audio samples
         private readonly RingBuffer<float> _receiveBuffer = new(SampleRate);
+
+        private readonly float[] _denoiseBuffer = new float[RnNoiseProcessor.FrameSize];
+        private readonly float[] _opusFrameBuffer = new float[OpusProcessor.FrameSize];
+        private readonly byte[] _opusPacketBuffer = new byte[OpusProcessor.MaxPacketSize];
 
         public void Start()
         {
@@ -136,13 +141,14 @@ namespace VoIP
         public void Update()
         {
             if (!isLocalPlayer || !_isRecording || !Microphone.IsRecording(_device)) return;
-            
+
             int micWritePos = Microphone.GetPosition(_device);
 
             if (_usePushToTalk && !_pushToTalkAction.action.IsPressed())
             {
                 _micReadPos = micWritePos;
                 _accumulationBuffer.Clear();
+                _opus.ResetEncoderState();
                 return;
             }
 
@@ -174,17 +180,20 @@ namespace VoIP
 
             while (_accumulationBuffer.Available >= OpusProcessor.FrameSize)
             {
-                float[] pcmBuffer = ArrayPool<float>.Shared.Rent(OpusProcessor.FrameSize);
-                _accumulationBuffer.ReadInto(pcmBuffer, OpusProcessor.FrameSize);
+                // 0-10ms
+                _accumulationBuffer.ReadInto(_denoiseBuffer, RnNoiseProcessor.FrameSize);
+                _denoiser.ProcessFrame(_denoiseBuffer, _denoiseBuffer);
+                Array.Copy(_denoiseBuffer, _opusFrameBuffer, RnNoiseProcessor.FrameSize);
 
-                byte[] opusPacket = ArrayPool<byte>.Shared.Rent(OpusProcessor.MaxPacketSize);
-                int packetSize = _opus.Encode(pcmBuffer, opusPacket);
+                // 10-20ms
+                _accumulationBuffer.ReadInto(_denoiseBuffer, RnNoiseProcessor.FrameSize);
+                _denoiser.ProcessFrame(_denoiseBuffer, _denoiseBuffer);
+                Array.Copy(_denoiseBuffer, 0, _opusFrameBuffer, RnNoiseProcessor.FrameSize, RnNoiseProcessor.FrameSize);
 
-                var packetSegment = new ArraySegment<byte>(opusPacket, 0, packetSize);
+                int packetSize = _opus.Encode(_opusFrameBuffer, _opusPacketBuffer);
+
+                var packetSegment = new ArraySegment<byte>(_opusPacketBuffer, 0, packetSize);
                 CmdSendAudio(packetSegment);
-
-                ArrayPool<float>.Shared.Return(pcmBuffer);
-                ArrayPool<byte>.Shared.Return(opusPacket);
             }
         }
 
@@ -197,23 +206,19 @@ namespace VoIP
         [ClientRpc(channel = Channels.Unreliable, includeOwner = false)]
         void RpcReceiveAudio(ArraySegment<byte> opusPacket)
         {
-            float[] samples = ArrayPool<float>.Shared.Rent(OpusProcessor.FrameSize);
-            _opus.Decode(opusPacket, samples);
+            _opus.Decode(opusPacket, _opusFrameBuffer);
 
             if (_resampler != null)
             {
-                int resampledSize = _resampler.GetResampledSize(OpusProcessor.FrameSize);
-                float[] resampled = ArrayPool<float>.Shared.Rent(resampledSize);
-                int newSampleCount = _resampler.Resample(samples, OpusProcessor.FrameSize, resampled);
+                float[] resampled = ArrayPool<float>.Shared.Rent(_resampler.GetResampledSize(OpusProcessor.FrameSize));
+                int newSampleCount = _resampler.Resample(_opusFrameBuffer, OpusProcessor.FrameSize, resampled);
                 _receiveBuffer.Write(resampled, newSampleCount);
                 ArrayPool<float>.Shared.Return(resampled);
             }
             else
             {
-                _receiveBuffer.Write(samples, OpusProcessor.FrameSize);
+                _receiveBuffer.Write(_opusFrameBuffer, OpusProcessor.FrameSize);
             }
-
-            ArrayPool<float>.Shared.Return(samples);
         }
 
         void OnAudioFilterRead(float[] data, int channels)
@@ -236,11 +241,11 @@ namespace VoIP
             if (samplesAvailable == 0)
             {
                 _playbackActive = false;
-                // _opus.ResetDecoderState(); // todo test difference with/without
+                _opus.ResetDecoderState();
                 return;
             }
 
-            float[] samples = ArrayPool<float>.Shared.Rent(samplesNeeded);
+            float[] samples = ArrayPool<float>.Shared.Rent(samplesNeeded); // todo i think samplesNeeded is consistent per output device, could pre-allocate if/when device changes
             int samplesRead = _receiveBuffer.ReadInto(samples, samplesNeeded);
 
             //Copy samples into data, duplicating for each channel
