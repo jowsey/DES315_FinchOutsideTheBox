@@ -33,20 +33,13 @@ namespace VoIP
 
         /**
          * Decode an Opus packet into the output buffer, returning the number of samples written
+         * Pass an empty span for PLC
          * Ensure outputBuffer is FrameSize samples
          */
         public int Decode(ReadOnlySpan<byte> opusPacket, float[] outputBuffer)
         {
             return _opusDecoder.Decode(opusPacket, outputBuffer, FrameSize);
         }
-
-        // todo use
-        // public float[] DecodePLC()
-        // {
-        //     float[] output = new float[FrameSize];
-        //     _opusDecoder.Decode(null, output, FrameSize, true);
-        //     return output;
-        // }
 
         /**
          * Flush the encoder state, such that the next encoded packet will not be based on the previous frame
