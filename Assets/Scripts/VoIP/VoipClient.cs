@@ -14,9 +14,9 @@ namespace VoIP
         public const int SampleRate = 48000;
         public const int JitterBufferSamples = OpusProcessor.FrameSize * 3;
 
-        [CanBeNull] private SpeexResampler _resampler;
-        private readonly RnNoiseProcessor _denoiser = new();
         private readonly OpusProcessor _opus = new();
+        [CanBeNull] private SpeexResampler _resampler;
+        [CanBeNull] private RnNoiseProcessor _denoiser;
 
         [SerializeField] private string _device; // todo user chooses at runtime, save to file
         [SerializeField] private AudioSource _source;
@@ -76,6 +76,8 @@ namespace VoIP
                     Debug.Log($"Mic will be resampled from {maxFreq / 1000f}kHz to {SampleRate / 1000}kHz.");
                 }
 
+                _denoiser = new RnNoiseProcessor();
+
                 StartMic();
             }
             else
@@ -102,8 +104,9 @@ namespace VoIP
         {
             StopMic();
 
-            _opus?.Dispose();
             _resampler?.Dispose();
+            _denoiser?.Dispose();
+            _opus?.Dispose();
         }
 
         public void StartMic()
