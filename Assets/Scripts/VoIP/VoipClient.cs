@@ -20,6 +20,7 @@ namespace VoIP
         [SerializeField] private string _device; // todo user chooses at runtime, save to file
         [SerializeField] private AudioSource _source;
 
+        [SerializeField] private bool _usePushToTalk;
         [SerializeField] private InputActionReference _pushToTalkAction;
 
         //Mic clip
@@ -135,10 +136,10 @@ namespace VoIP
         public void Update()
         {
             if (!isLocalPlayer || !_isRecording || !Microphone.IsRecording(_device)) return;
-
+            
             int micWritePos = Microphone.GetPosition(_device);
 
-            if (!_pushToTalkAction.action.IsPressed())
+            if (_usePushToTalk && !_pushToTalkAction.action.IsPressed())
             {
                 _micReadPos = micWritePos;
                 _accumulationBuffer.Clear();
