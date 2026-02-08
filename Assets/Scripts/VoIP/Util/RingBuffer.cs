@@ -1,4 +1,4 @@
-namespace VOIP.Util
+namespace VoIP.Util
 {
     public class RingBuffer<T>
     {

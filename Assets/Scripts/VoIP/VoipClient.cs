@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 using Mirror;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using VOIP.Util;
+using VoIP.Util;
 
 namespace VoIP
 {
