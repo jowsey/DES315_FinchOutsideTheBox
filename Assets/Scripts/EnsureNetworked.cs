@@ -1,13 +1,14 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class Game : MonoBehaviour
+public class EnsureNetworked : MonoBehaviour
 {
-    void Awake()
+    private void Awake()
     {
         if (!FindAnyObjectByType<Mirror.NetworkManager>())
         {
             SceneManager.LoadScene("GameList");
+            Cursor.lockState = CursorLockMode.None; // overwrite just to be sure
         }
     }
 }
