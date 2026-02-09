@@ -2,7 +2,7 @@ using Mirror;
 using UnityEngine;
 using Sirenix.OdinInspector;
 
-public class SpinningCylinder : NetworkBehaviour
+public class SpinningCylinder : MonoBehaviour
 {
     [SuffixLabel("deg/s")]
     [SerializeField] private float _spinSpeed;
