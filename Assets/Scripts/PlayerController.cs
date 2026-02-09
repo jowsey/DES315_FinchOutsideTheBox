@@ -1,5 +1,4 @@
 using Mirror;
-using System.Linq;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -9,7 +8,6 @@ public class PlayerController : NetworkBehaviour
 {
     [Header("Components")]
     public Rigidbody Rb { get; private set; }
-
 
     [Header("Input")]
     [SerializeField] private InputActionReference _moveAction;
@@ -25,7 +23,7 @@ public class PlayerController : NetworkBehaviour
 
 
     [Header("Camera")]
-    [SerializeField] [Sirenix.OdinInspector.ReadOnly] private CinemachineCamera _camera;
+    [SerializeField] [ReadOnly] private CinemachineCamera _camera;
 
 
     [Header("Movement")]
@@ -36,9 +34,9 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private float _moveForce = 6f;
 
     [Header("State")]
-    [Sirenix.OdinInspector.ReadOnly] public WheelSeat Seat;
+    [ReadOnly] public WheelSeat Seat;
 
-    [field: SerializeField] [field: Sirenix.OdinInspector.ReadOnly] public Vector3 WorldSpaceMoveDir { get; private set; }
+    [field: SerializeField] [field: ReadOnly] public Vector3 WorldSpaceMoveDir { get; private set; }
 
     private void Awake()
     {
