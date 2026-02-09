@@ -8,7 +8,9 @@ public class MovingPlatform : NetworkBehaviour
     private Rigidbody _rb;
     private SplineContainer _container;
 
+    [SyncVar]
     private float _t = 0;
+
     [SerializeField] private float _duration;
 
 
@@ -21,8 +23,6 @@ public class MovingPlatform : NetworkBehaviour
 
     void FixedUpdate()
     {
-        if (!isServer) { return; }
-
         Vector3 localPos = _container.Splines[0].EvaluatePosition(_t);
         Vector3 worldPos = _container.transform.TransformPoint(localPos);
         _rb.MovePosition(worldPos);
