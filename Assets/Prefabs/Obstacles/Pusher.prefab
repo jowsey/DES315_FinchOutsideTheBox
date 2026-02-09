@@ -159,6 +159,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f86925f69ff797449be1508c927e7b04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  syncMethod: 0
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
@@ -177,27 +178,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f63ea2e505fd484193fb31c5c55ca73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Mirror.Components::Mirror.NetworkTransformHybrid
-  syncDirection: 1
+  syncMethod: 1
+  syncDirection: 0
   syncMode: 0
   syncInterval: 0.033333335
-  baselineRate: 1
-  unreliableRedundancy: 0
-  baselineIsDelta: 1
-  debugLog: 0
-  useFixedUpdate: 0
   target: {fileID: 6246028609631114136}
-  bufferSizeLimit: 64
-  sendRate: 30
-  positionSensitivity: 0.01
-  rotationSensitivity: 0.01
-  scaleSensitivity: 0.01
+  updateMethod: 0
   syncPosition: 1
   syncRotation: 1
   syncScale: 1
-  debugDraw: 0
+  onlySyncOnChange: 1
+  compressRotation: 1
+  interpolatePosition: 1
+  interpolateRotation: 1
+  interpolateScale: 1
+  coordinateSpace: 0
+  timelineOffset: 1
   showGizmos: 0
   showOverlay: 0
   overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+  onlySyncOnChangeCorrectionMultiplier: 2
+  rotationSensitivity: 0.01
+  positionPrecision: 0.01
+  rotationPrecision: 0.001
+  scalePrecision: 0.01
+  debugDraw: 0
 --- !u!114 &3691409626655176689
 MonoBehaviour:
   m_ObjectHideFlags: 0
