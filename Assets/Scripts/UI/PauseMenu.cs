@@ -1,0 +1,47 @@
+using Sirenix.OdinInspector;
+using Unity.Cinemachine;
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+namespace UI
+{
+    [RequireComponent(typeof(CanvasGroup))]
+    public class PauseMenu : MonoBehaviour
+    {
+        [SerializeField] private InputActionReference _openAction;
+
+        private bool _isActive;
+        private CanvasGroup _canvasGroup;
+
+        [SerializeField] [Required] private CinemachineInputAxisController _playerCamInput;
+
+        private void OnEnable()
+        {
+            _canvasGroup = GetComponent<CanvasGroup>();
+
+            _openAction.action.performed += OnOpen;
+            OnOpen(false);
+        }
+
+        private void OnDisable()
+        {
+            _openAction.action.performed -= OnOpen;
+        }
+
+        // Wrapper for event listener
+        private void OnOpen(InputAction.CallbackContext ctx) => OnOpen(!_isActive);
+
+        private void OnOpen(bool active)
+        {
+            _isActive = active;
+
+            Cursor.lockState = active ? CursorLockMode.None : CursorLockMode.Locked;
+            _playerCamInput.enabled = !active;
+
+            // we don't use SetActive since we want the menu to still receive input events, and being inactive would disable that
+            _canvasGroup.alpha = active ? 1 : 0;
+            _canvasGroup.interactable = active;
+            _canvasGroup.blocksRaycasts = active;
+        }
+    }
+}
