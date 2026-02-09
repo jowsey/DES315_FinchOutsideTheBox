@@ -26,6 +26,9 @@ public class MovingPlatform : NetworkBehaviour
         Vector3 localPos = _container.Splines[0].EvaluatePosition(_t);
         Vector3 worldPos = _container.transform.TransformPoint(localPos);
         _rb.MovePosition(worldPos);
-        _t = (_t + Time.fixedDeltaTime / _duration) % 1.0f;
+        if (isServer)
+        {
+            _t = (_t + Time.fixedDeltaTime / _duration) % 1.0f;
+        }
     }
 }
