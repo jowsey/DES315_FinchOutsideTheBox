@@ -82,15 +82,6 @@
                     "name": "Sprint",
                     "type": "Button",
                     "id": "641cd816-40e6-41b4-8c3d-04687c349290",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Grapple",
-                    "type": "Button",
-                    "id": "8fdbf5aa-be8e-4649-9f18-7f701ff3e451",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -100,6 +91,15 @@
                     "name": "PushToTalk",
                     "type": "Button",
                     "id": "9212eaef-7251-41ba-ad35-52df874750e1",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "TogglePauseMenu",
+                    "type": "Button",
+                    "id": "7dce86b0-9c49-42e7-9c98-2e8c1ea5611a",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -494,23 +494,45 @@
                 },
                 {
                     "name": "",
-                    "id": "28aec02e-f91b-4ba2-a2d7-0540e9338a9b",
-                    "path": "<Mouse>/rightButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Keyboard&Mouse",
-                    "action": "Grapple",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "8027647c-abdf-4e47-b63e-0624f8b87b6b",
                     "path": "<Keyboard>/v",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "PushToTalk",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4d1cd73b-0b11-4d94-99cf-148abba300da",
+                    "path": "<Gamepad>/dpad/up",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "PushToTalk",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ede484c7-d453-4d66-935d-427a4d0431a4",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "TogglePauseMenu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "14f837dd-3dca-4802-b166-3c2c7c05d087",
+                    "path": "<Gamepad>/start",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "TogglePauseMenu",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
