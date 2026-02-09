@@ -22,6 +22,7 @@ public class Pusher : NetworkBehaviour
 
     void Update()
     {
+        if (!isServer) { return; }
         if (_extending)
         {
             transform.localScale += Vector3.right * _pushSpeed * Time.deltaTime;
