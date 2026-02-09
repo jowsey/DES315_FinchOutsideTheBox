@@ -16,8 +16,6 @@ public class SpinningCylinder : NetworkBehaviour
 
     void FixedUpdate()
     {
-        if (!isServer) { return; }
-
         Quaternion turnOffset = Quaternion.Euler(0, _spinSpeed * Time.fixedDeltaTime, 0);
         rb.MoveRotation(rb.rotation * turnOffset);
     }
