@@ -3,6 +3,7 @@ using System.Buffers;
 using System.Linq;
 using JetBrains.Annotations;
 using Mirror;
+using UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using VoIP.Util;
@@ -22,7 +23,6 @@ namespace VoIP
         [SerializeField] private string _device; // todo user chooses at runtime, save to file
         [SerializeField] private AudioSource _source;
 
-        [SerializeField] private bool _usePushToTalk;
         [SerializeField] private InputActionReference _pushToTalkAction;
 
         //Mic clip
@@ -148,7 +148,7 @@ namespace VoIP
 
             int micWritePos = Microphone.GetPosition(_device);
 
-            if (_usePushToTalk)
+            if (SettingsManager.ActiveSettings.PushToTalk)
             {
                 //Do nothing if PTT inactive
                 if (!_pushToTalkAction.action.IsPressed()) return;
@@ -236,10 +236,10 @@ namespace VoIP
         void OnAudioFilterRead(float[] data, int channels)
         {
             if (isLocalPlayer) return;
-            
+
             //Clear entire buffer in case of gaps
             Array.Clear(data, 0, data.Length);
-            
+
             int samplesRequested = data.Length / channels;
 
             if (!_playbackActive)
