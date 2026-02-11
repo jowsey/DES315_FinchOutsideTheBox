@@ -106,11 +106,7 @@ public class WheelSeat : Mirror.NetworkBehaviour
         var wheelTop = transform.position + Vector3.up * (_sphereCollider.radius * transform.lossyScale.y);
 
         //Only apply force on server
-        if (isServer)
-        {
             _wheelRb.AddForceAtPosition(_seatedPlayer.WorldSpaceMoveDir * _moveForce, wheelTop);
-        }
-
         _seatedPlayer.Rb.MovePosition(wheelTop);
     }
 
