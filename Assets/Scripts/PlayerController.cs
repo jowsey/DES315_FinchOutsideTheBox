@@ -82,14 +82,10 @@ public class PlayerController : NetworkBehaviour
 
         WorldSpaceMoveDir = (cameraForward * inputDirection.y + cameraRight * inputDirection.x).normalized;
 
-        if (WorldSpaceMoveDir != Vector3.zero)
-        {
-            footstepSound.Post(gameObject);
-        }
-
         if (WorldSpaceMoveDir.sqrMagnitude > 0)
         {
             Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, Quaternion.LookRotation(WorldSpaceMoveDir, Vector3.up), Time.fixedDeltaTime * rotationSmoothingSpeed));
+            footstepSound.Post(gameObject);
         }
 
         if (Seat && _jumpPressed)
