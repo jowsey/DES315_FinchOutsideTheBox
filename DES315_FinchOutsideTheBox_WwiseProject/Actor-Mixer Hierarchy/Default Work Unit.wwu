@@ -1,6 +1,1917 @@
 <?xml version="1.0" encoding="utf-8"?>
 <WwiseDocument Type="WorkUnit" ID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}" SchemaVersion="123">
 	<AudioObjects>
-		<WorkUnit Name="Default Work Unit" ID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}" PersistMode="Standalone"/>
+		<WorkUnit Name="Default Work Unit" ID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}" PersistMode="Standalone">
+			<ChildrenList>
+				<SwitchContainer Name="Footsteps" ID="{7CB0D81E-42B7-413A-989E-7C64B0B8C312}" ShortID="618742015">
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+						</Reference>
+						<Reference Name="DefaultSwitchOrState">
+							<ObjectRef Name="Sand" ID="{644B631A-B972-4469-8483-EC892D21FED7}" WorkUnitID="{98F4E5C6-A07B-4B1C-B584-33D06F43089A}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+						</Reference>
+						<Reference Name="SwitchGroupOrStateGroup">
+							<ObjectRef Name="Footsteps" ID="{2E5D35F6-02E1-48CC-B0F0-2EBD45B0D51B}" WorkUnitID="{98F4E5C6-A07B-4B1C-B584-33D06F43089A}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<RandomSequenceContainer Name="Footsteps - Wood" ID="{68023760-A809-48D2-BDF5-D6542BE3610C}" ShortID="821819893">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<Sound Name="Wood Fts-001" ID="{2890FBA0-2676-463C-8834-81E2E8CB53EA}" ShortID="423942706">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Wood Fts-001" ID="{C6A5759A-C232-4157-AC00-BC114176C819}">
+											<Language>SFX</Language>
+											<AudioFile>Wood Fts-001.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="380948166"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Wood Fts-001" ID="{C6A5759A-C232-4157-AC00-BC114176C819}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Wood Fts-002" ID="{A614C470-62F6-4092-A85F-940B7C0DB9DF}" ShortID="566692913">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Wood Fts-002" ID="{9E9B9B94-82A7-4215-A89C-C48F9D69E82B}">
+											<Language>SFX</Language>
+											<AudioFile>Wood Fts-002.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="18362069"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Wood Fts-002" ID="{9E9B9B94-82A7-4215-A89C-C48F9D69E82B}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Wood Fts-003" ID="{F7788F4C-DB85-4DCD-8CA3-CB4E84C8B17C}" ShortID="1045500750">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Wood Fts-003" ID="{F2D35F4C-5741-4BB3-BF3B-A8FE473BAA9B}">
+											<Language>SFX</Language>
+											<AudioFile>Wood Fts-003.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="84638292"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Wood Fts-003" ID="{F2D35F4C-5741-4BB3-BF3B-A8FE473BAA9B}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Wood Fts-004" ID="{D482FC71-9826-43BD-ADC4-4FECF2FC221B}" ShortID="914269605">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Wood Fts-004" ID="{142568B1-E062-423A-A872-DE897797DF9D}">
+											<Language>SFX</Language>
+											<AudioFile>Wood Fts-004.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="1034642428"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Wood Fts-004" ID="{142568B1-E062-423A-A872-DE897797DF9D}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Wood Fts-005" ID="{D4C38784-1003-48EE-AF29-8CB0126B3085}" ShortID="1067996720">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Wood Fts-005" ID="{7B04A57B-FA68-4274-8417-3704F46B9D8D}">
+											<Language>SFX</Language>
+											<AudioFile>Wood Fts-005.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="791899110"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Wood Fts-005" ID="{7B04A57B-FA68-4274-8417-3704F46B9D8D}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Wood Fts-006" ID="{76EFF78C-4441-4C2C-8C4D-BAF1D2AD7474}" ShortID="924660664">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Wood Fts-006" ID="{8447CA32-483C-4783-9E8D-18F96C41E7B3}">
+											<Language>SFX</Language>
+											<AudioFile>Wood Fts-006.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="138369881"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Wood Fts-006" ID="{8447CA32-483C-4783-9E8D-18F96C41E7B3}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Wood Fts-007" ID="{60C15BF6-9622-4660-A1C4-A32FD51EA749}" ShortID="1002509052">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Wood Fts-007" ID="{7925EC6B-CCC8-416E-812A-12282A792F94}">
+											<Language>SFX</Language>
+											<AudioFile>Wood Fts-007.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="596375820"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Wood Fts-007" ID="{7925EC6B-CCC8-416E-812A-12282A792F94}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Wood Fts-008" ID="{876B6B68-0180-4AD5-AC25-278729494AC9}" ShortID="550260646">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Wood Fts-008" ID="{EF492A9F-A4E9-43E9-8D24-7FC94471E44F}">
+											<Language>SFX</Language>
+											<AudioFile>Wood Fts-008.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="934666708"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Wood Fts-008" ID="{EF492A9F-A4E9-43E9-8D24-7FC94471E44F}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Wood Fts-009" ID="{2B856799-77B9-426E-A0BC-80296F6C1EA0}" ShortID="526048322">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Wood Fts-009" ID="{2F7337C9-07FD-4EE5-9FC5-A06114957D4B}">
+											<Language>SFX</Language>
+											<AudioFile>Wood Fts-009.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="23907686"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Wood Fts-009" ID="{2F7337C9-07FD-4EE5-9FC5-A06114957D4B}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Wood Fts-010" ID="{424CAF4C-BCCC-4D8B-97CC-B194D5F23643}" ShortID="522847952">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Wood Fts-010" ID="{9CBB3236-08F4-4158-9106-73B50635EAE2}">
+											<Language>SFX</Language>
+											<AudioFile>Wood Fts-010.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="449426634"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Wood Fts-010" ID="{9CBB3236-08F4-4158-9106-73B50635EAE2}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Wood Fts-011" ID="{D8BCA385-3211-4F68-9C28-5193063B5D1D}" ShortID="1031474703">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Wood Fts-011" ID="{16911879-B81B-405F-B848-EB176A126782}">
+											<Language>SFX</Language>
+											<AudioFile>Wood Fts-011.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="865458401"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Wood Fts-011" ID="{16911879-B81B-405F-B848-EB176A126782}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Wood Fts-012" ID="{C855A0D2-9FCB-402B-9FF0-5E3600D46CD7}" ShortID="353930666">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Wood Fts-012" ID="{80CADA47-7DC2-4C44-BD5D-C31161BBD685}">
+											<Language>SFX</Language>
+											<AudioFile>Wood Fts-012.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="814306578"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Wood Fts-012" ID="{80CADA47-7DC2-4C44-BD5D-C31161BBD685}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Wood Fts-013" ID="{4C575143-711C-4F5A-8B3E-9B8CFF292A27}" ShortID="391531168">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Wood Fts-013" ID="{E33F3F5F-2671-4839-ACE3-E051E3FC8D23}">
+											<Language>SFX</Language>
+											<AudioFile>Wood Fts-013.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="216207147"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Wood Fts-013" ID="{E33F3F5F-2671-4839-ACE3-E051E3FC8D23}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Wood Fts-014" ID="{195899CE-AC96-47EF-AC24-67E376622B58}" ShortID="465216133">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Wood Fts-014" ID="{07303AB1-DFA9-4982-80B8-9021D2EA15A2}">
+											<Language>SFX</Language>
+											<AudioFile>Wood Fts-014.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="978766259"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Wood Fts-014" ID="{07303AB1-DFA9-4982-80B8-9021D2EA15A2}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+							</ChildrenList>
+						</RandomSequenceContainer>
+						<RandomSequenceContainer Name="Footsteps - Stone" ID="{94EB187B-1A86-4CB7-A183-6AC2E2917DAB}" ShortID="733451442">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<Sound Name="Stone Fts-001" ID="{EC6FF425-C52E-4A4A-AD4B-C25A4841CBA6}" ShortID="834483550">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Stone Fts-001" ID="{843A8203-160C-4285-A8D3-A23FFEFFBD28}">
+											<Language>SFX</Language>
+											<AudioFile>Stone Fts-001.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="876637625"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Stone Fts-001" ID="{843A8203-160C-4285-A8D3-A23FFEFFBD28}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Stone Fts-002" ID="{3419AD11-C4E9-4ECF-A864-AFC19A01B120}" ShortID="910177006">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Stone Fts-002" ID="{F152CA71-F602-44D7-8A6E-566A2A6A6D3E}">
+											<Language>SFX</Language>
+											<AudioFile>Stone Fts-002.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="384428983"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Stone Fts-002" ID="{F152CA71-F602-44D7-8A6E-566A2A6A6D3E}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Stone Fts-003" ID="{5591920A-EB78-478F-BB05-628D7A949027}" ShortID="474078533">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Stone Fts-003" ID="{D27CB5E1-B283-4AC4-A8DB-90AB25087B1C}">
+											<Language>SFX</Language>
+											<AudioFile>Stone Fts-003.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="468479666"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Stone Fts-003" ID="{D27CB5E1-B283-4AC4-A8DB-90AB25087B1C}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Stone Fts-004" ID="{2BA1E37A-2BB1-4675-BD2D-85F269A8E553}" ShortID="825278370">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Stone Fts-004" ID="{A10F66B8-7395-4620-9165-5453D1B3AE4D}">
+											<Language>SFX</Language>
+											<AudioFile>Stone Fts-004.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="291199776"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Stone Fts-004" ID="{A10F66B8-7395-4620-9165-5453D1B3AE4D}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Stone Fts-005" ID="{74958766-2638-4DCF-8B3F-89C87408A980}" ShortID="78710424">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Stone Fts-005" ID="{F6FE72A0-CE14-48F4-BCA7-4FCF4D1A0F27}">
+											<Language>SFX</Language>
+											<AudioFile>Stone Fts-005.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="587550395"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Stone Fts-005" ID="{F6FE72A0-CE14-48F4-BCA7-4FCF4D1A0F27}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Stone Fts-006" ID="{F24E26C6-0445-42F5-B0CF-ED37B8EDA067}" ShortID="747970976">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Stone Fts-006" ID="{D17B3094-DA9B-4BCC-A764-694C3F3FBF69}">
+											<Language>SFX</Language>
+											<AudioFile>Stone Fts-006.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="218412162"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Stone Fts-006" ID="{D17B3094-DA9B-4BCC-A764-694C3F3FBF69}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Stone Fts-007" ID="{E0ABDDA3-7E58-42A6-807E-2A23CF40CE31}" ShortID="752128291">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Stone Fts-007" ID="{3C475E65-84E9-439C-A9EB-CCF68CBCA960}">
+											<Language>SFX</Language>
+											<AudioFile>Stone Fts-007.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="725812922"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Stone Fts-007" ID="{3C475E65-84E9-439C-A9EB-CCF68CBCA960}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Stone Fts-008" ID="{5BE162EC-D790-4C6B-9C0A-B264A807E19A}" ShortID="82475386">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Stone Fts-008" ID="{DF8EF44F-7106-4C6D-9FEA-563503483BAB}">
+											<Language>SFX</Language>
+											<AudioFile>Stone Fts-008.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="628402257"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Stone Fts-008" ID="{DF8EF44F-7106-4C6D-9FEA-563503483BAB}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Stone Fts-009" ID="{9179DBC9-208C-425A-8C5A-F8FF3BD9B1BD}" ShortID="459582311">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Stone Fts-009" ID="{B96B662D-5A0C-497F-B5D3-C1CA454C585F}">
+											<Language>SFX</Language>
+											<AudioFile>Stone Fts-009.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="437844484"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Stone Fts-009" ID="{B96B662D-5A0C-497F-B5D3-C1CA454C585F}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Stone Fts-010" ID="{95BF012F-DA9D-47CA-8AA6-EE87302B36C3}" ShortID="494338930">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Stone Fts-010" ID="{C655A537-7554-4218-A5D7-95389E505D77}">
+											<Language>SFX</Language>
+											<AudioFile>Stone Fts-010.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="529690921"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Stone Fts-010" ID="{C655A537-7554-4218-A5D7-95389E505D77}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Stone Fts-011" ID="{F4328B39-A289-4312-8FD9-EC3CF0A9A3AE}" ShortID="1002033568">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Stone Fts-011" ID="{A3CA2B29-3AED-4768-9580-55EDA0FB8C32}">
+											<Language>SFX</Language>
+											<AudioFile>Stone Fts-011.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="680210667"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Stone Fts-011" ID="{A3CA2B29-3AED-4768-9580-55EDA0FB8C32}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Stone Fts-012" ID="{72327D0C-7A56-45E1-8151-27C0FCCFDE9F}" ShortID="722177810">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Stone Fts-012" ID="{AD8C06F0-F5A2-4AEE-B182-478C6F855C00}">
+											<Language>SFX</Language>
+											<AudioFile>Stone Fts-012.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="212111639"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Stone Fts-012" ID="{AD8C06F0-F5A2-4AEE-B182-478C6F855C00}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Stone Fts-013" ID="{7DADE334-5B19-4FB6-9CA0-4EDF96509D6E}" ShortID="640326178">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Stone Fts-013" ID="{D7CCF4D8-285B-439F-B47D-78E17E1AB715}">
+											<Language>SFX</Language>
+											<AudioFile>Stone Fts-013.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="1034549801"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Stone Fts-013" ID="{D7CCF4D8-285B-439F-B47D-78E17E1AB715}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Stone Fts-014" ID="{D9859C47-8708-48A3-A40F-AF41BD791331}" ShortID="756483803">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Stone Fts-014" ID="{6F9F009C-94CC-4509-87BC-C691AD4C2E7A}">
+											<Language>SFX</Language>
+											<AudioFile>Stone Fts-014.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="616567277"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Stone Fts-014" ID="{6F9F009C-94CC-4509-87BC-C691AD4C2E7A}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Stone Fts-015" ID="{5F9EC7B5-4107-44A3-ADF4-FC583181D91B}" ShortID="541010277">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Stone Fts-015" ID="{FCFC7962-9B17-412B-B38C-19241CEC5BFE}">
+											<Language>SFX</Language>
+											<AudioFile>Stone Fts-015.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="1020035163"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Stone Fts-015" ID="{FCFC7962-9B17-412B-B38C-19241CEC5BFE}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Stone Fts-016" ID="{CA580EEB-51C1-4CFE-AEC0-82A646FCBA23}" ShortID="673044156">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Stone Fts-016" ID="{B05DE540-64E7-419F-887E-57D32E07B6F2}">
+											<Language>SFX</Language>
+											<AudioFile>Stone Fts-016.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="833265954"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Stone Fts-016" ID="{B05DE540-64E7-419F-887E-57D32E07B6F2}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Stone Fts-017" ID="{C257D893-C4BB-4606-8435-5DB482B3032C}" ShortID="263405895">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Stone Fts-017" ID="{D23EC33C-86CC-4482-84FA-5764EDC01A9C}">
+											<Language>SFX</Language>
+											<AudioFile>Stone Fts-017.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="863223829"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Stone Fts-017" ID="{D23EC33C-86CC-4482-84FA-5764EDC01A9C}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Stone Fts-018" ID="{36215F52-238B-431E-8D35-ECC1A0E4088F}" ShortID="935455504">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Stone Fts-018" ID="{0415BE90-B038-4181-8557-FC851B20BE35}">
+											<Language>SFX</Language>
+											<AudioFile>Stone Fts-018.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="831899903"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Stone Fts-018" ID="{0415BE90-B038-4181-8557-FC851B20BE35}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Stone Fts-019" ID="{EF09A393-2424-4145-8B0E-9BF70F791E5E}" ShortID="441635443">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Stone Fts-019" ID="{9FF52F6F-28FF-4E4C-BF28-9118CA7BB711}">
+											<Language>SFX</Language>
+											<AudioFile>Stone Fts-019.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="282396800"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Stone Fts-019" ID="{9FF52F6F-28FF-4E4C-BF28-9118CA7BB711}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Stone Fts-020" ID="{54602057-D50A-4E6B-BD85-90A5C33DC7DF}" ShortID="359849533">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Stone Fts-020" ID="{6CE160F1-91E5-4C7E-8AFA-E307ED408F12}">
+											<Language>SFX</Language>
+											<AudioFile>Stone Fts-020.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="70843324"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Stone Fts-020" ID="{6CE160F1-91E5-4C7E-8AFA-E307ED408F12}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Stone Fts-021" ID="{0FDD2445-31EC-4014-9EEA-F15912D35034}" ShortID="148060468">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Stone Fts-021" ID="{C618797E-0560-4FDF-B294-D1F1A9334FD1}">
+											<Language>SFX</Language>
+											<AudioFile>Stone Fts-021.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="966540609"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Stone Fts-021" ID="{C618797E-0560-4FDF-B294-D1F1A9334FD1}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Stone Fts-022" ID="{1F4D1753-E6E9-4EF5-83AC-684AEED18AB2}" ShortID="601587481">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Stone Fts-022" ID="{627F8E7C-AFC7-4073-AFBA-1375DD74CD61}">
+											<Language>SFX</Language>
+											<AudioFile>Stone Fts-022.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="366476424"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Stone Fts-022" ID="{627F8E7C-AFC7-4073-AFBA-1375DD74CD61}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Stone Fts-023" ID="{AB1763A1-150C-4D42-8458-E560B8796380}" ShortID="67957596">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Stone Fts-023" ID="{AC8CD347-8FBA-4E70-B896-830FDCB90678}">
+											<Language>SFX</Language>
+											<AudioFile>Stone Fts-023.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="84954812"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Stone Fts-023" ID="{AC8CD347-8FBA-4E70-B896-830FDCB90678}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Stone Fts-024" ID="{55ECE4CD-00E4-404A-B839-9B93AFB178E8}" ShortID="1002105246">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Stone Fts-024" ID="{BC898939-BD64-40C8-9714-6A44328B74CC}">
+											<Language>SFX</Language>
+											<AudioFile>Stone Fts-024.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="381030058"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Stone Fts-024" ID="{BC898939-BD64-40C8-9714-6A44328B74CC}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Stone Fts-025" ID="{0B93D2E3-C964-4658-B9D9-C193254BFDC0}" ShortID="684408279">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Stone Fts-025" ID="{1E33B509-36C1-413A-9A9D-099599A2FBE6}">
+											<Language>SFX</Language>
+											<AudioFile>Stone Fts-025.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="182826704"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Stone Fts-025" ID="{1E33B509-36C1-413A-9A9D-099599A2FBE6}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Stone Fts-026" ID="{10A615F8-2C50-4913-8931-DF29C8BE0235}" ShortID="832386157">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Stone Fts-026" ID="{3D785A96-37EC-4F69-AB26-9FB408D92B48}">
+											<Language>SFX</Language>
+											<AudioFile>Stone Fts-026.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="725336537"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Stone Fts-026" ID="{3D785A96-37EC-4F69-AB26-9FB408D92B48}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Stone Fts-027" ID="{08674ECA-2AF1-4371-95A2-7516687B0722}" ShortID="356379696">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Stone Fts-027" ID="{9B242334-7D7D-4A54-B83C-56B09A6053DB}">
+											<Language>SFX</Language>
+											<AudioFile>Stone Fts-027.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="320196271"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Stone Fts-027" ID="{9B242334-7D7D-4A54-B83C-56B09A6053DB}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Stone Fts-028" ID="{60F5AE46-FED9-482D-93EA-B75804AA0487}" ShortID="292332117">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Stone Fts-028" ID="{918209B9-AF5B-4AB9-9D23-96677E126A20}">
+											<Language>SFX</Language>
+											<AudioFile>Stone Fts-028.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="308490784"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Stone Fts-028" ID="{918209B9-AF5B-4AB9-9D23-96677E126A20}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Stone Fts-029" ID="{81A12F4C-5C7C-43B9-8275-4FA31BDB9613}" ShortID="281635415">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Stone Fts-029" ID="{20CDA6DC-5853-4B41-A6CE-F92C6A354CB4}">
+											<Language>SFX</Language>
+											<AudioFile>Stone Fts-029.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="174219172"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Stone Fts-029" ID="{20CDA6DC-5853-4B41-A6CE-F92C6A354CB4}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Stone Fts-030" ID="{0BAD83DA-39CE-4C6F-8FBB-646760F3C005}" ShortID="622280832">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Stone Fts-030" ID="{E97929CC-6D9D-4040-9689-250765D176B4}">
+											<Language>SFX</Language>
+											<AudioFile>Stone Fts-030.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="451098563"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Stone Fts-030" ID="{E97929CC-6D9D-4040-9689-250765D176B4}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Stone Fts-031" ID="{04DB0E8A-295F-480E-B9FE-C6F2DB01E053}" ShortID="1021507587">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Stone Fts-031" ID="{F01A0842-1572-4318-B802-5FEAD259836C}">
+											<Language>SFX</Language>
+											<AudioFile>Stone Fts-031.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="1008990295"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Stone Fts-031" ID="{F01A0842-1572-4318-B802-5FEAD259836C}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Stone Fts-032" ID="{42086EF3-49F3-495C-B8DE-A9CE9BDFFB38}" ShortID="369788837">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Stone Fts-032" ID="{84B4CC4B-1185-4061-A7A2-03079FD41416}">
+											<Language>SFX</Language>
+											<AudioFile>Stone Fts-032.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="713558606"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Stone Fts-032" ID="{84B4CC4B-1185-4061-A7A2-03079FD41416}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Stone Fts-033" ID="{8486D69E-4921-489E-8336-77DCFD17DE9D}" ShortID="480278422">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Stone Fts-033" ID="{7A044C39-9B2C-44BE-9FDF-3A3E6B0BF933}">
+											<Language>SFX</Language>
+											<AudioFile>Stone Fts-033.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="355189400"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Stone Fts-033" ID="{7A044C39-9B2C-44BE-9FDF-3A3E6B0BF933}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Stone Fts-034" ID="{6D12B429-75ED-4453-81AA-8E9D9FD409EF}" ShortID="345775927">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Stone Fts-034" ID="{9ADF0F75-CCE0-4CD5-8F4B-D0EA179D3061}">
+											<Language>SFX</Language>
+											<AudioFile>Stone Fts-034.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="246671667"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Stone Fts-034" ID="{9ADF0F75-CCE0-4CD5-8F4B-D0EA179D3061}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Stone Fts-035" ID="{BF4A9D87-FD36-457D-96F2-A9A4F3E6A9D6}" ShortID="330761778">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Stone Fts-035" ID="{08ED0163-5D34-4CFC-A501-D31E7BC4A337}">
+											<Language>SFX</Language>
+											<AudioFile>Stone Fts-035.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="667078982"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Stone Fts-035" ID="{08ED0163-5D34-4CFC-A501-D31E7BC4A337}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Stone Fts-036" ID="{6E51D447-7B45-4C1C-9714-BDA606CBF574}" ShortID="309921052">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Stone Fts-036" ID="{EFCEF6AE-616C-4084-BF38-A4F1F2547EF4}">
+											<Language>SFX</Language>
+											<AudioFile>Stone Fts-036.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="1040862632"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Stone Fts-036" ID="{EFCEF6AE-616C-4084-BF38-A4F1F2547EF4}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Stone Fts-037" ID="{DF83C164-ECB6-4503-9FC1-F395663086A1}" ShortID="1007146796">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Stone Fts-037" ID="{3173F4F3-751A-4FB9-BD35-887FCB05C0BE}">
+											<Language>SFX</Language>
+											<AudioFile>Stone Fts-037.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="607795877"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Stone Fts-037" ID="{3173F4F3-751A-4FB9-BD35-887FCB05C0BE}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+							</ChildrenList>
+						</RandomSequenceContainer>
+						<RandomSequenceContainer Name="Footsteps - Sand" ID="{A11EF6CE-F6ED-45CB-A86A-74D2FC6DB98A}" ShortID="314435157">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<Sound Name="Sand Fts-001" ID="{CD1D3D72-20F4-4805-93C7-4D554434E352}" ShortID="130317172">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Sand Fts-001" ID="{AF67E826-72D0-4AAB-AE4E-1FF0AF5A2A9F}">
+											<Language>SFX</Language>
+											<AudioFile>Sand Fts-001.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="799312172"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Sand Fts-001" ID="{AF67E826-72D0-4AAB-AE4E-1FF0AF5A2A9F}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Sand Fts-002" ID="{F7D71307-156F-4756-AD70-BD2998E8E59C}" ShortID="967469058">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Sand Fts-002" ID="{B619E1DC-9F13-4544-B9FA-7394E41629FE}">
+											<Language>SFX</Language>
+											<AudioFile>Sand Fts-002.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="1032855642"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Sand Fts-002" ID="{B619E1DC-9F13-4544-B9FA-7394E41629FE}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Sand Fts-003" ID="{17EBB811-80C7-43BF-8AC6-1C55A6327125}" ShortID="861011316">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Sand Fts-003" ID="{2C30FF84-63F6-4003-B233-35CF84D80D0C}">
+											<Language>SFX</Language>
+											<AudioFile>Sand Fts-003.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="357684383"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Sand Fts-003" ID="{2C30FF84-63F6-4003-B233-35CF84D80D0C}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Sand Fts-004" ID="{9D8B9CBA-7F6F-479E-B033-46A421297C59}" ShortID="278309711">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Sand Fts-004" ID="{EE378BA6-9C89-4732-B99B-37F767A6ACBC}">
+											<Language>SFX</Language>
+											<AudioFile>Sand Fts-004.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="317375196"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Sand Fts-004" ID="{EE378BA6-9C89-4732-B99B-37F767A6ACBC}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Sand Fts-005" ID="{BEBB5EF4-BE91-4978-873D-22A561FF9101}" ShortID="377100287">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Sand Fts-005" ID="{2BF2338A-F50E-4BF3-AA0D-C7EF55BD859C}">
+											<Language>SFX</Language>
+											<AudioFile>Sand Fts-005.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="802869055"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Sand Fts-005" ID="{2BF2338A-F50E-4BF3-AA0D-C7EF55BD859C}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Sand Fts-006" ID="{9C3CBD79-DC4A-444C-96D6-0B638EE441AF}" ShortID="185545835">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Sand Fts-006" ID="{8403F347-85D0-4153-B0C3-49B85910DABE}">
+											<Language>SFX</Language>
+											<AudioFile>Sand Fts-006.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="868340680"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Sand Fts-006" ID="{8403F347-85D0-4153-B0C3-49B85910DABE}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Sand Fts-007" ID="{79824373-850C-4FFC-98CA-698617AB40CA}" ShortID="676101607">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Sand Fts-007" ID="{4D52A1BB-8890-4B8F-81E1-019628321214}">
+											<Language>SFX</Language>
+											<AudioFile>Sand Fts-007.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="378091100"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Sand Fts-007" ID="{4D52A1BB-8890-4B8F-81E1-019628321214}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Sand Fts-008" ID="{1D933322-C071-40ED-8F06-F6F2650D924B}" ShortID="24585433">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Sand Fts-008" ID="{969450E7-39B7-4323-B872-CE2D0C854B8D}">
+											<Language>SFX</Language>
+											<AudioFile>Sand Fts-008.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="258391189"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Sand Fts-008" ID="{969450E7-39B7-4323-B872-CE2D0C854B8D}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Sand Fts-009" ID="{3DB86D8A-52D1-423D-8D36-430FD8F71ECD}" ShortID="390900706">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Sand Fts-009" ID="{CE6443CD-3A78-43AF-ADB2-0C004513999F}">
+											<Language>SFX</Language>
+											<AudioFile>Sand Fts-009.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="220837832"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Sand Fts-009" ID="{CE6443CD-3A78-43AF-ADB2-0C004513999F}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Sand Fts-010" ID="{F7AAB473-717C-45C5-9245-FEAB217188E2}" ShortID="576792120">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Sand Fts-010" ID="{66481E20-A4B8-4527-8B0E-729EABA8503D}">
+											<Language>SFX</Language>
+											<AudioFile>Sand Fts-010.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="757128725"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Sand Fts-010" ID="{66481E20-A4B8-4527-8B0E-729EABA8503D}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Sand Fts-011" ID="{33795349-030B-4F71-966E-06A3D302E331}" ShortID="1026901656">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Sand Fts-011" ID="{E21C62DB-E606-4A2C-BA77-081B859672C3}">
+											<Language>SFX</Language>
+											<AudioFile>Sand Fts-011.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="1026257242"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Sand Fts-011" ID="{E21C62DB-E606-4A2C-BA77-081B859672C3}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Sand Fts-012" ID="{14C4A381-92C4-4F01-90E0-2CA6990AC72F}" ShortID="880650231">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Sand Fts-012" ID="{AA983682-5BEB-4F1E-8AC9-C26CCAE2BBE8}">
+											<Language>SFX</Language>
+											<AudioFile>Sand Fts-012.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="560450983"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Sand Fts-012" ID="{AA983682-5BEB-4F1E-8AC9-C26CCAE2BBE8}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Sand Fts-013" ID="{42719519-23BE-4B0E-B3CB-7407ABF82900}" ShortID="114429607">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Sand Fts-013" ID="{01180EBB-CE77-4159-BAAD-7679985D0437}">
+											<Language>SFX</Language>
+											<AudioFile>Sand Fts-013.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="365711844"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Sand Fts-013" ID="{01180EBB-CE77-4159-BAAD-7679985D0437}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Sand Fts-014" ID="{90AA95C4-B528-49BA-A89F-3A5FF11CA945}" ShortID="829996894">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Sand Fts-014" ID="{B9DA4632-9A56-4AD8-BFEC-F24637841018}">
+											<Language>SFX</Language>
+											<AudioFile>Sand Fts-014.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="853050447"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Sand Fts-014" ID="{B9DA4632-9A56-4AD8-BFEC-F24637841018}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Sand Fts-015" ID="{1E429DF8-7EA1-41E2-A852-D1A402628F80}" ShortID="761658867">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Sand Fts-015" ID="{A00F2FF4-55BC-4BF6-B44A-7D2F755EC59B}">
+											<Language>SFX</Language>
+											<AudioFile>Sand Fts-015.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="433431693"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Sand Fts-015" ID="{A00F2FF4-55BC-4BF6-B44A-7D2F755EC59B}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Sand Fts-016" ID="{7473D81A-872F-409D-9F29-5C21A3E10BA8}" ShortID="926218130">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Sand Fts-016" ID="{CD67FAB3-62A6-4C71-85D1-62BE99BF4F88}">
+											<Language>SFX</Language>
+											<AudioFile>Sand Fts-016.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="263639978"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Sand Fts-016" ID="{CD67FAB3-62A6-4C71-85D1-62BE99BF4F88}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Sand Fts-017" ID="{7D6D3074-F7D7-4235-B866-A1714D2379D1}" ShortID="108342940">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Sand Fts-017" ID="{6F10E466-77D8-4928-B71B-1431A0787F1D}">
+											<Language>SFX</Language>
+											<AudioFile>Sand Fts-017.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="334774042"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Sand Fts-017" ID="{6F10E466-77D8-4928-B71B-1431A0787F1D}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Sand Fts-018" ID="{BF24FB5C-E23F-4295-B6AE-3015B9BD418E}" ShortID="259635102">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Sand Fts-018" ID="{285BA526-FE74-457B-9998-1D5DE9123102}">
+											<Language>SFX</Language>
+											<AudioFile>Sand Fts-018.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="914175944"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Sand Fts-018" ID="{285BA526-FE74-457B-9998-1D5DE9123102}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Sand Fts-019" ID="{4534C75E-33BF-44DF-997B-72764D46E603}" ShortID="150382017">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Sand Fts-019" ID="{B15AA01C-E4CA-46EA-94BD-CF6D39CF5DE9}">
+											<Language>SFX</Language>
+											<AudioFile>Sand Fts-019.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="152786161"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Sand Fts-019" ID="{B15AA01C-E4CA-46EA-94BD-CF6D39CF5DE9}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Sand Fts-020" ID="{76A6D682-EBF0-4534-B960-1373828DA0DA}" ShortID="630771312">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Sand Fts-020" ID="{B95A2DAF-BDB4-4D03-B7E6-4F76132A358F}">
+											<Language>SFX</Language>
+											<AudioFile>Sand Fts-020.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="293043254"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Sand Fts-020" ID="{B95A2DAF-BDB4-4D03-B7E6-4F76132A358F}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Sand Fts-021" ID="{B7A57E95-43D0-4B0E-A59D-36A47C3C161B}" ShortID="95078254">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Sand Fts-021" ID="{99DCFB14-C289-4C55-895C-2EF18E1F17EF}">
+											<Language>SFX</Language>
+											<AudioFile>Sand Fts-021.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="452945098"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Sand Fts-021" ID="{99DCFB14-C289-4C55-895C-2EF18E1F17EF}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Sand Fts-022" ID="{885C5DB0-5028-417C-B600-31E5E7115DF8}" ShortID="208195365">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Sand Fts-022" ID="{FAD1CDD8-EBD8-4335-AAD3-AC43FDB0801E}">
+											<Language>SFX</Language>
+											<AudioFile>Sand Fts-022.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="885506170"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Sand Fts-022" ID="{FAD1CDD8-EBD8-4335-AAD3-AC43FDB0801E}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Sand Fts-023" ID="{FA40A262-04D2-4E3E-A23F-9AD668FCB70D}" ShortID="976864410">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Sand Fts-023" ID="{5A84DFF5-BF41-4EB8-9021-47ADD9A2DA12}">
+											<Language>SFX</Language>
+											<AudioFile>Sand Fts-023.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="698672454"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Sand Fts-023" ID="{5A84DFF5-BF41-4EB8-9021-47ADD9A2DA12}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Sand Fts-024" ID="{C002848D-C6BC-41CC-844B-80646892CA53}" ShortID="61296599">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Sand Fts-024" ID="{9EF19E96-285B-4A3B-9FD4-DCA385E66FB5}">
+											<Language>SFX</Language>
+											<AudioFile>Sand Fts-024.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="963097327"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Sand Fts-024" ID="{9EF19E96-285B-4A3B-9FD4-DCA385E66FB5}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Sand Fts-025" ID="{48A84AA6-7D34-4D26-B905-DF273E553779}" ShortID="791781125">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Sand Fts-025" ID="{BCDE7D03-2245-41C5-9E00-BF924035FE86}">
+											<Language>SFX</Language>
+											<AudioFile>Sand Fts-025.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="153134725"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Sand Fts-025" ID="{BCDE7D03-2245-41C5-9E00-BF924035FE86}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Sand Fts-026" ID="{BDF6FA7C-B4C1-4677-857A-2FC96069BCAF}" ShortID="1063586675">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Sand Fts-026" ID="{53468DF0-DC80-43A4-9B25-5BC1D72F4F37}">
+											<Language>SFX</Language>
+											<AudioFile>Sand Fts-026.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="992088664"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Sand Fts-026" ID="{53468DF0-DC80-43A4-9B25-5BC1D72F4F37}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Sand Fts-027" ID="{B136C3BE-80CC-4767-B222-3E70DC0EDEE9}" ShortID="92133681">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Sand Fts-027" ID="{B618F928-F4FC-4169-9E22-BEE36608EC71}">
+											<Language>SFX</Language>
+											<AudioFile>Sand Fts-027.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="50946830"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Sand Fts-027" ID="{B618F928-F4FC-4169-9E22-BEE36608EC71}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Sand Fts-028" ID="{9C753E07-3A10-4F18-9506-41F6579DD69E}" ShortID="375127849">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Sand Fts-028" ID="{A5262597-A9D6-430A-B498-83B1D1E74D46}">
+											<Language>SFX</Language>
+											<AudioFile>Sand Fts-028.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="550850837"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Sand Fts-028" ID="{A5262597-A9D6-430A-B498-83B1D1E74D46}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Sand Fts-029" ID="{4A62812A-0962-4CF9-BFEB-6F68294541C1}" ShortID="1116642">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Sand Fts-029" ID="{235E6058-25AF-4129-AF5C-9DE8840906D5}">
+											<Language>SFX</Language>
+											<AudioFile>Sand Fts-029.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="130954462"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Sand Fts-029" ID="{235E6058-25AF-4129-AF5C-9DE8840906D5}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Sand Fts-030" ID="{FEED1443-B895-4A8F-8D35-A3F61D80AF1E}" ShortID="1000160500">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Sand Fts-030" ID="{59044B3F-CDCA-4B12-ACBF-0FF95B926B68}">
+											<Language>SFX</Language>
+											<AudioFile>Sand Fts-030.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="704306626"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Sand Fts-030" ID="{59044B3F-CDCA-4B12-ACBF-0FF95B926B68}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+							</ChildrenList>
+						</RandomSequenceContainer>
+					</ChildrenList>
+					<GroupingInfo>
+						<GroupingBehaviorList>
+							<GroupingBehavior>
+								<ItemRef Name="Footsteps - Wood" ID="{68023760-A809-48D2-BDF5-D6542BE3610C}"/>
+							</GroupingBehavior>
+							<GroupingBehavior>
+								<ItemRef Name="Footsteps - Stone" ID="{94EB187B-1A86-4CB7-A183-6AC2E2917DAB}"/>
+							</GroupingBehavior>
+							<GroupingBehavior>
+								<ItemRef Name="Footsteps - Sand" ID="{A11EF6CE-F6ED-45CB-A86A-74D2FC6DB98A}"/>
+							</GroupingBehavior>
+						</GroupingBehaviorList>
+						<GroupingList>
+							<Grouping>
+								<SwitchRef Name="Sand" ID="{644B631A-B972-4469-8483-EC892D21FED7}"/>
+								<ItemList>
+									<ItemRef Name="Footsteps - Sand" ID="{A11EF6CE-F6ED-45CB-A86A-74D2FC6DB98A}"/>
+								</ItemList>
+							</Grouping>
+							<Grouping>
+								<SwitchRef Name="Wood" ID="{FEF36651-710D-4D22-A5A3-35B37B1549B1}"/>
+								<ItemList>
+									<ItemRef Name="Footsteps - Wood" ID="{68023760-A809-48D2-BDF5-D6542BE3610C}"/>
+								</ItemList>
+							</Grouping>
+							<Grouping>
+								<SwitchRef Name="Stone" ID="{F9B675EF-ACF5-4EF5-9BB9-416281FF09BB}"/>
+								<ItemList>
+									<ItemRef Name="Footsteps - Stone" ID="{94EB187B-1A86-4CB7-A183-6AC2E2917DAB}"/>
+								</ItemList>
+							</Grouping>
+						</GroupingList>
+					</GroupingInfo>
+				</SwitchContainer>
+				<Folder Name="OST" ID="{605054B5-7C56-4F5E-9FF8-B64A7496F79C}" ShortID="15543768">
+					<ChildrenList>
+						<Sound Name="TestSound1" ID="{1BD837EA-8CFE-48DE-BF11-5ACB3F0C06EB}" ShortID="477231933">
+							<PropertyList>
+								<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>25</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="Foley-001" ID="{765C9014-A291-442C-A6D4-2761D706679B}">
+									<PropertyList>
+										<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+										<Property Name="TrimBegin" Type="Real64" Value="9.18180471705639"/>
+										<Property Name="TrimEnd" Type="Real64" Value="23.1058573737357"/>
+									</PropertyList>
+									<Language>SFX</Language>
+									<AudioFile>Foley-001.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="483076792"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="Foley-001" ID="{765C9014-A291-442C-A6D4-2761D706679B}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+					</ChildrenList>
+				</Folder>
+			</ChildrenList>
+		</WorkUnit>
 	</AudioObjects>
 </WwiseDocument>
