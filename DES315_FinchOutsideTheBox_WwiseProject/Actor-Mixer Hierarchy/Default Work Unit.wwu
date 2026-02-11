@@ -4,6 +4,19 @@
 		<WorkUnit Name="Default Work Unit" ID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}" PersistMode="Standalone">
 			<ChildrenList>
 				<SwitchContainer Name="Footsteps" ID="{7CB0D81E-42B7-413A-989E-7C64B0B8C312}" ShortID="618742015">
+					<PropertyList>
+						<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
+						<Property Name="MaxSoundPerInstance" Type="int16">
+							<ValueList>
+								<Value>1</Value>
+							</ValueList>
+						</Property>
+						<Property Name="UseMaxSoundPerInstance" Type="bool">
+							<ValueList>
+								<Value>True</Value>
+							</ValueList>
+						</Property>
+					</PropertyList>
 					<ReferenceList>
 						<Reference Name="Conversion">
 							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
@@ -340,6 +353,14 @@
 							</ChildrenList>
 						</RandomSequenceContainer>
 						<RandomSequenceContainer Name="Footsteps - Stone" ID="{94EB187B-1A86-4CB7-A183-6AC2E2917DAB}" ShortID="733451442">
+							<PropertyList>
+								<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
+								<Property Name="MaxSoundPerInstance" Type="int16">
+									<ValueList>
+										<Value>1</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
 							<ReferenceList>
 								<Reference Name="Conversion">
 									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
