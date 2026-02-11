@@ -79,7 +79,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eab1a43b414649e3b73847820159d6db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  syncDirection: 0
+  syncMethod: 0
+  syncDirection: 1
   syncMode: 0
   syncInterval: 0
   _moveAction: {fileID: -1680190386980627800, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
@@ -120,10 +121,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb803efbe62c34d7baece46c9ffebad9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Mirror.Components::Mirror.NetworkRigidbodyReliable
+  syncMethod: 0
   syncDirection: 1
   syncMode: 0
   syncInterval: 0
   target: {fileID: 5379210078007236453}
+  updateMethod: 0
   syncPosition: 1
   syncRotation: 1
   syncScale: 0
@@ -138,7 +141,6 @@ MonoBehaviour:
   showOverlay: 0
   overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
   onlySyncOnChangeCorrectionMultiplier: 2
-  useFixedUpdate: 0
   rotationSensitivity: 0.01
   positionPrecision: 0.01
   scalePrecision: 0.01
@@ -154,12 +156,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9176722dd3d840d46842a4939e28727d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Recorder
+  syncMethod: 0
   syncDirection: 1
   syncMode: 0
   syncInterval: 0
   _device: 
   _source: {fileID: 4479242599431745982}
-  _usePushToTalk: 1
   _pushToTalkAction: {fileID: 2690577918822895486, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
 --- !u!82 &4479242599431745982
 AudioSource:
