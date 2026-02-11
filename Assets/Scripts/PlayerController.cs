@@ -16,6 +16,9 @@ public class PlayerController : NetworkBehaviour
 
     private bool _jumpPressed;
 
+    //Wwise Event to trigger footstep sound
+    public AK.Wwise.Event footstepSound = new AK.Wwise.Event();
+
     [Tooltip("Percentage of gravity to negate when gliding")]
     [SerializeField] [Range(0, 100)] private float gravityNegationPercentage = 90;
 
@@ -78,7 +81,12 @@ public class PlayerController : NetworkBehaviour
         Vector2 inputDirection = _moveAction.action.ReadValue<Vector2>();
 
         WorldSpaceMoveDir = (cameraForward * inputDirection.y + cameraRight * inputDirection.x).normalized;
-        
+
+        if (WorldSpaceMoveDir != Vector3.zero)
+        {
+            footstepSound.Post(gameObject);
+        }
+
         if (WorldSpaceMoveDir.sqrMagnitude > 0)
         {
             Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, Quaternion.LookRotation(WorldSpaceMoveDir, Vector3.up), Time.fixedDeltaTime * rotationSmoothingSpeed));
