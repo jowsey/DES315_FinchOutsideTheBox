@@ -36,6 +36,7 @@ public class PlayerController : NetworkBehaviour
     [Header("State")]
     [ReadOnly] public WheelSeat Seat;
 
+    [field: SyncVar]
     [field: SerializeField] [field: ReadOnly] public Vector3 WorldSpaceMoveDir { get; private set; }
 
     private void Awake()
@@ -77,9 +78,7 @@ public class PlayerController : NetworkBehaviour
         Vector2 inputDirection = _moveAction.action.ReadValue<Vector2>();
 
         WorldSpaceMoveDir = (cameraForward * inputDirection.y + cameraRight * inputDirection.x).normalized;
-
-        CmdSetWorldSpaceMoveDir(WorldSpaceMoveDir);
-
+        
         if (WorldSpaceMoveDir.sqrMagnitude > 0)
         {
             Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, Quaternion.LookRotation(WorldSpaceMoveDir, Vector3.up), Time.fixedDeltaTime * rotationSmoothingSpeed));
@@ -109,12 +108,6 @@ public class PlayerController : NetworkBehaviour
         }
 
         _jumpPressed = false;
-    }
-
-    [Command]
-    private void CmdSetWorldSpaceMoveDir(Vector3 dir)
-    {
-        WorldSpaceMoveDir = dir;
     }
 
     private void OnTriggerEnter(Collider other)

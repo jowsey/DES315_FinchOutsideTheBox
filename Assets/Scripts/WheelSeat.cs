@@ -27,9 +27,10 @@ public class WheelSeat : Mirror.NetworkBehaviour
 
     private PlayerController _seatedPlayer;
     
-    private float _radius;
-    private float _lastUnsitTime = -Mathf.Infinity;
+    [SerializeField] [Required] private SphereCollider _sphereCollider;
     
+    private float _lastUnsitTime = -Mathf.Infinity;
+
 
     [Mirror.Command(requiresAuthority = false)]
     public void CmdTrySitPlayer(Mirror.NetworkIdentity playerIdentity)
@@ -91,28 +92,27 @@ public class WheelSeat : Mirror.NetworkBehaviour
         {
             _wheelJoint.connectedBody = _cartRb;
         }
-
-        _radius = GetComponentInChildren<SphereCollider>().radius;
+        
+        if (!_sphereCollider)
+        {
+            _sphereCollider = GetComponentInChildren<SphereCollider>();
+        }
     }
 
     private void FixedUpdate()
     {
         if (!_seatedPlayer) return;
 
-        var wheelTop = transform.position + Vector3.up * (_radius * transform.lossyScale.y);
+        var wheelTop = transform.position + Vector3.up * (_sphereCollider.radius * transform.lossyScale.y);
 
         //Only apply force on server
-        if (isServer)
-        {
             _wheelRb.AddForceAtPosition(_seatedPlayer.WorldSpaceMoveDir * _moveForce, wheelTop);
-        }
-
         _seatedPlayer.Rb.MovePosition(wheelTop);
     }
 
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.cyan;
-        Gizmos.DrawWireSphere(transform.position, _radius * transform.lossyScale.y);
+        Gizmos.DrawWireSphere(transform.position, _sphereCollider.radius * transform.lossyScale.y);
     }
 }
