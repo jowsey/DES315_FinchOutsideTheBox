@@ -33,6 +33,7 @@ public class TransportSwitcher : MonoBehaviour
     }
 
     [PropertySpace]
+    [DisableInPlayMode]
     [Button("@\"Switch to \" + (_currentTransport == TransportType.Eos ? \"KCP (local play)\" : \"EOS (online play)\")", ButtonSizes.Large)]
     private void Switch()
     {
