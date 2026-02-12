@@ -1,3 +1,4 @@
+using System;
 using EpicTransport;
 using kcp2k;
 using Mirror;
@@ -19,6 +20,11 @@ namespace UI
         {
             _networkManager = FindAnyObjectByType<NetworkManager>(FindObjectsInactive.Include);
             _networkManager.gameObject.SetActive(false);
+        }
+
+        private void OnDestroy()
+        {
+            Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto); // if set by button
         }
 
         public void Quit()
