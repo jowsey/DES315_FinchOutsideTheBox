@@ -11,8 +11,6 @@
 
 namespace AK
 {
-<<<<<<< Updated upstream
-=======
     namespace EVENTS
     {
         static const AkUniqueID CARMOVEMENT = 2594767402U;
@@ -45,7 +43,6 @@ namespace AK
         static const AkUniqueID WHEELSMOVING = 1023454587U;
     } // namespace GAME_PARAMETERS
 
->>>>>>> Stashed changes
     namespace BANKS
     {
         static const AkUniqueID INIT = 1355168291U;
