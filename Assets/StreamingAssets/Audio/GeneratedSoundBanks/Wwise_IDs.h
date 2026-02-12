@@ -11,9 +11,14 @@
 
 namespace AK
 {
+<<<<<<< Updated upstream
+=======
     namespace EVENTS
     {
+        static const AkUniqueID CARMOVEMENT = 2594767402U;
+        static const AkUniqueID CARMOVEMENTTERRAIN = 2369444485U;
         static const AkUniqueID FOOTSTEPS = 2385628198U;
+        static const AkUniqueID MUSIC = 3991942870U;
         static const AkUniqueID TESTSOUJD1 = 1035878255U;
     } // namespace EVENTS
 
@@ -33,6 +38,14 @@ namespace AK
 
     } // namespace SWITCHES
 
+    namespace GAME_PARAMETERS
+    {
+        static const AkUniqueID CAROVERSTONE = 588369366U;
+        static const AkUniqueID MUSICVOLUME = 2346531308U;
+        static const AkUniqueID WHEELSMOVING = 1023454587U;
+    } // namespace GAME_PARAMETERS
+
+>>>>>>> Stashed changes
     namespace BANKS
     {
         static const AkUniqueID INIT = 1355168291U;
