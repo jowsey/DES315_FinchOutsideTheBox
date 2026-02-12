@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <WwiseDocument Type="WorkUnit" ID="{9FA5D0A6-2F0F-47E8-BA50-26CA9C6F1EA9}" SchemaVersion="123">
 	<Events>
+<<<<<<< Updated upstream
+		<WorkUnit Name="Default Work Unit" ID="{9FA5D0A6-2F0F-47E8-BA50-26CA9C6F1EA9}" PersistMode="Standalone"/>
+=======
 		<WorkUnit Name="Default Work Unit" ID="{9FA5D0A6-2F0F-47E8-BA50-26CA9C6F1EA9}" PersistMode="Standalone">
 			<ChildrenList>
 				<Event Name="Footsteps" ID="{66D5153A-0379-48ED-A612-0246E33582F2}">
@@ -19,7 +22,40 @@
 						<Action Name="" ID="{0788DA06-EF2E-449B-9D94-104DC29018BF}" ShortID="533333883">
 							<ReferenceList>
 								<Reference Name="Target">
-									<ObjectRef Name="TestSound1" ID="{1BD837EA-8CFE-48DE-BF11-5ACB3F0C06EB}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+									<ObjectRef Name="LowerLevel" ID="{1BD837EA-8CFE-48DE-BF11-5ACB3F0C06EB}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Music" ID="{8EA49E37-CBAA-4F4F-9EB3-48E847B4037A}">
+					<ChildrenList>
+						<Action Name="" ID="{AFC0E604-DD6B-4F4D-9A47-2A2669FA960B}" ShortID="409619837">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="MoreAmpTest" ID="{23B82944-3C79-4C42-9955-8A26D157D4FD}" WorkUnitID="{81E8AEF2-3E5B-4988-AA2D-27329173BFB3}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="CarMovement" ID="{556CC21C-3CD3-4447-BDDD-4619B002FAE3}">
+					<ChildrenList>
+						<Action Name="" ID="{A84698F6-0C21-4372-9D6B-06445F27F223}" ShortID="1072226716">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="WheelsSound" ID="{20394078-F0EF-4AE1-B002-C51857A66803}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="CarMovementTerrain" ID="{17780900-EB99-4F4D-8E1A-EA3562BF16FD}">
+					<ChildrenList>
+						<Action Name="" ID="{6D9E878F-A869-43AE-8E70-57EDDD73695A}" ShortID="842101599">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="CarOverStone" ID="{97166926-E005-4AAD-85B3-2FB68D6B01F2}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
 								</Reference>
 							</ReferenceList>
 						</Action>
@@ -27,5 +63,6 @@
 				</Event>
 			</ChildrenList>
 		</WorkUnit>
+>>>>>>> Stashed changes
 	</Events>
 </WwiseDocument>

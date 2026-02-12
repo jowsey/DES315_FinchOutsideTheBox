@@ -1,6 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <WwiseDocument Type="WorkUnit" ID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}" SchemaVersion="123">
 	<GameParameters>
-		<WorkUnit Name="Default Work Unit" ID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}" PersistMode="Standalone"/>
+		<WorkUnit Name="Default Work Unit" ID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}" PersistMode="Standalone">
+			<ChildrenList>
+				<GameParameter Name="CarOverStone" ID="{32E54A42-8D27-45A1-903D-094D115060C1}">
+					<PropertyList>
+						<Property Name="InitialValue" Type="Real64" Value="0"/>
+					</PropertyList>
+				</GameParameter>
+				<GameParameter Name="WheelsMoving" ID="{BFB55191-504D-499C-86D7-AC07C3A38E15}">
+					<PropertyList>
+						<Property Name="InitialValue" Type="Real64" Value="0"/>
+					</PropertyList>
+				</GameParameter>
+				<GameParameter Name="MusicVolume" ID="{2C00F143-0CFC-4664-8B6A-E0DF59F14DBF}">
+					<PropertyList>
+						<Property Name="InitialValue" Type="Real64" Value="0"/>
+						<Property Name="Max" Type="Real64" Value="30"/>
+					</PropertyList>
+				</GameParameter>
+			</ChildrenList>
+		</WorkUnit>
 	</GameParameters>
 </WwiseDocument>
