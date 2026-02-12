@@ -1,4 +1,5 @@
 using Mirror;
+using Sirenix.Utilities;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -6,6 +7,9 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : NetworkBehaviour
 {
+    private int playerNetworkId;
+    private static int nextPlayerNetworkId = 0;
+
     [Header("Components")]
     public Rigidbody Rb { get; private set; }
 
@@ -45,6 +49,32 @@ public class PlayerController : NetworkBehaviour
     private void Awake()
     {
         Rb = GetComponent<Rigidbody>();
+    }
+
+    private void Start()
+    {
+        Checkpoint.respawnEvent.AddListener(OnRespawn);
+        if (isServer)
+        {
+            RpcSetPlayerNetworkId(nextPlayerNetworkId);
+            ++nextPlayerNetworkId;
+        }
+    }
+
+    [ClientRpc]
+    void RpcSetPlayerNetworkId(int id)
+    {
+        playerNetworkId = id;
+    }
+
+    void OnRespawn(Checkpoint checkpoint)
+    {
+        if (isLocalPlayer)
+        {
+            Transform newTransform = checkpoint.playerRespawnLocalTransforms[playerNetworkId];
+            transform.position = newTransform.position;
+            transform.rotation = newTransform.rotation;
+        }
     }
 
     public override void OnStartLocalPlayer()
