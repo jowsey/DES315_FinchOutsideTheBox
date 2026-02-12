@@ -1,6 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <WwiseDocument Type="WorkUnit" ID="{9FA5D0A6-2F0F-47E8-BA50-26CA9C6F1EA9}" SchemaVersion="123">
 	<Events>
-		<WorkUnit Name="Default Work Unit" ID="{9FA5D0A6-2F0F-47E8-BA50-26CA9C6F1EA9}" PersistMode="Standalone"/>
+		<WorkUnit Name="Default Work Unit" ID="{9FA5D0A6-2F0F-47E8-BA50-26CA9C6F1EA9}" PersistMode="Standalone">
+			<ChildrenList>
+				<Event Name="Footsteps" ID="{66D5153A-0379-48ED-A612-0246E33582F2}">
+					<ChildrenList>
+						<Action Name="" ID="{356B408F-10E5-489B-AF5D-96D67941054B}" ShortID="71649422">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Footsteps" ID="{7CB0D81E-42B7-413A-989E-7C64B0B8C312}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="TestSoujd1" ID="{3F7B931D-339D-475F-9DB3-3DFF92060DC3}">
+					<ChildrenList>
+						<Action Name="" ID="{0788DA06-EF2E-449B-9D94-104DC29018BF}" ShortID="533333883">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="TestSound1" ID="{1BD837EA-8CFE-48DE-BF11-5ACB3F0C06EB}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+			</ChildrenList>
+		</WorkUnit>
 	</Events>
 </WwiseDocument>
