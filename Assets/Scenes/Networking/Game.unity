@@ -73825,7 +73825,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1829145290}
   m_Direction: 0
   m_Value: 0
-  m_Size: 0.99999994
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -152923,6 +152923,7 @@ GameObject:
   - component: {fileID: 1804469457}
   - component: {fileID: 1804469456}
   - component: {fileID: 1804469455}
+  - component: {fileID: 1804469460}
   - component: {fileID: 1804469454}
   m_Layer: 0
   m_Name: Main Camera
@@ -153208,6 +153209,14 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!81 &1804469460
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1804469453}
+  m_Enabled: 1
 --- !u!1 &1807319836
 GameObject:
   m_ObjectHideFlags: 0
