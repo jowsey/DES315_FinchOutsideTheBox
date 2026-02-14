@@ -46,45 +46,6 @@
 									</MediaIDList>
 								</AudioFileSource>
 							</ChildrenList>
-							<ObjectLists>
-								<ObjectList Name="RTPC">
-									<Reference>
-										<Local>
-											<RTPC Name="" ID="{43464FF1-F796-47F7-9956-4D71B7BA7751}" ShortID="47736911">
-												<PropertyList>
-													<Property Name="PropertyName" Type="string" Value="Volume"/>
-												</PropertyList>
-												<ReferenceList>
-													<Reference Name="ControlInput">
-														<ObjectRef Name="MusicVolume" ID="{2C00F143-0CFC-4664-8B6A-E0DF59F14DBF}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
-													</Reference>
-													<Reference Name="Curve">
-														<Custom>
-															<Curve Name="" ID="{14325ED0-F006-4960-A8E6-B706AC2924DD}">
-																<PropertyList>
-																	<Property Name="Flags" Type="int32" Value="3"/>
-																</PropertyList>
-																<PointList>
-																	<Point>
-																		<XPos>0</XPos>
-																		<YPos>-200</YPos>
-																		<Flags>5</Flags>
-																	</Point>
-																	<Point>
-																		<XPos>30</XPos>
-																		<YPos>0</YPos>
-																		<Flags>37</Flags>
-																	</Point>
-																</PointList>
-															</Curve>
-														</Custom>
-													</Reference>
-												</ReferenceList>
-											</RTPC>
-										</Local>
-									</Reference>
-								</ObjectList>
-							</ObjectLists>
 							<ActiveSourceList>
 								<ActiveSource Name="LowerLevel" ID="{CF46A146-2463-469F-9DAF-F5DF5ECDFB47}" Platform="Linked"/>
 							</ActiveSourceList>
@@ -298,6 +259,11 @@
 									</ReferenceList>
 									<ChildrenList>
 										<AudioFileSource Name="WheelRolls15-100" ID="{BE8306F3-02E6-48EB-A024-3D7B401E2ECF}">
+											<PropertyList>
+												<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+												<Property Name="TrimBegin" Type="Real64" Value="0.0275051379817717"/>
+												<Property Name="TrimEnd" Type="Real64" Value="5.35998989035999"/>
+											</PropertyList>
 											<Language>SFX</Language>
 											<AudioFile>WheelRolls15-100.wav</AudioFile>
 											<MediaIDList>
