@@ -22,6 +22,7 @@ public class PlayerController : NetworkBehaviour
 
     //Wwise Event to trigger footstep sound
     public AK.Wwise.Event footstepSound = new AK.Wwise.Event();
+    public AK.Wwise.Event carSound = new AK.Wwise.Event();
 
     [Tooltip("Percentage of gravity to negate when gliding")]
     [SerializeField] [Range(0, 100)] private float gravityNegationPercentage = 90;
@@ -58,6 +59,8 @@ public class PlayerController : NetworkBehaviour
         {
             RpcSetPlayerNetworkId(nextPlayerNetworkId);
             ++nextPlayerNetworkId;
+
+            carSound.Post(gameObject);
         }
     }
 
@@ -112,10 +115,11 @@ public class PlayerController : NetworkBehaviour
 
         WorldSpaceMoveDir = (cameraForward * inputDirection.y + cameraRight * inputDirection.x).normalized;
 
-        if (WorldSpaceMoveDir.sqrMagnitude > 0)
+        if (WorldSpaceMoveDir.sqrMagnitude > 0 && Seat == null)
         {
             Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, Quaternion.LookRotation(WorldSpaceMoveDir, Vector3.up), Time.fixedDeltaTime * rotationSmoothingSpeed));
             footstepSound.Post(gameObject);
+            
         }
 
         if (Seat && _jumpPressed)
@@ -143,6 +147,8 @@ public class PlayerController : NetworkBehaviour
 
         _jumpPressed = false;
     }
+
+    
 
     private void OnTriggerEnter(Collider other)
     {
