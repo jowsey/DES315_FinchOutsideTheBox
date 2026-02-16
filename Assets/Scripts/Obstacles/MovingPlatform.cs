@@ -1,5 +1,4 @@
 using Mirror;
-using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Splines;
 
