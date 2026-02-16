@@ -14,14 +14,12 @@ public class Cart : NetworkBehaviour
     public int currentCheckpointIndex { get; private set; }
 
     [SerializeField] private InputActionReference respawnAction;
-    private NetworkRigidbodyReliable networkRb;
-    private Collider[] colliders;
+    [SerializeField] private InputActionReference dev_checkpointBackAction;
+    [SerializeField] private InputActionReference dev_checkpointForwardAction;
 
     private void Awake()
     {
         Rb = GetComponent<Rigidbody>();
-        networkRb = GetComponent<NetworkRigidbodyReliable>();
-        colliders = GetComponentsInChildren<Collider>();
         for (int i = 0; i < checkpoints.Length; i++)
         {
             checkpoints[i].index = i;
@@ -68,6 +66,16 @@ public class Cart : NetworkBehaviour
 
         if (respawnAction.action.WasPressedThisFrame())
         {
+            CmdInvokeRespawnEvent();
+        }
+        else if (dev_checkpointBackAction.action.WasPressedThisFrame() && currentCheckpointIndex != 0)
+        {
+            --currentCheckpointIndex;
+            CmdInvokeRespawnEvent();
+        }
+        else if (dev_checkpointForwardAction.action.WasPressedThisFrame() && currentCheckpointIndex != checkpoints.Length - 1)
+        {
+            ++currentCheckpointIndex;
             CmdInvokeRespawnEvent();
         }
     }
