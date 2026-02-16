@@ -23,7 +23,7 @@ public class WheelSeat : Mirror.NetworkBehaviour
     [Header("State")]
     [Tooltip("The player currently sitting in this seat")]
     [Mirror.SyncVar(hook = nameof(OnSeatedPlayerChanged))]
-    [SerializeField] [ReadOnly] private Mirror.NetworkIdentity _seatedPlayerIdentity;
+    [SerializeField] [Mirror.ReadOnly] private Mirror.NetworkIdentity _seatedPlayerIdentity;
 
     private PlayerController _seatedPlayer;
     
@@ -31,6 +31,7 @@ public class WheelSeat : Mirror.NetworkBehaviour
     
     private float _lastUnsitTime = -Mathf.Infinity;
 
+    public Vector3 SeatedPosition => transform.position + Vector3.up * (_sphereCollider.radius * transform.lossyScale.y);
 
     [Mirror.Command(requiresAuthority = false)]
     public void CmdTrySitPlayer(Mirror.NetworkIdentity playerIdentity)
@@ -50,7 +51,7 @@ public class WheelSeat : Mirror.NetworkBehaviour
     {
         PlayerController oldPlayer = _seatedPlayer;
         _seatedPlayer = newValue ? newValue.GetComponent<PlayerController>() : null;
-
+        
         if (_seatedPlayer != null)
         {
             //Player is getting on
@@ -104,15 +105,7 @@ public class WheelSeat : Mirror.NetworkBehaviour
         if (!_seatedPlayer) return;
 
         var wheelTop = transform.position + Vector3.up * (_sphereCollider.radius * transform.lossyScale.y);
-
         _wheelRb.AddForceAtPosition(_seatedPlayer.WorldSpaceMoveDir * _moveForce, wheelTop);
-    }
-
-    private void LateUpdate()
-    {
-        if (!_seatedPlayer) { return; }
-        var wheelTop = transform.position + Vector3.up * (_sphereCollider.radius * transform.lossyScale.y);
-        _seatedPlayer.transform.position = wheelTop;
     }
 
     private void OnDrawGizmosSelected()
