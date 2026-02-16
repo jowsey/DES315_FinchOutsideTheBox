@@ -1,14 +1,11 @@
 using Mirror;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using System.Collections;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Cart : NetworkBehaviour
 {
     public Rigidbody Rb { get; private set; }
-
-
 
     [SerializeField] private Checkpoint[] checkpoints;
     public int currentCheckpointIndex { get; private set; }
@@ -29,13 +26,11 @@ public class Cart : NetworkBehaviour
     private void Start()
     {
         Checkpoint.respawnEvent.AddListener(OnRespawn);
-
-
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Checkpoint")
+        if (other.CompareTag("Checkpoint"))
         {
             Checkpoint checkpoint = other.GetComponent<Checkpoint>();
             if (checkpoint.index > currentCheckpointIndex)
@@ -62,8 +57,6 @@ public class Cart : NetworkBehaviour
 
     private void Update()
     {
-
-
         if (respawnAction.action.WasPressedThisFrame())
         {
             CmdInvokeRespawnEvent();
