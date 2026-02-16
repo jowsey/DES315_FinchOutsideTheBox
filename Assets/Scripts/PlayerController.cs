@@ -1,5 +1,4 @@
 using Mirror;
-using Sirenix.Utilities;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -116,6 +115,15 @@ public class PlayerController : NetworkBehaviour
         _jumpPressed |= _jumpAction.action.WasPressedThisFrame();
     }
 
+    private void LateUpdate()
+    {
+        if (Seat)
+        {
+            transform.position = Seat.SeatedPosition;
+            Physics.SyncTransforms();
+        }
+    }
+
     private void FixedUpdate()
     {
         if (!isLocalPlayer) { return; }
@@ -130,33 +138,19 @@ public class PlayerController : NetworkBehaviour
         WorldSpaceMoveDir = (cameraForward * inputDirection.y + cameraRight * inputDirection.x).normalized;
 
         //Wwise Stuff If moving, play footstep sounds
-        if (WorldSpaceMoveDir.sqrMagnitude > 0 && Seat == null)
+        if (WorldSpaceMoveDir.sqrMagnitude > 0)
         {
             Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, Quaternion.LookRotation(WorldSpaceMoveDir, Vector3.up), Time.fixedDeltaTime * rotationSmoothingSpeed));
-            footstepSound.Post(gameObject);
 
-        }
-
-        if (WorldSpaceMoveDir.sqrMagnitude > 0 && Seat == true)
-        {
-            Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, Quaternion.LookRotation(WorldSpaceMoveDir, Vector3.up), Time.fixedDeltaTime * rotationSmoothingSpeed));
-            IsWDown();
-            
-
-        }
-        if (!Seat)
-        {
-            
-                RTPCpeed -= 3f;
-            
-
-            if (RTPCpeed < 0)
+            if (!Seat)
             {
-                RTPCpeed = 0;
+                footstepSound.Post(gameObject);
             }
-            RTPCSpeed.SetGlobalValue(RTPCpeed);
+            else
+            {
+                IsWDown();
+            }
         }
-        //This is the end of the Wwise Stuff
 
         if (Seat && _jumpPressed)
         {
@@ -179,6 +173,14 @@ public class PlayerController : NetworkBehaviour
                 float gravityNegationPercentage01 = gravityNegationPercentage / 100.0f;
                 Rb.AddForce(-Physics.gravity * gravityNegationPercentage01, ForceMode.Acceleration);
             }
+            
+            // Wwise
+            RTPCpeed -= 3f;
+            if (RTPCpeed < 0)
+            {
+                RTPCpeed = 0;
+            }
+            RTPCSpeed.SetGlobalValue(RTPCpeed);
         }
 
         _jumpPressed = false;
