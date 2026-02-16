@@ -81,8 +81,14 @@ public class PlayerController : NetworkBehaviour
         if (isLocalPlayer)
         {
             Transform newTransform = checkpoint.playerRespawnLocalTransforms[playerNetworkId];
-            transform.position = newTransform.position;
-            transform.rotation = newTransform.rotation;
+
+            Rb.position = newTransform.position;
+            Rb.rotation = newTransform.rotation;
+            if (!Rb.isKinematic)
+            {
+                Rb.linearVelocity = Vector3.zero;
+                Rb.angularVelocity = Vector3.zero;
+            }
         }
     }
 

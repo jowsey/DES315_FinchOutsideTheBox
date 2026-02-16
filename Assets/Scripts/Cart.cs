@@ -1,6 +1,7 @@
 using Mirror;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Cart : NetworkBehaviour
@@ -13,10 +14,14 @@ public class Cart : NetworkBehaviour
     public int currentCheckpointIndex { get; private set; }
 
     [SerializeField] private InputActionReference respawnAction;
+    private NetworkRigidbodyReliable networkRb;
+    private Collider[] colliders;
 
     private void Awake()
     {
         Rb = GetComponent<Rigidbody>();
+        networkRb = GetComponent<NetworkRigidbodyReliable>();
+        colliders = GetComponentsInChildren<Collider>();
         for (int i = 0; i < checkpoints.Length; i++)
         {
             checkpoints[i].index = i;
@@ -47,8 +52,16 @@ public class Cart : NetworkBehaviour
         if (isServer)
         {
             Transform newTransform = checkpoint.cartRespawnLocalTransform;
+            gameObject.SetActive(false);
+            foreach (var rb in GetComponentsInChildren<Rigidbody>())
+            {
+                rb.linearVelocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+            }
+
             transform.position = newTransform.position;
             transform.rotation = newTransform.rotation;
+            gameObject.SetActive(true);
         }
     }
 
@@ -68,6 +81,7 @@ public class Cart : NetworkBehaviour
         RpcInvokeRespawnEvent();
     }
 
+    [ClientRpc]
     void RpcInvokeRespawnEvent()
     {
         Checkpoint.respawnEvent.Invoke(checkpoints[currentCheckpointIndex]);
