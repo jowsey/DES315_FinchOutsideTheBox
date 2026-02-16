@@ -25,17 +25,15 @@ public class PlayerController : NetworkBehaviour
     //Car Stuff
     public AK.Wwise.Event carSound = new AK.Wwise.Event();
     public AK.Wwise.RTPC RTPCSpeed;
-    public float RTPCpeed = 0f;
+    public float RTPCSpeedValue;
 
     [Tooltip("Percentage of gravity to negate when gliding")]
     [SerializeField] [Range(0, 100)] private float gravityNegationPercentage = 90;
 
     [SerializeField] private float rotationSmoothingSpeed = 8;
 
-
     [Header("Camera")]
     [SerializeField] [ReadOnly] private CinemachineCamera _camera;
-
 
     [Header("Movement")]
     [Tooltip("Amount of upwards force applied when jumping")]
@@ -137,20 +135,29 @@ public class PlayerController : NetworkBehaviour
 
         WorldSpaceMoveDir = (cameraForward * inputDirection.y + cameraRight * inputDirection.x).normalized;
 
-        //Wwise Stuff If moving, play footstep sounds
         if (WorldSpaceMoveDir.sqrMagnitude > 0)
         {
-            Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, Quaternion.LookRotation(WorldSpaceMoveDir, Vector3.up), Time.fixedDeltaTime * rotationSmoothingSpeed));
-
-            if (!Seat)
+            // todo this should definitely run outside of localplayer (for other players' footsteps) and rtpc speed should be based on actual wheel speed, not input time
+            if (Seat)
             {
-                footstepSound.Post(gameObject);
+                RTPCSpeedValue += 4f;
             }
             else
             {
-                IsWDown();
+                footstepSound.Post(gameObject);
             }
+            
+            Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, Quaternion.LookRotation(WorldSpaceMoveDir, Vector3.up), Time.fixedDeltaTime * rotationSmoothingSpeed));
+
         }
+        else
+        {
+            // todo again should be based on cart speed
+            RTPCSpeedValue -= 3f;
+        }
+
+        RTPCSpeedValue = Mathf.Clamp(RTPCSpeedValue, 0, 100);
+        RTPCSpeed.SetGlobalValue(RTPCSpeedValue);
 
         if (Seat && _jumpPressed)
         {
@@ -173,45 +180,10 @@ public class PlayerController : NetworkBehaviour
                 float gravityNegationPercentage01 = gravityNegationPercentage / 100.0f;
                 Rb.AddForce(-Physics.gravity * gravityNegationPercentage01, ForceMode.Acceleration);
             }
-            
-            // Wwise
-            RTPCpeed -= 3f;
-            if (RTPCpeed < 0)
-            {
-                RTPCpeed = 0;
-            }
-            RTPCSpeed.SetGlobalValue(RTPCpeed);
         }
 
         _jumpPressed = false;
     }
-
-    //Other Paolo Change
-    public void IsWDown()
-    {
-        var wKeyPressed = Keyboard.current.wKey.isPressed;
-        if (wKeyPressed == true)
-        {
-            RTPCpeed += 4f;
-        }
-        else
-        {
-            RTPCpeed -= 3f;
-        }
-
-        if (RTPCpeed < 0)
-        {
-            RTPCpeed = 0;
-        }
-        if (RTPCpeed > 100)
-        {
-            RTPCpeed = 100;
-        }
-        Debug.Log(RTPCSpeed);
-        RTPCSpeed.SetGlobalValue(RTPCpeed);
-
-    }
-
 
     private void OnTriggerEnter(Collider other)
     {
