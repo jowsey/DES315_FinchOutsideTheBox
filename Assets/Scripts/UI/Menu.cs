@@ -40,6 +40,13 @@ namespace UI
         {
             Debug.Log("Playing online");
 
+            if (_networkManager.transport != null)
+            {
+                // we currently offload to EOS built-in UI. eventually this will have proper state
+                Debug.Log("Existing transport found");
+                return;
+            }
+
             var transport = Instantiate(_eosTransportPrefab);
             transport.GetComponent<EOSLobbyHUD>().manager = _networkManager;
             DontDestroyOnLoad(transport);
