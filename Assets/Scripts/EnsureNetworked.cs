@@ -8,7 +8,6 @@ public class EnsureNetworked : MonoBehaviour
         if (!FindAnyObjectByType<Mirror.NetworkManager>())
         {
             SceneManager.LoadScene("Menu");
-            Cursor.lockState = CursorLockMode.None; // overwrite just to be sure
         }
     }
 }
