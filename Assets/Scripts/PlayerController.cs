@@ -83,6 +83,8 @@ public class PlayerController : NetworkBehaviour
                 Rb.linearVelocity = Vector3.zero;
                 Rb.angularVelocity = Vector3.zero;
             }
+
+            _camera.PreviousStateIsValid = false;
         }
     }
 
