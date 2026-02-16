@@ -49,20 +49,17 @@ public class Cart : NetworkBehaviour
 
     void OnRespawn(Checkpoint checkpoint)
     {
-        if (isServer)
+        Transform newTransform = checkpoint.cartRespawnLocalTransform;
+        gameObject.SetActive(false);
+        foreach (var rb in GetComponentsInChildren<Rigidbody>())
         {
-            Transform newTransform = checkpoint.cartRespawnLocalTransform;
-            gameObject.SetActive(false);
-            foreach (var rb in GetComponentsInChildren<Rigidbody>())
-            {
-                rb.linearVelocity = Vector3.zero;
-                rb.angularVelocity = Vector3.zero;
-            }
-
-            transform.position = newTransform.position;
-            transform.rotation = newTransform.rotation;
-            gameObject.SetActive(true);
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
         }
+
+        transform.position = newTransform.position;
+        transform.rotation = newTransform.rotation;
+        gameObject.SetActive(true);
     }
 
     private void Update()
@@ -75,7 +72,7 @@ public class Cart : NetworkBehaviour
         }
     }
 
-    [Command]
+    [Command(requiresAuthority = false)]
     void CmdInvokeRespawnEvent()
     {
         RpcInvokeRespawnEvent();
