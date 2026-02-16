@@ -7,9 +7,7 @@ public class Cart : NetworkBehaviour
 {
     public Rigidbody Rb { get; private set; }
 
-    public AK.Wwise.Event carSound = new AK.Wwise.Event();
-    public AK.Wwise.RTPC RTPCSpeed;
-    public float RTPCpeed = 0f;
+
 
     [SerializeField] private Checkpoint[] checkpoints;
     public int currentCheckpointIndex { get; private set; }
@@ -29,9 +27,7 @@ public class Cart : NetworkBehaviour
     {
         Checkpoint.respawnEvent.AddListener(OnRespawn);
 
-        carSound.Post(gameObject);
-        float RTPCpeed = 0;
-        RTPCSpeed.SetGlobalValue(RTPCpeed);
+
     }
 
     private void OnTriggerEnter(Collider other)
@@ -58,7 +54,7 @@ public class Cart : NetworkBehaviour
 
     private void Update()
     {
-        IsZDown();
+
 
         if (respawnAction.action.WasPressedThisFrame())
         {
@@ -77,28 +73,4 @@ public class Cart : NetworkBehaviour
         Checkpoint.respawnEvent.Invoke(checkpoints[currentCheckpointIndex]);
     }
 
-    public void IsZDown()
-    {
-        var zKeyPressed = Keyboard.current.zKey.isPressed;
-        if (zKeyPressed == true)
-        {
-            RTPCpeed += 1f;
-        }
-        else
-        {
-            RTPCpeed -= 3f;
-        }
-
-        if (RTPCpeed < 0)
-        {
-            RTPCpeed = 0;
-        }
-        if (RTPCpeed > 100)
-        {
-            RTPCpeed = 100;
-        }
-        Debug.Log(RTPCSpeed);
-        RTPCSpeed.SetGlobalValue(RTPCpeed);
-
-    }
 }
