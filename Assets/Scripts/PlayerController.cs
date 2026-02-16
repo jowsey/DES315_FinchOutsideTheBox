@@ -22,7 +22,11 @@ public class PlayerController : NetworkBehaviour
 
     //Wwise Event to trigger footstep sound
     public AK.Wwise.Event footstepSound = new AK.Wwise.Event();
+    
+    //Car Stuff
     public AK.Wwise.Event carSound = new AK.Wwise.Event();
+    public AK.Wwise.RTPC RTPCSpeed;
+    public float RTPCpeed = 0f;
 
     [Tooltip("Percentage of gravity to negate when gliding")]
     [SerializeField] [Range(0, 100)] private float gravityNegationPercentage = 90;
@@ -61,6 +65,8 @@ public class PlayerController : NetworkBehaviour
             ++nextPlayerNetworkId;
 
             carSound.Post(gameObject);
+            float RTPCpeed = 0;
+            RTPCSpeed.SetGlobalValue(RTPCpeed);
         }
     }
 
@@ -115,12 +121,34 @@ public class PlayerController : NetworkBehaviour
 
         WorldSpaceMoveDir = (cameraForward * inputDirection.y + cameraRight * inputDirection.x).normalized;
 
+        //Wwise Stuff If moving, play footstep sounds
         if (WorldSpaceMoveDir.sqrMagnitude > 0 && Seat == null)
         {
             Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, Quaternion.LookRotation(WorldSpaceMoveDir, Vector3.up), Time.fixedDeltaTime * rotationSmoothingSpeed));
             footstepSound.Post(gameObject);
-            
+
         }
+
+        if (WorldSpaceMoveDir.sqrMagnitude > 0 && Seat == true)
+        {
+            Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, Quaternion.LookRotation(WorldSpaceMoveDir, Vector3.up), Time.fixedDeltaTime * rotationSmoothingSpeed));
+            IsWDown();
+            
+
+        }
+        if (!Seat)
+        {
+            
+                RTPCpeed -= 3f;
+            
+
+            if (RTPCpeed < 0)
+            {
+                RTPCpeed = 0;
+            }
+            RTPCSpeed.SetGlobalValue(RTPCpeed);
+        }
+        //This is the end of the Wwise Stuff
 
         if (Seat && _jumpPressed)
         {
@@ -148,7 +176,32 @@ public class PlayerController : NetworkBehaviour
         _jumpPressed = false;
     }
 
-    
+    //Other Paolo Change
+    public void IsWDown()
+    {
+        var wKeyPressed = Keyboard.current.wKey.isPressed;
+        if (wKeyPressed == true)
+        {
+            RTPCpeed += 4f;
+        }
+        else
+        {
+            RTPCpeed -= 3f;
+        }
+
+        if (RTPCpeed < 0)
+        {
+            RTPCpeed = 0;
+        }
+        if (RTPCpeed > 100)
+        {
+            RTPCpeed = 100;
+        }
+        Debug.Log(RTPCSpeed);
+        RTPCSpeed.SetGlobalValue(RTPCpeed);
+
+    }
+
 
     private void OnTriggerEnter(Collider other)
     {
