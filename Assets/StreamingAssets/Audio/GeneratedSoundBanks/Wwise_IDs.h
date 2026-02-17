@@ -20,6 +20,37 @@ namespace AK
         static const AkUniqueID TESTSOUJD1 = 1035878255U;
     } // namespace EVENTS
 
+    namespace STATES
+    {
+        namespace MUSIC
+        {
+            static const AkUniqueID GROUP = 3991942870U;
+
+            namespace STATE
+            {
+                static const AkUniqueID DESERT = 1850388778U;
+                static const AkUniqueID HEAVENLYGATES = 3598752419U;
+                static const AkUniqueID LOWERAMP = 233930006U;
+                static const AkUniqueID LOWERLEVEL = 3017469230U;
+                static const AkUniqueID NONE = 748895195U;
+                static const AkUniqueID RUINSSAVE = 2889645033U;
+            } // namespace STATE
+        } // namespace MUSIC
+
+        namespace SCENE
+        {
+            static const AkUniqueID GROUP = 1926883983U;
+
+            namespace STATE
+            {
+                static const AkUniqueID GAME = 702482391U;
+                static const AkUniqueID MENU = 2607556080U;
+                static const AkUniqueID NONE = 748895195U;
+            } // namespace STATE
+        } // namespace SCENE
+
+    } // namespace STATES
+
     namespace SWITCHES
     {
         namespace FOOTSTEPS

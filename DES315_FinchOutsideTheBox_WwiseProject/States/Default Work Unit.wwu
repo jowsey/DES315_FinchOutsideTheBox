@@ -1,6 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <WwiseDocument Type="WorkUnit" ID="{88371829-8EC2-4F34-95D2-85C83FF6AB14}" SchemaVersion="123">
 	<States>
-		<WorkUnit Name="Default Work Unit" ID="{88371829-8EC2-4F34-95D2-85C83FF6AB14}" PersistMode="Standalone"/>
+		<WorkUnit Name="Default Work Unit" ID="{88371829-8EC2-4F34-95D2-85C83FF6AB14}" PersistMode="Standalone">
+			<ChildrenList>
+				<StateGroup Name="Music" ID="{76760B35-8366-48C7-8775-08A18124DF1A}">
+					<ChildrenList>
+						<State Name="None" ID="{967B1C40-2409-44AC-9EAF-8FE4D0324E47}"/>
+						<State Name="LowerLevel" ID="{5CF4C524-2019-4F96-94A1-9639625D404E}"/>
+						<State Name="RuinsSave" ID="{41D3C7E7-1D94-45AD-BB37-BD0228A1AF3D}"/>
+						<State Name="HeavenlyGates" ID="{1438661A-17AC-4386-93AE-57C9FE7EC55E}"/>
+						<State Name="LowerAmp" ID="{7993C810-EA59-4AF2-ADB1-A944DF921E78}"/>
+						<State Name="Desert" ID="{36CEFC04-4BC4-4FB6-824C-BB554CD3631E}"/>
+					</ChildrenList>
+				</StateGroup>
+				<StateGroup Name="Scene" ID="{CED6D055-CA15-4973-B0B3-B2D1D97045F5}">
+					<ChildrenList>
+						<State Name="None" ID="{3966EC6D-F3E3-45AD-9985-C640B6B8E302}"/>
+						<State Name="Menu" ID="{419F3EB9-AAC8-4C00-94ED-3D711D8D8DF8}"/>
+						<State Name="Game" ID="{55D680FE-ACF4-4E2B-8EFB-B5EC4D541F7C}"/>
+					</ChildrenList>
+				</StateGroup>
+			</ChildrenList>
+		</WorkUnit>
 	</States>
 </WwiseDocument>
