@@ -3,10 +3,14 @@ using System.Buffers;
 using System.Linq;
 using JetBrains.Annotations;
 using Mirror;
+using Sirenix.OdinInspector;
+using TMPro;
 using UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using VoIP.Util;
+using System.Collections.Generic;
+using UnityEngine.Events;
 
 namespace VoIP
 {
@@ -20,7 +24,8 @@ namespace VoIP
         [CanBeNull] private SpeexResampler _resampler;
         [CanBeNull] private RnNoiseProcessor _denoiser;
 
-        [SerializeField] private string _device; // todo user chooses at runtime, save to file
+        public static UnityEvent<string[]> InputDeviceListChangeEvent = new UnityEvent<string[]>();
+        [SerializeField] private string _device;
         [SerializeField] private AudioSource _source;
 
         [SerializeField] private InputActionReference _pushToTalkAction;
@@ -49,39 +54,12 @@ namespace VoIP
         {
             if (isLocalPlayer)
             {
-                if (string.IsNullOrWhiteSpace(_device))
-                {
-                    _device = Microphone.devices[0];
-                    Debug.LogWarning($"No mic set, defaulting to: \"{_device}\"");
-                }
-                else if (!Microphone.devices.Contains(_device))
-                {
-                    var partialMatch = Microphone.devices.FirstOrDefault(d => d.ToLower().Contains(_device.ToLower()));
-                    if (partialMatch != null)
-                    {
-                        Debug.LogWarning($"Mic \"{_device}\" not found, using partial match: \"{partialMatch}\".");
-                        _device = partialMatch;
-                    }
-                    else
-                    {
-                        var newDevice = Microphone.devices[0];
-                        Debug.LogWarning($"Mic \"{_device}\" not found, defaulting to: \"{newDevice}\"");
-                        _device = newDevice;
-                    }
-                }
-
-                Microphone.GetDeviceCaps(_device, out _, out var maxFreq);
-                _micSampleRate = maxFreq != 0 && maxFreq < SampleRate ? maxFreq : SampleRate;
-
-                if (_micSampleRate != SampleRate)
-                {
-                    _resampler = new SpeexResampler((uint)maxFreq, SampleRate);
-                    Debug.Log($"Mic will be resampled from {maxFreq / 1000f}kHz to {SampleRate / 1000}kHz.");
-                }
-
                 _denoiser = new RnNoiseProcessor();
-
-                StartMic();
+                if (SettingsManager.ActiveSettings.InputDevice != null)
+                {
+                    SetMic(SettingsManager.ActiveSettings.InputDevice);
+                    StartMic();
+                }
             }
             else
             {
@@ -98,6 +76,49 @@ namespace VoIP
                 _source.clip = clip;
                 _source.loop = true;
                 _source.Play();
+            }
+        }
+
+        public void SetDevice(string inputDevice)
+        {
+            StopMic();
+            SetMic(inputDevice);
+            if (_device != null)
+            {
+                StartMic();
+            }
+        }
+
+        private void SetMic(string deviceName)
+        {
+            _device = deviceName;
+            if (string.IsNullOrWhiteSpace(_device))
+            {
+                return;
+            }
+            else if (!Microphone.devices.Contains(_device))
+            {
+                var partialMatch = Microphone.devices.FirstOrDefault(d => d.ToLower().Contains(_device.ToLower()));
+                if (partialMatch != null)
+                {
+                    Debug.LogWarning($"Mic \"{_device}\" not found, using partial match: \"{partialMatch}\".");
+                    _device = partialMatch;
+                }
+                else
+                {
+                    var newDevice = Microphone.devices[0];
+                    Debug.LogWarning($"Mic \"{_device}\" not found, defaulting to: \"{newDevice}\"");
+                    _device = newDevice;
+                }
+            }
+
+            Microphone.GetDeviceCaps(_device, out _, out var maxFreq);
+            _micSampleRate = maxFreq != 0 && maxFreq < SampleRate ? maxFreq : SampleRate;
+
+            if (_micSampleRate != SampleRate)
+            {
+                _resampler = new SpeexResampler((uint)maxFreq, SampleRate);
+                Debug.Log($"Mic will be resampled from {maxFreq / 1000f}kHz to {SampleRate / 1000}kHz.");
             }
         }
 
@@ -135,7 +156,7 @@ namespace VoIP
 
         public void StopMic()
         {
-            if (!_isRecording || !Microphone.IsRecording(_device)) return;
+            if (!_isRecording) return;
             _isRecording = false;
 
             Microphone.End(_device);
