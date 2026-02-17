@@ -2,32 +2,24 @@ using Mirror;
 using UnityEngine;
 using UnityEngine.Splines;
 
-public class MovingPlatform : NetworkBehaviour
+public class MovingPlatform : MonoBehaviour
 {
     private Rigidbody _rb;
     private SplineContainer _container;
 
-    [SyncVar]
-    private float _t = 0;
-
     [SerializeField] private float _duration;
 
-
-    void Awake()
+    private void Awake()
     {
         _rb = GetComponentInChildren<Rigidbody>();
         _container = GetComponentInChildren<SplineContainer>();
     }
 
-
-    void FixedUpdate()
+    private void FixedUpdate()
     {
-        Vector3 localPos = _container.Splines[0].EvaluatePosition(_t);
+        var t = (float)(NetworkTime.time % _duration / _duration);
+        Vector3 localPos = _container.Splines[0].EvaluatePosition(t);
         Vector3 worldPos = _container.transform.TransformPoint(localPos);
         _rb.MovePosition(worldPos);
-        if (isServer)
-        {
-            _t = (_t + Time.fixedDeltaTime / _duration) % 1.0f;
-        }
     }
 }
