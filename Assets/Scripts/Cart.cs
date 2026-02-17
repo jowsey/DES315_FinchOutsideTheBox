@@ -59,29 +59,28 @@ public class Cart : NetworkBehaviour
     {
         if (respawnAction.action.WasPressedThisFrame())
         {
-            CmdInvokeRespawnEvent();
+            CmdInvokeRespawnEvent(currentCheckpointIndex);
         }
         else if (dev_checkpointBackAction.action.WasPressedThisFrame() && currentCheckpointIndex != 0)
         {
-            --currentCheckpointIndex;
-            CmdInvokeRespawnEvent();
+            CmdInvokeRespawnEvent(currentCheckpointIndex - 1);
         }
         else if (dev_checkpointForwardAction.action.WasPressedThisFrame() && currentCheckpointIndex != checkpoints.Length - 1)
         {
-            ++currentCheckpointIndex;
-            CmdInvokeRespawnEvent();
+            CmdInvokeRespawnEvent(currentCheckpointIndex + 1);
         }
     }
 
     [Command(requiresAuthority = false)]
-    void CmdInvokeRespawnEvent()
+    void CmdInvokeRespawnEvent(int newCheckpointIndex)
     {
-        RpcInvokeRespawnEvent();
+        RpcInvokeRespawnEvent(newCheckpointIndex);
     }
 
     [ClientRpc]
-    void RpcInvokeRespawnEvent()
+    void RpcInvokeRespawnEvent(int newCheckpointIndex)
     {
+        currentCheckpointIndex = newCheckpointIndex;
         Checkpoint.respawnEvent.Invoke(checkpoints[currentCheckpointIndex]);
     }
 
