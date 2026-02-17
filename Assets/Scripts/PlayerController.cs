@@ -171,7 +171,8 @@ public class PlayerController : NetworkBehaviour
             Rb.MovePosition(Rb.position + delta);
 
             //Jump
-            if (_jumpPressed && Physics.CheckSphere(Rb.position, 0.1f, ~(1 << gameObject.layer)))
+            var grounded = Physics.CheckSphere(Rb.position, 0.1f, ~(1 << gameObject.layer),  QueryTriggerInteraction.Ignore);
+            if (_jumpPressed && grounded)
             {
                 Rb.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
             }
