@@ -46,6 +46,7 @@ public class Cart : NetworkBehaviour
         gameObject.SetActive(false);
         foreach (var rb in GetComponentsInChildren<Rigidbody>())
         {
+            if (rb.isKinematic) continue;
             rb.linearVelocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
         }
