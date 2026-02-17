@@ -270,7 +270,7 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 0
   m_IsKinematic: 1
-  m_Interpolate: 0
+  m_Interpolate: 2
   m_Constraints: 0
   m_CollisionDetection: 0
 --- !u!1 &2007889845270186147
@@ -283,7 +283,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7896662243893274959}
   - component: {fileID: 467000727723354700}
-  - component: {fileID: 6674558782000391187}
   - component: {fileID: 9066638535137984996}
   m_Layer: 0
   m_Name: MovingPlatform
@@ -321,28 +320,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9be4b5da733385948a2feccf734d81f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MovingPlatform
-  syncMethod: 0
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _duration: 10
---- !u!114 &6674558782000391187
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2007889845270186147}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
-  sceneId: 0
-  _assetId: 536192891
-  serverOnly: 0
-  visibility: 0
-  hasSpawned: 0
 --- !u!114 &9066638535137984996
 MonoBehaviour:
   m_ObjectHideFlags: 0

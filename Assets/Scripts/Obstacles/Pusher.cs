@@ -25,7 +25,7 @@ public class Pusher : NetworkBehaviour
         if (!isServer) { return; }
         if (_extending)
         {
-            transform.localScale += Vector3.right * _pushSpeed * Time.deltaTime;
+            transform.localScale += Vector3.right * (_pushSpeed * Time.deltaTime);
             if (transform.localScale.x >= _maxPushDistance)
             {
                 _extending = false;
@@ -33,12 +33,17 @@ public class Pusher : NetworkBehaviour
         }
         else
         {
-            transform.localScale -= Vector3.right * _pushSpeed * Time.deltaTime;
+            transform.localScale -= Vector3.right * (_pushSpeed * Time.deltaTime);
             if (transform.localScale.x <= _minPushDistance)
             {
                 _extending = true;
             }
         }
-        transform.localScale = new Vector3(Mathf.Clamp(transform.localScale.x, _minPushDistance, _maxPushDistance), transform.localScale.y, transform.localScale.z);
+
+        transform.localScale = new Vector3(
+            Mathf.Clamp(transform.localScale.x, _minPushDistance, _maxPushDistance),
+            transform.localScale.y,
+            transform.localScale.z
+        );
     }
 }
