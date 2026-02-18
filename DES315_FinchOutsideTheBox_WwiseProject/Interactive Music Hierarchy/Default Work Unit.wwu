@@ -24,7 +24,6 @@
 									<ChildrenList>
 										<MusicTransition Name="Transition" ID="{7DF8998F-0226-4672-8C6B-2BE9AC579EFF}">
 											<PropertyList>
-												<Property Name="DestinationPlaylistJumpTo" Type="int16" Value="3"/>
 												<Property Name="EnableDestinationFadeIn" Type="bool" Value="True"/>
 												<Property Name="EnableSourceFadeOut" Type="bool" Value="True"/>
 												<Property Name="ExitSourceAt" Type="int16" Value="3"/>
@@ -48,6 +47,41 @@
 												</DestinationFadeIn>
 											</TransitionInfo>
 										</MusicTransition>
+										<MusicTransition Name="Transition" ID="{952158E9-232A-4916-92B8-8B35A49ECFD0}">
+											<PropertyList>
+												<Property Name="DestinationContextType" Type="int16" Value="2"/>
+												<Property Name="DestinationJumpPositionPreset" Type="int16" Value="4"/>
+												<Property Name="DestinationPlaylistJumpTo" Type="int16" Value="2"/>
+												<Property Name="EnableDestinationFadeIn" Type="bool" Value="True"/>
+												<Property Name="EnableSourceFadeOut" Type="bool" Value="True"/>
+												<Property Name="ExitSourceAt" Type="int16" Value="2"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="DestinationContextObject">
+													<ObjectRef Name="RuinsSave" ID="{7FDDB18F-0984-439B-8019-D21AAA977087}" WorkUnitID="{81E8AEF2-3E5B-4988-AA2D-27329173BFB3}"/>
+												</Reference>
+											</ReferenceList>
+											<TransitionInfo>
+												<JumpToPlaylistItemRef Name="" ID="{C11E4072-0584-41FA-8EBB-4574579D2562}"/>
+												<SourceFadeOut>
+													<MusicFade Name="Source Fade-out" ID="{46E902B2-E43D-4FBC-AF8A-A73F27F0AD0B}">
+														<PropertyList>
+															<Property Name="FadeOffset" Type="Real64" Value="0.6"/>
+															<Property Name="FadeTime" Type="Real64" Value="1"/>
+															<Property Name="FadeType" Type="int16" Value="1"/>
+														</PropertyList>
+													</MusicFade>
+												</SourceFadeOut>
+												<DestinationFadeIn>
+													<MusicFade Name="Destination Fade-in" ID="{F8582310-3BFB-4826-A31E-51FCB093137E}">
+														<PropertyList>
+															<Property Name="FadeOffset" Type="Real64" Value="-1.1"/>
+															<Property Name="FadeTime" Type="Real64" Value="1.1"/>
+														</PropertyList>
+													</MusicFade>
+												</DestinationFadeIn>
+											</TransitionInfo>
+										</MusicTransition>
 									</ChildrenList>
 									<TransitionInfo/>
 								</MusicTransition>
@@ -59,6 +93,11 @@
 							<PropertyList>
 								<Property Name="OverrideClockSettings" Type="bool" Value="True"/>
 								<Property Name="Tempo" Type="Real64" Value="130"/>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>-12</Value>
+									</ValueList>
+								</Property>
 							</PropertyList>
 							<ReferenceList>
 								<Reference Name="Conversion">
@@ -71,24 +110,24 @@
 									<Custom>
 										<MusicPlaylistItem Name="" ID="{69A2F2B5-B4E7-4A8E-99A9-135D506EA405}" ShortID="40131035">
 											<ChildrenList>
-												<MusicPlaylistItem Name="" ID="{6DB8672C-2E82-4840-854E-57BFEB652A38}" ShortID="667734403">
+												<MusicPlaylistItem Name="" ID="{492C8DF8-42AD-4823-9A08-0DF9BF032DF5}" ShortID="1036987759">
 													<PropertyList>
 														<Property Name="PlaylistItemType" Type="int16" Value="1"/>
 													</PropertyList>
 													<ReferenceList>
 														<Reference Name="Segment">
-															<ObjectRef Name="MoreAmp1" ID="{B3A212BE-BAC6-499E-AFF0-87BEA9050223}" WorkUnitID="{81E8AEF2-3E5B-4988-AA2D-27329173BFB3}"/>
+															<ObjectRef Name="LooseJuice - MoreAmp - 130bpm" ID="{1AEAABF0-58F1-4CF4-B67A-1A52DC408008}" WorkUnitID="{81E8AEF2-3E5B-4988-AA2D-27329173BFB3}"/>
 														</Reference>
 													</ReferenceList>
 												</MusicPlaylistItem>
-												<MusicPlaylistItem Name="" ID="{CD6E951B-C5B0-4F0E-ADB2-55E9EB770950}" ShortID="385037717">
+												<MusicPlaylistItem Name="" ID="{0D2CB87D-E32D-49E9-B362-980C12A542E9}" ShortID="244444116">
 													<PropertyList>
 														<Property Name="LoopCount" Type="int16" Value="0"/>
 														<Property Name="PlaylistItemType" Type="int16" Value="1"/>
 													</PropertyList>
 													<ReferenceList>
 														<Reference Name="Segment">
-															<ObjectRef Name="MoreAmp2" ID="{DF245598-95E1-4F0F-BCCC-766D5DB96286}" WorkUnitID="{81E8AEF2-3E5B-4988-AA2D-27329173BFB3}"/>
+															<ObjectRef Name="LooseJuice - MoreAmp - 8 Bar Loop - 130bpm" ID="{8BE2DE34-29B0-49B4-8AD5-273940B65107}" WorkUnitID="{81E8AEF2-3E5B-4988-AA2D-27329173BFB3}"/>
 														</Reference>
 													</ReferenceList>
 												</MusicPlaylistItem>
@@ -106,6 +145,76 @@
 												<MusicTransition Name="Transition" ID="{0C8A40D5-3F18-46AA-B3A6-5BE15039B25E}">
 													<TransitionInfo/>
 												</MusicTransition>
+												<MusicTransition Name="Transition" ID="{F1942E0B-BDC0-44ED-AFA4-C7451F343DC2}">
+													<PropertyList>
+														<Property Name="DestinationContextType" Type="int16" Value="2"/>
+														<Property Name="EnableDestinationFadeIn" Type="bool" Value="True"/>
+														<Property Name="EnableSourceFadeOut" Type="bool" Value="True"/>
+														<Property Name="SourceContextType" Type="int16" Value="2"/>
+													</PropertyList>
+													<ReferenceList>
+														<Reference Name="DestinationContextObject">
+															<ObjectRef Name="LooseJuice - MoreAmp - 8 Bar Loop - 130bpm" ID="{8BE2DE34-29B0-49B4-8AD5-273940B65107}" WorkUnitID="{81E8AEF2-3E5B-4988-AA2D-27329173BFB3}"/>
+														</Reference>
+														<Reference Name="SourceContextObject">
+															<ObjectRef Name="LooseJuice - MoreAmp - 130bpm" ID="{1AEAABF0-58F1-4CF4-B67A-1A52DC408008}" WorkUnitID="{81E8AEF2-3E5B-4988-AA2D-27329173BFB3}"/>
+														</Reference>
+													</ReferenceList>
+													<TransitionInfo>
+														<SourceFadeOut>
+															<MusicFade Name="Source Fade-out" ID="{23518DBF-8840-459A-8D54-A236F06748BA}">
+																<PropertyList>
+																	<Property Name="FadeOffset" Type="Real64" Value="0.5"/>
+																	<Property Name="FadeTime" Type="Real64" Value="1"/>
+																	<Property Name="FadeType" Type="int16" Value="1"/>
+																</PropertyList>
+															</MusicFade>
+														</SourceFadeOut>
+														<DestinationFadeIn>
+															<MusicFade Name="Destination Fade-in" ID="{9C5A0615-938B-49F6-AE1F-97496230063D}">
+																<PropertyList>
+																	<Property Name="FadeOffset" Type="Real64" Value="-1"/>
+																	<Property Name="FadeTime" Type="Real64" Value="1"/>
+																</PropertyList>
+															</MusicFade>
+														</DestinationFadeIn>
+													</TransitionInfo>
+												</MusicTransition>
+												<MusicTransition Name="Transition" ID="{9F05CD49-3752-4859-8689-A6977F058295}">
+													<PropertyList>
+														<Property Name="DestinationContextType" Type="int16" Value="2"/>
+														<Property Name="EnableDestinationFadeIn" Type="bool" Value="True"/>
+														<Property Name="EnableSourceFadeOut" Type="bool" Value="True"/>
+														<Property Name="SourceContextType" Type="int16" Value="2"/>
+													</PropertyList>
+													<ReferenceList>
+														<Reference Name="DestinationContextObject">
+															<ObjectRef Name="LooseJuice - MoreAmp - 8 Bar Loop - 130bpm" ID="{8BE2DE34-29B0-49B4-8AD5-273940B65107}" WorkUnitID="{81E8AEF2-3E5B-4988-AA2D-27329173BFB3}"/>
+														</Reference>
+														<Reference Name="SourceContextObject">
+															<ObjectRef Name="LooseJuice - MoreAmp - 8 Bar Loop - 130bpm" ID="{8BE2DE34-29B0-49B4-8AD5-273940B65107}" WorkUnitID="{81E8AEF2-3E5B-4988-AA2D-27329173BFB3}"/>
+														</Reference>
+													</ReferenceList>
+													<TransitionInfo>
+														<SourceFadeOut>
+															<MusicFade Name="Source Fade-out" ID="{887F2B7D-7386-41A8-8B05-4431B68970E9}">
+																<PropertyList>
+																	<Property Name="FadeOffset" Type="Real64" Value="0.5"/>
+																	<Property Name="FadeTime" Type="Real64" Value="1"/>
+																	<Property Name="FadeType" Type="int16" Value="1"/>
+																</PropertyList>
+															</MusicFade>
+														</SourceFadeOut>
+														<DestinationFadeIn>
+															<MusicFade Name="Destination Fade-in" ID="{999EC8A4-BA72-454D-B2DA-848EBA4A2F75}">
+																<PropertyList>
+																	<Property Name="FadeOffset" Type="Real64" Value="-1"/>
+																	<Property Name="FadeTime" Type="Real64" Value="1"/>
+																</PropertyList>
+															</MusicFade>
+														</DestinationFadeIn>
+													</TransitionInfo>
+												</MusicTransition>
 											</ChildrenList>
 											<TransitionInfo/>
 										</MusicTransition>
@@ -113,11 +222,9 @@
 								</Reference>
 							</ReferenceList>
 							<ChildrenList>
-								<MusicSegment Name="MoreAmp1" ID="{B3A212BE-BAC6-499E-AFF0-87BEA9050223}" ShortID="234534437">
+								<MusicSegment Name="LooseJuice - MoreAmp - 8 Bar Loop - 130bpm" ID="{8BE2DE34-29B0-49B4-8AD5-273940B65107}" ShortID="1073581860">
 									<PropertyList>
-										<Property Name="EndPosition" Type="Real64" Value="98427.6923076923"/>
-										<Property Name="OverrideClockSettings" Type="bool" Value="True"/>
-										<Property Name="Tempo" Type="Real64" Value="130"/>
+										<Property Name="EndPosition" Type="Real64" Value="14769.25"/>
 									</PropertyList>
 									<ReferenceList>
 										<Reference Name="Conversion">
@@ -128,14 +235,14 @@
 										</Reference>
 									</ReferenceList>
 									<ChildrenList>
-										<MusicTrack Name="LooseJuice - MoreAmp - 130bpm" ID="{C7CB1717-A88D-4A78-A961-CCC74F189DCB}" ShortID="424349823">
+										<MusicTrack Name="LooseJuice - MoreAmp - 8 Bar Loop - 130bpm" ID="{E2D50AD1-B6FD-4630-B532-C48BCED2E79A}" ShortID="420080405">
 											<ReferenceList>
 												<Reference Name="OutputBus">
 													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
 												</Reference>
 												<Reference Name="TransitionRoot">
 													<Custom>
-														<MusicTransition Name="Root" ID="{BD6454B4-21E7-4C56-BF33-D257A109D4AF}">
+														<MusicTransition Name="Root" ID="{154892FA-9B54-43A0-B29C-7871634B27A3}">
 															<PropertyList>
 																<Property Name="IsFolder" Type="bool" Value="True"/>
 															</PropertyList>
@@ -145,11 +252,11 @@
 												</Reference>
 											</ReferenceList>
 											<ChildrenList>
-												<AudioFileSource Name="LooseJuice - MoreAmp - 130bpm" ID="{7A86CB25-C244-4370-8384-ABCD41CF9C02}">
+												<AudioFileSource Name="LooseJuice - MoreAmp - 8 Bar Loop - 130bpm" ID="{B562A54B-A674-4ACA-AA8C-0EC39D988612}">
 													<Language>SFX</Language>
-													<AudioFile>LooseJuice - MoreAmp - 130bpm.wav</AudioFile>
+													<AudioFile>LooseJuice - MoreAmp - 8 Bar Loop - 130bpm.wav</AudioFile>
 													<MediaIDList>
-														<MediaID ID="508998650"/>
+														<MediaID ID="225816661"/>
 													</MediaIDList>
 												</AudioFileSource>
 											</ChildrenList>
@@ -157,121 +264,32 @@
 												<ObjectList Name="Sequences">
 													<Reference>
 														<Local>
-															<MusicTrackSequence Name="" ID="{F87D6E71-D031-4CC6-A980-1B82397D8465}">
+															<MusicTrackSequence Name="" ID="{0B98DE8E-5182-43FD-8D4F-B0442C3DD809}">
 																<ObjectLists>
 																	<ObjectList Name="Clips">
 																		<Reference>
 																			<Local>
-																				<MusicClip Name="LooseJuice - MoreAmp - 130bpm" ID="{A8BDEE0E-E5DE-4706-8CD9-C61D5945469D}">
+																				<MusicClip Name="LooseJuice - MoreAmp - 8 Bar Loop - 130bpm" ID="{B830E3AC-4652-4859-8071-9E9F82CF76DA}">
 																					<PropertyList>
-																						<Property Name="EndTrimOffset" Type="Real64" Value="54120"/>
+																						<Property Name="EndTrimOffset" Type="Real64" Value="14764.249519169"/>
 																						<Property Name="FadeInMode" Type="int16" Value="0"/>
 																						<Property Name="FadeOutMode" Type="int16" Value="0"/>
 																					</PropertyList>
-																					<AudioSourceRef Name="LooseJuice - MoreAmp - 130bpm" ID="{7A86CB25-C244-4370-8384-ABCD41CF9C02}"/>
-																				</MusicClip>
-																			</Local>
-																		</Reference>
-																	</ObjectList>
-																</ObjectLists>
-															</MusicTrackSequence>
-														</Local>
-													</Reference>
-												</ObjectList>
-											</ObjectLists>
-										</MusicTrack>
-									</ChildrenList>
-									<ObjectLists>
-										<ObjectList Name="Cues">
-											<Reference>
-												<Local>
-													<MusicCue Name="Entry Cue" ID="{F101DE24-C477-4114-85F8-47DBD653F6E4}"/>
-												</Local>
-											</Reference>
-											<Reference>
-												<Local>
-													<MusicCue Name="Exit Cue" ID="{7A33DE57-6265-4EF6-9149-F5FCD2E26FCE}">
-														<PropertyList>
-															<Property Name="CueType" Type="int16" Value="1"/>
-															<Property Name="TimeMs" Type="Real64" Value="51692.3076923077"/>
-														</PropertyList>
-													</MusicCue>
-												</Local>
-											</Reference>
-										</ObjectList>
-									</ObjectLists>
-								</MusicSegment>
-								<MusicSegment Name="MoreAmp2" ID="{DF245598-95E1-4F0F-BCCC-766D5DB96286}" ShortID="164792705">
-									<PropertyList>
-										<Property Name="EndPosition" Type="Real64" Value="62315.4139814731"/>
-										<Property Name="OverrideClockSettings" Type="bool" Value="True"/>
-										<Property Name="Tempo" Type="Real64" Value="130"/>
-									</PropertyList>
-									<ReferenceList>
-										<Reference Name="Conversion">
-											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
-										</Reference>
-										<Reference Name="OutputBus">
-											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
-										</Reference>
-									</ReferenceList>
-									<ChildrenList>
-										<MusicTrack Name="LooseJuice - MoreAmp - 130bpm" ID="{0E049D57-8657-464C-BE56-674700F29A5A}" ShortID="799378743">
-											<ReferenceList>
-												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
-												</Reference>
-												<Reference Name="TransitionRoot">
-													<Custom>
-														<MusicTransition Name="Root" ID="{5BE56EDA-A664-4583-80E5-0E572B546CF0}">
-															<PropertyList>
-																<Property Name="IsFolder" Type="bool" Value="True"/>
-															</PropertyList>
-															<TransitionInfo/>
-														</MusicTransition>
-													</Custom>
-												</Reference>
-											</ReferenceList>
-											<ChildrenList>
-												<AudioFileSource Name="LooseJuice - MoreAmp - 130bpm" ID="{EDB8EC15-7DD3-42F3-904A-BC674FF77597}">
-													<Language>SFX</Language>
-													<AudioFile>LooseJuice - MoreAmp - 130bpm.wav</AudioFile>
-													<MediaIDList>
-														<MediaID ID="508998650"/>
-													</MediaIDList>
-												</AudioFileSource>
-											</ChildrenList>
-											<ObjectLists>
-												<ObjectList Name="Sequences">
-													<Reference>
-														<Local>
-															<MusicTrackSequence Name="" ID="{8EFABC1E-1DDF-4AC9-A887-76263271B1BF}">
-																<ObjectLists>
-																	<ObjectList Name="Clips">
-																		<Reference>
-																			<Local>
-																				<MusicClip Name="LooseJuice - MoreAmp - 130bpm" ID="{EC34613D-B633-4D57-826A-9EB37D7A81C7}">
-																					<PropertyList>
-																						<Property Name="BeginTrimOffset" Type="Real64" Value="7384.61538461537"/>
-																						<Property Name="EndTrimOffset" Type="Real64" Value="51741.3084888977"/>
-																						<Property Name="FadeInMode" Type="int16" Value="0"/>
-																						<Property Name="PlayAt" Type="Real64" Value="-7269.23076923076"/>
-																					</PropertyList>
-																					<AudioSourceRef Name="LooseJuice - MoreAmp - 130bpm" ID="{EDB8EC15-7DD3-42F3-904A-BC674FF77597}"/>
+																					<AudioSourceRef Name="LooseJuice - MoreAmp - 8 Bar Loop - 130bpm" ID="{B562A54B-A674-4ACA-AA8C-0EC39D988612}"/>
 																					<PropertyCurveList>
 																						<PropertyCurve PropertyName="Highpass">
-																							<Curve Name="" ID="{C3D591E1-7DF5-4D6E-8171-6E1A212F344A}">
+																							<Curve Name="" ID="{BECB1854-1DA3-4B33-B716-274469C1E453}">
 																								<PropertyList>
 																									<Property Name="Flags" Type="int32" Value="1"/>
 																								</PropertyList>
 																								<PointList>
 																									<Point>
-																										<XPos>7.38462</XPos>
+																										<XPos>0</XPos>
 																										<YPos>0</YPos>
 																										<Flags>5</Flags>
 																									</Point>
 																									<Point>
-																										<XPos>51.74131</XPos>
+																										<XPos>14.76425</XPos>
 																										<YPos>0</YPos>
 																										<Flags>37</Flags>
 																									</Point>
@@ -279,18 +297,18 @@
 																							</Curve>
 																						</PropertyCurve>
 																						<PropertyCurve PropertyName="Lowpass">
-																							<Curve Name="" ID="{7EE05ECF-471B-4BF9-835F-651EF49B462E}">
+																							<Curve Name="" ID="{523E3E53-8B47-4838-9548-BA72C50706D9}">
 																								<PropertyList>
 																									<Property Name="Flags" Type="int32" Value="1"/>
 																								</PropertyList>
 																								<PointList>
 																									<Point>
-																										<XPos>7.38462</XPos>
+																										<XPos>0</XPos>
 																										<YPos>0</YPos>
 																										<Flags>5</Flags>
 																									</Point>
 																									<Point>
-																										<XPos>51.74131</XPos>
+																										<XPos>14.76425</XPos>
 																										<YPos>0</YPos>
 																										<Flags>37</Flags>
 																									</Point>
@@ -298,18 +316,18 @@
 																							</Curve>
 																						</PropertyCurve>
 																						<PropertyCurve PropertyName="Volume">
-																							<Curve Name="" ID="{F061DD50-2E55-4FB5-9A7B-AC614125D42B}">
+																							<Curve Name="" ID="{D5857F7A-7447-449A-92F7-24D053B38B36}">
 																								<PropertyList>
 																									<Property Name="Flags" Type="int32" Value="3"/>
 																								</PropertyList>
 																								<PointList>
 																									<Point>
-																										<XPos>7.38462</XPos>
+																										<XPos>0</XPos>
 																										<YPos>0</YPos>
 																										<Flags>5</Flags>
 																									</Point>
 																									<Point>
-																										<XPos>51.74131</XPos>
+																										<XPos>14.76425</XPos>
 																										<YPos>0</YPos>
 																										<Flags>37</Flags>
 																									</Point>
@@ -333,19 +351,101 @@
 										<ObjectList Name="Cues">
 											<Reference>
 												<Local>
-													<MusicCue Name="Entry Cue" ID="{778D0EB3-9B49-455D-93C9-CF20037C17ED}">
-														<PropertyList>
-															<Property Name="TimeMs" Type="Real64" Value="115.384615384618"/>
-														</PropertyList>
-													</MusicCue>
+													<MusicCue Name="Entry Cue" ID="{DD83E024-0914-4699-A4C0-67960651F7F2}"/>
 												</Local>
 											</Reference>
 											<Reference>
 												<Local>
-													<MusicCue Name="Exit Cue" ID="{6343E7BD-7E0D-4A4E-916B-B39516CD8139}">
+													<MusicCue Name="Exit Cue" ID="{F8128030-E1AD-4058-A578-3F71218CEDC5}">
 														<PropertyList>
 															<Property Name="CueType" Type="int16" Value="1"/>
-															<Property Name="TimeMs" Type="Real64" Value="44472.077719667"/>
+															<Property Name="TimeMs" Type="Real64" Value="14769.25"/>
+														</PropertyList>
+													</MusicCue>
+												</Local>
+											</Reference>
+										</ObjectList>
+									</ObjectLists>
+								</MusicSegment>
+								<MusicSegment Name="LooseJuice - MoreAmp - 130bpm" ID="{1AEAABF0-58F1-4CF4-B67A-1A52DC408008}" ShortID="323936356">
+									<PropertyList>
+										<Property Name="EndPosition" Type="Real64" Value="51692.3125"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<MusicTrack Name="LooseJuice - MoreAmp - 130bpm" ID="{1C5C5A5E-D1B9-42CD-88DA-2A581B472A66}" ShortID="774033751">
+											<ReferenceList>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+												</Reference>
+												<Reference Name="TransitionRoot">
+													<Custom>
+														<MusicTransition Name="Root" ID="{07E11F9E-69E7-4E2F-8326-3A0495C59BF5}">
+															<PropertyList>
+																<Property Name="IsFolder" Type="bool" Value="True"/>
+															</PropertyList>
+															<TransitionInfo/>
+														</MusicTransition>
+													</Custom>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="LooseJuice - MoreAmp - 130bpm" ID="{65B30294-15BF-41F1-9592-3CE154E80574}">
+													<Language>SFX</Language>
+													<AudioFile>LooseJuice - MoreAmp - 130bpm.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="508998650"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ObjectLists>
+												<ObjectList Name="Sequences">
+													<Reference>
+														<Local>
+															<MusicTrackSequence Name="" ID="{5DA9FCE4-5F1A-4D7D-97A6-532A314BCE57}">
+																<ObjectLists>
+																	<ObjectList Name="Clips">
+																		<Reference>
+																			<Local>
+																				<MusicClip Name="LooseJuice - MoreAmp - 130bpm" ID="{2C4616B6-6859-4741-81F8-16837FC38648}">
+																					<PropertyList>
+																						<Property Name="EndTrimOffset" Type="Real64" Value="51692.3125"/>
+																						<Property Name="FadeInMode" Type="int16" Value="0"/>
+																						<Property Name="FadeOutMode" Type="int16" Value="0"/>
+																					</PropertyList>
+																					<AudioSourceRef Name="LooseJuice - MoreAmp - 130bpm" ID="{65B30294-15BF-41F1-9592-3CE154E80574}"/>
+																				</MusicClip>
+																			</Local>
+																		</Reference>
+																	</ObjectList>
+																</ObjectLists>
+															</MusicTrackSequence>
+														</Local>
+													</Reference>
+												</ObjectList>
+											</ObjectLists>
+										</MusicTrack>
+									</ChildrenList>
+									<ObjectLists>
+										<ObjectList Name="Cues">
+											<Reference>
+												<Local>
+													<MusicCue Name="Entry Cue" ID="{D138261E-26A5-4B02-833D-32F466510BB3}"/>
+												</Local>
+											</Reference>
+											<Reference>
+												<Local>
+													<MusicCue Name="Exit Cue" ID="{802CBDBE-181F-4931-8188-0CA7A6640228}">
+														<PropertyList>
+															<Property Name="CueType" Type="int16" Value="1"/>
+															<Property Name="TimeMs" Type="Real64" Value="51692.3125"/>
 														</PropertyList>
 													</MusicCue>
 												</Local>
@@ -364,7 +464,7 @@
 								</ObjectList>
 							</ObjectLists>
 						</MusicPlaylistContainer>
-						<MusicPlaylistContainer Name="LowerLevel" ID="{A1A55772-9CD3-4688-9A03-E89635421302}" ShortID="263381824">
+						<MusicPlaylistContainer Name="MenuMusic" ID="{A1A55772-9CD3-4688-9A03-E89635421302}" ShortID="263381824">
 							<PropertyList>
 								<Property Name="OverrideClockSettings" Type="bool" Value="True"/>
 								<Property Name="Tempo" Type="Real64" Value="83"/>
@@ -380,13 +480,13 @@
 									<Custom>
 										<MusicPlaylistItem Name="" ID="{F5D7FFB6-2233-4BB0-A564-8D8C8B702DEE}" ShortID="828042136">
 											<ChildrenList>
-												<MusicPlaylistItem Name="" ID="{6F3AEA84-96FC-4DBC-A811-7861CA0F5528}" ShortID="250306100">
+												<MusicPlaylistItem Name="" ID="{D79B8033-FC0D-457B-BB33-377F5B246D67}" ShortID="425455091">
 													<PropertyList>
 														<Property Name="PlaylistItemType" Type="int16" Value="1"/>
 													</PropertyList>
 													<ReferenceList>
 														<Reference Name="Segment">
-															<ObjectRef Name="LowerLevel" ID="{7F26BD1D-EF06-4715-9F81-9EE969B9210B}" WorkUnitID="{81E8AEF2-3E5B-4988-AA2D-27329173BFB3}"/>
+															<ObjectRef Name="LooseJuice - MenuMusic - 83bpm" ID="{31FF9C49-997E-4F56-87F8-71B9A2FCF5F0}" WorkUnitID="{81E8AEF2-3E5B-4988-AA2D-27329173BFB3}"/>
 														</Reference>
 													</ReferenceList>
 												</MusicPlaylistItem>
@@ -411,9 +511,9 @@
 								</Reference>
 							</ReferenceList>
 							<ChildrenList>
-								<MusicSegment Name="LowerLevel" ID="{7F26BD1D-EF06-4715-9F81-9EE969B9210B}" ShortID="757057132">
+								<MusicSegment Name="LooseJuice - MenuMusic - 83bpm" ID="{31FF9C49-997E-4F56-87F8-71B9A2FCF5F0}" ShortID="594013771">
 									<PropertyList>
-										<Property Name="EndPosition" Type="Real64" Value="187968"/>
+										<Property Name="EndPosition" Type="Real64" Value="185060.25"/>
 									</PropertyList>
 									<ReferenceList>
 										<Reference Name="Conversion">
@@ -424,14 +524,14 @@
 										</Reference>
 									</ReferenceList>
 									<ChildrenList>
-										<MusicTrack Name="LowerLevel" ID="{E93AFCC4-0256-46D5-B926-51992D3F9430}" ShortID="294142981">
+										<MusicTrack Name="LooseJuice - MenuMusic - 83bpm" ID="{F8E53E6A-7752-41AD-8310-CB138BBFFE65}" ShortID="888414793">
 											<ReferenceList>
 												<Reference Name="OutputBus">
 													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
 												</Reference>
 												<Reference Name="TransitionRoot">
 													<Custom>
-														<MusicTransition Name="Root" ID="{DB1A8387-F746-4900-ADE1-4F97593E1C9E}">
+														<MusicTransition Name="Root" ID="{ED62E2A4-8FFA-4C67-BAE2-4501E71A2A42}">
 															<PropertyList>
 																<Property Name="IsFolder" Type="bool" Value="True"/>
 															</PropertyList>
@@ -441,11 +541,11 @@
 												</Reference>
 											</ReferenceList>
 											<ChildrenList>
-												<AudioFileSource Name="LowerLevel" ID="{5520B20D-F006-42CE-A3EA-CCD8A9640918}">
+												<AudioFileSource Name="LooseJuice - MenuMusic - 83bpm" ID="{75D69D2F-1A0A-4C88-B3A1-D1CAB1CCAC29}">
 													<Language>SFX</Language>
-													<AudioFile>LowerLevel.wav</AudioFile>
+													<AudioFile>LooseJuice - MenuMusic - 83bpm.wav</AudioFile>
 													<MediaIDList>
-														<MediaID ID="311390676"/>
+														<MediaID ID="353257543"/>
 													</MediaIDList>
 												</AudioFileSource>
 											</ChildrenList>
@@ -453,79 +553,18 @@
 												<ObjectList Name="Sequences">
 													<Reference>
 														<Local>
-															<MusicTrackSequence Name="" ID="{96BDD852-7C8A-4B5E-9E75-639B82A60BDF}">
+															<MusicTrackSequence Name="" ID="{53816286-78D4-4E1A-A467-F2E5732A1F77}">
 																<ObjectLists>
 																	<ObjectList Name="Clips">
 																		<Reference>
 																			<Local>
-																				<MusicClip Name="LowerLevel" ID="{99439656-9D56-4F0D-A804-640581636741}">
+																				<MusicClip Name="LooseJuice - MenuMusic - 83bpm" ID="{6FA50946-401D-4E01-844A-D2CCA933AD99}">
 																					<PropertyList>
-																						<Property Name="BeginTrimOffset" Type="Real64" Value="2733.33127990544"/>
-																						<Property Name="EndTrimOffset" Type="Real64" Value="187968"/>
+																						<Property Name="EndTrimOffset" Type="Real64" Value="185060.25"/>
 																						<Property Name="FadeInMode" Type="int16" Value="0"/>
 																						<Property Name="FadeOutMode" Type="int16" Value="0"/>
-																						<Property Name="PlayAt" Type="Real64" Value="-2733.33127990544"/>
 																					</PropertyList>
-																					<AudioSourceRef Name="LowerLevel" ID="{5520B20D-F006-42CE-A3EA-CCD8A9640918}"/>
-																					<PropertyCurveList>
-																						<PropertyCurve PropertyName="Highpass">
-																							<Curve Name="" ID="{2B3E1C4F-A6C5-4B9D-82EC-A5D108CDBEF4}">
-																								<PropertyList>
-																									<Property Name="Flags" Type="int32" Value="1"/>
-																								</PropertyList>
-																								<PointList>
-																									<Point>
-																										<XPos>2.73333</XPos>
-																										<YPos>0</YPos>
-																										<Flags>5</Flags>
-																									</Point>
-																									<Point>
-																										<XPos>187.968</XPos>
-																										<YPos>0</YPos>
-																										<Flags>37</Flags>
-																									</Point>
-																								</PointList>
-																							</Curve>
-																						</PropertyCurve>
-																						<PropertyCurve PropertyName="Lowpass">
-																							<Curve Name="" ID="{27AF52B6-48AD-4259-B2A7-ADE7B63286B7}">
-																								<PropertyList>
-																									<Property Name="Flags" Type="int32" Value="1"/>
-																								</PropertyList>
-																								<PointList>
-																									<Point>
-																										<XPos>2.73333</XPos>
-																										<YPos>0</YPos>
-																										<Flags>5</Flags>
-																									</Point>
-																									<Point>
-																										<XPos>187.968</XPos>
-																										<YPos>0</YPos>
-																										<Flags>37</Flags>
-																									</Point>
-																								</PointList>
-																							</Curve>
-																						</PropertyCurve>
-																						<PropertyCurve PropertyName="Volume">
-																							<Curve Name="" ID="{1A892B77-A543-4F18-B3C7-F715840A28D2}">
-																								<PropertyList>
-																									<Property Name="Flags" Type="int32" Value="3"/>
-																								</PropertyList>
-																								<PointList>
-																									<Point>
-																										<XPos>2.73333</XPos>
-																										<YPos>0</YPos>
-																										<Flags>5</Flags>
-																									</Point>
-																									<Point>
-																										<XPos>187.968</XPos>
-																										<YPos>0</YPos>
-																										<Flags>37</Flags>
-																									</Point>
-																								</PointList>
-																							</Curve>
-																						</PropertyCurve>
-																					</PropertyCurveList>
+																					<AudioSourceRef Name="LooseJuice - MenuMusic - 83bpm" ID="{75D69D2F-1A0A-4C88-B3A1-D1CAB1CCAC29}"/>
 																				</MusicClip>
 																			</Local>
 																		</Reference>
@@ -542,15 +581,15 @@
 										<ObjectList Name="Cues">
 											<Reference>
 												<Local>
-													<MusicCue Name="Entry Cue" ID="{D197311F-CFED-435E-BF33-0210476EFCBB}"/>
+													<MusicCue Name="Entry Cue" ID="{6BACA0B9-68EC-414F-AF0C-ACFC24530D1E}"/>
 												</Local>
 											</Reference>
 											<Reference>
 												<Local>
-													<MusicCue Name="Exit Cue" ID="{9A169B60-E45A-4491-80FB-440DE61716D4}">
+													<MusicCue Name="Exit Cue" ID="{0D574069-8E20-4FE5-B17C-63E1CB89AEB0}">
 														<PropertyList>
 															<Property Name="CueType" Type="int16" Value="1"/>
-															<Property Name="TimeMs" Type="Real64" Value="187968"/>
+															<Property Name="TimeMs" Type="Real64" Value="185060.25"/>
 														</PropertyList>
 													</MusicCue>
 												</Local>
@@ -656,11 +695,72 @@
 																			<Local>
 																				<MusicClip Name="LooseJuice - DessertIg - 80bpm" ID="{6F0A149F-261E-4F71-AD7C-93EB2DEC087B}">
 																					<PropertyList>
+																						<Property Name="BeginTrimOffset" Type="Real64" Value="297.625586785376"/>
 																						<Property Name="EndTrimOffset" Type="Real64" Value="42000"/>
 																						<Property Name="FadeInMode" Type="int16" Value="0"/>
 																						<Property Name="FadeOutMode" Type="int16" Value="0"/>
+																						<Property Name="PlayAt" Type="Real64" Value="-297.625586785376"/>
 																					</PropertyList>
 																					<AudioSourceRef Name="LooseJuice - DessertIg - 80bpm" ID="{4D7BC9F4-22C7-4076-B158-75501E31FF66}"/>
+																					<PropertyCurveList>
+																						<PropertyCurve PropertyName="Highpass">
+																							<Curve Name="" ID="{59DC375B-8019-43CE-9EC6-0AA57ED96AB5}">
+																								<PropertyList>
+																									<Property Name="Flags" Type="int32" Value="1"/>
+																								</PropertyList>
+																								<PointList>
+																									<Point>
+																										<XPos>0.29763</XPos>
+																										<YPos>0</YPos>
+																										<Flags>5</Flags>
+																									</Point>
+																									<Point>
+																										<XPos>42</XPos>
+																										<YPos>0</YPos>
+																										<Flags>37</Flags>
+																									</Point>
+																								</PointList>
+																							</Curve>
+																						</PropertyCurve>
+																						<PropertyCurve PropertyName="Lowpass">
+																							<Curve Name="" ID="{A613E630-27E8-4CCA-99EC-461E531FBF8B}">
+																								<PropertyList>
+																									<Property Name="Flags" Type="int32" Value="1"/>
+																								</PropertyList>
+																								<PointList>
+																									<Point>
+																										<XPos>0.29763</XPos>
+																										<YPos>0</YPos>
+																										<Flags>5</Flags>
+																									</Point>
+																									<Point>
+																										<XPos>42</XPos>
+																										<YPos>0</YPos>
+																										<Flags>37</Flags>
+																									</Point>
+																								</PointList>
+																							</Curve>
+																						</PropertyCurve>
+																						<PropertyCurve PropertyName="Volume">
+																							<Curve Name="" ID="{E202AFF7-29C7-41A2-9EC2-566D0777DF47}">
+																								<PropertyList>
+																									<Property Name="Flags" Type="int32" Value="3"/>
+																								</PropertyList>
+																								<PointList>
+																									<Point>
+																										<XPos>0.29763</XPos>
+																										<YPos>0</YPos>
+																										<Flags>5</Flags>
+																									</Point>
+																									<Point>
+																										<XPos>42</XPos>
+																										<YPos>0</YPos>
+																										<Flags>37</Flags>
+																									</Point>
+																								</PointList>
+																							</Curve>
+																						</PropertyCurve>
+																					</PropertyCurveList>
 																				</MusicClip>
 																			</Local>
 																		</Reference>
@@ -737,7 +837,7 @@
 						<MusicPlaylistContainer Name="RuinsSave" ID="{7FDDB18F-0984-439B-8019-D21AAA977087}" ShortID="286148497">
 							<PropertyList>
 								<Property Name="OverrideClockSettings" Type="bool" Value="True"/>
-								<Property Name="Tempo" Type="Real64" Value="75"/>
+								<Property Name="Tempo" Type="Real64" Value="66"/>
 							</PropertyList>
 							<ReferenceList>
 								<Reference Name="Conversion">
@@ -750,24 +850,14 @@
 									<Custom>
 										<MusicPlaylistItem Name="" ID="{1EFEA103-4A37-41CE-85CF-3904989FAE4E}" ShortID="475424563">
 											<ChildrenList>
-												<MusicPlaylistItem Name="" ID="{EC69D00E-5BCC-4E4F-A6C5-992F7D8FD705}" ShortID="981589627">
-													<PropertyList>
-														<Property Name="PlaylistItemType" Type="int16" Value="1"/>
-													</PropertyList>
-													<ReferenceList>
-														<Reference Name="Segment">
-															<ObjectRef Name="LooseJuice - RuinsSave - 75bpm" ID="{0DD18082-7A40-42B6-98A9-4367CB2C8A49}" WorkUnitID="{81E8AEF2-3E5B-4988-AA2D-27329173BFB3}"/>
-														</Reference>
-													</ReferenceList>
-												</MusicPlaylistItem>
-												<MusicPlaylistItem Name="" ID="{7F4C83E7-7FBE-4C5B-8EA5-AC0F2DDF1D4E}" ShortID="502979334">
+												<MusicPlaylistItem Name="" ID="{C11E4072-0584-41FA-8EBB-4574579D2562}" ShortID="971514711">
 													<PropertyList>
 														<Property Name="LoopCount" Type="int16" Value="0"/>
 														<Property Name="PlaylistItemType" Type="int16" Value="1"/>
 													</PropertyList>
 													<ReferenceList>
 														<Reference Name="Segment">
-															<ObjectRef Name="LooseJuice - RuinsSave - 75bpm" ID="{0DD18082-7A40-42B6-98A9-4367CB2C8A49}" WorkUnitID="{81E8AEF2-3E5B-4988-AA2D-27329173BFB3}"/>
+															<ObjectRef Name="LooseJuice - RuinsSave - 8 bar Loop - 66bpm" ID="{C2DCCA1A-2270-48A2-8611-BE76A0D25DFF}" WorkUnitID="{81E8AEF2-3E5B-4988-AA2D-27329173BFB3}"/>
 														</Reference>
 													</ReferenceList>
 												</MusicPlaylistItem>
@@ -783,7 +873,73 @@
 											</PropertyList>
 											<ChildrenList>
 												<MusicTransition Name="Transition" ID="{0840BF8B-38B6-4B2F-9C2E-077AF0ADF3DD}">
-													<TransitionInfo/>
+													<PropertyList>
+														<Property Name="EnableDestinationFadeIn" Type="bool" Value="True"/>
+													</PropertyList>
+													<TransitionInfo>
+														<DestinationFadeIn>
+															<MusicFade Name="Destination Fade-in" ID="{2648701C-3E0F-4CBE-BED5-4C15B2408068}"/>
+														</DestinationFadeIn>
+													</TransitionInfo>
+												</MusicTransition>
+												<MusicTransition Name="Transition" ID="{E5E72CA6-A014-4D86-90D5-CB63501F7132}">
+													<PropertyList>
+														<Property Name="DestinationContextType" Type="int16" Value="2"/>
+														<Property Name="EnableSourceFadeOut" Type="bool" Value="True"/>
+														<Property Name="SourceContextType" Type="int16" Value="2"/>
+													</PropertyList>
+													<ReferenceList>
+														<Reference Name="DestinationContextObject">
+															<ObjectRef Name="LooseJuice - RuinsSave - 8 bar Loop - 66bpm" ID="{C2DCCA1A-2270-48A2-8611-BE76A0D25DFF}" WorkUnitID="{81E8AEF2-3E5B-4988-AA2D-27329173BFB3}"/>
+														</Reference>
+														<Reference Name="SourceContextObject">
+															<ObjectRef Name="LooseJuice - RuinsSave - 66bpm" ID="{9C046FED-3D85-43BE-ACA5-3514646B433B}" WorkUnitID="{81E8AEF2-3E5B-4988-AA2D-27329173BFB3}"/>
+														</Reference>
+													</ReferenceList>
+													<TransitionInfo>
+														<SourceFadeOut>
+															<MusicFade Name="Source Fade-out" ID="{212D4669-ED96-4A0B-8058-D1A299773932}">
+																<PropertyList>
+																	<Property Name="FadeType" Type="int16" Value="1"/>
+																</PropertyList>
+															</MusicFade>
+														</SourceFadeOut>
+													</TransitionInfo>
+												</MusicTransition>
+												<MusicTransition Name="Transition" ID="{25763BA4-3710-41A0-8FC4-E8018155BDAF}">
+													<PropertyList>
+														<Property Name="DestinationContextType" Type="int16" Value="2"/>
+														<Property Name="EnableDestinationFadeIn" Type="bool" Value="True"/>
+														<Property Name="EnableSourceFadeOut" Type="bool" Value="True"/>
+														<Property Name="SourceContextType" Type="int16" Value="2"/>
+													</PropertyList>
+													<ReferenceList>
+														<Reference Name="DestinationContextObject">
+															<ObjectRef Name="LooseJuice - RuinsSave - 8 bar Loop - 66bpm" ID="{C2DCCA1A-2270-48A2-8611-BE76A0D25DFF}" WorkUnitID="{81E8AEF2-3E5B-4988-AA2D-27329173BFB3}"/>
+														</Reference>
+														<Reference Name="SourceContextObject">
+															<ObjectRef Name="LooseJuice - RuinsSave - 8 bar Loop - 66bpm" ID="{C2DCCA1A-2270-48A2-8611-BE76A0D25DFF}" WorkUnitID="{81E8AEF2-3E5B-4988-AA2D-27329173BFB3}"/>
+														</Reference>
+													</ReferenceList>
+													<TransitionInfo>
+														<SourceFadeOut>
+															<MusicFade Name="Source Fade-out" ID="{18B17AE8-759C-4027-B94B-DFE2DE89453C}">
+																<PropertyList>
+																	<Property Name="FadeOffset" Type="Real64" Value="0.5"/>
+																	<Property Name="FadeTime" Type="Real64" Value="1"/>
+																	<Property Name="FadeType" Type="int16" Value="1"/>
+																</PropertyList>
+															</MusicFade>
+														</SourceFadeOut>
+														<DestinationFadeIn>
+															<MusicFade Name="Destination Fade-in" ID="{510CADC9-353D-4830-8661-77BEDA44157A}">
+																<PropertyList>
+																	<Property Name="FadeOffset" Type="Real64" Value="-1"/>
+																	<Property Name="FadeTime" Type="Real64" Value="1"/>
+																</PropertyList>
+															</MusicFade>
+														</DestinationFadeIn>
+													</TransitionInfo>
 												</MusicTransition>
 											</ChildrenList>
 											<TransitionInfo/>
@@ -792,9 +948,9 @@
 								</Reference>
 							</ReferenceList>
 							<ChildrenList>
-								<MusicSegment Name="LooseJuice - RuinsSave - 75bpm" ID="{0DD18082-7A40-42B6-98A9-4367CB2C8A49}" ShortID="812182841">
+								<MusicSegment Name="LooseJuice - RuinsSave - 8 bar Loop - 66bpm" ID="{C2DCCA1A-2270-48A2-8611-BE76A0D25DFF}" ShortID="1005638590">
 									<PropertyList>
-										<Property Name="EndPosition" Type="Real64" Value="130037.220365392"/>
+										<Property Name="EndPosition" Type="Real64" Value="116363.645833333"/>
 									</PropertyList>
 									<ReferenceList>
 										<Reference Name="Conversion">
@@ -805,14 +961,14 @@
 										</Reference>
 									</ReferenceList>
 									<ChildrenList>
-										<MusicTrack Name="RuinsSave 8 Bar Loop" ID="{078735C5-D542-4462-BCFE-B92C27013567}" ShortID="632554528">
+										<MusicTrack Name="LooseJuice - RuinsSave - 8 bar Loop - 66bpm" ID="{DA610528-EE03-4C1E-8E5B-26D4FA559324}" ShortID="329360960">
 											<ReferenceList>
 												<Reference Name="OutputBus">
 													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
 												</Reference>
 												<Reference Name="TransitionRoot">
 													<Custom>
-														<MusicTransition Name="Root" ID="{4A09CC64-B407-42AF-ADD7-395424985932}">
+														<MusicTransition Name="Root" ID="{4957B0C9-E80C-4E6B-8787-724FC7FBB5A3}">
 															<PropertyList>
 																<Property Name="IsFolder" Type="bool" Value="True"/>
 															</PropertyList>
@@ -822,11 +978,11 @@
 												</Reference>
 											</ReferenceList>
 											<ChildrenList>
-												<AudioFileSource Name="LooseJuice - RuinsSave - 75bpm" ID="{84B6B756-D3E2-464C-AB88-6028D3CAF9E0}">
+												<AudioFileSource Name="LooseJuice - RuinsSave - 8 bar Loop - 66bpm" ID="{38CDBDD1-CB10-4B7F-BE09-DD4CB10FD091}">
 													<Language>SFX</Language>
-													<AudioFile>LooseJuice - RuinsSave - 75bpm.wav</AudioFile>
+													<AudioFile>LooseJuice - RuinsSave - 8 bar Loop - 66bpm.wav</AudioFile>
 													<MediaIDList>
-														<MediaID ID="151075775"/>
+														<MediaID ID="678587977"/>
 													</MediaIDList>
 												</AudioFileSource>
 											</ChildrenList>
@@ -834,79 +990,18 @@
 												<ObjectList Name="Sequences">
 													<Reference>
 														<Local>
-															<MusicTrackSequence Name="" ID="{E098D1FF-97BB-4902-8F64-47F925B4B8D7}">
+															<MusicTrackSequence Name="" ID="{CEF9C6F2-20A1-412F-B122-7079B566B621}">
 																<ObjectLists>
 																	<ObjectList Name="Clips">
 																		<Reference>
 																			<Local>
-																				<MusicClip Name="LooseJuice - RuinsSave - 75bpm" ID="{A6E88FAF-48EC-4496-BEF8-64DA222378AB}">
+																				<MusicClip Name="LooseJuice - RuinsSave - 8 bar Loop - 66bpm" ID="{8D6727F8-D576-4232-9446-98E6D25311B7}">
 																					<PropertyList>
-																						<Property Name="BeginTrimOffset" Type="Real64" Value="3168.41949773942"/>
-																						<Property Name="EndTrimOffset" Type="Real64" Value="116571.4375"/>
+																						<Property Name="EndTrimOffset" Type="Real64" Value="116363.645833333"/>
 																						<Property Name="FadeInMode" Type="int16" Value="0"/>
 																						<Property Name="FadeOutMode" Type="int16" Value="0"/>
-																						<Property Name="PlayAt" Type="Real64" Value="-3168.41949773942"/>
 																					</PropertyList>
-																					<AudioSourceRef Name="LooseJuice - RuinsSave - 75bpm" ID="{84B6B756-D3E2-464C-AB88-6028D3CAF9E0}"/>
-																					<PropertyCurveList>
-																						<PropertyCurve PropertyName="Highpass">
-																							<Curve Name="" ID="{CCF96DB3-BF68-4696-9936-A47FE815C4BB}">
-																								<PropertyList>
-																									<Property Name="Flags" Type="int32" Value="1"/>
-																								</PropertyList>
-																								<PointList>
-																									<Point>
-																										<XPos>3.16842</XPos>
-																										<YPos>0</YPos>
-																										<Flags>5</Flags>
-																									</Point>
-																									<Point>
-																										<XPos>116.5714375</XPos>
-																										<YPos>0</YPos>
-																										<Flags>37</Flags>
-																									</Point>
-																								</PointList>
-																							</Curve>
-																						</PropertyCurve>
-																						<PropertyCurve PropertyName="Lowpass">
-																							<Curve Name="" ID="{83F7A01F-488A-4CF0-B448-CFAAADC38119}">
-																								<PropertyList>
-																									<Property Name="Flags" Type="int32" Value="1"/>
-																								</PropertyList>
-																								<PointList>
-																									<Point>
-																										<XPos>3.16842</XPos>
-																										<YPos>0</YPos>
-																										<Flags>5</Flags>
-																									</Point>
-																									<Point>
-																										<XPos>116.5714375</XPos>
-																										<YPos>0</YPos>
-																										<Flags>37</Flags>
-																									</Point>
-																								</PointList>
-																							</Curve>
-																						</PropertyCurve>
-																						<PropertyCurve PropertyName="Volume">
-																							<Curve Name="" ID="{C8FA6983-92A1-4A60-BADF-14127AAE01C7}">
-																								<PropertyList>
-																									<Property Name="Flags" Type="int32" Value="3"/>
-																								</PropertyList>
-																								<PointList>
-																									<Point>
-																										<XPos>3.16842</XPos>
-																										<YPos>0</YPos>
-																										<Flags>5</Flags>
-																									</Point>
-																									<Point>
-																										<XPos>116.5714375</XPos>
-																										<YPos>0</YPos>
-																										<Flags>37</Flags>
-																									</Point>
-																								</PointList>
-																							</Curve>
-																						</PropertyCurve>
-																					</PropertyCurveList>
+																					<AudioSourceRef Name="LooseJuice - RuinsSave - 8 bar Loop - 66bpm" ID="{38CDBDD1-CB10-4B7F-BE09-DD4CB10FD091}"/>
 																				</MusicClip>
 																			</Local>
 																		</Reference>
@@ -923,29 +1018,106 @@
 										<ObjectList Name="Cues">
 											<Reference>
 												<Local>
-													<MusicCue Name="Entry Cue" ID="{5BFC02D7-E9F5-4795-B635-DB0765162FD8}">
-														<PropertyList>
-															<Property Name="TimeMs" Type="Real64" Value="6.25277607468888E-13"/>
-														</PropertyList>
-													</MusicCue>
+													<MusicCue Name="Entry Cue" ID="{5EBBCCB7-B5A4-48BD-B522-50DB8BBEB3D2}"/>
 												</Local>
 											</Reference>
 											<Reference>
 												<Local>
-													<MusicCue Name="Exit Cue" ID="{A05274E2-EA6C-46C5-ABFF-AAC895E694EA}">
+													<MusicCue Name="Exit Cue" ID="{15CDC71C-DBA7-45C4-AE66-9EC8BC7D2524}">
 														<PropertyList>
 															<Property Name="CueType" Type="int16" Value="1"/>
-															<Property Name="TimeMs" Type="Real64" Value="113403.018002261"/>
+															<Property Name="TimeMs" Type="Real64" Value="116363.645833333"/>
 														</PropertyList>
 													</MusicCue>
 												</Local>
 											</Reference>
+										</ObjectList>
+									</ObjectLists>
+								</MusicSegment>
+								<MusicSegment Name="LooseJuice - RuinsSave - 66bpm" ID="{9C046FED-3D85-43BE-ACA5-3514646B433B}" ShortID="686000472">
+									<PropertyList>
+										<Property Name="EndPosition" Type="Real64" Value="134839.321152248"/>
+										<Property Name="Inclusion" Type="bool">
+											<ValueList>
+												<Value>False</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<MusicTrack Name="LooseJuice - RuinsSave - 66bpm" ID="{E9C52A4E-94A2-4BD3-B601-D6D68EAF1FC8}" ShortID="59925924">
+											<ReferenceList>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+												</Reference>
+												<Reference Name="TransitionRoot">
+													<Custom>
+														<MusicTransition Name="Root" ID="{823A5AA7-3CB5-4B01-A06D-9D5AAA1CE4D5}">
+															<PropertyList>
+																<Property Name="IsFolder" Type="bool" Value="True"/>
+															</PropertyList>
+															<TransitionInfo/>
+														</MusicTransition>
+													</Custom>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="LooseJuice - RuinsSave - 66bpm" ID="{BBF98E8E-5391-4853-A6C6-19EA5C359C4B}">
+													<Language>SFX</Language>
+													<AudioFile>LooseJuice - RuinsSave - 66bpm.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="1021276409"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ObjectLists>
+												<ObjectList Name="Sequences">
+													<Reference>
+														<Local>
+															<MusicTrackSequence Name="" ID="{27401F17-C15B-403C-8E28-52A16D8A9AD3}">
+																<ObjectLists>
+																	<ObjectList Name="Clips">
+																		<Reference>
+																			<Local>
+																				<MusicClip Name="LooseJuice - RuinsSave - 66bpm" ID="{A850FF8D-8C24-4611-84D3-799E1D328EED}">
+																					<PropertyList>
+																						<Property Name="EndTrimOffset" Type="Real64" Value="134545.458333333"/>
+																						<Property Name="FadeInMode" Type="int16" Value="0"/>
+																						<Property Name="FadeOutDuration" Type="Real64" Value="562.787379626156"/>
+																					</PropertyList>
+																					<AudioSourceRef Name="LooseJuice - RuinsSave - 66bpm" ID="{BBF98E8E-5391-4853-A6C6-19EA5C359C4B}"/>
+																				</MusicClip>
+																			</Local>
+																		</Reference>
+																	</ObjectList>
+																</ObjectLists>
+															</MusicTrackSequence>
+														</Local>
+													</Reference>
+												</ObjectList>
+											</ObjectLists>
+										</MusicTrack>
+									</ChildrenList>
+									<ObjectLists>
+										<ObjectList Name="Cues">
 											<Reference>
 												<Local>
-													<MusicCue Name="" ID="{C66F9D6D-8DB1-4074-97CF-B9458968A812}">
+													<MusicCue Name="Entry Cue" ID="{E41C647F-E9A7-42B3-A0E4-35A2A6B3D023}"/>
+												</Local>
+											</Reference>
+											<Reference>
+												<Local>
+													<MusicCue Name="Exit Cue" ID="{6D400F71-30BE-4947-BE28-0B0BDF0EED2B}">
 														<PropertyList>
-															<Property Name="CueType" Type="int16" Value="2"/>
-															<Property Name="TimeMs" Type="Real64" Value="28079.8842224447"/>
+															<Property Name="CueType" Type="int16" Value="1"/>
+															<Property Name="TimeMs" Type="Real64" Value="131136.363636364"/>
 														</PropertyList>
 													</MusicCue>
 												</Local>
@@ -971,7 +1143,7 @@
 									<MultiSwitchEntry Name="" ID="{7B579DDF-C727-401B-B286-CCFC535B5EF0}">
 										<ReferenceList>
 											<Reference Name="AudioNode">
-												<ObjectRef Name="LowerLevel" ID="{A1A55772-9CD3-4688-9A03-E89635421302}" WorkUnitID="{81E8AEF2-3E5B-4988-AA2D-27329173BFB3}"/>
+												<ObjectRef Name="MenuMusic" ID="{A1A55772-9CD3-4688-9A03-E89635421302}" WorkUnitID="{81E8AEF2-3E5B-4988-AA2D-27329173BFB3}"/>
 											</Reference>
 										</ReferenceList>
 										<ObjectLists>
