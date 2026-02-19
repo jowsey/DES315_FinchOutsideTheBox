@@ -310,7 +310,7 @@ namespace VoIP
             {
                 for (int c = 0; c < channels; c++)
                 {
-                    data[s * channels + c] = samples[s];
+                    data[s * channels + c] = samples[s] * SettingsManager.ActiveSettings.VoiceChatVolume;
                 }
             }
 

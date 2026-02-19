@@ -16,6 +16,7 @@ namespace UI
     {
         public bool PushToTalk = true;
         public string InputDevice = null;
+        public float VoiceChatVolume = 1.0f;
     }
 
     public class SettingsManager : MonoBehaviour
@@ -27,6 +28,7 @@ namespace UI
         [SerializeField] [Required] private Toggle _pttToggle;
         [SerializeField] [Required] private TMP_Dropdown _inputDeviceDropdown;
         private string[] _oldInputDevices; //checked against Microphone.devices every frame for changes in the list
+        [SerializeField] [Required] private Slider _voiceChatVolumeSlider;
 
         private void OnEnable()
         {
@@ -34,6 +36,7 @@ namespace UI
 
             _pttToggle.onValueChanged.AddListener(OnPttToggleChanged);
             _inputDeviceDropdown.onValueChanged.AddListener(OnInputDeviceChanged);
+            _voiceChatVolumeSlider.onValueChanged.AddListener(OnVoiceChatVolumeChanged);
         }
 
         private void OnDisable()
@@ -50,6 +53,8 @@ namespace UI
 
         private void Update()
         {
+            Debug.Log(ActiveSettings.VoiceChatVolume);
+
             //Poll input device list changes
             if (!Microphone.devices.SequenceEqual(_oldInputDevices))
             {
@@ -85,9 +90,9 @@ namespace UI
             _inputDeviceDropdown.value = (Microphone.devices.Length == 0) ? 0 : Microphone.devices.ToList().IndexOf(ActiveSettings.InputDevice) + 1;
         }
 
-        private void OnPttToggleChanged(bool isOn)
+        private void OnPttToggleChanged(bool val)
         {
-            ActiveSettings.PushToTalk = isOn;
+            ActiveSettings.PushToTalk = val;
             SaveToDisk();
         }
 
@@ -95,6 +100,12 @@ namespace UI
         {
             string uiText = _inputDeviceDropdown.options[_inputDeviceDropdown.value].text;
             SetInputDevice(uiText == "None" ? null : uiText);
+            SaveToDisk();
+        }
+
+        private void OnVoiceChatVolumeChanged(float val)
+        {
+            ActiveSettings.VoiceChatVolume = val;
             SaveToDisk();
         }
 
