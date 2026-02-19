@@ -62,8 +62,7 @@ public class PlayerController : NetworkBehaviour
             ++nextPlayerNetworkId;
 
             carSound.Post(gameObject);
-            float RTPCpeed = 0;
-            RTPCSpeed.SetGlobalValue(RTPCpeed);
+            RTPCSpeed.SetGlobalValue(0);
         }
     }
 
@@ -75,7 +74,7 @@ public class PlayerController : NetworkBehaviour
 
     void OnRespawn(Checkpoint checkpoint)
     {
-        if (isLocalPlayer)
+        if (authority)
         {
             Transform newTransform = checkpoint.playerRespawnLocalTransforms[playerNetworkId];
 
@@ -108,7 +107,7 @@ public class PlayerController : NetworkBehaviour
 
     private void Update()
     {
-        if (!isLocalPlayer) { return; }
+        if (!authority) { return; }
 
         _jumpPressed |= _jumpAction.action.WasPressedThisFrame();
     }
@@ -124,7 +123,7 @@ public class PlayerController : NetworkBehaviour
 
     private void FixedUpdate()
     {
-        if (!isLocalPlayer) { return; }
+        if (!authority) { return; }
 
         //Movement
         Quaternion cameraOrientation = _camera ? _camera.State.GetFinalOrientation() : Quaternion.identity;
@@ -188,7 +187,7 @@ public class PlayerController : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!isLocalPlayer) { return; }
+        if (!authority) { return; }
 
         WheelSeat newSeat = other.GetComponentInParent<WheelSeat>();
         if (newSeat && !Seat)

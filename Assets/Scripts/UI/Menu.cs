@@ -1,3 +1,4 @@
+using System.Collections;
 using EpicTransport;
 using kcp2k;
 using Mirror;
@@ -81,6 +82,29 @@ namespace UI
             InitLocal();
 
             _networkManager.StartClient();
+        }
+
+        public void HostLocal2Player()
+        {
+            InitLocal();
+            _networkManager.StartHost();
+
+            _networkManager.StartCoroutine(Routine());
+            return;
+
+            IEnumerator Routine()
+            {
+                yield return new WaitUntil(() => NetworkServer.localConnection?.isReady == true);
+
+                // manually spawn 2nd player with server authority
+                var spawnPoint = FindAnyObjectByType<NetworkStartPosition>();
+                var otherPlayer = Instantiate(_networkManager.playerPrefab, spawnPoint.transform.position, spawnPoint.transform.rotation);
+                NetworkServer.ReplacePlayerForConnection(
+                    NetworkServer.localConnection, 
+                    otherPlayer,
+                    ReplacePlayerOptions.KeepAuthority
+                );
+            }
         }
     }
 }
