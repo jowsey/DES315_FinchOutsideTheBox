@@ -13,9 +13,8 @@ public class PlayerController : NetworkBehaviour
     public Rigidbody Rb { get; private set; }
 
     [Header("Input")]
-    [SerializeField] private InputActionReference _moveAction;
-
-    [SerializeField] private InputActionReference _jumpAction;
+    public InputActionReference MoveAction;
+    public InputActionReference JumpAction;
 
     private bool _jumpPressed;
 
@@ -109,7 +108,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (!authority) { return; }
 
-        _jumpPressed |= _jumpAction.action.WasPressedThisFrame();
+        _jumpPressed |= JumpAction.action.WasPressedThisFrame();
     }
 
     private void LateUpdate()
@@ -130,7 +129,7 @@ public class PlayerController : NetworkBehaviour
         Vector3 cameraForward = Vector3.Scale(cameraOrientation * Vector3.forward, new Vector3(1, 0, 1)).normalized;
 
         Vector3 cameraRight = cameraOrientation * Vector3.right;
-        Vector2 inputDirection = _moveAction.action.ReadValue<Vector2>();
+        Vector2 inputDirection = MoveAction.action.ReadValue<Vector2>();
 
         WorldSpaceMoveDir = (cameraForward * inputDirection.y + cameraRight * inputDirection.x).normalized;
 
@@ -175,7 +174,7 @@ public class PlayerController : NetworkBehaviour
             {
                 Rb.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
             }
-            else if (_jumpAction.action.IsPressed() && Rb.linearVelocity.y < 0.0f)
+            else if (JumpAction.action.IsPressed() && Rb.linearVelocity.y < 0.0f)
             {
                 float gravityNegationPercentage01 = gravityNegationPercentage / 100.0f;
                 Rb.AddForce(-Physics.gravity * gravityNegationPercentage01, ForceMode.Acceleration);

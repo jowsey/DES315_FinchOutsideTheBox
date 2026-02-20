@@ -4,6 +4,7 @@ using kcp2k;
 using Mirror;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace UI
 {
@@ -15,6 +16,9 @@ namespace UI
         [SerializeField] [Required] private KcpTransport _kcpTransportPrefab;
 
         [SerializeField] [Required] private LobbyBrowser _lobbyBrowser;
+
+        [SerializeField] [Required] private InputActionReference _altMoveAction;
+        [SerializeField] [Required] private InputActionReference _altJumpAction;
 
         private void Awake()
         {
@@ -99,6 +103,10 @@ namespace UI
                 // manually spawn 2nd player with server authority
                 var spawnPoint = FindAnyObjectByType<NetworkStartPosition>();
                 var otherPlayer = Instantiate(_networkManager.playerPrefab, spawnPoint.transform.position, spawnPoint.transform.rotation);
+                var otherPlayerController = otherPlayer.GetComponent<PlayerController>();
+                otherPlayerController.MoveAction = _altMoveAction;
+                otherPlayerController.JumpAction = _altJumpAction;
+                
                 NetworkServer.ReplacePlayerForConnection(
                     NetworkServer.localConnection, 
                     otherPlayer,
