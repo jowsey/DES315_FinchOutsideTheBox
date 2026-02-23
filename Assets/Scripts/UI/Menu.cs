@@ -25,6 +25,19 @@ namespace UI
             _networkManager = FindAnyObjectByType<NetworkManager>(FindObjectsInactive.Include);
             _networkManager.gameObject.SetActive(false);
 
+            // Clean up old transports if we're coming back from the game
+            var transport = NetworkManager.singleton?.transport;
+            if (transport is EosTransport eosTransport)
+            {
+                // Leave Epic lobby if we're in one
+                eosTransport.GetComponent<EOSLobby>().LeaveLobby();
+            }
+            else if (transport is KcpTransport kcpTransport)
+            {
+                // not sure if we need to do anything here?   
+            }
+            Destroy(transport?.gameObject);
+
             Cursor.lockState = CursorLockMode.None;
         }
 
