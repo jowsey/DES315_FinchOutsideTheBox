@@ -35,6 +35,7 @@ namespace UI
 
         private void Update()
         {
+            // todo this should use an action for controller support
             if (Keyboard.current.escapeKey.wasPressedThisFrame)
             {
                 _videoPlayer.Stop();
