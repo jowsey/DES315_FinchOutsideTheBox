@@ -1,49 +1,101 @@
-using Mirror;
 using Sirenix.OdinInspector;
+using Sirenix.Utilities.Editor;
 using UnityEngine;
 
-public class Pusher : NetworkBehaviour
+public class Pusher : Mirror.NetworkBehaviour
 {
-    [SuffixLabel("m/s")]
-    [SerializeField] private float _pushSpeed;
+    [SerializeField] private float _duration;
+    [SerializeField] private AnimationCurve _scaleCurve;
 
-    [SuffixLabel("m")]
-    [SerializeField] private float _minPushDistance;
+    #if UNITY_EDITOR
+        //Used to detect changes in _duration for calling ScaleEditorAnimationCurve
+        private float _oldDuration = -1.0f;
 
-    [SuffixLabel("m")]
-    [SerializeField] private float _maxPushDistance;
+        //Used to detect changes in _scaleCurve for calling UpdateCurveMinMax
+        private AnimationCurve _oldScaleCurve;
 
-    private bool _extending;
+        //Used just for updating _currentScale's progress bar
+        private float _minScale = -1.0f;
+        private float _maxScale = -1.0f;
 
-    private void Start()
-    {
-        _extending = true;
-    }
+        [ShowInInspector, ReadOnly, ProgressBar("_minScale", "_maxScale")]
+    #endif
+        private float _currentScale; //todo figure out why this doesn't show up in the editor?
+
 
     void Update()
     {
         if (!isServer) { return; }
-        if (_extending)
+
+        float t = (float)(Mirror.NetworkTime.time % _duration); //range [0, _duration]
+        _currentScale = _scaleCurve.Evaluate(t);
+        transform.localScale = new Vector3(_currentScale, transform.localScale.y, transform.localScale.z);
+    }
+
+
+    #if UNITY_EDITOR
+        [OnInspectorGUI]
+        private void RepaintConstantly()
         {
-            transform.localScale += Vector3.right * (_pushSpeed * Time.deltaTime);
-            if (transform.localScale.x >= _maxPushDistance)
+            if (Application.isPlaying)
             {
-                _extending = false;
-            }
-        }
-        else
-        {
-            transform.localScale -= Vector3.right * (_pushSpeed * Time.deltaTime);
-            if (transform.localScale.x <= _minPushDistance)
-            {
-                _extending = true;
+                GUIHelper.RequestRepaint();
             }
         }
 
-        transform.localScale = new Vector3(
-            Mathf.Clamp(transform.localScale.x, _minPushDistance, _maxPushDistance),
-            transform.localScale.y,
-            transform.localScale.z
-        );
-    }
+        protected override void OnValidate()
+        {
+            base.OnValidate(); //NetworkBehaviour has its own OnValidate() apparently
+
+            if (_duration != _oldDuration)
+            {
+                if (_oldDuration > 0.0f)
+                {
+                    ScaleEditorAnimationCurve();
+                }
+                _oldDuration = _duration;
+            }
+
+            if (_scaleCurve != _oldScaleCurve)
+            {
+                UpdateCurveMinMax();
+                _oldScaleCurve = _scaleCurve;
+            }
+        }
+
+        //Called whenever _duration is changed
+        private void ScaleEditorAnimationCurve()
+        {
+            //Animation curve needs to be scaled from [0, 1] (default) to [0, duration]
+            float timeScaleFactor = _duration / _oldDuration;
+            Keyframe[] keys = _scaleCurve.keys;
+            for (int i = 0; i < _scaleCurve.length; ++i)
+            {
+                keys[i].time *= timeScaleFactor;
+
+                //tangent = ds/dt, stretching t (time) by a factor, k, means tangent = ds/kdt, which means tangent needs to be divided by k
+                keys[i].inTangent /= timeScaleFactor;
+                keys[i].outTangent /= timeScaleFactor;
+            }
+            _scaleCurve.keys = keys;
+        }
+
+        //Called whenever _scaleCurve is changed
+        private void UpdateCurveMinMax()
+        {
+            if (_scaleCurve == null || _scaleCurve.length == 0) { return; }
+            _minScale = float.MaxValue;
+            _maxScale = float.MinValue;
+
+            //Can't just loop through all keyframes because tangents push intermediate values outside of discrete keyframe range
+            //Take samples instead
+            int samples = 50;
+            for (int i = 0; i < samples; ++i)
+            {
+                float val = _scaleCurve.Evaluate(_duration / samples * i);
+                if (val < _minScale) { _minScale = val; }
+                if (val > _maxScale) { _maxScale = val; }
+            }
+        }
+    #endif
 }
