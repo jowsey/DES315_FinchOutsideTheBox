@@ -1,3 +1,4 @@
+using Mirror;
 using Sirenix.OdinInspector;
 using Unity.Cinemachine;
 using UnityEngine;
@@ -28,6 +29,11 @@ namespace UI
             _openAction.action.performed -= OnOpen;
         }
 
+        private void OnDestroy()
+        {
+            Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto); // if set by button
+        }
+
         // Wrapper for event listener
         private void OnOpen(InputAction.CallbackContext ctx) => OnOpen(!_isActive);
 
@@ -42,6 +48,29 @@ namespace UI
             _canvasGroup.alpha = active ? 1 : 0;
             _canvasGroup.interactable = active;
             _canvasGroup.blocksRaycasts = active;
+        }
+
+        public void QuitToMenu()
+        {
+            if (NetworkServer.active)
+            {
+                NetworkManager.singleton.StopHost();
+            }
+            else if (NetworkClient.active)
+            {
+                NetworkManager.singleton.StopClient();
+            }
+        }
+
+        public void QuitToDesktop()
+        {
+            // NetworkManager auto-disconnects on application quit
+
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+            Application.Quit();
+#endif
         }
     }
 }
