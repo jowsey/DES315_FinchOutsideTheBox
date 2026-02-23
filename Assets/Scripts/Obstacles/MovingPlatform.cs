@@ -10,45 +10,21 @@ public class MovingPlatform : MonoBehaviour
 
     [SerializeField] private float _duration;
     [SerializeField] private AnimationCurve _displacementCurve;
-    [ShowInInspector, ReadOnly, ProgressBar(0, 1)] private float _currentT;
 
-    //Used to detect changes in _duration for calling ScaleEditorDisplacementCurve
-    private float _oldDuration = -1.0f;
+    #if UNITY_EDITOR
+        [ShowInInspector, ReadOnly, ProgressBar(0, 1)] private float _currentT;
+
+        //Used to detect changes in _duration for calling ScaleEditorAnimationCurve
+        private float _oldDuration = -1.0f;
+    #else
+        private float _currenT;
+    #endif
 
 
     private void Awake()
     {
         _rb = GetComponentInChildren<Rigidbody>();
         _container = GetComponentInChildren<SplineContainer>();
-    }
-
-    private void OnValidate()
-    {
-        if (_duration != _oldDuration)
-        {
-            if (_oldDuration > 0.0f)
-            {
-                ScaleEditorDisplacementCurve();
-            }
-            _oldDuration = _duration;
-        }
-    }
-
-    //Called whenever _duration is changed
-    private void ScaleEditorDisplacementCurve()
-    {
-        //Animation curve needs to be scaled from [0, 1] (default) to [0, duration]
-        float timeScaleFactor = _duration / _oldDuration;
-        Keyframe[] keys = _displacementCurve.keys;
-        for (int i = 0; i < _displacementCurve.length; ++i)
-        {
-            keys[i].time *= timeScaleFactor;
-
-            //tangent = ds/dt, stretching t (time) by a factor, k, means tangent = ds/kdt, which means tangent needs to be divided by k
-            keys[i].inTangent /= timeScaleFactor;
-            keys[i].outTangent /= timeScaleFactor;
-        }
-        _displacementCurve.keys = keys;
     }
 
     private void FixedUpdate()
@@ -66,6 +42,7 @@ public class MovingPlatform : MonoBehaviour
         _rb.MovePosition(worldPos);
     }
 
+
     #if UNITY_EDITOR
         [OnInspectorGUI]
         private void RepaintConstantly()
@@ -74,6 +51,35 @@ public class MovingPlatform : MonoBehaviour
             {
                 GUIHelper.RequestRepaint();
             }
+        }
+
+        private void OnValidate()
+        {
+            if (_duration != _oldDuration)
+            {
+                if (_oldDuration > 0.0f)
+                {
+                    ScaleEditorAnimationCurve();
+                }
+                _oldDuration = _duration;
+            }
+        }
+
+        //Called whenever _duration is changed
+        private void ScaleEditorAnimationCurve()
+        {
+            //Animation curve needs to be scaled from [0, 1] (default) to [0, duration]
+            float timeScaleFactor = _duration / _oldDuration;
+            Keyframe[] keys = _displacementCurve.keys;
+            for (int i = 0; i < _displacementCurve.length; ++i)
+            {
+                keys[i].time *= timeScaleFactor;
+
+                //tangent = ds/dt, stretching t (time) by a factor, k, means tangent = ds/kdt, which means tangent needs to be divided by k
+                keys[i].inTangent /= timeScaleFactor;
+                keys[i].outTangent /= timeScaleFactor;
+            }
+            _displacementCurve.keys = keys;
         }
     #endif
 }
