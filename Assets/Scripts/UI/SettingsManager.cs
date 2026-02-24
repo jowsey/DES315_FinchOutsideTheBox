@@ -53,8 +53,6 @@ namespace UI
 
         private void Update()
         {
-            Debug.Log(ActiveSettings.VoiceChatVolume);
-
             //Poll input device list changes
             if (!Microphone.devices.SequenceEqual(_oldInputDevices))
             {
