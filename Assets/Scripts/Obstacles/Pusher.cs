@@ -1,15 +1,20 @@
 using Sirenix.OdinInspector;
-using Sirenix.Utilities.Editor;
 using UnityEngine;
+#if UNITY_EDITOR
+    using Sirenix.Utilities.Editor;
+#endif
 
 public class Pusher : Mirror.NetworkBehaviour
 {
     [SerializeField] private float _duration;
     [SerializeField] private AnimationCurve _scaleCurve;
+    [SerializeField] private bool _moveByDefault;
+    private bool _isMoving;
+    double _timeElapsed; //Tracks the passing Time.fixedDeltaTime but only when _isMoving is true
 
-    #if UNITY_EDITOR
-        //Used to detect changes in _duration for calling ScaleEditorAnimationCurve
-        private float _oldDuration = -1.0f;
+#if UNITY_EDITOR
+    //Used to detect changes in _duration for calling ScaleEditorAnimationCurve
+    private float _oldDuration = -1.0f;
 
         //Used to detect changes in _scaleCurve for calling UpdateCurveMinMax
         private AnimationCurve _oldScaleCurve;
@@ -23,13 +28,33 @@ public class Pusher : Mirror.NetworkBehaviour
         private float _currentScale; //todo figure out why this doesn't show up in the editor?
 
 
-    void Update()
+    private void Awake()
+    {
+        _isMoving = _moveByDefault;
+        _timeElapsed = 0;
+    }
+
+    public void StartMoving()
+    {
+        _isMoving = true;
+    }
+
+    public void StopMoving()
+    {
+        _isMoving = false;
+    }
+
+    void FixedUpdate()
     {
         if (!isServer) { return; }
 
-        float t = (float)(Mirror.NetworkTime.time % _duration); //range [0, _duration]
-        _currentScale = _scaleCurve.Evaluate(t);
-        transform.localScale = new Vector3(_currentScale, transform.localScale.y, transform.localScale.z);
+        if (_isMoving)
+        {
+            _timeElapsed += Time.fixedDeltaTime;
+            float t = (float)(_timeElapsed % _duration); //range [0, _duration]
+            _currentScale = _scaleCurve.Evaluate(t);
+            transform.localScale = new Vector3(_currentScale, transform.localScale.y, transform.localScale.z);
+        }
     }
 
 
