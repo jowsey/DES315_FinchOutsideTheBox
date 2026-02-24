@@ -135,6 +135,8 @@ public class PlayerController : NetworkBehaviour
 
         if (WorldSpaceMoveDir.sqrMagnitude > 0)
         {
+            GetComponent<Animator>().SetBool("Running", true);
+
             // todo this should definitely run outside of localplayer (for other players' footsteps) and rtpc speed should be based on actual wheel speed, not input time
             if (Seat)
             {
@@ -152,6 +154,7 @@ public class PlayerController : NetworkBehaviour
         {
             // todo again should be based on cart speed
             RTPCSpeedValue -= 3f;
+            GetComponent<Animator>().SetBool("Running", false);
         }
 
         RTPCSpeedValue = Mathf.Clamp(RTPCSpeedValue, 0, 100);
