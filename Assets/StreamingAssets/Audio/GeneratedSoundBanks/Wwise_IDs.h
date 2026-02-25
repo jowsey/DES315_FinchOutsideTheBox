@@ -28,11 +28,12 @@ namespace AK
 
             namespace STATE
             {
-                static const AkUniqueID DESERT = 1850388778U;
+                static const AkUniqueID DESERTCAVE = 2333184713U;
+                static const AkUniqueID DESERTWAILS = 1149458632U;
                 static const AkUniqueID HEAVENLYGATES = 3598752419U;
-                static const AkUniqueID LOWERAMP = 233930006U;
-                static const AkUniqueID LOWERLEVEL = 3017469230U;
+                static const AkUniqueID MAINMENU = 3604647259U;
                 static const AkUniqueID NONE = 748895195U;
+                static const AkUniqueID PREDESERTCAVEAMBI = 621537501U;
                 static const AkUniqueID RUINSSAVE = 2889645033U;
             } // namespace STATE
         } // namespace MUSIC
