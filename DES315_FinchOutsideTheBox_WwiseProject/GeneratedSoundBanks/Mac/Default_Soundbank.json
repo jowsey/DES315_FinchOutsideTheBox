@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{46173D95-DFFE-4BE9-8209-57EB1CFCE1F7}",
     "Language": "SFX",
-    "Hash": "{A470C031-BCEB-3BD2-FF0C-B29C187A6879}",
+    "Hash": "{F7BFFA60-CFE3-263B-7581-005F0459F7E9}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Default_Soundbank",
     "ShortName": "Default_Soundbank",
     "Path": "Default_Soundbank.bnk",
@@ -286,6 +286,14 @@
       "Location": "Memory",
       "ShortName": "Sand Fts-015.wav",
       "CachePath": "31/{313746BD-4B6F-FD89-1CD1-D4525A4AFF1B}.wem"
+     },
+     {
+      "Id": "438899495",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "Pre DesertCaveAmbience.wav",
+      "CachePath": "02/{0261B24E-D64D-327F-1CAC-751E37F0865F}.wem"
      },
      {
       "Id": "450960317",
@@ -977,7 +985,7 @@
           "SwitchValue": {
            "GroupType": "State",
            "GroupId": "3991942870",
-           "Id": "3017469230",
+           "Id": "3604647259",
            "GUID": "{5CF4C524-2019-4F96-94A1-9639625D404E}"
           },
           "MediaRefs": [
@@ -1000,7 +1008,7 @@
           "SwitchValue": {
            "GroupType": "State",
            "GroupId": "3991942870",
-           "Id": "1850388778",
+           "Id": "2333184713",
            "GUID": "{36CEFC04-4BC4-4FB6-824C-BB554CD3631E}"
           },
           "MediaRefs": [
@@ -1026,7 +1034,7 @@
           "SwitchValue": {
            "GroupType": "State",
            "GroupId": "3991942870",
-           "Id": "233930006",
+           "Id": "1149458632",
            "GUID": "{7993C810-EA59-4AF2-ADB1-A944DF921E78}"
           },
           "MediaRefs": [
@@ -1058,6 +1066,29 @@
           "MediaRefs": [
            {
             "Id": "678587977"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "SwitchValue": {
+         "GroupType": "State",
+         "GroupId": "1926883983",
+         "Id": "702482391",
+         "GUID": "{55D680FE-ACF4-4E2B-8EFB-B5EC4D541F7C}"
+        },
+        "Children": [
+         {
+          "SwitchValue": {
+           "GroupType": "State",
+           "GroupId": "3991942870",
+           "Id": "621537501",
+           "GUID": "{095B469A-61A9-4F3A-B675-171CBA6B9A43}"
+          },
+          "MediaRefs": [
+           {
+            "Id": "438899495"
            }
           ]
          }
@@ -1132,10 +1163,10 @@
       "GUID": "{76760B35-8366-48C7-8775-08A18124DF1A}",
       "States": [
        {
-        "Id": "233930006",
-        "Name": "LowerAmp",
-        "ObjectPath": "\\States\\Default Work Unit\\Music\\LowerAmp",
-        "GUID": "{7993C810-EA59-4AF2-ADB1-A944DF921E78}"
+        "Id": "621537501",
+        "Name": "PreDesertCaveAmbi",
+        "ObjectPath": "\\States\\Default Work Unit\\Music\\PreDesertCaveAmbi",
+        "GUID": "{095B469A-61A9-4F3A-B675-171CBA6B9A43}"
        },
        {
         "Id": "748895195",
@@ -1144,9 +1175,15 @@
         "GUID": "{967B1C40-2409-44AC-9EAF-8FE4D0324E47}"
        },
        {
-        "Id": "1850388778",
-        "Name": "Desert",
-        "ObjectPath": "\\States\\Default Work Unit\\Music\\Desert",
+        "Id": "1149458632",
+        "Name": "DesertWails",
+        "ObjectPath": "\\States\\Default Work Unit\\Music\\DesertWails",
+        "GUID": "{7993C810-EA59-4AF2-ADB1-A944DF921E78}"
+       },
+       {
+        "Id": "2333184713",
+        "Name": "DesertCave",
+        "ObjectPath": "\\States\\Default Work Unit\\Music\\DesertCave",
         "GUID": "{36CEFC04-4BC4-4FB6-824C-BB554CD3631E}"
        },
        {
@@ -1156,16 +1193,16 @@
         "GUID": "{41D3C7E7-1D94-45AD-BB37-BD0228A1AF3D}"
        },
        {
-        "Id": "3017469230",
-        "Name": "LowerLevel",
-        "ObjectPath": "\\States\\Default Work Unit\\Music\\LowerLevel",
-        "GUID": "{5CF4C524-2019-4F96-94A1-9639625D404E}"
-       },
-       {
         "Id": "3598752419",
         "Name": "HeavenlyGates",
         "ObjectPath": "\\States\\Default Work Unit\\Music\\HeavenlyGates",
         "GUID": "{1438661A-17AC-4386-93AE-57C9FE7EC55E}"
+       },
+       {
+        "Id": "3604647259",
+        "Name": "MainMenu",
+        "ObjectPath": "\\States\\Default Work Unit\\Music\\MainMenu",
+        "GUID": "{5CF4C524-2019-4F96-94A1-9639625D404E}"
        }
       ]
      }
@@ -1200,6 +1237,6 @@
     ]
    }
   ],
-  "FileHash": "{E5E5936B-61CD-F00F-E3CF-CB47FBB02365}"
+  "FileHash": "{C557C133-2F2D-779B-90C1-0EE389878C7F}"
  }
 }
