@@ -24262,6 +24262,7 @@ GameObject:
   - component: {fileID: 143424543}
   - component: {fileID: 143424549}
   - component: {fileID: 143424548}
+  - component: {fileID: 143424550}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -24427,7 +24428,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 937e8f72859d4ce4ea1b3541961bade8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: AK.Wwise.Unity.MonoBehaviour::AkState
-  triggerList: f7e1664c
+  triggerList: ae8d9d44
   useOtherObject: 0
   data:
     idInternal: 0
@@ -24463,6 +24464,23 @@ MonoBehaviour:
   groupIdInternal: 0
   valueGuidInternal: 
   groupGuidInternal: 
+--- !u!114 &143424550
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 143424541}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2529578a014bcaa4c89fbd0ba454ccb3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  RTPCMenu:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 57dd7f8e59ba91b4988b0e01b0c4eb32, type: 2}
+  RTPCMenuNum: 0
 --- !u!43 &149515589
 Mesh:
   m_ObjectHideFlags: 0

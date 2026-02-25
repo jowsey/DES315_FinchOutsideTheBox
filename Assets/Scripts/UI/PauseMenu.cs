@@ -14,7 +14,24 @@ namespace UI
         private bool _isActive;
         private CanvasGroup _canvasGroup;
 
+        //Menu makes music go through filter
+        public AK.Wwise.RTPC RTPCMenu;
+        public float RTPCMenuNum;
+
         [SerializeField] [Required] private CinemachineInputAxisController _playerCamInput;
+
+        public void Update()
+        {
+            if( _isActive )
+            {
+                RTPCMenuNum = 1;
+            }
+            else
+            {
+                RTPCMenuNum = 0;
+            }
+            RTPCMenu.SetGlobalValue(RTPCMenuNum);
+        }
 
         private void OnEnable()
         {
@@ -22,16 +39,19 @@ namespace UI
 
             _openAction.action.performed += OnOpen;
             OnOpen(false);
+            
         }
 
         private void OnDisable()
         {
             _openAction.action.performed -= OnOpen;
+            
         }
 
         private void OnDestroy()
         {
             Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto); // if set by button
+            RTPCMenuNum = 0;
         }
 
         // Wrapper for event listener
