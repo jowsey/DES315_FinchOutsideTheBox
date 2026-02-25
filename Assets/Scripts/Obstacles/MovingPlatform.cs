@@ -1,7 +1,9 @@
 using Sirenix.OdinInspector;
-using Sirenix.Utilities.Editor;
 using UnityEngine;
 using UnityEngine.Splines;
+#if UNITY_EDITOR
+    using Sirenix.Utilities.Editor;
+#endif
 
 public class MovingPlatform : MonoBehaviour
 {
@@ -10,14 +12,20 @@ public class MovingPlatform : MonoBehaviour
 
     [SerializeField] private float _duration;
     [SerializeField] private AnimationCurve _displacementCurve;
+    [SerializeField] private bool _moveByDefault;
+    private bool _isMoving;
+    private double _timeElapsed; //Tracks the passing Time.fixedDeltaTime but only when _isMoving is true
+    private float _targetT;
+    private bool _useTargetT;
+    private float _tLastTick;
 
-    #if UNITY_EDITOR
-        [ShowInInspector, ReadOnly, ProgressBar(0, 1)] private float _currentT;
+#if UNITY_EDITOR
+    [ShowInInspector, ReadOnly, ProgressBar(0, 1)] private float _currentT;
 
         //Used to detect changes in _duration for calling ScaleEditorAnimationCurve
         private float _oldDuration = -1.0f;
     #else
-        private float _currenT;
+        private float _currentT;
     #endif
 
 
@@ -25,21 +33,72 @@ public class MovingPlatform : MonoBehaviour
     {
         _rb = GetComponentInChildren<Rigidbody>();
         _container = GetComponentInChildren<SplineContainer>();
+        _isMoving = _moveByDefault;
+        _timeElapsed = 0;
+        _targetT = 0.0f;
+        _useTargetT = false;
+        _tLastTick = 0.0f;
+        _currentT = 0.0f;
+    }
+
+    public void StartMoving()
+    {
+        _isMoving = true;
+        _useTargetT = false;
+    }
+
+    public void StopMoving()
+    {
+        _isMoving = false;
+        _useTargetT = false;
+    }
+
+    public void SetTargetT(float t)
+    {
+        _useTargetT = true;
+        _targetT = t;
     }
 
     private void FixedUpdate()
     {
-        //Range [0, _duration]
-        float absoluteT = (float)(Mirror.NetworkTime.time % _duration);
+        if (_useTargetT)
+        {
+            _isMoving = (Mathf.Abs(_currentT - _targetT) > 0.001f);
+            if (_isMoving && Mathf.Abs(_targetT - 1.0f) < 0.01f)
+            {
+                //_targetT is 1, need to handle special case where t wraps around from 1 to 0
+                if (_tLastTick > _currentT)
+                {
+                    //t has wrapped around from 1 to 0 and so has hit the target t
+                    _isMoving = false;
+                }
+            }
 
-        //Map the absolute t value to the splinal t value shaped by the _displacementCurve
-        //Range [0, 1]
-        _currentT = _displacementCurve.Evaluate(absoluteT);
+            //Just for cleanliness sake
+            if (!_isMoving)
+            {
+                _currentT = _targetT;
+            }
+        }
 
-        //Evaluate spline
-        Vector3 localPos = _container.Splines[0].EvaluatePosition(_currentT);
-        Vector3 worldPos = _container.transform.TransformPoint(localPos);
-        _rb.MovePosition(worldPos);
+        if (_isMoving)
+        {
+            _tLastTick = _currentT;
+
+            _timeElapsed += Time.fixedDeltaTime;
+
+            //Range [0, _duration]
+            float absoluteT = (float)(_timeElapsed % _duration);
+
+            //Map the absolute t value to the splinal t value shaped by the _displacementCurve
+            //Range [0, 1]
+            _currentT = _displacementCurve.Evaluate(absoluteT);
+            //Evaluate spline
+            Vector3 localPos = _container.Splines[0].EvaluatePosition(_currentT);
+            Vector3 worldPos = _container.transform.TransformPoint(localPos);
+            _rb.MovePosition(worldPos);
+
+        }
     }
 
 

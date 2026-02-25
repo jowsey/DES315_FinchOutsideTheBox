@@ -58,8 +58,10 @@ public class Cart : NetworkBehaviour
 
     private void Update()
     {
+        Debug.Log("a?");
         if (respawnAction.action.WasPressedThisFrame())
         {
+            Debug.Log("test?");
             CmdInvokeRespawnEvent(currentCheckpointIndex);
         }
         else if (dev_checkpointBackAction.action.WasPressedThisFrame() && currentCheckpointIndex != 0)
