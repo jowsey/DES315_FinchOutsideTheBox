@@ -11,6 +11,11 @@ public class PlayerController : NetworkBehaviour
 
     [Header("Components")]
     public Rigidbody Rb { get; private set; }
+    private Animator animator;
+
+    [Header("Animation")]
+    [Tooltip("The minimum velocity required to initiate the gliding animation (should be negative)")]
+    [SerializeField] private float _glideAnimationMinDownardsVelocity;
 
     [Header("Input")]
     public InputActionReference MoveAction;
@@ -50,6 +55,7 @@ public class PlayerController : NetworkBehaviour
     private void Awake()
     {
         Rb = GetComponent<Rigidbody>();
+        animator = GetComponent<Animator>();
     }
 
     private void Start()
@@ -135,6 +141,7 @@ public class PlayerController : NetworkBehaviour
 
         if (WorldSpaceMoveDir.sqrMagnitude > 0)
         {
+            animator.SetBool("Running", true);
             // todo this should definitely run outside of localplayer (for other players' footsteps) and rtpc speed should be based on actual wheel speed, not input time
             if (Seat)
             {
@@ -150,6 +157,7 @@ public class PlayerController : NetworkBehaviour
         }
         else
         {
+            animator.SetBool("Running", false);
             // todo again should be based on cart speed
             RTPCSpeedValue -= 3f;
         }
@@ -170,18 +178,42 @@ public class PlayerController : NetworkBehaviour
 
             //Jump
             var grounded = Physics.CheckSphere(Rb.position, 0.1f, ~(1 << gameObject.layer),  QueryTriggerInteraction.Ignore);
+            if (!grounded)
+            {
+                Debug.Log("Not grounded");
+                animator.SetBool("Running", false);
+            }
             if (_jumpPressed && grounded)
             {
+                animator.SetTrigger("Jump Up");
                 Rb.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
             }
-            else if (JumpAction.action.IsPressed() && Rb.linearVelocity.y < 0.0f)
+            else if (JumpAction.action.IsPressed() && Rb.linearVelocity.y < _glideAnimationMinDownardsVelocity)
             {
+                animator.SetBool("Jump Down", true);
                 float gravityNegationPercentage01 = gravityNegationPercentage / 100.0f;
                 Rb.AddForce(-Physics.gravity * gravityNegationPercentage01, ForceMode.Acceleration);
+            }
+            else if (Rb.linearVelocity.y < _glideAnimationMinDownardsVelocity)
+            {
+                animator.SetBool("Jump Down", true);
+            }
+            else if (Rb.linearVelocity.y < 1e-2 && animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "Jump_Up")
+            {
+                animator.SetBool("Jump Down", true);
+            }
+            else
+            {
+                animator.SetBool("Jump Down", false);
             }
         }
 
         _jumpPressed = false;
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawSphere(Rb.position, 0.1f);
     }
 
     private void OnTriggerEnter(Collider other)
