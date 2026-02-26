@@ -61,6 +61,18 @@ public class PlayerController : NetworkBehaviour
     {
         Rb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
+        if (FindObjectsByType<PlayerController>(FindObjectsSortMode.None).Length > 1)
+        {
+            //This is player 2, so change their texture
+            foreach (SkinnedMeshRenderer renderer in GetComponentsInChildren<SkinnedMeshRenderer>())
+            {
+                if (renderer.sharedMaterial == _player1Material)
+                {
+                    renderer.material.SetTexture("_BaseColorMap", _player2Texture);
+                    renderer.material.SetTexture("_EmissiveColorMap", _player2Texture);
+                }
+            }
+        }
     }
 
     private void Start()
@@ -73,21 +85,6 @@ public class PlayerController : NetworkBehaviour
 
             carSound.Post(gameObject);
             RTPCSpeed.SetGlobalValue(0);
-        }
-
-        Debug.Log(playerNetworkId);
-
-        if (playerNetworkId != 0)
-        {
-            //This is player 2, so change their texture
-            foreach (SkinnedMeshRenderer renderer in GetComponentsInChildren<SkinnedMeshRenderer>())
-            {
-                if (renderer.sharedMaterial == _player1Material)
-                {
-                    renderer.material.SetTexture("_BaseColorMap", _player2Texture);
-                    renderer.material.SetTexture("_EmissiveColorMap", _player2Texture);
-                }
-            }
         }
     }
 
