@@ -187,7 +187,11 @@ public class PlayerController : NetworkBehaviour
             Seat = null;
         }
 
-        if (!Seat)
+        if (Seat && animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "Jump Up")
+        {
+            animator.SetBool("Jump Down", true);
+        }
+        else
         {
             Vector3 delta = new Vector3(WorldSpaceMoveDir.x, 0.0f, WorldSpaceMoveDir.z) * (Time.fixedDeltaTime * _moveForce);
             Rb.MovePosition(Rb.position + delta);
