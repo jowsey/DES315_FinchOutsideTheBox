@@ -32,9 +32,10 @@ public class FlaskCarrier : MonoBehaviour
         {
             if (includeOutOfBounds || _carryingBounds.bounds.Contains(flask.transform.position))
             {
-                flask.transform.position = transform.TransformPoint(_initialRelativePositions[flask]);
-                flask.GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
-                flask.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+                var rb = flask.GetComponent<Rigidbody>();
+                rb.position = transform.TransformPoint(_initialRelativePositions[flask]);
+                rb.linearVelocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
             }
         }
     }
