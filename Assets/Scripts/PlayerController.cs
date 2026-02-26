@@ -197,7 +197,6 @@ public class PlayerController : NetworkBehaviour
             var grounded = Physics.CheckSphere(Rb.position, 0.1f, ~(1 << gameObject.layer),  QueryTriggerInteraction.Ignore);
             if (!grounded)
             {
-                Debug.Log("Not grounded");
                 animator.SetBool("Running", false);
             }
             if (_jumpPressed && grounded)
