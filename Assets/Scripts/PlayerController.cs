@@ -210,6 +210,8 @@ public class PlayerController : NetworkBehaviour
             Vector3 delta = new Vector3(WorldSpaceMoveDir.x, 0.0f, WorldSpaceMoveDir.z) * (Time.fixedDeltaTime * _moveForce);
             Rb.MovePosition(Rb.position + delta);
 
+            var currentClipInfo = animator.GetCurrentAnimatorClipInfo(0);
+            
             //Jump
             var grounded = Physics.CheckSphere(Rb.position, 0.1f, ~(1 << gameObject.layer),  QueryTriggerInteraction.Ignore);
             if (!grounded)
@@ -231,7 +233,7 @@ public class PlayerController : NetworkBehaviour
             {
                 animator.SetBool(JumpDownState, true);
             }
-            else if (Rb.linearVelocity.y < 1e-2 && animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "Jump_Up")
+            else if (Rb.linearVelocity.y < 1e-2 && currentClipInfo.Length > 0 && currentClipInfo[0].clip.name == "Jump_Up")
             {
                 animator.SetBool(JumpDownState, true);
             }
