@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 public class Cart : NetworkBehaviour
 {
     public Rigidbody Rb { get; private set; }
+    [SerializeField] private FlaskCarrier _flaskCarrier;
 
     [SerializeField] private Checkpoint[] checkpoints;
     public int currentCheckpointIndex { get; private set; }
@@ -14,9 +15,12 @@ public class Cart : NetworkBehaviour
     [SerializeField] private InputActionReference dev_checkpointBackAction;
     [SerializeField] private InputActionReference dev_checkpointForwardAction;
 
+
     private void Awake()
     {
         Rb = GetComponent<Rigidbody>();
+        _flaskCarrier = GetComponentInChildren<FlaskCarrier>();
+        
         for (int i = 0; i < checkpoints.Length; i++)
         {
             checkpoints[i].index = i;
@@ -26,6 +30,11 @@ public class Cart : NetworkBehaviour
     private void Start()
     {
         Checkpoint.respawnEvent.AddListener(OnRespawn);
+    }
+    
+    private void OnDestroy()
+    {
+        Checkpoint.respawnEvent.RemoveListener(OnRespawn);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -54,6 +63,8 @@ public class Cart : NetworkBehaviour
         transform.position = newTransform.position;
         transform.rotation = newTransform.rotation;
         gameObject.SetActive(true);
+        
+        if (_flaskCarrier) _flaskCarrier.ResetFlasks(true);
     }
 
     private void Update()
