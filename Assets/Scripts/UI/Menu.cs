@@ -39,6 +39,9 @@ namespace UI
             Destroy(transport?.gameObject);
 
             Cursor.lockState = CursorLockMode.None;
+            
+            // Reset player IDs before going into a new game
+            PlayerController.NextPlayerNetworkId = 0;
         }
 
         private void OnDestroy()

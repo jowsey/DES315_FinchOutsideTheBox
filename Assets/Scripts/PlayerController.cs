@@ -13,7 +13,7 @@ public class PlayerController : NetworkBehaviour
     private readonly static int EmissiveColorMapID = Shader.PropertyToID("_EmissiveColorMap");
     
     private int playerNetworkId;
-    private static int nextPlayerNetworkId = 0;
+    public static int NextPlayerNetworkId = 0;
 
     [Header("Components")]
     public Rigidbody Rb { get; private set; }
@@ -85,8 +85,8 @@ public class PlayerController : NetworkBehaviour
         Checkpoint.respawnEvent.AddListener(OnRespawn);
         if (isServer)
         {
-            RpcSetPlayerNetworkId(nextPlayerNetworkId);
-            ++nextPlayerNetworkId;
+            RpcSetPlayerNetworkId(NextPlayerNetworkId);
+            ++NextPlayerNetworkId;
 
             carSound.Post(gameObject);
             RTPCSpeed.SetGlobalValue(0);
