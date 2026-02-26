@@ -2,6 +2,7 @@ using Mirror;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering.RenderGraphModule;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : NetworkBehaviour
@@ -49,6 +50,10 @@ public class PlayerController : NetworkBehaviour
     [Header("State")]
     [ReadOnly] public WheelSeat Seat;
 
+    [Header("Material Update Data")]
+    [SerializeField] private Texture _player2Texture;
+    [SerializeField] private Material _player1Material;
+
     [field: SyncVar]
     [field: SerializeField] [field: ReadOnly] public Vector3 WorldSpaceMoveDir { get; private set; }
 
@@ -68,6 +73,21 @@ public class PlayerController : NetworkBehaviour
 
             carSound.Post(gameObject);
             RTPCSpeed.SetGlobalValue(0);
+        }
+
+        Debug.Log(playerNetworkId);
+
+        if (playerNetworkId != 0)
+        {
+            //This is player 2, so change their texture
+            foreach (SkinnedMeshRenderer renderer in GetComponentsInChildren<SkinnedMeshRenderer>())
+            {
+                if (renderer.sharedMaterial == _player1Material)
+                {
+                    renderer.material.SetTexture("_BaseColorMap", _player2Texture);
+                    renderer.material.SetTexture("_EmissiveColorMap", _player2Texture);
+                }
+            }
         }
     }
 
