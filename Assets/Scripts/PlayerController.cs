@@ -228,8 +228,6 @@ public class PlayerController : NetworkBehaviour
         }
 
         _jumpPressed = false;
-
-        Debug.Log(animator.GetCurrentAnimatorClipInfo(0)[0].clip.name);
     }
 
     private void OnDrawGizmos()
