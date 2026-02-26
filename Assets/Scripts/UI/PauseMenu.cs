@@ -14,7 +14,15 @@ namespace UI
         private bool _isActive;
         private CanvasGroup _canvasGroup;
 
+        public AK.Wwise.RTPC RTPCMenuOnOff;
+        public float RTPCMenuValue;
+
         [SerializeField] [Required] private CinemachineInputAxisController _playerCamInput;
+
+        public void Update()
+        {
+            IsESCkeyPressed();
+        }
 
         private void OnEnable()
         {
@@ -60,6 +68,20 @@ namespace UI
             {
                 NetworkManager.singleton.StopClient();
             }
+        }
+
+        public void IsESCkeyPressed()
+        {
+            if (_isActive)
+            {
+                RTPCMenuValue = 1;
+            }
+            else
+            {
+                RTPCMenuValue = 0;
+            }
+
+            RTPCMenuOnOff.SetGlobalValue(RTPCMenuValue);
         }
 
         public void QuitToDesktop()
