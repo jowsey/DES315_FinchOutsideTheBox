@@ -6,6 +6,12 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : NetworkBehaviour
 {
+    private readonly static int RunningState = Animator.StringToHash("Running");
+    private readonly static int JumpUpState = Animator.StringToHash("Jump Up");
+    private readonly static int JumpDownState = Animator.StringToHash("Jump Down");
+    private readonly static int BaseColorMapID = Shader.PropertyToID("_BaseColorMap");
+    private readonly static int EmissiveColorMapID = Shader.PropertyToID("_EmissiveColorMap");
+    
     private int playerNetworkId;
     private static int nextPlayerNetworkId = 0;
 
@@ -67,8 +73,8 @@ public class PlayerController : NetworkBehaviour
             {
                 if (renderer.sharedMaterial == _player1Material)
                 {
-                    renderer.material.SetTexture("_BaseColorMap", _player2Texture);
-                    renderer.material.SetTexture("_EmissiveColorMap", _player2Texture);
+                    renderer.material.SetTexture(BaseColorMapID, _player2Texture);
+                    renderer.material.SetTexture(EmissiveColorMapID, _player2Texture);
                 }
             }
         }
@@ -85,6 +91,11 @@ public class PlayerController : NetworkBehaviour
             carSound.Post(gameObject);
             RTPCSpeed.SetGlobalValue(0);
         }
+    }
+
+    private void OnDestroy()
+    {
+        Checkpoint.respawnEvent.RemoveListener(OnRespawn);
     }
 
     [ClientRpc]
@@ -116,9 +127,12 @@ public class PlayerController : NetworkBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         
         _camera = FindAnyObjectByType<CinemachineCamera>(FindObjectsInactive.Include); //GameObject.Find doesn't work because camera is inactive
-        _camera.gameObject.SetActive(true);
-        _camera.Follow = transform;
-        _camera.LookAt = transform;
+        if (!_camera.Follow || !_camera.LookAt)
+        {
+            _camera.gameObject.SetActive(true);
+            _camera.Follow = transform;
+            _camera.LookAt = transform;
+        }
     }
 
     public override void OnStopLocalPlayer()
@@ -157,7 +171,7 @@ public class PlayerController : NetworkBehaviour
 
         if (WorldSpaceMoveDir.sqrMagnitude > 0)
         {
-            animator.SetBool("Running", true);
+            animator.SetBool(RunningState, true);
             // todo this should definitely run outside of localplayer (for other players' footsteps) and rtpc speed should be based on actual wheel speed, not input time
             if (Seat)
             {
@@ -173,7 +187,7 @@ public class PlayerController : NetworkBehaviour
         }
         else
         {
-            animator.SetBool("Running", false);
+            animator.SetBool(RunningState, false);
             // todo again should be based on cart speed
             RTPCSpeedValue -= 3f;
         }
@@ -189,7 +203,7 @@ public class PlayerController : NetworkBehaviour
 
         if (Seat && animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "Jump Up")
         {
-            animator.SetBool("Jump Down", true);
+            animator.SetBool(JumpDownState, true);
         }
         else
         {
@@ -200,30 +214,30 @@ public class PlayerController : NetworkBehaviour
             var grounded = Physics.CheckSphere(Rb.position, 0.1f, ~(1 << gameObject.layer),  QueryTriggerInteraction.Ignore);
             if (!grounded)
             {
-                animator.SetBool("Running", false);
+                animator.SetBool(RunningState, false);
             }
             if (_jumpPressed && grounded)
             {
-                animator.SetTrigger("Jump Up");
+                animator.SetTrigger(JumpUpState);
                 Rb.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
             }
             else if (JumpAction.action.IsPressed() && Rb.linearVelocity.y < _glideAnimationMinDownardsVelocity)
             {
-                animator.SetBool("Jump Down", true);
+                animator.SetBool(JumpDownState, true);
                 float gravityNegationPercentage01 = gravityNegationPercentage / 100.0f;
                 Rb.AddForce(-Physics.gravity * gravityNegationPercentage01, ForceMode.Acceleration);
             }
             else if (Rb.linearVelocity.y < _glideAnimationMinDownardsVelocity)
             {
-                animator.SetBool("Jump Down", true);
+                animator.SetBool(JumpDownState, true);
             }
             else if (Rb.linearVelocity.y < 1e-2 && animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "Jump_Up")
             {
-                animator.SetBool("Jump Down", true);
+                animator.SetBool(JumpDownState, true);
             }
             else
             {
-                animator.SetBool("Jump Down", false);
+                animator.SetBool(JumpDownState, false);
             }
         }
 
