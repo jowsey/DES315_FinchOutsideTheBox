@@ -7,8 +7,10 @@ using UnityEngine.InputSystem;
 public class PlayerController : NetworkBehaviour
 {
     private readonly static int RunningState = Animator.StringToHash("Running");
-    private readonly static int JumpUpState = Animator.StringToHash("Jump Up");
-    private readonly static int JumpDownState = Animator.StringToHash("Jump Down");
+    private readonly static int JumpTrigger = Animator.StringToHash("Jump");
+    private readonly static int IdleBreakerTrigger = Animator.StringToHash("Idle_Break");
+    private readonly static int FallState = Animator.StringToHash("Fall");
+    private readonly static int GlideState = Animator.StringToHash("Glide");
     private readonly static int BaseColorMapID = Shader.PropertyToID("_BaseColorMap");
     private readonly static int EmissiveColorMapID = Shader.PropertyToID("_EmissiveColorMap");
     
@@ -21,7 +23,10 @@ public class PlayerController : NetworkBehaviour
 
     [Header("Animation")]
     [Tooltip("The minimum velocity required to initiate the gliding animation (should be negative)")]
-    [SerializeField] private float _glideAnimationMinDownardsVelocity;
+    [SerializeField] private float _fallAnimationMinDownardsVelocity;
+    [Tooltip("The average number of idle animation loops to play before an idle breaker animation")]
+    [SerializeField] private float _idleBreakerFrequency;
+    private int _idleBreakerFrequencyTicks; //Impl for _idlBreakerFrequency - same thing but measured in fixed update ticks rather than idle anim loops
 
     [Header("Input")]
     public InputActionReference MoveAction;
@@ -65,7 +70,17 @@ public class PlayerController : NetworkBehaviour
     private void Awake()
     {
         Rb = GetComponent<Rigidbody>();
+
         animator = GetComponent<Animator>();
+        foreach (AnimationClip clip in animator.runtimeAnimatorController.animationClips)
+        {
+            if (clip.name == "Idle")
+            {
+                int numFixedUpdatesPerIdleAnim = (int)(clip.length / Time.fixedDeltaTime);
+                _idleBreakerFrequencyTicks = (int)(numFixedUpdatesPerIdleAnim * _idleBreakerFrequency);
+            }
+        }
+
         if (FindObjectsByType<PlayerController>(FindObjectsSortMode.None).Length > 1)
         {
             //This is player 2, so change their texture
@@ -160,6 +175,10 @@ public class PlayerController : NetworkBehaviour
     {
         if (!authority) { return; }
 
+        animator.SetBool(RunningState, false);
+        animator.SetBool(FallState, false);
+        animator.SetBool(GlideState, false);
+
         //Movement
         Quaternion cameraOrientation = _camera ? _camera.State.GetFinalOrientation() : Quaternion.identity;
         Vector3 cameraForward = Vector3.Scale(cameraOrientation * Vector3.forward, new Vector3(1, 0, 1)).normalized;
@@ -187,7 +206,6 @@ public class PlayerController : NetworkBehaviour
         }
         else
         {
-            animator.SetBool(RunningState, false);
             // todo again should be based on cart speed
             RTPCSpeedValue -= 3f;
         }
@@ -200,46 +218,42 @@ public class PlayerController : NetworkBehaviour
             Seat.CmdUnsitPlayer();
             Seat = null;
         }
-        
-        var animClipInfo = animator.GetCurrentAnimatorClipInfo(0);
-        
-        if (Seat && animClipInfo.Length > 0 && animClipInfo[0].clip.name == "Jump_Up")
-        {
-            animator.SetBool(JumpDownState, true);
-        }
-        else
-        {
-            Vector3 delta = new Vector3(WorldSpaceMoveDir.x, 0.0f, WorldSpaceMoveDir.z) * (Time.fixedDeltaTime * _moveForce);
-            Rb.MovePosition(Rb.position + delta);
+
+        Vector3 delta = new Vector3(WorldSpaceMoveDir.x, 0.0f, WorldSpaceMoveDir.z) * (Time.fixedDeltaTime * _moveForce);
+        Rb.MovePosition(Rb.position + delta);
             
-            //Jump
-            var grounded = Physics.CheckSphere(Rb.position, 0.1f, ~(1 << gameObject.layer),  QueryTriggerInteraction.Ignore);
-            if (!grounded)
+        //Jump
+        var grounded = Physics.CheckSphere(Rb.position, 0.1f, ~(1 << gameObject.layer),  QueryTriggerInteraction.Ignore);
+        if (_jumpPressed && grounded)
+        {
+            animator.SetTrigger(JumpTrigger);
+            Rb.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
+        }
+        else if (Rb.linearVelocity.y < _fallAnimationMinDownardsVelocity)
+        {
+            //Player is falling - are they gliding?
+            if (JumpAction.action.IsPressed())
             {
-                animator.SetBool(RunningState, false);
-            }
-            if (_jumpPressed && grounded)
-            {
-                animator.SetTrigger(JumpUpState);
-                Rb.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
-            }
-            else if (JumpAction.action.IsPressed() && Rb.linearVelocity.y < _glideAnimationMinDownardsVelocity)
-            {
-                animator.SetBool(JumpDownState, true);
+                //Player is gliding
+                animator.SetBool(GlideState, true);
                 float gravityNegationPercentage01 = gravityNegationPercentage / 100.0f;
                 Rb.AddForce(-Physics.gravity * gravityNegationPercentage01, ForceMode.Acceleration);
             }
-            else if (Rb.linearVelocity.y < _glideAnimationMinDownardsVelocity)
-            {
-                animator.SetBool(JumpDownState, true);
-            }
-            else if (Rb.linearVelocity.y < 1e-2 && animClipInfo.Length > 0 && animClipInfo[0].clip.name == "Jump_Up")
-            {
-                animator.SetBool(JumpDownState, true);
-            }
             else
             {
-                animator.SetBool(JumpDownState, false);
+                //Player is not gliding, they are just falling
+                animator.SetBool(FallState, true);
+            }
+        }
+
+        //Idle-breaker
+        AnimatorClipInfo[] animatorInfo = animator.GetCurrentAnimatorClipInfo(0);
+        if (animatorInfo.Length > 0 && animatorInfo[0].clip.name == "Idle")
+        {
+            //Check passes roughly once every _idleBreakerFrequencyTicks ticks
+            if (Random.Range(0, _idleBreakerFrequencyTicks) == 0)
+            {
+                animator.SetTrigger(IdleBreakerTrigger);
             }
         }
 
