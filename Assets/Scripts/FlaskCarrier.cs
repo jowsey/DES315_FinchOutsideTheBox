@@ -6,6 +6,7 @@ public class FlaskCarrier : MonoBehaviour
 {
     [SerializeField] private List<GameObject> _flasks = new();
     [SerializeField] private Collider _carryingBounds;
+    [SerializeField] private Cart _cart;
 
     [SerializeField] [Sirenix.OdinInspector.ReadOnly]
     private int _carriedFlasks;
@@ -24,6 +25,10 @@ public class FlaskCarrier : MonoBehaviour
     {
         // todo can probably just track in trigger enter/exit
         _carriedFlasks = _flasks.Count(f => _carryingBounds.bounds.Contains(f.transform.position));
+        if (_carriedFlasks == 0)
+        {
+            Checkpoint.respawnEvent.Invoke(_cart.checkpoints[_cart.currentCheckpointIndex]);
+        }
     }
 
     public void ResetFlasks(bool includeOutOfBounds = false)
