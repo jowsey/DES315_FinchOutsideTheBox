@@ -260,11 +260,6 @@ public class PlayerController : NetworkBehaviour
         _jumpPressed = false;
     }
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.DrawSphere(Rb.position, 0.1f);
-    }
-
     private void OnTriggerEnter(Collider other)
     {
         if (!authority) { return; }
