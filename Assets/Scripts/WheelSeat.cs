@@ -104,8 +104,11 @@ public class WheelSeat : Mirror.NetworkBehaviour
     {
         if (!_seatedPlayer) return;
 
-        var wheelTop = transform.position + Vector3.up * (_sphereCollider.radius * transform.lossyScale.y);
-        _wheelRb.AddForceAtPosition(_seatedPlayer.WorldSpaceMoveDir * _moveForce, wheelTop);
+        // var wheelTop = transform.position + Vector3.up * (_sphereCollider.radius * transform.lossyScale.y);
+        // _wheelRb.AddForceAtPosition(_seatedPlayer.WorldSpaceMoveDir * _moveForce, wheelTop);
+
+        var torqueAxis = Vector3.Cross(Vector3.up, _seatedPlayer.WorldSpaceMoveDir);
+        _wheelRb.AddTorque(torqueAxis * _moveForce);
     }
 
     private void OnDrawGizmosSelected()
