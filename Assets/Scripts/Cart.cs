@@ -8,7 +8,7 @@ public class Cart : NetworkBehaviour
     public Rigidbody Rb { get; private set; }
     [SerializeField] private FlaskCarrier _flaskCarrier;
 
-    [SerializeField] private Checkpoint[] checkpoints;
+    public Checkpoint[] checkpoints;
     public int currentCheckpointIndex { get; private set; }
 
     [SerializeField] private InputActionReference respawnAction;
