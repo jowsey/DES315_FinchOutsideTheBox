@@ -87,6 +87,7 @@ GameObject:
   - component: {fileID: 448879627913629330}
   - component: {fileID: 432009297057714373}
   - component: {fileID: 7011766682354256128}
+  - component: {fileID: 5666592928258162996}
   - component: {fileID: 4492623204282786486}
   m_Layer: 5
   m_Name: Timer
@@ -214,6 +215,23 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5666592928258162996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6056266727978411293}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 0
+  _assetId: 3361018629
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!114 &4492623204282786486
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -226,3 +244,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 298020a815adf4dd8b0238411a0aa545, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.PlayTimer
+  syncMethod: 0
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
