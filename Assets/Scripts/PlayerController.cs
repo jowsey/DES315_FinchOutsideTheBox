@@ -322,4 +322,12 @@ public class PlayerController : NetworkBehaviour
             newSeat.CmdTrySitPlayer(identity);
         }
     }
+
+    private void OnDrawGizmos()
+    {
+        if (Rb != null)
+        {
+            Gizmos.DrawSphere(Rb.position, _groundedSphereRadius);
+        }
+    }
 }
