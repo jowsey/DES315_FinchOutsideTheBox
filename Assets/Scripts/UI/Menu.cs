@@ -112,7 +112,7 @@ namespace UI
         public void Settings()
         {
             _settings.gameObject.SetActive(!_settings.gameObject.activeSelf);
-            _settingsButton.Active = _settings.gameObject.activeSelf;
+            _settingsButton.SetActive(_settings.gameObject.activeSelf);
         }
 
         public void HostLocal2Player()

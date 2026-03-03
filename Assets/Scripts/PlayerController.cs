@@ -72,7 +72,8 @@ public class PlayerController : NetworkBehaviour
     [field: SyncVar]
     [field: SerializeField] [field: ReadOnly] public Vector3 WorldSpaceMoveDir { get; private set; }
 
-    private float _maxClimbAngle = 60.0f;
+    private List<Vector3> _contactNormals = new List<Vector3>();
+
 
     private void Awake()
     {
@@ -177,8 +178,6 @@ public class PlayerController : NetworkBehaviour
             Physics.SyncTransforms();
         }
     }
-
-    private List<Vector3> _contactNormals = new List<Vector3>();
 
     private void OnCollisionStay(Collision collision)
     {
