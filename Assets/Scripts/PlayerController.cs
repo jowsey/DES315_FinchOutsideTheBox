@@ -1,4 +1,5 @@
 using Mirror;
+using System.Collections.Generic;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -43,19 +44,22 @@ public class PlayerController : NetworkBehaviour
     public float RTPCSpeedValue;
 
     [Tooltip("Percentage of gravity to negate when gliding")]
-    [SerializeField] [Range(0, 100)] private float gravityNegationPercentage = 90;
+    [SerializeField] [Range(0, 100)] private float gravityNegationPercentage;
 
-    [SerializeField] private float rotationSmoothingSpeed = 8;
+    [SerializeField] private float rotationSmoothingSpeed;
 
     [Header("Camera")]
     [SerializeField] [ReadOnly] private CinemachineCamera _camera;
 
     [Header("Movement")]
     [Tooltip("Amount of upwards force applied when jumping")]
-    [SerializeField] private float _jumpForce = 200f;
+    [SerializeField] private float _jumpForce;
 
     [Tooltip("Amount of forward force applied by movement")]
-    [SerializeField] private float _moveForce = 6f;
+    [SerializeField] private float _moveForce;
+
+    [Tooltip("Radius of the sphere used for the sphere-raycast grounded check")]
+    [SerializeField] private float _groundedSphereRadius;
 
     [Header("State")]
     [ReadOnly] public WheelSeat Seat;
@@ -66,6 +70,10 @@ public class PlayerController : NetworkBehaviour
 
     [field: SyncVar]
     [field: SerializeField] [field: ReadOnly] public Vector3 WorldSpaceMoveDir { get; private set; }
+    
+    [SerializeField] private float _slopeLimit = 45f;
+    private readonly List<Vector3> _steepNormals = new();
+    private bool _groundedByContact;
 
     private void Awake()
     {
@@ -155,6 +163,22 @@ public class PlayerController : NetworkBehaviour
         Cursor.lockState = CursorLockMode.None;
     }
 
+    private void OnCollisionStay(Collision collision)
+    {
+        foreach (ContactPoint contact in collision.contacts)
+        {
+            float angle = Vector3.Angle(contact.normal, Vector3.up);
+            if (angle <= _slopeLimit)
+            {
+                _groundedByContact = true;
+            }
+            else
+            {
+                _steepNormals.Add(contact.normal);
+            }
+        }
+    }
+
     private void Update()
     {
         if (!authority) { return; }
@@ -219,12 +243,39 @@ public class PlayerController : NetworkBehaviour
             Seat = null;
         }
 
-        Vector3 delta = new Vector3(WorldSpaceMoveDir.x, 0.0f, WorldSpaceMoveDir.z) * (Time.fixedDeltaTime * _moveForce);
-        Rb.MovePosition(Rb.position + delta);
-            
-        //Jump
-        var grounded = Physics.CheckSphere(Rb.position, 0.1f, ~(1 << gameObject.layer),  QueryTriggerInteraction.Ignore);
-        if (_jumpPressed && grounded)
+        //Vector3 targetHorizontalVelocity = new Vector3(WorldSpaceMoveDir.x, 0f, WorldSpaceMoveDir.z) * _moveForce;
+        //Vector3 currentVelocity = Rb.linearVelocity;
+        //Rb.linearVelocity = new Vector3(targetHorizontalVelocity.x, currentVelocity.y, targetHorizontalVelocity.z);
+
+        ////Jump
+        //bool groundedOnBumpy = Physics.CheckSphere(Rb.position, _groundedSphereRadius * 4, LayerMask.GetMask("Bumpy"), QueryTriggerInteraction.Ignore);
+        //bool grounded = Physics.CheckSphere(Rb.position, _groundedSphereRadius, ~(1 << gameObject.layer),  QueryTriggerInteraction.Ignore);
+
+        Vector3 targetHorizontalVelocity = new Vector3(WorldSpaceMoveDir.x, 0f, WorldSpaceMoveDir.z) * _moveForce;
+
+        // Cancel velocity component pushing INTO any steep surface
+        foreach (Vector3 normal in _steepNormals)
+        {
+            // Project normal onto horizontal plane
+            Vector3 wallNormalH = new Vector3(normal.x, 0f, normal.z).normalized;
+            float dot = Vector3.Dot(targetHorizontalVelocity, wallNormalH);
+            if (dot < 0f) // moving into the wall
+            {
+                targetHorizontalVelocity -= wallNormalH * dot;
+            }
+        }
+
+        Vector3 currentVelocity = Rb.linearVelocity;
+        Rb.linearVelocity = new Vector3(targetHorizontalVelocity.x, currentVelocity.y, targetHorizontalVelocity.z);
+
+        // Use contact-based grounding instead of (or in addition to) CheckSphere
+        bool grounded = _groundedByContact;
+
+        // Reset for next frame
+        _groundedByContact = false;
+        _steepNormals.Clear();
+
+        if (_jumpPressed && (grounded))
         {
             animator.SetTrigger(JumpTrigger);
             Rb.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
