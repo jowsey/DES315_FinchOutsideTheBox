@@ -14,6 +14,7 @@ namespace UI
         [SerializeField] private Color _highlightColor = Color.hotPink;
 
         private static Texture2D _highlightCursor;
+        public bool Active;
 
         private void Awake()
         {
@@ -21,22 +22,27 @@ namespace UI
 
             _text = GetComponent<TextMeshProUGUI>();
             _originalColor = _text.color;
+            Active = false;
         }
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            _text.color = _highlightColor;
-            _text.fontStyle |= FontStyles.Bold;
-
             Cursor.SetCursor(_highlightCursor, new Vector2(_highlightCursor.width / 2f, _highlightCursor.height / 2f), CursorMode.Auto);
+            if (!Active)
+            {
+                _text.color = _highlightColor;
+                _text.fontStyle |= FontStyles.Bold;
+            }
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            _text.color = _originalColor;
-            _text.fontStyle &= ~FontStyles.Bold;
-
             Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+            if (!Active)
+            {
+                _text.color = _originalColor;
+                _text.fontStyle &= ~FontStyles.Bold;
+            }
         }
     }
 }
