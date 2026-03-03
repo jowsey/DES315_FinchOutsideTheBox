@@ -15,7 +15,9 @@ public class Cart : NetworkBehaviour
     [SerializeField] private InputActionReference dev_checkpointBackAction;
     [SerializeField] private InputActionReference dev_checkpointForwardAction;
 
-
+    [Tooltip("Whether to move the wheels using torque instead of flat forces. Should result in more consistent movement, but less tested.")]
+    [field: SerializeField] [field: SyncVar] public bool UseNewTorqueSystem { get; private set; } = true;
+    
     private void Awake()
     {
         Rb = GetComponent<Rigidbody>();
