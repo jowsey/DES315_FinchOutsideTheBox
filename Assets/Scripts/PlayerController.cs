@@ -10,6 +10,7 @@ public class PlayerController : NetworkBehaviour
     private readonly static int RunningState = Animator.StringToHash("Running");
     private readonly static int JumpTrigger = Animator.StringToHash("Jump");
     private readonly static int IdleBreakerTrigger = Animator.StringToHash("Idle_Break");
+    private readonly static int EnterSeatTrigger = Animator.StringToHash("Enter_Seat");
     private readonly static int FallState = Animator.StringToHash("Fall");
     private readonly static int GlideState = Animator.StringToHash("Glide");
     private readonly static int BaseColorMapID = Shader.PropertyToID("_BaseColorMap");
@@ -295,6 +296,7 @@ public class PlayerController : NetworkBehaviour
         {
             NetworkIdentity identity = GetComponent<NetworkIdentity>();
             newSeat.CmdTrySitPlayer(identity);
+            animator.SetTrigger(EnterSeatTrigger);
         }
     }
 
