@@ -23,6 +23,7 @@ public class PlayerController : NetworkBehaviour
     [Header("Components")]
     public Rigidbody Rb { get; private set; }
     private Animator animator;
+    [SerializeField] private CrosshairDetection _crosshairDetector;
 
     [Header("Animation")]
     [Tooltip("The minimum velocity required to initiate the gliding animation (should be negative)")]
@@ -34,6 +35,7 @@ public class PlayerController : NetworkBehaviour
     [Header("Input")]
     public InputActionReference MoveAction;
     public InputActionReference JumpAction;
+    public InputActionReference PickupAction;
 
     private bool _jumpPressed;
 
@@ -192,6 +194,14 @@ public class PlayerController : NetworkBehaviour
         if (!authority) { return; }
 
         _jumpPressed |= JumpAction.action.WasPressedThisFrame();
+        if (CrosshairDetection._hitTransform != null && CrosshairDetection._hitTransform.CompareTag("Flask"))
+        {
+            Flask flask = CrosshairDetection._hitTransform.GetComponent<Flask>();
+            if (PickupAction.action.IsPressed())
+            {
+                flask.CmdPickup();
+            }
+        }
     }
 
     private void LateUpdate()
