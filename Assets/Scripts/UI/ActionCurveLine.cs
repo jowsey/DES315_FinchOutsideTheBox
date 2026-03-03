@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 
 namespace UI
@@ -6,6 +7,7 @@ namespace UI
     public class ActionCurveLine : MonoBehaviour
     {
         [SerializeField] private LineRenderer _lineRenderer;
+        [SerializeField] private Transform _promptLabel;
 
         public float HeightCurveMultiplier = 1f;
         public Vector3 EndPoint;
@@ -18,11 +20,29 @@ namespace UI
         public Vector3 StartTrackingOffset;
         public Vector3 EndTrackingOffset;
 
+        public string PromptLabel;
+
+        // Fire-and-forget predicate that runs every frame, will destroy self when returns true
         public System.Func<bool> ShouldDestroy;
+
+        private static Canvas _canvas;
+        private static Camera _camera;
 
         private void OnValidate()
         {
             Rerender();
+        }
+
+        private void Start()
+        {
+            if (Application.isPlaying)
+            {
+                if (!_canvas) _canvas = FindAnyObjectByType<Canvas>();
+                if (!_camera) _camera = FindAnyObjectByType<Camera>();
+
+                _promptLabel.parent = _canvas.transform;
+                _promptLabel.GetComponentInChildren<TextMeshProUGUI>().text = PromptLabel;
+            }
         }
 
         private void Rerender()
@@ -46,6 +66,12 @@ namespace UI
                 midPoint += lineUp * (Mathf.Sin(t * Mathf.PI) * HeightCurveMultiplier);
                 _lineRenderer.SetPosition(i, midPoint);
             }
+
+            if (Application.isPlaying)
+            {
+                var promptWorldPos = Vector3.Lerp(transform.position, EndPoint, 0.5f) + lineUp * (HeightCurveMultiplier + 0.5f);
+                _promptLabel.position = _camera.WorldToScreenPoint(promptWorldPos);
+            }
         }
 
         private void LateUpdate()
@@ -64,6 +90,14 @@ namespace UI
             {
                 Rerender();
                 transform.hasChanged = false;
+            }
+        }
+
+        private void OnDestroy()
+        {
+            if (_promptLabel.parent != transform)
+            {
+                Destroy(_promptLabel.gameObject);
             }
         }
     }
