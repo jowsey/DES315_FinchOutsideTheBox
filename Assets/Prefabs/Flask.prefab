@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9075857716678651542}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Mesh
-  m_TagString: Untagged
+  m_TagString: Flask
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -45,9 +45,9 @@ GameObject:
   - component: {fileID: 5928558558733241019}
   - component: {fileID: 6994367387021924349}
   - component: {fileID: 5577690908336364305}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Sphere
-  m_TagString: Untagged
+  m_TagString: Flask
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -157,9 +157,9 @@ GameObject:
   - component: {fileID: 599977917103172275}
   - component: {fileID: 3680271030409010976}
   - component: {fileID: 4653026995368715061}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Cube
-  m_TagString: Untagged
+  m_TagString: Flask
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -269,9 +269,10 @@ GameObject:
   - component: {fileID: 4447857406540437462}
   - component: {fileID: 1061238724838936957}
   - component: {fileID: 3285323394339922491}
-  m_Layer: 0
+  - component: {fileID: 2470135020409499539}
+  m_Layer: 11
   m_Name: Flask
-  m_TagString: Untagged
+  m_TagString: Flask
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -300,7 +301,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8121012120109722422}
   serializedVersion: 5
-  m_Mass: 2
+  m_Mass: 0.05
   m_LinearDamping: 1
   m_AngularDamping: 5
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -371,3 +372,22 @@ MonoBehaviour:
   positionSensitivity: 0.01
   rotationSensitivity: 0.01
   scaleSensitivity: 0.01
+--- !u!114 &2470135020409499539
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8121012120109722422}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d232f8441830ea41829bd2cc9483942, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Flask
+  syncMethod: 0
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _highlighted: 0
+  _highlightedColour: {r: 1, g: 0.4117647, b: 0.7058824, a: 0}
+  _flaskPickupTarget: {fileID: 0}
