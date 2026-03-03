@@ -5,6 +5,7 @@ using Mirror;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 namespace UI
 {
@@ -16,14 +17,18 @@ namespace UI
         [SerializeField] [Required] private KcpTransport _kcpTransportPrefab;
 
         [SerializeField] [Required] private LobbyBrowser _lobbyBrowser;
+        [SerializeField] [Required] private MainMenuButton _settingsButton;
+        [SerializeField] [Required] private SettingsManager _settings;
 
         [SerializeField] [Required] private InputActionReference _altMoveAction;
         [SerializeField] [Required] private InputActionReference _altJumpAction;
+
 
         private void Awake()
         {
             _networkManager = FindAnyObjectByType<NetworkManager>(FindObjectsInactive.Include);
             _networkManager.gameObject.SetActive(false);
+            _settings.gameObject.SetActive(false);
 
             // Clean up old transports if we're coming back from the game
             var transport = NetworkManager.singleton?.transport;
@@ -102,6 +107,12 @@ namespace UI
             InitLocal();
 
             _networkManager.StartClient();
+        }
+
+        public void Settings()
+        {
+            _settings.gameObject.SetActive(!_settings.gameObject.activeSelf);
+            _settingsButton.Active = _settings.gameObject.activeSelf;
         }
 
         public void HostLocal2Player()
