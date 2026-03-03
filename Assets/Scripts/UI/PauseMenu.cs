@@ -56,6 +56,9 @@ namespace UI
             _canvasGroup.alpha = active ? 1 : 0;
             _canvasGroup.interactable = active;
             _canvasGroup.blocksRaycasts = active;
+
+            // bring to front
+            if (active) transform.SetAsLastSibling();
         }
 
         public void QuitToMenu()
