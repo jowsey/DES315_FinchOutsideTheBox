@@ -22,7 +22,27 @@ namespace UI
 
             _text = GetComponent<TextMeshProUGUI>();
             _originalColor = _text.color;
-            Active = false;
+
+            if (Active)
+            {
+                _text.color = _highlightColor;
+                _text.fontStyle |= FontStyles.Bold;
+            }
+        }
+
+        public void SetActive(bool val)
+        {
+            Active = val;
+            if (Active)
+            {
+                _text.color = _highlightColor;
+                _text.fontStyle |= FontStyles.Bold;
+            }
+            else
+            {
+                _text.color = _originalColor;
+                _text.fontStyle &= ~FontStyles.Bold;
+            }
         }
 
         public void OnPointerEnter(PointerEventData eventData)
