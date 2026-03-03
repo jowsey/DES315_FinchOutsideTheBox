@@ -45,9 +45,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 961bf53dc307a4213976595619e14a3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.ActionCurveLine
+  _lineRenderer: {fileID: 2839845964311333511}
   HeightCurveMultiplier: 1
-  EndPoint: {x: 0, y: 0, z: 15}
+  EndPoint: {x: 3, y: 0, z: 15}
   Midpoints: 7
+  StartFollowTarget: {fileID: 0}
+  EndFollowTarget: {fileID: 0}
+  StartTrackingOffset: {x: 0, y: 0, z: 0}
+  EndTrackingOffset: {x: 0, y: 0, z: 0}
 --- !u!120 &2839845964311333511
 LineRenderer:
   serializedVersion: 3
@@ -99,17 +104,17 @@ LineRenderer:
   m_MaskInteraction: 0
   m_Positions:
   - {x: 0, y: -0, z: 0}
-  - {x: 0, y: 0.38268346, z: 1.875}
-  - {x: 0, y: 0.70710677, z: 3.75}
-  - {x: 0, y: 0.9238795, z: 5.625}
-  - {x: 0, y: 1, z: 7.5}
-  - {x: 0, y: 0.9238795, z: 9.375}
-  - {x: 0, y: 0.70710677, z: 11.25}
-  - {x: 0, y: 0.38268328, z: 13.125}
-  - {x: 0, y: 0, z: 15}
+  - {x: 0.375, y: 0.38268346, z: 1.875}
+  - {x: 0.75, y: 0.70710677, z: 3.75}
+  - {x: 1.125, y: 0.9238795, z: 5.625}
+  - {x: 1.5, y: 1, z: 7.5}
+  - {x: 1.875, y: 0.9238795, z: 9.375}
+  - {x: 2.25, y: 0.70710677, z: 11.25}
+  - {x: 2.625, y: 0.38268328, z: 13.125}
+  - {x: 3, y: 0, z: 15}
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.5
+    widthMultiplier: 0.1
     widthCurve:
       serializedVersion: 2
       m_Curve:
