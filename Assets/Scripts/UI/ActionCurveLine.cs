@@ -40,7 +40,7 @@ namespace UI
                 if (!_canvas) _canvas = FindAnyObjectByType<Canvas>();
                 if (!_camera) _camera = FindAnyObjectByType<Camera>();
 
-                _promptLabel.parent = _canvas.transform;
+                _promptLabel.SetParent(_canvas.transform, false);
                 _promptLabel.GetComponentInChildren<TextMeshProUGUI>().text = PromptLabel;
             }
         }
@@ -67,7 +67,7 @@ namespace UI
                 _lineRenderer.SetPosition(i, midPoint);
             }
 
-            if (Application.isPlaying)
+            if (Application.isPlaying && _camera)
             {
                 var promptWorldPos = Vector3.Lerp(transform.position, EndPoint, 0.5f) + lineUp * (HeightCurveMultiplier + 0.5f);
                 _promptLabel.position = _camera.WorldToScreenPoint(promptWorldPos);
@@ -95,7 +95,7 @@ namespace UI
 
         private void OnDestroy()
         {
-            if (_promptLabel.parent != transform)
+            if (_promptLabel && _promptLabel.parent != transform)
             {
                 Destroy(_promptLabel.gameObject);
             }
