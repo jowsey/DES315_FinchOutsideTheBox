@@ -162,14 +162,22 @@ public class PlayerController : NetworkBehaviour
         
         // todo this sucks
         // eventually we should just link carts to 2 players so we can have an arbitrary number of carts/players
-        var wheels = FindAnyObjectByType<Cart>().GetComponentsInChildren<WheelSeat>();
-        var assignedWheel = wheels[playerNetworkId % wheels.Length];
-        
+        var wheels = FindObjectsByType<WheelSeat>(FindObjectsSortMode.None);
+        var closestWheel = wheels[0];
+        var closestDist = float.MaxValue;
+        foreach (var wheel in wheels)
+        {
+            var dist = Vector3.Distance(transform.position, wheel.transform.position);
+            if (dist >= closestDist) continue;
+            closestWheel = wheel;
+            closestDist = dist;
+        }
+
         var onboardingJumpLine = Instantiate(_actionCurveLinePrefab, null);
         onboardingJumpLine.StartFollowTarget = transform;
         onboardingJumpLine.StartTrackingOffset = Vector3.up * 0.5f;
-        onboardingJumpLine.EndFollowTarget = assignedWheel.transform;
-        onboardingJumpLine.EndTrackingOffset = assignedWheel.transform.InverseTransformPoint(assignedWheel.SeatedPosition);
+        onboardingJumpLine.EndFollowTarget = closestWheel.transform;
+        onboardingJumpLine.EndTrackingOffset = closestWheel.transform.InverseTransformPoint(closestWheel.SeatedPosition);
         onboardingJumpLine.PromptLabel = "Hop on with <b>[Space]</b>!";
         onboardingJumpLine.ShouldDestroy = () => Seat; // if we're sat, job's done
     }
