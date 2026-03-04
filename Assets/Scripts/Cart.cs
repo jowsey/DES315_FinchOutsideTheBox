@@ -96,6 +96,19 @@ public class Cart : NetworkBehaviour
         {
             CmdInvokeRespawnEvent(currentCheckpointIndex + 1);
         }
+
+        // temp: debug, horrible, etc
+        if (Keyboard.current.tKey.wasPressedThisFrame && isServer)
+        {
+            UseNewTorqueSystem = !UseNewTorqueSystem;
+            Debug.Log($"UseNewTorqueSystem set to {UseNewTorqueSystem}");
+
+            var wheels = GetComponentsInChildren<WheelSeat>();
+            foreach (var wheel in wheels)
+            {
+                wheel.MoveForce *= UseNewTorqueSystem ? 1.5f : 1 / 1.5f;
+            }
+        }
     }
 
     [Command(requiresAuthority = false)]

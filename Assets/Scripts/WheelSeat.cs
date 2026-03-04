@@ -1,3 +1,4 @@
+using Mirror;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -5,7 +6,7 @@ public class WheelSeat : Mirror.NetworkBehaviour
 {
     [Header("Ball Properties")]
     [Tooltip("How much driving force the wheel applies")]
-    [SerializeField] private float _moveForce = 100f;
+    [SyncVar] public float MoveForce = 250f;
 
     [Tooltip("Cooldown time after player leaves before a player can sit again")]
     [SerializeField] private float _sitCooldown = 2.0f;
@@ -114,12 +115,12 @@ public class WheelSeat : Mirror.NetworkBehaviour
         if (_cart.UseNewTorqueSystem)
         {
             var torqueAxis = Vector3.Cross(Vector3.up, _seatedPlayer.WorldSpaceMoveDir);
-            _wheelRb.AddTorque(torqueAxis * _moveForce);
+            _wheelRb.AddTorque(torqueAxis * MoveForce);
         }
         else
         {
             var wheelTop = transform.position + Vector3.up * (_sphereCollider.radius * transform.lossyScale.y);
-            _wheelRb.AddForceAtPosition(_seatedPlayer.WorldSpaceMoveDir * _moveForce, wheelTop);
+            _wheelRb.AddForceAtPosition(_seatedPlayer.WorldSpaceMoveDir * MoveForce, wheelTop);
         }
     }
 
