@@ -8,11 +8,16 @@ public class FlaskCarrier : MonoBehaviour
     [SerializeField] private Collider _carryingBounds;
     [SerializeField] private Cart _cart;
 
-    [SerializeField] [Sirenix.OdinInspector.ReadOnly]
-    private int _carriedFlasks;
-
     private Dictionary<GameObject, Vector3> _initialRelativePositions = new();
-
+    
+    [field: SerializeField] [field: Sirenix.OdinInspector.ReadOnly]
+    public int CarriedFlasks { get; private set; }
+    
+    // Ratio of flasks currently being carried
+    public float FlasksRemainingRatio => (float)CarriedFlasks / _flasks.Count;
+    
+    public int MaxFlasks => _flasks.Count;
+    
     private void Awake()
     {
         foreach (var flask in _flasks)
@@ -24,8 +29,8 @@ public class FlaskCarrier : MonoBehaviour
     private void Update()
     {
         // todo can probably just track in trigger enter/exit
-        _carriedFlasks = _flasks.Count(f => _carryingBounds.bounds.Contains(f.transform.position));
-        if (_carriedFlasks == 0)
+        CarriedFlasks = _flasks.Count(f => _carryingBounds.bounds.Contains(f.transform.position));
+        if (CarriedFlasks == 0)
         {
             Checkpoint.respawnEvent.Invoke(_cart.checkpoints[_cart.currentCheckpointIndex]);
         }

@@ -1,4 +1,5 @@
 using Mirror;
+using UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -9,13 +10,17 @@ public class Cart : NetworkBehaviour
     [SerializeField] private FlaskCarrier _flaskCarrier;
 
     public Checkpoint[] checkpoints;
-    public int currentCheckpointIndex { get; private set; }
+    [field: SerializeField] public int currentCheckpointIndex { get; private set; }
 
     [SerializeField] private InputActionReference respawnAction;
     [SerializeField] private InputActionReference dev_checkpointBackAction;
     [SerializeField] private InputActionReference dev_checkpointForwardAction;
 
+    [Tooltip("Whether to move the wheels using torque instead of flat forces. Should result in more consistent movement, but less tested.")]
+    [field: SerializeField] [field: SyncVar] public bool UseNewTorqueSystem { get; private set; } = true;
 
+    [SerializeField] private CheckpointBanner _checkpointBannerPrefab;
+    
     private void Awake()
     {
         Rb = GetComponent<Rigidbody>();
@@ -24,6 +29,10 @@ public class Cart : NetworkBehaviour
         for (int i = 0; i < checkpoints.Length; i++)
         {
             checkpoints[i].index = i;
+            if (string.IsNullOrWhiteSpace(checkpoints[i].AreaName))
+            {
+                checkpoints[i].AreaName = $"Unnamed Checkpoint {i}";
+            }
         }
     }
 
@@ -42,9 +51,15 @@ public class Cart : NetworkBehaviour
         if (other.CompareTag("Checkpoint"))
         {
             Checkpoint checkpoint = other.GetComponent<Checkpoint>();
+            Debug.Log($"Hit checkpoint {checkpoint.index}");
             if (checkpoint.index > currentCheckpointIndex)
             {
+                // New checkpoint reached
                 currentCheckpointIndex = checkpoint.index;
+
+                var canvas = FindAnyObjectByType<Canvas>(); // todo we should probably have a global find object or similar for things like this. maybe tag it?
+                var checkpointBanner = Instantiate(_checkpointBannerPrefab, canvas.transform);
+                checkpointBanner.Checkpoint = checkpoint;
             }
         }
     }
@@ -92,8 +107,11 @@ public class Cart : NetworkBehaviour
     [ClientRpc]
     void RpcInvokeRespawnEvent(int newCheckpointIndex)
     {
-        currentCheckpointIndex = newCheckpointIndex;
-        Checkpoint.respawnEvent.Invoke(checkpoints[currentCheckpointIndex]);
+        // currentCheckpointIndex = newCheckpointIndex;
+        // Checkpoint.respawnEvent.Invoke(checkpoints[currentCheckpointIndex]);
+        
+        // Test that reaching a checkpoint works when we get there
+        Checkpoint.respawnEvent.Invoke(checkpoints[newCheckpointIndex]);
     }
 
 }

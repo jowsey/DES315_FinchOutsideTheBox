@@ -20,6 +20,8 @@ public class WheelSeat : Mirror.NetworkBehaviour
     [Tooltip("The joint connecting the wheel to the cart")]
     [SerializeField] [Required] private ConfigurableJoint _wheelJoint;
 
+    [SerializeField] private Cart _cart;
+    
     [Header("State")]
     [Tooltip("The player currently sitting in this seat")]
     [Mirror.SyncVar(hook = nameof(OnSeatedPlayerChanged))]
@@ -89,6 +91,11 @@ public class WheelSeat : Mirror.NetworkBehaviour
             _cartRb = GetComponentInParent<Rigidbody>();
         }
 
+        if (!_cart)
+        {
+            _cart = GetComponentInParent<Cart>();
+        }
+
         if (_wheelJoint && _cartRb && !_wheelJoint.connectedBody)
         {
             _wheelJoint.connectedBody = _cartRb;
@@ -103,12 +110,17 @@ public class WheelSeat : Mirror.NetworkBehaviour
     private void FixedUpdate()
     {
         if (!_seatedPlayer) return;
-
-        // var wheelTop = transform.position + Vector3.up * (_sphereCollider.radius * transform.lossyScale.y);
-        // _wheelRb.AddForceAtPosition(_seatedPlayer.WorldSpaceMoveDir * _moveForce, wheelTop);
-
-        var torqueAxis = Vector3.Cross(Vector3.up, _seatedPlayer.WorldSpaceMoveDir);
-        _wheelRb.AddTorque(torqueAxis * _moveForce);
+        
+        if (_cart.UseNewTorqueSystem)
+        {
+            var torqueAxis = Vector3.Cross(Vector3.up, _seatedPlayer.WorldSpaceMoveDir);
+            _wheelRb.AddTorque(torqueAxis * _moveForce);
+        }
+        else
+        {
+            var wheelTop = transform.position + Vector3.up * (_sphereCollider.radius * transform.lossyScale.y);
+            _wheelRb.AddForceAtPosition(_seatedPlayer.WorldSpaceMoveDir * _moveForce, wheelTop);
+        }
     }
 
     private void OnDrawGizmosSelected()

@@ -141,5 +141,9 @@ namespace UI
                 );
             }
         }
+
+        public void OpenBluesky() => Application.OpenURL("https://finchoutsidethebox.bsky.social");
+        public void OpenInstagram() => Application.OpenURL("https://instagram.com/finchoutsidethebox");
+        public void OpenItch() => Application.OpenURL("https://fotb.itch.io");
     }
 }

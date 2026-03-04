@@ -1,0 +1,33 @@
+﻿using PrimeTween;
+using Sirenix.OdinInspector;
+using TMPro;
+using UnityEngine;
+
+namespace UI
+{
+    public class CheckpointBanner : MonoBehaviour
+    {
+        [SerializeField] private CanvasGroup _mainGroup;
+
+        [SerializeField] private TextMeshProUGUI _taglineText;
+        [SerializeField] private TextMeshProUGUI _areaNameText;
+
+        [ReadOnly] public Checkpoint Checkpoint;
+
+        private void Start()
+        {
+            _areaNameText.text = Checkpoint.AreaName;
+
+            _mainGroup.alpha = 0;
+            _taglineText.alpha = 0f;
+            _areaNameText.alpha = 0f;
+
+            Sequence.Create()
+                .Group(Tween.Alpha(_mainGroup, 1, 3f, ease: Ease.InOutCubic))
+                .Group(Tween.Alpha(_taglineText, 1, 3.5f, ease: Ease.InOutCubic, startDelay: 0.5f))
+                .Group(Tween.Alpha(_areaNameText, 1, 3.5f, ease: Ease.InOutCubic, startDelay: 1f))
+                .Chain(Tween.Alpha(_mainGroup, 0, 3f, ease: Ease.InOutCubic, startDelay: 3f))
+                .OnComplete(() => Destroy(gameObject));
+        }
+    }
+}
