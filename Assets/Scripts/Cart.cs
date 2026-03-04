@@ -107,11 +107,10 @@ public class Cart : NetworkBehaviour
     [ClientRpc]
     void RpcInvokeRespawnEvent(int newCheckpointIndex)
     {
-        // currentCheckpointIndex = newCheckpointIndex;
-        // Checkpoint.respawnEvent.Invoke(checkpoints[currentCheckpointIndex]);
+        currentCheckpointIndex = newCheckpointIndex;
+        Checkpoint.respawnEvent.Invoke(checkpoints[currentCheckpointIndex]);
         
         // Test that reaching a checkpoint works when we get there
-        Checkpoint.respawnEvent.Invoke(checkpoints[newCheckpointIndex]);
+        // Checkpoint.respawnEvent.Invoke(checkpoints[newCheckpointIndex]);
     }
-
 }

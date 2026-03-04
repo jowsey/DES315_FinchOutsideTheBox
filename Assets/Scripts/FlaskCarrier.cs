@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
+using Mirror;
 using UnityEngine;
 
-public class FlaskCarrier : MonoBehaviour
+public class FlaskCarrier : NetworkBehaviour
 {
     [SerializeField] private List<GameObject> _flasks = new();
     [SerializeField] private Collider _carryingBounds;
@@ -30,7 +31,7 @@ public class FlaskCarrier : MonoBehaviour
     {
         // todo can probably just track in trigger enter/exit
         CarriedFlasks = _flasks.Count(f => _carryingBounds.bounds.Contains(f.transform.position));
-        if (CarriedFlasks == 0)
+        if (isServer && CarriedFlasks == 0)
         {
             Checkpoint.respawnEvent.Invoke(_cart.checkpoints[_cart.currentCheckpointIndex]);
         }
