@@ -106,7 +106,7 @@ public class Cart : NetworkBehaviour
             var wheels = GetComponentsInChildren<WheelSeat>();
             foreach (var wheel in wheels)
             {
-                wheel.MoveForce *= UseNewTorqueSystem ? 1.5f : 1 / 1.5f;
+                wheel.MoveForce *= !UseNewTorqueSystem ? 0.6f : 1 / 0.6f;
             }
         }
     }
