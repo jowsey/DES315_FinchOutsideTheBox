@@ -99,13 +99,13 @@ public class Cart : NetworkBehaviour
     }
 
     [Command(requiresAuthority = false)]
-    void CmdInvokeRespawnEvent(int newCheckpointIndex)
+    public void CmdInvokeRespawnEvent(int newCheckpointIndex)
     {
         RpcInvokeRespawnEvent(newCheckpointIndex);
     }
 
     [ClientRpc]
-    void RpcInvokeRespawnEvent(int newCheckpointIndex)
+    private void RpcInvokeRespawnEvent(int newCheckpointIndex)
     {
         currentCheckpointIndex = newCheckpointIndex;
         Checkpoint.respawnEvent.Invoke(checkpoints[currentCheckpointIndex]);

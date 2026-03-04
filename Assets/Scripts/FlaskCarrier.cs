@@ -33,7 +33,8 @@ public class FlaskCarrier : NetworkBehaviour
         CarriedFlasks = _flasks.Count(f => _carryingBounds.bounds.Contains(f.transform.position));
         if (isServer && CarriedFlasks == 0)
         {
-            Checkpoint.respawnEvent.Invoke(_cart.checkpoints[_cart.currentCheckpointIndex]);
+            // Checkpoint.respawnEvent.Invoke(_cart.checkpoints[_cart.currentCheckpointIndex]);
+            _cart.CmdInvokeRespawnEvent(_cart.currentCheckpointIndex);
         }
     }
 
