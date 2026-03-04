@@ -193,6 +193,8 @@ public class PlayerController : NetworkBehaviour
     {
         if (!authority) { return; }
 
+        _contactNormals.Clear();
+
         _jumpPressed |= JumpAction.action.WasPressedThisFrame();
         if (CrosshairDetection._hitTransform != null && CrosshairDetection._hitTransform.CompareTag("Flask"))
         {
@@ -215,7 +217,6 @@ public class PlayerController : NetworkBehaviour
 
     private void OnCollisionStay(Collision collision)
     {
-        _contactNormals.Clear();
         foreach (ContactPoint contact in collision.contacts)
         {
             _contactNormals.Add(contact.normal);
