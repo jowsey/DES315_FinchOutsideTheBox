@@ -321,8 +321,6 @@ public class PlayerController : NetworkBehaviour
         }
 
         _jumpPressed = false;
-
-        if (animatorInfo.Length > 0) { Debug.Log(animatorInfo[0].clip.name); }
     }
 
     private void OnTriggerEnter(Collider other)
