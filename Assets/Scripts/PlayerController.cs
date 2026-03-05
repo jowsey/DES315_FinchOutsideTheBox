@@ -11,7 +11,7 @@ public class PlayerController : NetworkBehaviour
     private readonly static int RunningState = Animator.StringToHash("Running");
     private readonly static int JumpTrigger = Animator.StringToHash("Jump");
     private readonly static int IdleBreakerTrigger = Animator.StringToHash("Idle_Break");
-    private readonly static int EnterSeatTrigger = Animator.StringToHash("Enter_Seat");
+    private readonly static int GroundedState = Animator.StringToHash("Grounded");
     private readonly static int FallState = Animator.StringToHash("Fall");
     private readonly static int GlideState = Animator.StringToHash("Glide");
     private readonly static int BaseColorMapID = Shader.PropertyToID("_BaseColorMap");
@@ -230,6 +230,7 @@ public class PlayerController : NetworkBehaviour
         _networkAnimator.animator.SetBool(RunningState, false);
         _networkAnimator.animator.SetBool(FallState, false);
         _networkAnimator.animator.SetBool(GlideState, false);
+        _networkAnimator.animator.SetBool(GroundedState, false);
 
         //Movement
         Quaternion cameraOrientation = _camera ? _camera.State.GetFinalOrientation() : Quaternion.identity;
@@ -271,9 +272,10 @@ public class PlayerController : NetworkBehaviour
             Seat = null;
         }
 
-        bool groundedOnBumpy = Physics.CheckSphere(Rb.position, _groundedSphereRadius, LayerMask.GetMask("Bumpy"), QueryTriggerInteraction.Ignore);
         bool grounded = Physics.CheckSphere(Rb.position, _groundedSphereRadius, ~(1 << gameObject.layer),  QueryTriggerInteraction.Ignore);
+        bool groundedOnBumpy = Physics.CheckSphere(Rb.position, _groundedSphereRadius, LayerMask.GetMask("Bumpy"), QueryTriggerInteraction.Ignore);
         Rb.useGravity = !groundedOnBumpy;
+        _networkAnimator.animator.SetBool(GroundedState, (grounded || groundedOnBumpy));
 
         Vector3 delta = new Vector3(WorldSpaceMoveDir.x, 0.0f, WorldSpaceMoveDir.z) * (Time.fixedDeltaTime * _moveForce);
         foreach (Vector3 normal in _contactNormals)
@@ -319,6 +321,8 @@ public class PlayerController : NetworkBehaviour
         }
 
         _jumpPressed = false;
+
+        if (animatorInfo.Length > 0) { Debug.Log(animatorInfo[0].clip.name); }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -330,7 +334,6 @@ public class PlayerController : NetworkBehaviour
         {
             NetworkIdentity identity = GetComponent<NetworkIdentity>();
             newSeat.CmdTrySitPlayer(identity);
-            _networkAnimator.SetTrigger(EnterSeatTrigger);
         }
     }
 
