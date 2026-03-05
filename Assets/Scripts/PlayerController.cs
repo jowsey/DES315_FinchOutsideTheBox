@@ -22,7 +22,7 @@ public class PlayerController : NetworkBehaviour
 
     [Header("Components")]
     public Rigidbody Rb { get; private set; }
-    private Animator animator;
+    private NetworkAnimator _networkAnimator;
     [SerializeField] private CrosshairDetection _crosshairDetector;
 
     [Header("Animation")]
@@ -84,8 +84,8 @@ public class PlayerController : NetworkBehaviour
     {
         Rb = GetComponent<Rigidbody>();
 
-        animator = GetComponent<Animator>();
-        foreach (AnimationClip clip in animator.runtimeAnimatorController.animationClips)
+        _networkAnimator = GetComponent<NetworkAnimator>();
+        foreach (AnimationClip clip in _networkAnimator.animator.runtimeAnimatorController.animationClips)
         {
             if (clip.name == "Idle")
             {
@@ -227,9 +227,9 @@ public class PlayerController : NetworkBehaviour
     {
         if (!authority) { return; }
 
-        animator.SetBool(RunningState, false);
-        animator.SetBool(FallState, false);
-        animator.SetBool(GlideState, false);
+        _networkAnimator.animator.SetBool(RunningState, false);
+        _networkAnimator.animator.SetBool(FallState, false);
+        _networkAnimator.animator.SetBool(GlideState, false);
 
         //Movement
         Quaternion cameraOrientation = _camera ? _camera.State.GetFinalOrientation() : Quaternion.identity;
@@ -242,7 +242,7 @@ public class PlayerController : NetworkBehaviour
 
         if (WorldSpaceMoveDir.sqrMagnitude > 0)
         {
-            animator.SetBool(RunningState, true);
+            _networkAnimator.animator.SetBool(RunningState, true);
             // todo this should definitely run outside of localplayer (for other players' footsteps) and rtpc speed should be based on actual wheel speed, not input time
             if (Seat)
             {
@@ -287,7 +287,7 @@ public class PlayerController : NetworkBehaviour
 
         if (_jumpPressed && (grounded || groundedOnBumpy))
         {
-            animator.SetTrigger(JumpTrigger);
+            _networkAnimator.SetTrigger(JumpTrigger);
             Rb.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
         }
         else if (Rb.linearVelocity.y < _fallAnimationMinDownardsVelocity)
@@ -296,25 +296,25 @@ public class PlayerController : NetworkBehaviour
             if (JumpAction.action.IsPressed())
             {
                 //Player is gliding
-                animator.SetBool(GlideState, true);
+                _networkAnimator.animator.SetBool(GlideState, true);
                 float gravityNegationPercentage01 = gravityNegationPercentage / 100.0f;
                 Rb.AddForce(-Physics.gravity * gravityNegationPercentage01, ForceMode.Acceleration);
             }
             else
             {
                 //Player is not gliding, they are just falling
-                animator.SetBool(FallState, true);
+                _networkAnimator.animator.SetBool(FallState, true);
             }
         }
 
         //Idle-breaker
-        AnimatorClipInfo[] animatorInfo = animator.GetCurrentAnimatorClipInfo(0);
+        AnimatorClipInfo[] animatorInfo = _networkAnimator.animator.GetCurrentAnimatorClipInfo(0);
         if (animatorInfo.Length > 0 && animatorInfo[0].clip.name == "Idle")
         {
             //Check passes roughly once every _idleBreakerFrequencyTicks ticks
             if (Random.Range(0, _idleBreakerFrequencyTicks) == 0)
             {
-                animator.SetTrigger(IdleBreakerTrigger);
+                _networkAnimator.SetTrigger(IdleBreakerTrigger);
             }
         }
 
@@ -330,7 +330,7 @@ public class PlayerController : NetworkBehaviour
         {
             NetworkIdentity identity = GetComponent<NetworkIdentity>();
             newSeat.CmdTrySitPlayer(identity);
-            animator.SetTrigger(EnterSeatTrigger);
+            _networkAnimator.SetTrigger(EnterSeatTrigger);
         }
     }
 
