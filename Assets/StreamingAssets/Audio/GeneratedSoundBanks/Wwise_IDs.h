@@ -73,6 +73,7 @@ namespace AK
         static const AkUniqueID CAROVERSTONE = 588369366U;
         static const AkUniqueID ISESCPRESSED = 651854690U;
         static const AkUniqueID MUSICVOLUME = 2346531308U;
+        static const AkUniqueID SFXVOLUME = 988953028U;
         static const AkUniqueID WHEELSMOVING = 1023454587U;
     } // namespace GAME_PARAMETERS
 

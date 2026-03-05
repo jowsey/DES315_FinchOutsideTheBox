@@ -383,7 +383,7 @@
 								</Property>
 								<Property Name="Volume" Type="Real64">
 									<ValueList>
-										<Value>-6</Value>
+										<Value>-13</Value>
 									</ValueList>
 								</Property>
 							</PropertyList>
@@ -513,6 +513,14 @@
 							</ReferenceList>
 							<ChildrenList>
 								<RandomSequenceContainer Name="Footsteps - Wood" ID="{68023760-A809-48D2-BDF5-D6542BE3610C}" ShortID="821819893">
+									<PropertyList>
+										<Property Name="RandomAvoidRepeatingCount" Type="int32" Value="5"/>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>4</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
 									<ReferenceList>
 										<Reference Name="Conversion">
 											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
@@ -853,7 +861,12 @@
 												</ModifierInfo>
 											</ModifierList>
 										</Property>
-										<Property Name="RandomAvoidRepeatingCount" Type="int32" Value="10"/>
+										<Property Name="RandomAvoidRepeatingCount" Type="int32" Value="5"/>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>6</Value>
+											</ValueList>
+										</Property>
 									</PropertyList>
 									<ReferenceList>
 										<Reference Name="Attenuation">
@@ -979,6 +992,13 @@
 									</ReferenceList>
 									<ChildrenList>
 										<Sound Name="StoneFts-001" ID="{AB01A151-CF40-4D6F-BF02-3B7DD6588609}" ShortID="594065544">
+											<PropertyList>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>6</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
@@ -1001,6 +1021,13 @@
 											</ActiveSourceList>
 										</Sound>
 										<Sound Name="StoneFts-002" ID="{5954FD2A-2F58-4F0D-8B43-F369CE47E1A3}" ShortID="657692979">
+											<PropertyList>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-2</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
@@ -1023,6 +1050,13 @@
 											</ActiveSourceList>
 										</Sound>
 										<Sound Name="StoneFts-003" ID="{4B663938-0EAB-43A6-889D-24C5B1C40039}" ShortID="755906818">
+											<PropertyList>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>1</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
@@ -1067,6 +1101,13 @@
 											</ActiveSourceList>
 										</Sound>
 										<Sound Name="StoneFts-005" ID="{77A253E3-E65F-45F8-A485-008F5BBCE38C}" ShortID="954130892">
+											<PropertyList>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>3</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
@@ -1089,6 +1130,13 @@
 											</ActiveSourceList>
 										</Sound>
 										<Sound Name="StoneFts-006" ID="{927706F7-3B64-4E2B-837F-82840B8C1A08}" ShortID="793364291">
+											<PropertyList>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>5</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
@@ -1111,6 +1159,13 @@
 											</ActiveSourceList>
 										</Sound>
 										<Sound Name="StoneFts-007" ID="{49A32A47-97E4-432A-8843-E5513CE768A4}" ShortID="810592710">
+											<PropertyList>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>3</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
@@ -1133,6 +1188,13 @@
 											</ActiveSourceList>
 										</Sound>
 										<Sound Name="StoneFts-008" ID="{5BC57316-CD27-4E7D-9532-D4E91265CBF8}" ShortID="884028529">
+											<PropertyList>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-3</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
@@ -1155,6 +1217,13 @@
 											</ActiveSourceList>
 										</Sound>
 										<Sound Name="StoneFts-009" ID="{1FC46DCB-0AA8-40F5-AE1F-A8FC4E67E4C4}" ShortID="1030498196">
+											<PropertyList>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-1</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
@@ -1177,6 +1246,13 @@
 											</ActiveSourceList>
 										</Sound>
 										<Sound Name="StoneFts-010" ID="{5F6D31C4-E6C3-48B6-B128-38F938685B64}" ShortID="877830877">
+											<PropertyList>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-1</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
@@ -1199,6 +1275,13 @@
 											</ActiveSourceList>
 										</Sound>
 										<Sound Name="StoneFts-011" ID="{A97DF084-E350-4787-9F34-F10EF907A67F}" ShortID="47941047">
+											<PropertyList>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>2</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
@@ -1220,361 +1303,12 @@
 												<ActiveSource Name="StoneFts-011" ID="{7AB44889-A943-4F2D-B2FB-010392C6BAB5}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
-										<Sound Name="StoneFts-012" ID="{FB29DD43-9B12-4A9D-84EC-95580CC5CA68}" ShortID="280630801">
-											<ReferenceList>
-												<Reference Name="Conversion">
-													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
-												</Reference>
-												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
-												</Reference>
-											</ReferenceList>
-											<ChildrenList>
-												<AudioFileSource Name="StoneFts-012" ID="{3F4C4625-F9DE-4D14-978C-D1B50C1A17A1}">
-													<Language>SFX</Language>
-													<AudioFile>StoneFts-012.wav</AudioFile>
-													<MediaIDList>
-														<MediaID ID="128094804"/>
-													</MediaIDList>
-												</AudioFileSource>
-											</ChildrenList>
-											<ActiveSourceList>
-												<ActiveSource Name="StoneFts-012" ID="{3F4C4625-F9DE-4D14-978C-D1B50C1A17A1}" Platform="Linked"/>
-											</ActiveSourceList>
-										</Sound>
-										<Sound Name="StoneFts-013" ID="{6C145441-688E-49AC-9F94-71DAE2DE7D74}" ShortID="806885361">
-											<ReferenceList>
-												<Reference Name="Conversion">
-													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
-												</Reference>
-												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
-												</Reference>
-											</ReferenceList>
-											<ChildrenList>
-												<AudioFileSource Name="StoneFts-013" ID="{E83CE1AD-5825-461F-A612-47FC7D3FA2D3}">
-													<Language>SFX</Language>
-													<AudioFile>StoneFts-013.wav</AudioFile>
-													<MediaIDList>
-														<MediaID ID="123675237"/>
-													</MediaIDList>
-												</AudioFileSource>
-											</ChildrenList>
-											<ActiveSourceList>
-												<ActiveSource Name="StoneFts-013" ID="{E83CE1AD-5825-461F-A612-47FC7D3FA2D3}" Platform="Linked"/>
-											</ActiveSourceList>
-										</Sound>
-										<Sound Name="StoneFts-014" ID="{2AEB2414-78CF-4FA7-A740-F7904265568B}" ShortID="222350895">
-											<ReferenceList>
-												<Reference Name="Conversion">
-													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
-												</Reference>
-												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
-												</Reference>
-											</ReferenceList>
-											<ChildrenList>
-												<AudioFileSource Name="StoneFts-014" ID="{3F36F31F-AE0F-4969-A534-FCC7DC93E779}">
-													<Language>SFX</Language>
-													<AudioFile>StoneFts-014.wav</AudioFile>
-													<MediaIDList>
-														<MediaID ID="52005110"/>
-													</MediaIDList>
-												</AudioFileSource>
-											</ChildrenList>
-											<ActiveSourceList>
-												<ActiveSource Name="StoneFts-014" ID="{3F36F31F-AE0F-4969-A534-FCC7DC93E779}" Platform="Linked"/>
-											</ActiveSourceList>
-										</Sound>
-										<Sound Name="StoneFts-015" ID="{04E03A3C-BAA4-43C9-B45C-875DEEA8BCB6}" ShortID="479155426">
-											<ReferenceList>
-												<Reference Name="Conversion">
-													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
-												</Reference>
-												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
-												</Reference>
-											</ReferenceList>
-											<ChildrenList>
-												<AudioFileSource Name="StoneFts-015" ID="{B0A48B53-F116-45B3-AF79-1235610243AE}">
-													<Language>SFX</Language>
-													<AudioFile>StoneFts-015.wav</AudioFile>
-													<MediaIDList>
-														<MediaID ID="1016981008"/>
-													</MediaIDList>
-												</AudioFileSource>
-											</ChildrenList>
-											<ActiveSourceList>
-												<ActiveSource Name="StoneFts-015" ID="{B0A48B53-F116-45B3-AF79-1235610243AE}" Platform="Linked"/>
-											</ActiveSourceList>
-										</Sound>
-										<Sound Name="StoneFts-016" ID="{15C5094B-88A7-40C8-82C4-39143A2A99AC}" ShortID="502137339">
-											<ReferenceList>
-												<Reference Name="Conversion">
-													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
-												</Reference>
-												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
-												</Reference>
-											</ReferenceList>
-											<ChildrenList>
-												<AudioFileSource Name="StoneFts-016" ID="{4DECF6A1-7544-4E7B-9CC5-1E407AF684BE}">
-													<Language>SFX</Language>
-													<AudioFile>StoneFts-016.wav</AudioFile>
-													<MediaIDList>
-														<MediaID ID="578886652"/>
-													</MediaIDList>
-												</AudioFileSource>
-											</ChildrenList>
-											<ActiveSourceList>
-												<ActiveSource Name="StoneFts-016" ID="{4DECF6A1-7544-4E7B-9CC5-1E407AF684BE}" Platform="Linked"/>
-											</ActiveSourceList>
-										</Sound>
-										<Sound Name="StoneFts-017" ID="{3E7C86CD-30D5-4D02-B48D-CEC0812784BF}" ShortID="161509832">
-											<ReferenceList>
-												<Reference Name="Conversion">
-													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
-												</Reference>
-												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
-												</Reference>
-											</ReferenceList>
-											<ChildrenList>
-												<AudioFileSource Name="StoneFts-017" ID="{CD9C6104-3C27-4E42-B939-943F7E103B96}">
-													<Language>SFX</Language>
-													<AudioFile>StoneFts-017.wav</AudioFile>
-													<MediaIDList>
-														<MediaID ID="612048520"/>
-													</MediaIDList>
-												</AudioFileSource>
-											</ChildrenList>
-											<ActiveSourceList>
-												<ActiveSource Name="StoneFts-017" ID="{CD9C6104-3C27-4E42-B939-943F7E103B96}" Platform="Linked"/>
-											</ActiveSourceList>
-										</Sound>
-										<Sound Name="StoneFts-018" ID="{BD1133A8-E11B-4274-9546-5F52808C0A69}" ShortID="116214404">
-											<ReferenceList>
-												<Reference Name="Conversion">
-													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
-												</Reference>
-												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
-												</Reference>
-											</ReferenceList>
-											<ChildrenList>
-												<AudioFileSource Name="StoneFts-018" ID="{5CB1FB0E-E50F-49E9-B852-CE4850C70C15}">
-													<Language>SFX</Language>
-													<AudioFile>StoneFts-018.wav</AudioFile>
-													<MediaIDList>
-														<MediaID ID="663234968"/>
-													</MediaIDList>
-												</AudioFileSource>
-											</ChildrenList>
-											<ActiveSourceList>
-												<ActiveSource Name="StoneFts-018" ID="{5CB1FB0E-E50F-49E9-B852-CE4850C70C15}" Platform="Linked"/>
-											</ActiveSourceList>
-										</Sound>
-										<Sound Name="StoneFts-019" ID="{15F8E2BE-D30B-4479-B327-6F747221617F}" ShortID="228334091">
-											<ReferenceList>
-												<Reference Name="Conversion">
-													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
-												</Reference>
-												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
-												</Reference>
-											</ReferenceList>
-											<ChildrenList>
-												<AudioFileSource Name="StoneFts-019" ID="{3A772236-628C-44B1-89B9-943F632DE54A}">
-													<Language>SFX</Language>
-													<AudioFile>StoneFts-019.wav</AudioFile>
-													<MediaIDList>
-														<MediaID ID="1040796952"/>
-													</MediaIDList>
-												</AudioFileSource>
-											</ChildrenList>
-											<ActiveSourceList>
-												<ActiveSource Name="StoneFts-019" ID="{3A772236-628C-44B1-89B9-943F632DE54A}" Platform="Linked"/>
-											</ActiveSourceList>
-										</Sound>
-										<Sound Name="StoneFts-020" ID="{43A6245B-D581-45D5-973F-5F9D70D77600}" ShortID="599064633">
-											<ReferenceList>
-												<Reference Name="Conversion">
-													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
-												</Reference>
-												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
-												</Reference>
-											</ReferenceList>
-											<ChildrenList>
-												<AudioFileSource Name="StoneFts-020" ID="{BFB4EBEF-25DF-463B-9B85-7EE9E55468CC}">
-													<Language>SFX</Language>
-													<AudioFile>StoneFts-020.wav</AudioFile>
-													<MediaIDList>
-														<MediaID ID="1001801542"/>
-													</MediaIDList>
-												</AudioFileSource>
-											</ChildrenList>
-											<ActiveSourceList>
-												<ActiveSource Name="StoneFts-020" ID="{BFB4EBEF-25DF-463B-9B85-7EE9E55468CC}" Platform="Linked"/>
-											</ActiveSourceList>
-										</Sound>
-										<Sound Name="StoneFts-021" ID="{3CEDBE97-D6FA-4EA9-9D24-7BA2B12C020C}" ShortID="716615625">
-											<ReferenceList>
-												<Reference Name="Conversion">
-													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
-												</Reference>
-												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
-												</Reference>
-											</ReferenceList>
-											<ChildrenList>
-												<AudioFileSource Name="StoneFts-021" ID="{4065939C-B0EA-450E-BACF-B97E335AFD47}">
-													<Language>SFX</Language>
-													<AudioFile>StoneFts-021.wav</AudioFile>
-													<MediaIDList>
-														<MediaID ID="307716016"/>
-													</MediaIDList>
-												</AudioFileSource>
-											</ChildrenList>
-											<ActiveSourceList>
-												<ActiveSource Name="StoneFts-021" ID="{4065939C-B0EA-450E-BACF-B97E335AFD47}" Platform="Linked"/>
-											</ActiveSourceList>
-										</Sound>
-										<Sound Name="StoneFts-022" ID="{286F18CE-880B-4B79-94F5-91347FF87EE5}" ShortID="991494974">
-											<ReferenceList>
-												<Reference Name="Conversion">
-													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
-												</Reference>
-												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
-												</Reference>
-											</ReferenceList>
-											<ChildrenList>
-												<AudioFileSource Name="StoneFts-022" ID="{548FE2F6-E6BC-48A1-8DED-B252DB27F08A}">
-													<Language>SFX</Language>
-													<AudioFile>StoneFts-022.wav</AudioFile>
-													<MediaIDList>
-														<MediaID ID="191680147"/>
-													</MediaIDList>
-												</AudioFileSource>
-											</ChildrenList>
-											<ActiveSourceList>
-												<ActiveSource Name="StoneFts-022" ID="{548FE2F6-E6BC-48A1-8DED-B252DB27F08A}" Platform="Linked"/>
-											</ActiveSourceList>
-										</Sound>
-										<Sound Name="StoneFts-023" ID="{19D874A1-5369-4138-B06D-76CE2EB0E9E2}" ShortID="721999010">
-											<ReferenceList>
-												<Reference Name="Conversion">
-													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
-												</Reference>
-												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
-												</Reference>
-											</ReferenceList>
-											<ChildrenList>
-												<AudioFileSource Name="StoneFts-023" ID="{0C04F81E-13D7-4B0F-9AD4-82B2905BC348}">
-													<Language>SFX</Language>
-													<AudioFile>StoneFts-023.wav</AudioFile>
-													<MediaIDList>
-														<MediaID ID="843141346"/>
-													</MediaIDList>
-												</AudioFileSource>
-											</ChildrenList>
-											<ActiveSourceList>
-												<ActiveSource Name="StoneFts-023" ID="{0C04F81E-13D7-4B0F-9AD4-82B2905BC348}" Platform="Linked"/>
-											</ActiveSourceList>
-										</Sound>
-										<Sound Name="StoneFts-024" ID="{A9C82C23-C6D2-473A-A7AF-17101EC4CDAC}" ShortID="310725407">
-											<ReferenceList>
-												<Reference Name="Conversion">
-													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
-												</Reference>
-												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
-												</Reference>
-											</ReferenceList>
-											<ChildrenList>
-												<AudioFileSource Name="StoneFts-024" ID="{5D66AA86-BA8C-41B3-A44E-D73EDCC05F0D}">
-													<Language>SFX</Language>
-													<AudioFile>StoneFts-024.wav</AudioFile>
-													<MediaIDList>
-														<MediaID ID="248715421"/>
-													</MediaIDList>
-												</AudioFileSource>
-											</ChildrenList>
-											<ActiveSourceList>
-												<ActiveSource Name="StoneFts-024" ID="{5D66AA86-BA8C-41B3-A44E-D73EDCC05F0D}" Platform="Linked"/>
-											</ActiveSourceList>
-										</Sound>
-										<Sound Name="StoneFts-025" ID="{033A7DFE-F40B-4B29-8553-9458917F9E89}" ShortID="641225249">
-											<ReferenceList>
-												<Reference Name="Conversion">
-													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
-												</Reference>
-												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
-												</Reference>
-											</ReferenceList>
-											<ChildrenList>
-												<AudioFileSource Name="StoneFts-025" ID="{F8F51359-D398-4298-86F5-6C3B90B2EBF4}">
-													<Language>SFX</Language>
-													<AudioFile>StoneFts-025.wav</AudioFile>
-													<MediaIDList>
-														<MediaID ID="250655489"/>
-													</MediaIDList>
-												</AudioFileSource>
-											</ChildrenList>
-											<ActiveSourceList>
-												<ActiveSource Name="StoneFts-025" ID="{F8F51359-D398-4298-86F5-6C3B90B2EBF4}" Platform="Linked"/>
-											</ActiveSourceList>
-										</Sound>
-										<Sound Name="StoneFts-026" ID="{B2BA44C8-063D-44ED-ACE0-3DCF19671A4D}" ShortID="484017226">
-											<ReferenceList>
-												<Reference Name="Conversion">
-													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
-												</Reference>
-												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
-												</Reference>
-											</ReferenceList>
-											<ChildrenList>
-												<AudioFileSource Name="StoneFts-026" ID="{567C6FE0-14A6-4DF1-B076-890710C68474}">
-													<Language>SFX</Language>
-													<AudioFile>StoneFts-026.wav</AudioFile>
-													<MediaIDList>
-														<MediaID ID="524860530"/>
-													</MediaIDList>
-												</AudioFileSource>
-											</ChildrenList>
-											<ActiveSourceList>
-												<ActiveSource Name="StoneFts-026" ID="{567C6FE0-14A6-4DF1-B076-890710C68474}" Platform="Linked"/>
-											</ActiveSourceList>
-										</Sound>
-										<Sound Name="StoneFts-027" ID="{97D88EB4-842E-40E0-96A9-5F96B7BCD9D6}" ShortID="877294565">
-											<ReferenceList>
-												<Reference Name="Conversion">
-													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
-												</Reference>
-												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
-												</Reference>
-											</ReferenceList>
-											<ChildrenList>
-												<AudioFileSource Name="StoneFts-027" ID="{8FCB053C-F712-4B28-868A-4F921075BB5A}">
-													<Language>SFX</Language>
-													<AudioFile>StoneFts-027.wav</AudioFile>
-													<MediaIDList>
-														<MediaID ID="239004901"/>
-													</MediaIDList>
-												</AudioFileSource>
-											</ChildrenList>
-											<ActiveSourceList>
-												<ActiveSource Name="StoneFts-027" ID="{8FCB053C-F712-4B28-868A-4F921075BB5A}" Platform="Linked"/>
-											</ActiveSourceList>
-										</Sound>
 									</ChildrenList>
 								</RandomSequenceContainer>
 								<RandomSequenceContainer Name="Footsteps - Sand" ID="{A11EF6CE-F6ED-45CB-A86A-74D2FC6DB98A}" ShortID="314435157">
+									<PropertyList>
+										<Property Name="RandomAvoidRepeatingCount" Type="int32" Value="5"/>
+									</PropertyList>
 									<ReferenceList>
 										<Reference Name="Attenuation">
 											<Custom>
@@ -2407,6 +2141,560 @@
 						<ActiveSource Name="Soundseed Air Wind" ID="{E7118BEA-5598-494A-8E92-E1B3DCF30936}" Platform="Linked"/>
 					</ActiveSourceList>
 				</Sound>
+				<Folder Name="PlayerMovement" ID="{B596866A-9B5F-4123-87E3-D67BB49966AD}" ShortID="438543676">
+					<PropertyList>
+						<Property Name="Color" Type="int16" Value="25"/>
+						<Property Name="OverrideColor" Type="bool" Value="True"/>
+					</PropertyList>
+					<ChildrenList>
+						<RandomSequenceContainer Name="CatJump" ID="{989B649F-ED00-42F4-8C05-9B129B4A3987}" ShortID="93760764">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<Sound Name="Cat Jump-001" ID="{11897390-1A7D-4066-B1D9-3194A74DCE85}" ShortID="666580848">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-9</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Cat Jump-001" ID="{3464AD0B-D985-4344-836A-FA5B52AFA18F}">
+											<Language>SFX</Language>
+											<AudioFile>Cat Jump-001.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="446215600"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Cat Jump-001" ID="{3464AD0B-D985-4344-836A-FA5B52AFA18F}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Cat Jump-002" ID="{D5FEA75F-B67C-4734-88BA-CA37B1202A7D}" ShortID="597337602">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-9</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Cat Jump-002" ID="{09E01EC7-B750-41D2-B7A5-4EED19D1AC84}">
+											<Language>SFX</Language>
+											<AudioFile>Cat Jump-002.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="335969418"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Cat Jump-002" ID="{09E01EC7-B750-41D2-B7A5-4EED19D1AC84}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Cat Jump-003" ID="{2154DE5D-92F9-416B-BB96-FBD83DE93577}" ShortID="693455889">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-6</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Cat Jump-003" ID="{2828F05A-31B6-495C-A847-89B221A279A0}">
+											<Language>SFX</Language>
+											<AudioFile>Cat Jump-003.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="541621859"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Cat Jump-003" ID="{2828F05A-31B6-495C-A847-89B221A279A0}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Cat Jump-004" ID="{F830475D-F866-4673-8464-BC4BED566525}" ShortID="178307174">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-15</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Cat Jump-004" ID="{B56E94D8-A7AF-47E0-9D0C-0AFFB4B4BACF}">
+											<Language>SFX</Language>
+											<AudioFile>Cat Jump-004.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="2093311"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Cat Jump-004" ID="{B56E94D8-A7AF-47E0-9D0C-0AFFB4B4BACF}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Cat Jump-005" ID="{CC9D09AF-93E0-40F5-8472-CEF838E87A43}" ShortID="282298711">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-17</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Cat Jump-005" ID="{6567845D-F757-43C6-A332-8CAD972679DF}">
+											<Language>SFX</Language>
+											<AudioFile>Cat Jump-005.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="184010131"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Cat Jump-005" ID="{6567845D-F757-43C6-A332-8CAD972679DF}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Cat Jump-006" ID="{46507AE3-3569-4D9A-BB33-E017AF81478A}" ShortID="391244995">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-13</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Cat Jump-006" ID="{78DD383D-06C4-4AFC-BF36-58E1E1B70D8E}">
+											<Language>SFX</Language>
+											<AudioFile>Cat Jump-006.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="940937087"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Cat Jump-006" ID="{78DD383D-06C4-4AFC-BF36-58E1E1B70D8E}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Cat Jump-007" ID="{75B8EE1C-912F-465D-AA6A-C854F0456221}" ShortID="1028158785">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-13</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Cat Jump-007" ID="{22F17D40-511E-491F-BD54-7B6C5A7F0F41}">
+											<Language>SFX</Language>
+											<AudioFile>Cat Jump-007.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="379993835"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Cat Jump-007" ID="{22F17D40-511E-491F-BD54-7B6C5A7F0F41}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Cat Jump-008" ID="{4DFF9FBA-2E44-4BAD-A62C-AA253A4A1FA5}" ShortID="33523306">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-18</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Cat Jump-008" ID="{A8A5A40A-369D-4283-B409-E3A5129904BA}">
+											<Language>SFX</Language>
+											<AudioFile>Cat Jump-008.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="494601756"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Cat Jump-008" ID="{A8A5A40A-369D-4283-B409-E3A5129904BA}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Cat Jump-009" ID="{736D1C3D-AA6C-4302-BA3A-708812A0AE66}" ShortID="232248290">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-17</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Cat Jump-009" ID="{20DAEED4-4AE4-48ED-8F5F-5D7082FD15B2}">
+											<Language>SFX</Language>
+											<AudioFile>Cat Jump-009.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="508679344"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Cat Jump-009" ID="{20DAEED4-4AE4-48ED-8F5F-5D7082FD15B2}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Cat Jump-010" ID="{E86323B5-8CB2-4BDE-891E-792BDF87BF15}" ShortID="492623128">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-12</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Cat Jump-010" ID="{9B39B7F7-FC50-46FC-B3FB-00328F444851}">
+											<Language>SFX</Language>
+											<AudioFile>Cat Jump-010.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="200874083"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Cat Jump-010" ID="{9B39B7F7-FC50-46FC-B3FB-00328F444851}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Cat Jump-011" ID="{8C320119-BC98-44BF-A534-FB2CAAA7D409}" ShortID="488666253">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-8</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Cat Jump-011" ID="{57626FF2-4C0D-4895-9408-6D86E7943C4E}">
+											<Language>SFX</Language>
+											<AudioFile>Cat Jump-011.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="503813541"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Cat Jump-011" ID="{57626FF2-4C0D-4895-9408-6D86E7943C4E}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Cat Jump-012" ID="{FD911AFB-1279-4282-A69A-3330E65C0CF7}" ShortID="462213964">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-4</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Cat Jump-012" ID="{E0FBA7C0-A3F5-425C-85B9-2A3D60AB8C53}">
+											<Language>SFX</Language>
+											<AudioFile>Cat Jump-012.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="85742166"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Cat Jump-012" ID="{E0FBA7C0-A3F5-425C-85B9-2A3D60AB8C53}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+							</ChildrenList>
+						</RandomSequenceContainer>
+						<RandomSequenceContainer Name="CatLand" ID="{228F6641-C973-4E46-959F-42430FCE12ED}" ShortID="104924236">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<Sound Name="Cat Land-001" ID="{93AFED1E-80DE-4272-9FB0-04C6030D9B46}" ShortID="432748545">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-16</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Cat Land-001" ID="{5777C6E4-5F0A-465B-9036-FFF06AB9AD0E}">
+											<Language>SFX</Language>
+											<AudioFile>Cat Land-001.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="783580766"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Cat Land-001" ID="{5777C6E4-5F0A-465B-9036-FFF06AB9AD0E}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Cat Land-002" ID="{B7955E28-FD7F-47AD-8EA9-0865CF8A8349}" ShortID="424523957">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-13</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Cat Land-002" ID="{845E4142-F999-4055-9003-E56EB60CB042}">
+											<Language>SFX</Language>
+											<AudioFile>Cat Land-002.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="973468333"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Cat Land-002" ID="{845E4142-F999-4055-9003-E56EB60CB042}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Cat Land-004" ID="{4702EBF1-6200-41C3-9992-5F0EDA797D0C}" ShortID="370324687">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-12</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Cat Land-004" ID="{411A987F-C266-429D-83BA-868F871F9084}">
+											<Language>SFX</Language>
+											<AudioFile>Cat Land-004.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="704040759"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Cat Land-004" ID="{411A987F-C266-429D-83BA-868F871F9084}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Cat Land-005" ID="{74134FFB-DC78-4935-A4E0-BA44CFB2E6E7}" ShortID="848373905">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-21</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Cat Land-005" ID="{720A69D2-6AD1-4C0F-A5FF-E11718CEAADE}">
+											<Language>SFX</Language>
+											<AudioFile>Cat Land-005.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="971720960"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Cat Land-005" ID="{720A69D2-6AD1-4C0F-A5FF-E11718CEAADE}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Cat Land-006" ID="{E48D743D-612C-4CF0-B40B-16542DAE8E42}" ShortID="620413215">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-27</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Cat Land-006" ID="{BBD32914-2F4D-4DBC-820A-D585D053806F}">
+											<Language>SFX</Language>
+											<AudioFile>Cat Land-006.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="326997513"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Cat Land-006" ID="{BBD32914-2F4D-4DBC-820A-D585D053806F}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Cat Land-007" ID="{A1065D54-19FE-433C-AFA5-A8A49D6A7EFC}" ShortID="987706134">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-23</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Cat Land-007" ID="{498F121B-D316-40A0-A29E-28F7B2B2E5C3}">
+											<Language>SFX</Language>
+											<AudioFile>Cat Land-007.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="892141038"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Cat Land-007" ID="{498F121B-D316-40A0-A29E-28F7B2B2E5C3}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+							</ChildrenList>
+						</RandomSequenceContainer>
+					</ChildrenList>
+				</Folder>
 			</ChildrenList>
 		</WorkUnit>
 	</AudioObjects>
