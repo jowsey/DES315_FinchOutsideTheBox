@@ -149,6 +149,12 @@ public class Cart : NetworkBehaviour
     [ClientRpc]
     private void RpcInvokeRespawnEvent(int newCheckpointIndex)
     {
+        if (newCheckpointIndex < 0 || newCheckpointIndex >= _checkpoints.Count)
+        {
+            Debug.LogWarning($"Tried to respawn at invalid checkpoint index {newCheckpointIndex}");
+            return;
+        }
+
         CurrentCheckpointIndex = newCheckpointIndex;
         Checkpoint.respawnEvent.Invoke(_checkpoints[CurrentCheckpointIndex]);
     }

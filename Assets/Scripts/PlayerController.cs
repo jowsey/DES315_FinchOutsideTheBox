@@ -132,7 +132,7 @@ public class PlayerController : NetworkBehaviour
         playerNetworkId = id;
     }
 
-    void OnRespawn(Checkpoint checkpoint)
+    private void OnRespawn(Checkpoint checkpoint)
     {
         if (authority)
         {
