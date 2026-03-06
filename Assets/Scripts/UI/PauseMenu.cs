@@ -34,6 +34,7 @@ namespace UI
         private void OnDestroy()
         {
             Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto); // if set by button
+            RTPCMenuOnOff.SetGlobalValue(0);
         }
 
         // Wrapper for event listener
