@@ -136,7 +136,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (authority)
         {
-            Transform newTransform = checkpoint.playerRespawnLocalTransforms[playerNetworkId];
+            Transform newTransform = checkpoint.playerRespawnLocalTransforms[playerNetworkId % checkpoint.playerRespawnLocalTransforms.Length];
 
             Rb.position = newTransform.position;
             Rb.rotation = newTransform.rotation;
