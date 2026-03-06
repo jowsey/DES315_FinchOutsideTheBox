@@ -233,7 +233,6 @@ namespace VoIP
 
                 var packetSegment = new ArraySegment<byte>(_opusPacketBuffer, 0, packetSize);
                 CmdSendAudio(++_lastSentSequence, packetSegment);
-                Debug.Log($"Sending frame {_lastSentSequence}");
             }
         }
 
@@ -246,13 +245,14 @@ namespace VoIP
         [ClientRpc(channel = Channels.Unreliable, includeOwner = false)]
         void RpcReceiveAudio(uint seq, ArraySegment<byte> opusPacket)
         {
+            // UDP out-of-order check
             if (seq < _lastReceivedSequence)
             {
-                Debug.Log($"Received {seq}, latest is {_lastReceivedSequence}");
-                return; // out of order, udp L
+                Debug.Log($"Received VoIP seq {seq}, but latest is {_lastReceivedSequence}");
+                return;
             }
-            _lastReceivedSequence = seq;
             
+            _lastReceivedSequence = seq;
             _plcFramesGenerated = 0;
 
             _opus.Decode(opusPacket, _opusFrameBuffer);
