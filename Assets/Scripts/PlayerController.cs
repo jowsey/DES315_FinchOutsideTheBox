@@ -17,8 +17,8 @@ public class PlayerController : NetworkBehaviour
     private readonly static int BaseColorMapID = Shader.PropertyToID("_BaseColorMap");
     private readonly static int EmissiveColorMapID = Shader.PropertyToID("_EmissiveColorMap");
     
-    private int playerNetworkId;
-    public static int NextPlayerNetworkId = 0;
+    [SyncVar] private int _playerIndex;
+    public static int NextPlayerIndex = 0;
 
     [Header("Components")]
     public Rigidbody Rb { get; private set; }
@@ -70,14 +70,13 @@ public class PlayerController : NetworkBehaviour
 
     [Header("Material Update Data")]
     [SerializeField] private Texture _player2Texture;
-    [SerializeField] private Material _player1Material;
+    [SerializeField] private Material _bodyMaterial;
 
     [field: SyncVar]
     [field: SerializeField] [field: ReadOnly] public Vector3 WorldSpaceMoveDir { get; private set; }
 
     private List<Vector3> _contactNormals = new List<Vector3>();
-
-
+    
     [SerializeField] private ActionCurveLine _actionCurveLinePrefab;
     
     private void Awake()
@@ -93,32 +92,36 @@ public class PlayerController : NetworkBehaviour
                 _idleBreakerFrequencyTicks = (int)(numFixedUpdatesPerIdleAnim * _idleBreakerFrequency);
             }
         }
+        
+        Checkpoint.respawnEvent.AddListener(OnRespawn);
+    }
 
-        if (FindObjectsByType<PlayerController>(FindObjectsSortMode.None).Length > 1)
+    public override void OnStartServer()
+    {
+        _playerIndex = NextPlayerIndex++;
+    }
+
+    public override void OnStartClient()
+    {
+        // Set every 2nd player's texture to the alternate colour
+        if (_playerIndex % 2 == 1)
         {
-            //This is player 2, so change their texture
+            var propertyBlock = new MaterialPropertyBlock();
+            propertyBlock.SetTexture(BaseColorMapID, _player2Texture);
+            propertyBlock.SetTexture(EmissiveColorMapID, _player2Texture);
+            
             foreach (SkinnedMeshRenderer renderer in GetComponentsInChildren<SkinnedMeshRenderer>())
             {
-                if (renderer.sharedMaterial == _player1Material)
-                {
-                    renderer.material.SetTexture(BaseColorMapID, _player2Texture);
-                    renderer.material.SetTexture(EmissiveColorMapID, _player2Texture);
-                }
+                if (renderer.sharedMaterial != _bodyMaterial) continue;
+                renderer.SetPropertyBlock(propertyBlock);
             }
         }
     }
 
     private void Start()
     {
-        Checkpoint.respawnEvent.AddListener(OnRespawn);
-        if (isServer)
-        {
-            RpcSetPlayerNetworkId(NextPlayerNetworkId);
-            ++NextPlayerNetworkId;
-
-            carSound.Post(gameObject);
-            RTPCSpeed.SetGlobalValue(0);
-        }
+        carSound.Post(gameObject);
+        RTPCSpeed.SetGlobalValue(0);
     }
 
     private void OnDestroy()
@@ -126,17 +129,11 @@ public class PlayerController : NetworkBehaviour
         Checkpoint.respawnEvent.RemoveListener(OnRespawn);
     }
 
-    [ClientRpc]
-    void RpcSetPlayerNetworkId(int id)
-    {
-        playerNetworkId = id;
-    }
-
     private void OnRespawn(Checkpoint checkpoint)
     {
         if (authority)
         {
-            Transform newTransform = checkpoint.playerRespawnLocalTransforms[playerNetworkId % checkpoint.playerRespawnLocalTransforms.Length];
+            Transform newTransform = checkpoint.playerRespawnLocalTransforms[_playerIndex % checkpoint.playerRespawnLocalTransforms.Length];
 
             Rb.position = newTransform.position;
             Rb.rotation = newTransform.rotation;

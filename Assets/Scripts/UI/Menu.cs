@@ -57,7 +57,7 @@ namespace UI
             }
 
             // Reset player IDs before going into a new game
-            PlayerController.NextPlayerNetworkId = 0;
+            PlayerController.NextPlayerIndex = 0;
         }
 
         private void OnDestroy()
