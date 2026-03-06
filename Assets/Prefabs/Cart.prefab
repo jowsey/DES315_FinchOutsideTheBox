@@ -191,7 +191,7 @@ GameObject:
   - component: {fileID: 8713079984666969212}
   - component: {fileID: 7007898609027662423}
   m_Layer: 7
-  m_Name: Wheel
+  m_Name: WheelFront
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -230,7 +230,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  MoveForce: 300
+  MoveForce: 180
   _sitCooldown: 0.5
   _cartRb: {fileID: 5755687617286805364}
   _wheelRb: {fileID: 4795167691161300528}
@@ -744,7 +744,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3913858289453775590}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 377, y: -38.4, z: -40.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -798,19 +798,16 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _flaskCarrier: {fileID: 1827100274421316563}
-  checkpoints:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  <currentCheckpointIndex>k__BackingField: 0
-  respawnAction: {fileID: -8233647895968499144, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
-  dev_checkpointBackAction: {fileID: -5390487181371502964, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
-  dev_checkpointForwardAction: {fileID: 2059469255060023462, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
-  <UseNewTorqueSystem>k__BackingField: 1
+  _checkpoints: []
+  <CurrentCheckpointIndex>k__BackingField: 0
   _checkpointBannerPrefab: {fileID: 2550055375057606039, guid: 92851f9434601b54699a7986d3e29baa, type: 3}
+  _respawnAction: {fileID: -8233647895968499144, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
+  _devCheckpointBackAction: {fileID: -5390487181371502964, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
+  _devCheckpointForwardAction: {fileID: 2059469255060023462, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
+  <UseNewTorqueSystem>k__BackingField: 0
+  _flaskBounds: {fileID: 5701368598674622850}
+  <CarriedFlasks>k__BackingField: 0
+  _trackedFlasks: []
 --- !u!114 &6249258237167811541
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1054,7 +1051,7 @@ GameObject:
   - component: {fileID: 5437595839962427252}
   - component: {fileID: 6609278365365659765}
   m_Layer: 7
-  m_Name: Wheel (1)
+  m_Name: WheelRear
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1093,7 +1090,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  MoveForce: 300
+  MoveForce: 180
   _sitCooldown: 0.5
   _cartRb: {fileID: 5755687617286805364}
   _wheelRb: {fileID: 7799447581473435484}
@@ -1687,9 +1684,6 @@ PrefabInstance:
       insertIndex: 0
       addedObject: {fileID: 3399036331931440497}
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8bbe3134c4398814ea1b1acb13239e6d, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1827100274421316563}
     - targetCorrespondingSourceObject: {fileID: -7387700211241838384, guid: 8bbe3134c4398814ea1b1acb13239e6d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7615221182476939715}
@@ -2050,31 +2044,6 @@ MeshFilter:
   m_CorrespondingSourceObject: {fileID: 8674005741639881255, guid: 8bbe3134c4398814ea1b1acb13239e6d, type: 3}
   m_PrefabInstance: {fileID: 8051483117175930934}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &7169155482439826791 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 8bbe3134c4398814ea1b1acb13239e6d, type: 3}
-  m_PrefabInstance: {fileID: 8051483117175930934}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1827100274421316563
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7169155482439826791}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 722482f211294260af8673ebdeca670d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::FlaskCarrier
-  syncMethod: 0
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  _flasks: []
-  _carryingBounds: {fileID: 5701368598674622850}
-  _cart: {fileID: 4472236861815727159}
-  <CarriedFlasks>k__BackingField: 0
 --- !u!4 &7509229294387652573 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 8bbe3134c4398814ea1b1acb13239e6d, type: 3}
