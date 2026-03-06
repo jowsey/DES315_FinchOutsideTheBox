@@ -5,6 +5,7 @@ namespace VoIP
     public class RnNoiseProcessor : IDisposable
     {
         public const int FrameSize = 480; // required
+        public const float VoiceThreshold = 0.5f; // 1 is certain voice, 0 is certain not-voice
 
         private IntPtr _state;
         private bool _disposed;

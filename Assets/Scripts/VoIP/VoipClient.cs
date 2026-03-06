@@ -3,28 +3,27 @@ using System.Buffers;
 using System.Linq;
 using JetBrains.Annotations;
 using Mirror;
-using Sirenix.OdinInspector;
-using TMPro;
 using UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using VoIP.Util;
-using System.Collections.Generic;
-using UnityEngine.Events;
 
 namespace VoIP
 {
     public class VoipClient : NetworkBehaviour
     {
         public const int SampleRate = 48000;
+        //Number of available samples before we start playing, gives some leeway for latency changes
         public const int JitterBufferSamples = OpusProcessor.FrameSize * 3;
+        //Number of samples we store before dropping old ones, prevents lagging too far behind head
+        public const int ReceiveBufferSamples = OpusProcessor.FrameSize * 10;
+        //Max number of PLC frames to be generated after reaching end of receive buffer
         public const int MaxPlcFrames = 3;
 
         private readonly OpusProcessor _opus = new();
         [CanBeNull] private SpeexResampler _resampler;
         [CanBeNull] private RnNoiseProcessor _denoiser;
 
-        public static UnityEvent<string[]> InputDeviceListChangeEvent = new UnityEvent<string[]>();
         [SerializeField] private string _device;
         [SerializeField] private AudioSource _source;
 
@@ -42,9 +41,14 @@ namespace VoIP
         private readonly RingBuffer<float> _accumulationBuffer = new(SampleRate);
 
         //Buffer for incoming decoded audio samples
-        private readonly RingBuffer<float> _receiveBuffer = new(SampleRate);
+        private readonly RingBuffer<float> _receiveBuffer = new(ReceiveBufferSamples);
 
-        private int _plcFramesGenerated;
+        //Number of PLC frames generated since last received audio
+        private uint _plcFramesGenerated;
+        
+        //Latest sequence number received/sent for dropping out-of-order unreliable packets
+        private uint _lastReceivedSequence;
+        private uint _lastSentSequence;
 
         private readonly float[] _denoiseBuffer = new float[RnNoiseProcessor.FrameSize];
         private readonly float[] _opusFrameBuffer = new float[OpusProcessor.FrameSize];
@@ -71,7 +75,7 @@ namespace VoIP
                 }
 
                 //To initiate OnAudioFilterRead()
-                AudioClip clip = AudioClip.Create("VoIP Playback", SampleRate, 1, outputRate, false);
+                AudioClip clip = AudioClip.Create("VoIP Playback", outputRate, 1, outputRate, false);
 
                 _source.clip = clip;
                 _source.loop = true;
@@ -92,11 +96,9 @@ namespace VoIP
         private void SetMic(string deviceName)
         {
             _device = deviceName;
-            if (string.IsNullOrWhiteSpace(_device))
-            {
-                return;
-            }
-            else if (!Microphone.devices.Contains(_device))
+            if (string.IsNullOrWhiteSpace(_device)) return;
+
+            if (!Microphone.devices.Contains(_device))
             {
                 var partialMatch = Microphone.devices.FirstOrDefault(d => d.ToLower().Contains(_device.ToLower()));
                 if (partialMatch != null)
@@ -213,30 +215,44 @@ namespace VoIP
             {
                 // 0-10ms
                 _accumulationBuffer.ReadInto(_denoiseBuffer, RnNoiseProcessor.FrameSize);
-                _denoiser?.ProcessFrame(_denoiseBuffer, _denoiseBuffer);
+                var vad1 = _denoiser?.ProcessFrame(_denoiseBuffer, _denoiseBuffer);
                 Array.Copy(_denoiseBuffer, _opusFrameBuffer, RnNoiseProcessor.FrameSize);
 
                 // 10-20ms
                 _accumulationBuffer.ReadInto(_denoiseBuffer, RnNoiseProcessor.FrameSize);
-                _denoiser?.ProcessFrame(_denoiseBuffer, _denoiseBuffer);
+                var vad2 = _denoiser?.ProcessFrame(_denoiseBuffer, _denoiseBuffer);
                 Array.Copy(_denoiseBuffer, 0, _opusFrameBuffer, RnNoiseProcessor.FrameSize, RnNoiseProcessor.FrameSize);
 
+                if (vad1 < RnNoiseProcessor.VoiceThreshold && vad2 < RnNoiseProcessor.VoiceThreshold)
+                {
+                    // Entire frame is noise, don't bother sending
+                    continue;
+                }
+                
                 int packetSize = _opus.Encode(_opusFrameBuffer, _opusPacketBuffer);
 
                 var packetSegment = new ArraySegment<byte>(_opusPacketBuffer, 0, packetSize);
-                CmdSendAudio(packetSegment);
+                CmdSendAudio(++_lastSentSequence, packetSegment);
             }
         }
 
         [Command(channel = Channels.Unreliable)]
-        void CmdSendAudio(ArraySegment<byte> opusPacket)
+        void CmdSendAudio(uint seq, ArraySegment<byte> opusPacket)
         {
-            RpcReceiveAudio(opusPacket);
+            RpcReceiveAudio(seq, opusPacket);
         }
 
         [ClientRpc(channel = Channels.Unreliable, includeOwner = false)]
-        void RpcReceiveAudio(ArraySegment<byte> opusPacket)
+        void RpcReceiveAudio(uint seq, ArraySegment<byte> opusPacket)
         {
+            // UDP out-of-order check
+            if (seq < _lastReceivedSequence)
+            {
+                Debug.Log($"Received VoIP seq {seq}, but latest is {_lastReceivedSequence}");
+                return;
+            }
+            
+            _lastReceivedSequence = seq;
             _plcFramesGenerated = 0;
 
             _opus.Decode(opusPacket, _opusFrameBuffer);
@@ -278,6 +294,8 @@ namespace VoIP
             {
                 _opus.Decode(null, _opusFrameBuffer);
                 _plcFramesGenerated++;
+                
+                Debug.Log($"Generating PLC frame {_plcFramesGenerated}");
 
                 // todo make reusable "resample or write" method
                 if (_resampler != null)
@@ -311,7 +329,7 @@ namespace VoIP
                 for (int c = 0; c < channels; c++)
                 {
                     float vcVolLin = SettingsManager.ActiveSettings.VoiceChatVolume;
-                    data[s * channels + c] = samples[s] * vcVolLin * vcVolLin; //quadratic gain
+                    data[s * channels + c] = samples[s] * (vcVolLin * vcVolLin); //quadratic gain
                 }
             }
 
