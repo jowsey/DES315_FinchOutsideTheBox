@@ -3,14 +3,10 @@ using System.Buffers;
 using System.Linq;
 using JetBrains.Annotations;
 using Mirror;
-using Sirenix.OdinInspector;
-using TMPro;
 using UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using VoIP.Util;
-using System.Collections.Generic;
-using UnityEngine.Events;
 
 namespace VoIP
 {
@@ -24,7 +20,6 @@ namespace VoIP
         [CanBeNull] private SpeexResampler _resampler;
         [CanBeNull] private RnNoiseProcessor _denoiser;
 
-        public static UnityEvent<string[]> InputDeviceListChangeEvent = new UnityEvent<string[]>();
         [SerializeField] private string _device;
         [SerializeField] private AudioSource _source;
 
@@ -44,7 +39,12 @@ namespace VoIP
         //Buffer for incoming decoded audio samples
         private readonly RingBuffer<float> _receiveBuffer = new(SampleRate);
 
-        private int _plcFramesGenerated;
+        //Number of PLC frames generated since last received audio
+        private uint _plcFramesGenerated;
+        
+        //Latest sequence number received/sent for dropping out-of-order unreliable packets
+        private uint _lastReceivedSequence;
+        private uint _lastSentSequence;
 
         private readonly float[] _denoiseBuffer = new float[RnNoiseProcessor.FrameSize];
         private readonly float[] _opusFrameBuffer = new float[OpusProcessor.FrameSize];
@@ -71,7 +71,7 @@ namespace VoIP
                 }
 
                 //To initiate OnAudioFilterRead()
-                AudioClip clip = AudioClip.Create("VoIP Playback", SampleRate, 1, outputRate, false);
+                AudioClip clip = AudioClip.Create("VoIP Playback", outputRate, 1, outputRate, false);
 
                 _source.clip = clip;
                 _source.loop = true;
@@ -92,11 +92,9 @@ namespace VoIP
         private void SetMic(string deviceName)
         {
             _device = deviceName;
-            if (string.IsNullOrWhiteSpace(_device))
-            {
-                return;
-            }
-            else if (!Microphone.devices.Contains(_device))
+            if (string.IsNullOrWhiteSpace(_device)) return;
+
+            if (!Microphone.devices.Contains(_device))
             {
                 var partialMatch = Microphone.devices.FirstOrDefault(d => d.ToLower().Contains(_device.ToLower()));
                 if (partialMatch != null)
@@ -226,23 +224,31 @@ namespace VoIP
                     // Entire frame is noise, don't bother sending
                     continue;
                 }
-
+                
                 int packetSize = _opus.Encode(_opusFrameBuffer, _opusPacketBuffer);
 
                 var packetSegment = new ArraySegment<byte>(_opusPacketBuffer, 0, packetSize);
-                CmdSendAudio(packetSegment);
+                CmdSendAudio(++_lastSentSequence, packetSegment);
+                Debug.Log($"Sending frame {_lastSentSequence}");
             }
         }
 
         [Command(channel = Channels.Unreliable)]
-        void CmdSendAudio(ArraySegment<byte> opusPacket)
+        void CmdSendAudio(uint seq, ArraySegment<byte> opusPacket)
         {
-            RpcReceiveAudio(opusPacket);
+            RpcReceiveAudio(seq, opusPacket);
         }
 
         [ClientRpc(channel = Channels.Unreliable, includeOwner = false)]
-        void RpcReceiveAudio(ArraySegment<byte> opusPacket)
+        void RpcReceiveAudio(uint seq, ArraySegment<byte> opusPacket)
         {
+            if (seq < _lastReceivedSequence)
+            {
+                Debug.Log($"Received {seq}, latest is {_lastReceivedSequence}");
+                return; // out of order, udp L
+            }
+            _lastReceivedSequence = seq;
+            
             _plcFramesGenerated = 0;
 
             _opus.Decode(opusPacket, _opusFrameBuffer);
@@ -284,6 +290,8 @@ namespace VoIP
             {
                 _opus.Decode(null, _opusFrameBuffer);
                 _plcFramesGenerated++;
+                
+                Debug.Log($"Generating PLC frame {_plcFramesGenerated}");
 
                 // todo make reusable "resample or write" method
                 if (_resampler != null)
@@ -317,7 +325,7 @@ namespace VoIP
                 for (int c = 0; c < channels; c++)
                 {
                     float vcVolLin = SettingsManager.ActiveSettings.VoiceChatVolume;
-                    data[s * channels + c] = samples[s] * vcVolLin * vcVolLin; //quadratic gain
+                    data[s * channels + c] = samples[s] * (vcVolLin * vcVolLin); //quadratic gain
                 }
             }
 
