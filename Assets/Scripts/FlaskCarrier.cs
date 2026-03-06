@@ -31,7 +31,7 @@ public class FlaskCarrier : NetworkBehaviour
     {
         // todo can probably just track in trigger enter/exit
         CarriedFlasks = _flasks.Count(f => _carryingBounds.bounds.Contains(f.transform.position));
-        if (isServer && CarriedFlasks == 0)
+        if (isServer && CarriedFlasks == 0 && MaxFlasks > 0)
         {
             // Checkpoint.respawnEvent.Invoke(_cart.checkpoints[_cart.currentCheckpointIndex]);
             _cart.CmdInvokeRespawnEvent(_cart.currentCheckpointIndex);
