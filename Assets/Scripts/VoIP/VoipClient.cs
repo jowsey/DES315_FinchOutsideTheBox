@@ -213,13 +213,19 @@ namespace VoIP
             {
                 // 0-10ms
                 _accumulationBuffer.ReadInto(_denoiseBuffer, RnNoiseProcessor.FrameSize);
-                _denoiser?.ProcessFrame(_denoiseBuffer, _denoiseBuffer);
+                var vad1 = _denoiser?.ProcessFrame(_denoiseBuffer, _denoiseBuffer);
                 Array.Copy(_denoiseBuffer, _opusFrameBuffer, RnNoiseProcessor.FrameSize);
 
                 // 10-20ms
                 _accumulationBuffer.ReadInto(_denoiseBuffer, RnNoiseProcessor.FrameSize);
-                _denoiser?.ProcessFrame(_denoiseBuffer, _denoiseBuffer);
+                var vad2 = _denoiser?.ProcessFrame(_denoiseBuffer, _denoiseBuffer);
                 Array.Copy(_denoiseBuffer, 0, _opusFrameBuffer, RnNoiseProcessor.FrameSize, RnNoiseProcessor.FrameSize);
+
+                if (vad1 < RnNoiseProcessor.VoiceThreshold && vad2 < RnNoiseProcessor.VoiceThreshold)
+                {
+                    // Entire frame is noise, don't bother sending
+                    continue;
+                }
 
                 int packetSize = _opus.Encode(_opusFrameBuffer, _opusPacketBuffer);
 
