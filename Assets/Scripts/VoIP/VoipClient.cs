@@ -13,7 +13,11 @@ namespace VoIP
     public class VoipClient : NetworkBehaviour
     {
         public const int SampleRate = 48000;
+        //Number of available samples before we start playing, gives some leeway for latency changes
         public const int JitterBufferSamples = OpusProcessor.FrameSize * 3;
+        //Number of samples we store before dropping old ones, prevents lagging too far behind head
+        public const int ReceiveBufferSamples = OpusProcessor.FrameSize * 10;
+        //Max number of PLC frames to be generated after reaching end of receive buffer
         public const int MaxPlcFrames = 3;
 
         private readonly OpusProcessor _opus = new();
@@ -37,7 +41,7 @@ namespace VoIP
         private readonly RingBuffer<float> _accumulationBuffer = new(SampleRate);
 
         //Buffer for incoming decoded audio samples
-        private readonly RingBuffer<float> _receiveBuffer = new(SampleRate);
+        private readonly RingBuffer<float> _receiveBuffer = new(ReceiveBufferSamples);
 
         //Number of PLC frames generated since last received audio
         private uint _plcFramesGenerated;
