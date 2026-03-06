@@ -2,7 +2,7 @@ using Mirror;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-public class WheelSeat : Mirror.NetworkBehaviour
+public class WheelSeat : NetworkBehaviour
 {
     [Header("Ball Properties")]
     [Tooltip("How much driving force the wheel applies")]
@@ -25,8 +25,8 @@ public class WheelSeat : Mirror.NetworkBehaviour
     
     [Header("State")]
     [Tooltip("The player currently sitting in this seat")]
-    [Mirror.SyncVar(hook = nameof(OnSeatedPlayerChanged))]
-    [SerializeField] [Mirror.ReadOnly] private Mirror.NetworkIdentity _seatedPlayerIdentity;
+    [SyncVar(hook = nameof(OnSeatedPlayerChanged))]
+    [SerializeField] [Sirenix.OdinInspector.ReadOnly] private NetworkIdentity _seatedPlayerIdentity;
 
     private PlayerController _seatedPlayer;
     
@@ -36,21 +36,21 @@ public class WheelSeat : Mirror.NetworkBehaviour
 
     public Vector3 SeatedPosition => transform.position + Vector3.up * (_sphereCollider.radius * transform.lossyScale.y);
 
-    [Mirror.Command(requiresAuthority = false)]
-    public void CmdTrySitPlayer(Mirror.NetworkIdentity playerIdentity)
+    [Command(requiresAuthority = false)]
+    public void CmdTrySitPlayer(NetworkIdentity playerIdentity)
     {
         if (_seatedPlayer || Time.time < _lastUnsitTime + _sitCooldown) return;
         _seatedPlayerIdentity = playerIdentity; //synced to all clients
     }
 
-    [Mirror.Command(requiresAuthority = false)]
+    [Command(requiresAuthority = false)]
     public void CmdUnsitPlayer()
     {
         if (!_seatedPlayer) return;
         _seatedPlayerIdentity = null; //synced to all clients
     }
 
-    private void OnSeatedPlayerChanged(Mirror.NetworkIdentity oldValue, Mirror.NetworkIdentity newValue)
+    private void OnSeatedPlayerChanged(NetworkIdentity oldValue, NetworkIdentity newValue)
     {
         PlayerController oldPlayer = _seatedPlayer;
         _seatedPlayer = newValue ? newValue.GetComponent<PlayerController>() : null;

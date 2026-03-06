@@ -27,7 +27,7 @@ public class Cart : NetworkBehaviour
     
     private Dictionary<GameObject, Vector3> _initialFlaskPositions = new();
     
-    [field: SerializeField] [field: Mirror.ReadOnly] public int CarriedFlasks { get; private set; }
+    [field: SerializeField] [field: Sirenix.OdinInspector.ReadOnly] public int CarriedFlasks { get; private set; }
     
     [ValidateInput("@$value.Count > 0", "Cart doesn't have any flasks linked.", InfoMessageType.Warning)]
     [SerializeField] private List<GameObject> _trackedFlasks = new();
