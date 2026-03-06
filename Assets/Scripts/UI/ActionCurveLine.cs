@@ -12,7 +12,7 @@ namespace UI
         public float HeightCurveMultiplier = 1f;
         public Vector3 EndPoint;
 
-        [Min(0)] public int Midpoints = 5;
+        [Min(0)] public int Midpoints = 15;
 
         public Transform StartFollowTarget;
         public Transform EndFollowTarget;
@@ -71,6 +71,7 @@ namespace UI
             {
                 var promptWorldPos = Vector3.Lerp(transform.position, EndPoint, 0.5f) + lineUp * (HeightCurveMultiplier + 0.5f);
                 _promptLabel.position = _camera.WorldToScreenPoint(promptWorldPos);
+                _promptLabel.localScale = _promptLabel.position.z >= 0 ? Vector3.one : Vector3.zero; // todo migrate to WorldFollowUI
             }
         }
 
@@ -78,7 +79,7 @@ namespace UI
         {
             if (Application.isPlaying)
             {
-                if (ShouldDestroy != null && ShouldDestroy())
+                if (ShouldDestroy())
                 {
                     Destroy(gameObject);
                     return;
