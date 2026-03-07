@@ -25,24 +25,40 @@ namespace UI
         [SerializeField] [Required] private InputActionReference _altMoveAction;
         [SerializeField] [Required] private InputActionReference _altJumpAction;
 
+        private void ResetCurrentTransport()
+        {
+            var transport = NetworkManager.singleton?.transport;
+            if (transport is EosTransport eosTransport)
+            {
+                // Leave Epic lobby if we're in one
+                var eosLobby = eosTransport.GetComponent<EOSLobby>();
+                if (eosLobby.ConnectedToLobby)
+                {
+                    eosLobby.LeaveLobby();
+                }
+
+                var eosLobbyHUD = eosTransport.GetComponent<EOSLobbyHUD>();
+                eosLobbyHUD.enabled = false;
+                eosLobbyHUD.manager = null;
+            }
+            else if (transport is KcpTransport kcpTransport)
+            {
+                // not sure if we need to do anything here?
+            }
+            
+            _networkManager.transport = null;
+            Transport.active = null;
+            _networkManager.gameObject.SetActive(false);
+        }
+        
         private void Awake()
         {
             _settings.gameObject.SetActive(false);
             Cursor.lockState = CursorLockMode.None;
             
             // Clean up previously-used transport if we're coming back from the game
-            var transport = NetworkManager.singleton?.transport;
-            if (transport is EosTransport eosTransport)
-            {
-                // Leave Epic lobby if we're in one
-                eosTransport.GetComponent<EOSLobby>().LeaveLobby();
-                eosTransport.GetComponent<EOSLobbyHUD>().enabled = false;
-            }
-            else if (transport is KcpTransport kcpTransport)
-            {
-                // not sure if we need to do anything here?
-            }
-
+            ResetCurrentTransport();
+            
             // Set up new transports if none exist
             if (!_eosTransport)
             {
@@ -83,12 +99,16 @@ namespace UI
             eosLobbyHUD.enabled = true;
 
             _networkManager.transport = _eosTransport;
+            Transport.active = _eosTransport;
             _networkManager.gameObject.SetActive(true);
         }
 
         private void InitLocal()
         {
+            ResetCurrentTransport(); // disables the EOS lobby UI and whatnot if they opened it. overkill but no reason not to
+            
             _networkManager.transport = _kcpTransport;
+            Transport.active = _kcpTransport;
             _networkManager.gameObject.SetActive(true);
         }
 
