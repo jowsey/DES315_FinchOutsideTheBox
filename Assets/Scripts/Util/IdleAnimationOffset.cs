@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Util
 {
     [RequireComponent(typeof(Animator))]
-    [InfoBox("Apply to a player to offset its initial idle animation by a random amount.")]
+    [InfoBox("Offset's a player's initial idle animation by a random amount.")]
     public class IdleAnimationOffset : MonoBehaviour
     {
         private void Awake()

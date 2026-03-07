@@ -8,14 +8,12 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : NetworkBehaviour
 {
-    private readonly static int RunningState = Animator.StringToHash("Running");
-    private readonly static int JumpTrigger = Animator.StringToHash("Jump");
-    private readonly static int IdleBreakerTrigger = Animator.StringToHash("Idle_Break");
-    private readonly static int GroundedState = Animator.StringToHash("Grounded");
-    private readonly static int FallState = Animator.StringToHash("Fall");
-    private readonly static int GlideState = Animator.StringToHash("Glide");
-    private readonly static int BaseColorMapID = Shader.PropertyToID("_BaseColorMap");
-    private readonly static int EmissiveColorMapID = Shader.PropertyToID("_EmissiveColorMap");
+    private static readonly int RunningState = Animator.StringToHash("Running");
+    private static readonly int JumpTrigger = Animator.StringToHash("Jump");
+    private static readonly int IdleBreakerTrigger = Animator.StringToHash("Idle_Break");
+    private static readonly int GroundedState = Animator.StringToHash("Grounded");
+    private static readonly int FallState = Animator.StringToHash("Fall");
+    private static readonly int GlideState = Animator.StringToHash("Glide");
     
     [SyncVar] private int _playerIndex;
     public static int NextPlayerIndex = 0;
@@ -69,8 +67,8 @@ public class PlayerController : NetworkBehaviour
     [ReadOnly] public WheelSeat Seat;
 
     [Header("Material Update Data")]
-    [SerializeField] private Texture _player2Texture;
     [SerializeField] private Material _bodyMaterial;
+    [SerializeField] private Material _player2Material;
 
     [field: SyncVar]
     [field: SerializeField] [field: ReadOnly] public Vector3 WorldSpaceMoveDir { get; private set; }
@@ -106,14 +104,10 @@ public class PlayerController : NetworkBehaviour
         // Set every 2nd player's texture to the alternate colour
         if (_playerIndex % 2 == 1)
         {
-            var propertyBlock = new MaterialPropertyBlock();
-            propertyBlock.SetTexture(BaseColorMapID, _player2Texture);
-            propertyBlock.SetTexture(EmissiveColorMapID, _player2Texture);
-            
             foreach (SkinnedMeshRenderer renderer in GetComponentsInChildren<SkinnedMeshRenderer>())
             {
                 if (renderer.sharedMaterial != _bodyMaterial) continue;
-                renderer.SetPropertyBlock(propertyBlock);
+                renderer.sharedMaterial = _player2Material;
             }
         }
     }
