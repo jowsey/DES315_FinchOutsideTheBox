@@ -38,10 +38,10 @@ public class PlayerController : NetworkBehaviour
     private bool _jumpPressed;
 
     //Wwise Event to trigger footstep sound
-    public AK.Wwise.Event footstepSound = new AK.Wwise.Event();
+    public AK.Wwise.Event FootstepSound = new();
     
     //Car Stuff
-    public AK.Wwise.Event carSound = new AK.Wwise.Event();
+    public AK.Wwise.Event CarSound = new();
     public AK.Wwise.RTPC RTPCSpeed;
     public float RTPCSpeedValue;
 
@@ -73,7 +73,7 @@ public class PlayerController : NetworkBehaviour
     [field: SyncVar]
     [field: SerializeField] [field: ReadOnly] public Vector3 WorldSpaceMoveDir { get; private set; }
 
-    private List<Vector3> _contactNormals = new List<Vector3>();
+    private List<Vector3> _contactNormals = new();
     
     [SerializeField] private ActionCurveLine _actionCurveLinePrefab;
     
@@ -114,7 +114,7 @@ public class PlayerController : NetworkBehaviour
 
     private void Start()
     {
-        carSound.Post(gameObject);
+        CarSound.Post(gameObject);
         RTPCSpeed.SetGlobalValue(0);
     }
 
@@ -242,7 +242,7 @@ public class PlayerController : NetworkBehaviour
             }
             else
             {
-                footstepSound.Post(gameObject);
+                FootstepSound.Post(gameObject);
             }
             
             Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, Quaternion.LookRotation(WorldSpaceMoveDir, Vector3.up), Time.fixedDeltaTime * rotationSmoothingSpeed));
@@ -328,7 +328,7 @@ public class PlayerController : NetworkBehaviour
 
     private void OnDrawGizmos()
     {
-        if (Rb != null)
+        if (Rb)
         {
             Gizmos.DrawSphere(Rb.position, _groundedSphereRadius);
         }
