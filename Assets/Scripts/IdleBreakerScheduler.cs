@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using Mirror;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -36,7 +36,7 @@ public class IdleBreakerScheduler : MonoBehaviour
             //Check passes roughly once every _idleBreakerFrequencyTicks ticks
             if (Random.Range(0, _idleBreakerFrequencyTicks) > 0) return;
             
-            if (_networkAnimator)
+            if (_networkAnimator && _networkAnimator.authority)
             {
                 _networkAnimator.SetTrigger(IdleBreakerTrigger);
             }
