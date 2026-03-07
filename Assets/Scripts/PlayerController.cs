@@ -253,19 +253,19 @@ public class PlayerController : NetworkBehaviour
         bool grounded = Physics.CheckSphere(Rb.position, _groundedSphereRadius, ~(1 << gameObject.layer),  QueryTriggerInteraction.Ignore);
         bool groundedOnBumpy = Physics.CheckSphere(Rb.position, _groundedSphereRadius, LayerMask.GetMask("Bumpy"), QueryTriggerInteraction.Ignore);
         Rb.useGravity = !groundedOnBumpy;
-        _networkAnimator.animator.SetBool(GroundedState, (grounded || groundedOnBumpy));
-
-        Vector3 delta = new Vector3(WorldSpaceMoveDir.x, 0.0f, WorldSpaceMoveDir.z) * (Time.fixedDeltaTime * _moveForce);
-        foreach (Vector3 normal in _contactNormals)
-        {
-            if (Vector3.Dot(delta, normal) < 0) //moving into the surface
-            {
-                delta = Vector3.ProjectOnPlane(delta, normal);
-            }
-        }
+        _networkAnimator.animator.SetBool(GroundedState, grounded || groundedOnBumpy);
 
         if (!Seat)
         {
+            Vector3 delta = new Vector3(WorldSpaceMoveDir.x, 0.0f, WorldSpaceMoveDir.z) * (Time.fixedDeltaTime * _moveForce);
+            foreach (Vector3 normal in _contactNormals)
+            {
+                if (Vector3.Dot(delta, normal) < 0) //moving into the surface
+                {
+                    delta = Vector3.ProjectOnPlane(delta, normal);
+                }
+            }
+
             Rb.MovePosition(Rb.position + delta);
         }
         
