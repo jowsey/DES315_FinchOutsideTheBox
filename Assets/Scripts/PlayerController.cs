@@ -213,10 +213,8 @@ public class PlayerController : NetworkBehaviour
         //Movement
         Quaternion cameraOrientation = _camera ? _camera.State.GetFinalOrientation() : Quaternion.identity;
         Vector3 cameraForward = Vector3.Scale(cameraOrientation * Vector3.forward, new Vector3(1, 0, 1)).normalized;
-
         Vector3 cameraRight = cameraOrientation * Vector3.right;
         Vector2 inputDirection = MoveAction.action.ReadValue<Vector2>();
-
         WorldSpaceMoveDir = (cameraForward * inputDirection.y + cameraRight * inputDirection.x).normalized;
 
         if (WorldSpaceMoveDir.sqrMagnitude > 0)
@@ -233,7 +231,6 @@ public class PlayerController : NetworkBehaviour
             }
             
             Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, Quaternion.LookRotation(WorldSpaceMoveDir, Vector3.up), Time.fixedDeltaTime * rotationSmoothingSpeed));
-
         }
         else
         {
@@ -244,27 +241,34 @@ public class PlayerController : NetworkBehaviour
         RTPCSpeedValue = Mathf.Clamp(RTPCSpeedValue, 0, 100);
         RTPCSpeed.SetGlobalValue(RTPCSpeedValue);
 
+        //Unsitting
         if (Seat && _jumpPressed)
         {
             Seat.CmdUnsitPlayer();
-            Seat = null;
+            
+            CleanupFixedUpdate();
+            return;
         }
 
         bool grounded = Physics.CheckSphere(Rb.position, _groundedSphereRadius, ~(1 << gameObject.layer),  QueryTriggerInteraction.Ignore);
         bool groundedOnBumpy = Physics.CheckSphere(Rb.position, _groundedSphereRadius, LayerMask.GetMask("Bumpy"), QueryTriggerInteraction.Ignore);
         Rb.useGravity = !groundedOnBumpy;
-        _networkAnimator.animator.SetBool(GroundedState, (grounded || groundedOnBumpy));
+        _networkAnimator.animator.SetBool(GroundedState, grounded || groundedOnBumpy);
 
-        Vector3 delta = new Vector3(WorldSpaceMoveDir.x, 0.0f, WorldSpaceMoveDir.z) * (Time.fixedDeltaTime * _moveForce);
-        foreach (Vector3 normal in _contactNormals)
+        if (!Seat)
         {
-            if (Vector3.Dot(delta, normal) < 0) //moving into the surface
+            Vector3 delta = new Vector3(WorldSpaceMoveDir.x, 0.0f, WorldSpaceMoveDir.z) * (Time.fixedDeltaTime * _moveForce);
+            foreach (Vector3 normal in _contactNormals)
             {
-                delta = Vector3.ProjectOnPlane(delta, normal);
+                if (Vector3.Dot(delta, normal) < 0) //moving into the surface
+                {
+                    delta = Vector3.ProjectOnPlane(delta, normal);
+                }
             }
-        }
-        Rb.MovePosition(Rb.position + delta);
 
+            Rb.MovePosition(Rb.position + delta);
+        }
+        
         if (_jumpPressed && (grounded || groundedOnBumpy))
         {
             _networkAnimator.SetTrigger(JumpTrigger);
@@ -287,6 +291,11 @@ public class PlayerController : NetworkBehaviour
             }
         }
 
+        CleanupFixedUpdate();
+    }
+
+    private void CleanupFixedUpdate()
+    {
         _jumpPressed = false;
     }
 
