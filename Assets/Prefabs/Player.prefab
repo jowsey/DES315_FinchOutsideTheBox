@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 4479242599431745982}
   - component: {fileID: -6860383293400967547}
   - component: {fileID: -3520236474188826171}
+  - component: {fileID: 3228443039865629975}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -85,15 +86,14 @@ MonoBehaviour:
   syncInterval: 0
   _crosshairDetector: {fileID: 0}
   _fallAnimationMinDownardsVelocity: -2.5
-  _idleBreakerFrequency: 5
   MoveAction: {fileID: -1680190386980627800, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
   JumpAction: {fileID: -2099379676528639254, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
   PickupAction: {fileID: -2039900678409227085, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
-  footstepSound:
+  FootstepSound:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: 88b1c1ef52605344fbfb42d36660f7dd, type: 2}
-  carSound:
+  CarSound:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: 8b29107a16812e44e922d30dc2b4f295, type: 2}
@@ -109,8 +109,8 @@ MonoBehaviour:
   _moveForce: 6
   _groundedSphereRadius: 0.1
   Seat: {fileID: 0}
-  _player2Texture: {fileID: 2800000, guid: 47c826f8dcce9a949969165cc61db43f, type: 3}
-  _player1Material: {fileID: 2100000, guid: 50a0662de81ee71418e151b9646cfe43, type: 2}
+  _bodyMaterial: {fileID: 2100000, guid: 50a0662de81ee71418e151b9646cfe43, type: 2}
+  _player2Material: {fileID: 2100000, guid: a2bb44dc23368dc4f9569bc5ce6a1309, type: 2}
   <WorldSpaceMoveDir>k__BackingField: {x: 0, y: 0, z: 0}
   _actionCurveLinePrefab: {fileID: 7011724201460765554, guid: 8110da47f80f14b1e92c4f0876b3ad30, type: 3}
 --- !u!114 &2406511369735062858
@@ -321,6 +321,19 @@ MonoBehaviour:
   syncInterval: 0
   clientAuthority: 0
   animator: {fileID: -6860383293400967547}
+--- !u!114 &3228443039865629975
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 123377547585072098}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b619367b129d402b8e7a204874959a29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::IdleBreakerScheduler
+  _idleBreakerFrequency: 10
 --- !u!1001 &5882079636585508407
 PrefabInstance:
   m_ObjectHideFlags: 0

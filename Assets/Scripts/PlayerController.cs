@@ -8,17 +8,14 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : NetworkBehaviour
 {
-    private readonly static int RunningState = Animator.StringToHash("Running");
-    private readonly static int JumpTrigger = Animator.StringToHash("Jump");
-    private readonly static int IdleBreakerTrigger = Animator.StringToHash("Idle_Break");
-    private readonly static int GroundedState = Animator.StringToHash("Grounded");
-    private readonly static int FallState = Animator.StringToHash("Fall");
-    private readonly static int GlideState = Animator.StringToHash("Glide");
-    private readonly static int BaseColorMapID = Shader.PropertyToID("_BaseColorMap");
-    private readonly static int EmissiveColorMapID = Shader.PropertyToID("_EmissiveColorMap");
+    private static readonly int RunningState = Animator.StringToHash("Running");
+    private static readonly int JumpTrigger = Animator.StringToHash("Jump");
+    private static readonly int GroundedState = Animator.StringToHash("Grounded");
+    private static readonly int FallState = Animator.StringToHash("Fall");
+    private static readonly int GlideState = Animator.StringToHash("Glide");
     
-    private int playerNetworkId;
-    public static int NextPlayerNetworkId = 0;
+    [SyncVar] private int _playerIndex;
+    public static int NextPlayerIndex = 0;
 
     [Header("Components")]
     public Rigidbody Rb { get; private set; }
@@ -28,9 +25,6 @@ public class PlayerController : NetworkBehaviour
     [Header("Animation")]
     [Tooltip("The minimum velocity required to initiate the gliding animation (should be negative)")]
     [SerializeField] private float _fallAnimationMinDownardsVelocity;
-    [Tooltip("The average number of idle animation loops to play before an idle breaker animation")]
-    [SerializeField] private float _idleBreakerFrequency;
-    private int _idleBreakerFrequencyTicks; //Impl for _idlBreakerFrequency - same thing but measured in fixed update ticks rather than idle anim loops
 
     [Header("Input")]
     public InputActionReference MoveAction;
@@ -40,10 +34,10 @@ public class PlayerController : NetworkBehaviour
     private bool _jumpPressed;
 
     //Wwise Event to trigger footstep sound
-    public AK.Wwise.Event footstepSound = new AK.Wwise.Event();
+    public AK.Wwise.Event FootstepSound = new();
     
     //Car Stuff
-    public AK.Wwise.Event carSound = new AK.Wwise.Event();
+    public AK.Wwise.Event CarSound = new();
     public AK.Wwise.RTPC RTPCSpeed;
     public float RTPCSpeedValue;
 
@@ -69,56 +63,46 @@ public class PlayerController : NetworkBehaviour
     [ReadOnly] public WheelSeat Seat;
 
     [Header("Material Update Data")]
-    [SerializeField] private Texture _player2Texture;
-    [SerializeField] private Material _player1Material;
+    [SerializeField] private Material _bodyMaterial;
+    [SerializeField] private Material _player2Material;
 
     [field: SyncVar]
     [field: SerializeField] [field: ReadOnly] public Vector3 WorldSpaceMoveDir { get; private set; }
 
-    private List<Vector3> _contactNormals = new List<Vector3>();
-
-
+    private List<Vector3> _contactNormals = new();
+    
     [SerializeField] private ActionCurveLine _actionCurveLinePrefab;
     
     private void Awake()
     {
         Rb = GetComponent<Rigidbody>();
-
         _networkAnimator = GetComponent<NetworkAnimator>();
-        foreach (AnimationClip clip in _networkAnimator.animator.runtimeAnimatorController.animationClips)
-        {
-            if (clip.name == "Idle")
-            {
-                int numFixedUpdatesPerIdleAnim = (int)(clip.length / Time.fixedDeltaTime);
-                _idleBreakerFrequencyTicks = (int)(numFixedUpdatesPerIdleAnim * _idleBreakerFrequency);
-            }
-        }
+        
+        Checkpoint.respawnEvent.AddListener(OnRespawn);
+    }
 
-        if (FindObjectsByType<PlayerController>(FindObjectsSortMode.None).Length > 1)
+    public override void OnStartServer()
+    {
+        _playerIndex = NextPlayerIndex++;
+    }
+
+    public override void OnStartClient()
+    {
+        // Set every 2nd player's texture to the alternate colour
+        if (_playerIndex % 2 == 1)
         {
-            //This is player 2, so change their texture
             foreach (SkinnedMeshRenderer renderer in GetComponentsInChildren<SkinnedMeshRenderer>())
             {
-                if (renderer.sharedMaterial == _player1Material)
-                {
-                    renderer.material.SetTexture(BaseColorMapID, _player2Texture);
-                    renderer.material.SetTexture(EmissiveColorMapID, _player2Texture);
-                }
+                if (renderer.sharedMaterial != _bodyMaterial) continue;
+                renderer.sharedMaterial = _player2Material;
             }
         }
     }
 
     private void Start()
     {
-        Checkpoint.respawnEvent.AddListener(OnRespawn);
-        if (isServer)
-        {
-            RpcSetPlayerNetworkId(NextPlayerNetworkId);
-            ++NextPlayerNetworkId;
-
-            carSound.Post(gameObject);
-            RTPCSpeed.SetGlobalValue(0);
-        }
+        CarSound.Post(gameObject);
+        RTPCSpeed.SetGlobalValue(0);
     }
 
     private void OnDestroy()
@@ -126,17 +110,11 @@ public class PlayerController : NetworkBehaviour
         Checkpoint.respawnEvent.RemoveListener(OnRespawn);
     }
 
-    [ClientRpc]
-    void RpcSetPlayerNetworkId(int id)
-    {
-        playerNetworkId = id;
-    }
-
-    void OnRespawn(Checkpoint checkpoint)
+    private void OnRespawn(Checkpoint checkpoint)
     {
         if (authority)
         {
-            Transform newTransform = checkpoint.playerRespawnLocalTransforms[playerNetworkId];
+            Transform newTransform = checkpoint.playerRespawnLocalTransforms[_playerIndex % checkpoint.playerRespawnLocalTransforms.Length];
 
             Rb.position = newTransform.position;
             Rb.rotation = newTransform.rotation;
@@ -251,7 +229,7 @@ public class PlayerController : NetworkBehaviour
             }
             else
             {
-                footstepSound.Post(gameObject);
+                FootstepSound.Post(gameObject);
             }
             
             Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, Quaternion.LookRotation(WorldSpaceMoveDir, Vector3.up), Time.fixedDeltaTime * rotationSmoothingSpeed));
@@ -309,17 +287,6 @@ public class PlayerController : NetworkBehaviour
             }
         }
 
-        //Idle-breaker
-        AnimatorClipInfo[] animatorInfo = _networkAnimator.animator.GetCurrentAnimatorClipInfo(0);
-        if (animatorInfo.Length > 0 && animatorInfo[0].clip.name == "Idle")
-        {
-            //Check passes roughly once every _idleBreakerFrequencyTicks ticks
-            if (Random.Range(0, _idleBreakerFrequencyTicks) == 0)
-            {
-                _networkAnimator.SetTrigger(IdleBreakerTrigger);
-            }
-        }
-
         _jumpPressed = false;
     }
 
@@ -337,7 +304,7 @@ public class PlayerController : NetworkBehaviour
 
     private void OnDrawGizmos()
     {
-        if (Rb != null)
+        if (Rb)
         {
             Gizmos.DrawSphere(Rb.position, _groundedSphereRadius);
         }

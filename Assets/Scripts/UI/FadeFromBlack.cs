@@ -1,4 +1,5 @@
-﻿using Sirenix.OdinInspector;
+﻿using PrimeTween;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace UI
@@ -11,19 +12,19 @@ namespace UI
 
         private void Awake()
         {
-            _canvasGroup = GetComponent<CanvasGroup>();
-            _canvasGroup.alpha = 1;
-        }
-
-        private void Update()
-        {
-            if (_canvasGroup.alpha > 0)
+            // If we're on program frame 1 (i.e. we Didn't come from the splash screen), skip fading in
+            if (Time.time == 0)
             {
-                _canvasGroup.alpha -= Time.deltaTime;
+                Debug.Log("Splash didn't play, skipping fade from black.");
+                Destroy(gameObject);
                 return;
             }
 
-            Destroy(gameObject);
+            _canvasGroup = GetComponent<CanvasGroup>();
+            _canvasGroup.alpha = 1;
+
+            Tween.Alpha(_canvasGroup, 0, 2f, Ease.InSine)
+                .OnComplete(() => Destroy(gameObject));
         }
     }
 }
