@@ -230,7 +230,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  MoveForce: 180
+  MoveForce: 240
   _sitCooldown: 0.5
   _cartRb: {fileID: 5755687617286805364}
   _wheelRb: {fileID: 4795167691161300528}
@@ -766,7 +766,7 @@ Rigidbody:
   m_Mass: 25
   m_LinearDamping: 1
   m_AngularDamping: 5
-  m_CenterOfMass: {x: 0, y: -4, z: 0}
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
   m_IncludeLayers:
@@ -775,7 +775,7 @@ Rigidbody:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_ImplicitCom: 0
+  m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0
@@ -804,7 +804,9 @@ MonoBehaviour:
   _respawnAction: {fileID: -8233647895968499144, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
   _devCheckpointBackAction: {fileID: -5390487181371502964, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
   _devCheckpointForwardAction: {fileID: 2059469255060023462, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
-  <UseNewTorqueSystem>k__BackingField: 0
+  <UseNewTorqueSystem>k__BackingField: 1
+  _tiltCorrection: 1.1
+  _tiltCorrectionScaling: 2
   _flaskBounds: {fileID: 5701368598674622850}
   <CarriedFlasks>k__BackingField: 0
   _trackedFlasks: []
@@ -1090,7 +1092,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  MoveForce: 180
+  MoveForce: 240
   _sitCooldown: 0.5
   _cartRb: {fileID: 5755687617286805364}
   _wheelRb: {fileID: 7799447581473435484}

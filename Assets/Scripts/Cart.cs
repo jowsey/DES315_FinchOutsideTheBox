@@ -9,6 +9,8 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(Rigidbody))]
 public class Cart : NetworkBehaviour
 {
+    private Rigidbody _rb;
+    
     [ValidateInput("@$value.Count > 0", "Cart doesn't have any checkpoints linked.", InfoMessageType.Warning)]
     [SerializeField] private List<Checkpoint> _checkpoints;
     [field: SerializeField] public int CurrentCheckpointIndex { get; private set; }
@@ -21,6 +23,11 @@ public class Cart : NetworkBehaviour
 
     [Tooltip("Whether to move the wheels using torque instead of flat forces. Should result in more consistent movement, but less tested.")]
     [field: SerializeField] [field: SyncVar] public bool UseNewTorqueSystem { get; private set; } = true;
+
+    [Tooltip("Base amount of tilt-correct to apply. Higher reduces overall amount of tilting.")]
+    [SerializeField] private float _tiltCorrection = 1.1f;
+    [Tooltip("Exponent for how much the amount of tilt-correction increases in response to tilting. 1 means consistent, higher makes it kick in far more when tilting more.")]
+    [SerializeField] private float _tiltCorrectionScaling = 2f;
     
     // Flask carrying
     [SerializeField] [Required] private Collider _flaskBounds;
@@ -37,6 +44,11 @@ public class Cart : NetworkBehaviour
     // Ratio of flasks currently being carried
     public float FlasksRemainingRatio => (float)CarriedFlasks / _trackedFlasks.Count;
 
+    private void Awake()
+    {
+        _rb  = GetComponent<Rigidbody>();
+    }
+    
     private void Start()
     {
         Checkpoint.respawnEvent.AddListener(OnRespawn);
@@ -86,6 +98,14 @@ public class Cart : NetworkBehaviour
         {
             CmdInvokeRespawnEvent(CurrentCheckpointIndex);
         }
+    }
+
+    private void FixedUpdate()
+    {
+        // Re-center rotation around local Z axis
+        var rot = Mathf.DeltaAngle(transform.eulerAngles.z, 0);
+        var rotExp = Mathf.Sign(rot) * Mathf.Pow(Mathf.Abs(rot), _tiltCorrectionScaling);
+        _rb.AddTorque(_tiltCorrection * rotExp * transform.forward);
     }
 
     private void OnTriggerEnter(Collider other)
