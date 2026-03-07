@@ -10,7 +10,6 @@ public class PlayerController : NetworkBehaviour
 {
     private static readonly int RunningState = Animator.StringToHash("Running");
     private static readonly int JumpTrigger = Animator.StringToHash("Jump");
-    private static readonly int IdleBreakerTrigger = Animator.StringToHash("Idle_Break");
     private static readonly int GroundedState = Animator.StringToHash("Grounded");
     private static readonly int FallState = Animator.StringToHash("Fall");
     private static readonly int GlideState = Animator.StringToHash("Glide");
@@ -26,9 +25,6 @@ public class PlayerController : NetworkBehaviour
     [Header("Animation")]
     [Tooltip("The minimum velocity required to initiate the gliding animation (should be negative)")]
     [SerializeField] private float _fallAnimationMinDownardsVelocity;
-    [Tooltip("The average number of idle animation loops to play before an idle breaker animation")]
-    [SerializeField] private float _idleBreakerFrequency;
-    private int _idleBreakerFrequencyTicks; //Impl for _idlBreakerFrequency - same thing but measured in fixed update ticks rather than idle anim loops
 
     [Header("Input")]
     public InputActionReference MoveAction;
@@ -80,16 +76,7 @@ public class PlayerController : NetworkBehaviour
     private void Awake()
     {
         Rb = GetComponent<Rigidbody>();
-
         _networkAnimator = GetComponent<NetworkAnimator>();
-        foreach (AnimationClip clip in _networkAnimator.animator.runtimeAnimatorController.animationClips)
-        {
-            if (clip.name == "Idle")
-            {
-                int numFixedUpdatesPerIdleAnim = (int)(clip.length / Time.fixedDeltaTime);
-                _idleBreakerFrequencyTicks = (int)(numFixedUpdatesPerIdleAnim * _idleBreakerFrequency);
-            }
-        }
         
         Checkpoint.respawnEvent.AddListener(OnRespawn);
     }
@@ -297,17 +284,6 @@ public class PlayerController : NetworkBehaviour
             {
                 //Player is not gliding, they are just falling
                 _networkAnimator.animator.SetBool(FallState, true);
-            }
-        }
-
-        //Idle-breaker
-        AnimatorClipInfo[] animatorInfo = _networkAnimator.animator.GetCurrentAnimatorClipInfo(0);
-        if (animatorInfo.Length > 0 && animatorInfo[0].clip.name == "Idle")
-        {
-            //Check passes roughly once every _idleBreakerFrequencyTicks ticks
-            if (Random.Range(0, _idleBreakerFrequencyTicks) == 0)
-            {
-                _networkAnimator.SetTrigger(IdleBreakerTrigger);
             }
         }
 

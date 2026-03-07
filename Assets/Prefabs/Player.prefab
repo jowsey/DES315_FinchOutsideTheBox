@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 4479242599431745982}
   - component: {fileID: -6860383293400967547}
   - component: {fileID: -3520236474188826171}
+  - component: {fileID: 3228443039865629975}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -85,7 +86,6 @@ MonoBehaviour:
   syncInterval: 0
   _crosshairDetector: {fileID: 0}
   _fallAnimationMinDownardsVelocity: -2.5
-  _idleBreakerFrequency: 5
   MoveAction: {fileID: -1680190386980627800, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
   JumpAction: {fileID: -2099379676528639254, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
   PickupAction: {fileID: -2039900678409227085, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
@@ -321,6 +321,19 @@ MonoBehaviour:
   syncInterval: 0
   clientAuthority: 0
   animator: {fileID: -6860383293400967547}
+--- !u!114 &3228443039865629975
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 123377547585072098}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b619367b129d402b8e7a204874959a29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::IdleBreakerScheduler
+  _idleBreakerFrequency: 10
 --- !u!1001 &5882079636585508407
 PrefabInstance:
   m_ObjectHideFlags: 0
