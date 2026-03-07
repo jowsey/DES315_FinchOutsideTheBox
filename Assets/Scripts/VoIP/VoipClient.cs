@@ -295,7 +295,7 @@ namespace VoIP
                 _opus.Decode(null, _opusFrameBuffer);
                 _plcFramesGenerated++;
                 
-                Debug.Log($"Generating PLC frame {_plcFramesGenerated}");
+                // Debug.Log($"Generating PLC frame {_plcFramesGenerated}");
 
                 // todo make reusable "resample or write" method
                 if (_resampler != null)
