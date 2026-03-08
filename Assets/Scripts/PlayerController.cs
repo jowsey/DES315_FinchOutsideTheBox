@@ -88,8 +88,8 @@ public class PlayerController : NetworkBehaviour
 
     public override void OnStartClient()
     {
-        // Set every 2nd player's texture to the alternate colour
-        if (_playerIndex % 2 == 1)
+        // Set every non-host player's texture to the alternate colour
+        if (_playerIndex > 0)
         {
             foreach (SkinnedMeshRenderer renderer in GetComponentsInChildren<SkinnedMeshRenderer>())
             {
