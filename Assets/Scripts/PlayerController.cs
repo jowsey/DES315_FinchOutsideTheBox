@@ -32,9 +32,6 @@ public class PlayerController : NetworkBehaviour
     public InputActionReference PickupAction;
 
     private bool _jumpPressed;
-
-    //Wwise Event to trigger footstep sound
-    public AK.Wwise.Event FootstepSound = new();
     
     //Car Stuff
     public AK.Wwise.Event CarSound = new();
@@ -72,7 +69,10 @@ public class PlayerController : NetworkBehaviour
     private List<Vector3> _contactNormals = new();
     
     [SerializeField] private ActionCurveLine _actionCurveLinePrefab;
-    
+
+    //Swap to "WheelSeat" (aka dont make a sound when on wheels) 
+    public AK.Wwise.Switch footsteps;
+
     private void Awake()
     {
         Rb = GetComponent<Rigidbody>();
@@ -190,6 +190,8 @@ public class PlayerController : NetworkBehaviour
         {
             transform.position = Seat.SeatedPosition;
             Physics.SyncTransforms();
+            //Swap to no sound when sat on wheels
+            AkSoundEngine.SetSwitch("Footsteps", "WheelSeat", gameObject);
         }
     }
 
@@ -221,15 +223,13 @@ public class PlayerController : NetworkBehaviour
         if (WorldSpaceMoveDir.sqrMagnitude > 0)
         {
             _networkAnimator.animator.SetBool(RunningState, true);
-            // todo this should definitely run outside of localplayer (for other players' footsteps) and rtpc speed should be based on actual wheel speed, not input time
+            // todo this should definitely run outside of localplayer (for other players' footsteps) ---> Paolo: I think this is fixed now by adding sounds to the animation
+            // and rtpc speed should be based on actual wheel speed, not input time, ---> Paolo: Also, I think this should somehow be attached to the cart instead, as right now it only plays the sound when a specific player is riding, but as a temp solution this works
             if (Seat)
             {
                 RTPCSpeedValue += 4f;
             }
-            else
-            {
-                FootstepSound.Post(gameObject);
-            }
+            
             
             Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, Quaternion.LookRotation(WorldSpaceMoveDir, Vector3.up), Time.fixedDeltaTime * rotationSmoothingSpeed));
         }
