@@ -66,8 +66,8 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private Material _bodyMaterial;
     [SerializeField] private Material _player2Material;
 
-    [field: SyncVar]
-    [field: SerializeField] [field: ReadOnly] public Vector3 WorldSpaceMoveDir { get; private set; }
+    [field: SyncVar] [field: SerializeField] [field: ReadOnly] public Vector3 WorldSpaceMoveDir { get; private set; }
+    [field: SyncVar] [field: ReadOnly] public float AnalogueMoveScale { get; private set; }
 
     private List<Vector3> _contactNormals = new();
     
@@ -216,6 +216,7 @@ public class PlayerController : NetworkBehaviour
         Vector3 cameraRight = cameraOrientation * Vector3.right;
         Vector2 inputDirection = MoveAction.action.ReadValue<Vector2>();
         WorldSpaceMoveDir = (cameraForward * inputDirection.y + cameraRight * inputDirection.x).normalized;
+        AnalogueMoveScale = inputDirection.magnitude; //input system has a normalise processor on the move input action
 
         if (WorldSpaceMoveDir.sqrMagnitude > 0)
         {
@@ -257,7 +258,7 @@ public class PlayerController : NetworkBehaviour
 
         if (!Seat)
         {
-            Vector3 delta = new Vector3(WorldSpaceMoveDir.x, 0.0f, WorldSpaceMoveDir.z) * (Time.fixedDeltaTime * _moveForce);
+            Vector3 delta = new Vector3(WorldSpaceMoveDir.x, 0.0f, WorldSpaceMoveDir.z) * (Time.fixedDeltaTime * _moveForce * AnalogueMoveScale);
             foreach (Vector3 normal in _contactNormals)
             {
                 if (Vector3.Dot(delta, normal) < 0) //moving into the surface
