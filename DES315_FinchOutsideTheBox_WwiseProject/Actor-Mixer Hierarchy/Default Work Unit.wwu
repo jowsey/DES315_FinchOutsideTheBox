@@ -212,6 +212,19 @@
 						</Folder>
 						<BlendContainer Name="WheelsSound" ID="{20394078-F0EF-4AE1-B002-C51857A66803}" ShortID="577204576">
 							<PropertyList>
+								<Property Name="IgnoreParentMaxSoundInstance" Type="bool" Value="True"/>
+								<Property Name="IsGlobalLimit" Type="int16" Value="1"/>
+								<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
+								<Property Name="MaxSoundPerInstance" Type="int16">
+									<ValueList>
+										<Value>1</Value>
+									</ValueList>
+								</Property>
+								<Property Name="UseMaxSoundPerInstance" Type="bool">
+									<ValueList>
+										<Value>True</Value>
+									</ValueList>
+								</Property>
 								<Property Name="Volume" Type="Real64">
 									<ValueList>
 										<Value>-6</Value>
@@ -502,7 +515,7 @@
 									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
 								</Reference>
 								<Reference Name="DefaultSwitchOrState">
-									<ObjectRef Name="Sand" ID="{644B631A-B972-4469-8483-EC892D21FED7}" WorkUnitID="{98F4E5C6-A07B-4B1C-B584-33D06F43089A}"/>
+									<ObjectRef Name="Stone" ID="{F9B675EF-ACF5-4EF5-9BB9-416281FF09BB}" WorkUnitID="{98F4E5C6-A07B-4B1C-B584-33D06F43089A}"/>
 								</Reference>
 								<Reference Name="OutputBus">
 									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
@@ -2063,9 +2076,22 @@
 										</Sound>
 									</ChildrenList>
 								</RandomSequenceContainer>
+								<RandomSequenceContainer Name="WheelSeat" ID="{135D9A20-8024-4FFD-9A3F-1B408F70A890}" ShortID="30766109">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+								</RandomSequenceContainer>
 							</ChildrenList>
 							<GroupingInfo>
 								<GroupingBehaviorList>
+									<GroupingBehavior>
+										<ItemRef Name="WheelSeat" ID="{135D9A20-8024-4FFD-9A3F-1B408F70A890}"/>
+									</GroupingBehavior>
 									<GroupingBehavior>
 										<ItemRef Name="Footsteps - Wood" ID="{68023760-A809-48D2-BDF5-D6542BE3610C}"/>
 									</GroupingBehavior>
@@ -2087,6 +2113,12 @@
 										<SwitchRef Name="Wood" ID="{FEF36651-710D-4D22-A5A3-35B37B1549B1}"/>
 										<ItemList>
 											<ItemRef Name="Footsteps - Wood" ID="{68023760-A809-48D2-BDF5-D6542BE3610C}"/>
+										</ItemList>
+									</Grouping>
+									<Grouping>
+										<SwitchRef Name="WheelSeat" ID="{28F34AC9-BB06-4FE9-97BB-A02B7274B1B2}"/>
+										<ItemList>
+											<ItemRef Name="WheelSeat" ID="{135D9A20-8024-4FFD-9A3F-1B408F70A890}"/>
 										</ItemList>
 									</Grouping>
 									<Grouping>

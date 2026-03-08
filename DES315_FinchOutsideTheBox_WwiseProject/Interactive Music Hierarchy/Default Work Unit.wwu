@@ -1031,7 +1031,6 @@
 													<PropertyList>
 														<Property Name="EnableSourceFadeOut" Type="bool" Value="True"/>
 													</PropertyList>
-													<ReferenceList/>
 													<TransitionInfo>
 														<SourceFadeOut>
 															<MusicFade Name="Source Fade-out" ID="{212D4669-ED96-4A0B-8058-D1A299773932}">
@@ -1047,7 +1046,6 @@
 														<Property Name="EnableDestinationFadeIn" Type="bool" Value="True"/>
 														<Property Name="EnableSourceFadeOut" Type="bool" Value="True"/>
 													</PropertyList>
-													<ReferenceList/>
 													<TransitionInfo>
 														<SourceFadeOut>
 															<MusicFade Name="Source Fade-out" ID="{18B17AE8-759C-4027-B94B-DFE2DE89453C}">
@@ -1614,76 +1612,6 @@
 															<Point>
 																<XPos>30</XPos>
 																<YPos>0</YPos>
-																<Flags>37</Flags>
-															</Point>
-														</PointList>
-													</Curve>
-												</Custom>
-											</Reference>
-										</ReferenceList>
-									</RTPC>
-								</Local>
-							</Reference>
-							<Reference>
-								<Local>
-									<RTPC Name="" ID="{C0F7C6FA-315C-4A6C-BB9E-05E049E8F8D7}" ShortID="779543326">
-										<PropertyList>
-											<Property Name="PropertyName" Type="string" Value="Lowpass"/>
-										</PropertyList>
-										<ReferenceList>
-											<Reference Name="ControlInput">
-												<ObjectRef Name="IsESCPressed" ID="{76E42415-CC28-481A-BFEC-8F62AF4243C8}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
-											</Reference>
-											<Reference Name="Curve">
-												<Custom>
-													<Curve Name="" ID="{20BBCA14-8187-410D-9E2C-8CA8E6B9504C}">
-														<PropertyList>
-															<Property Name="Flags" Type="int32" Value="65537"/>
-														</PropertyList>
-														<PointList>
-															<Point>
-																<XPos>0</XPos>
-																<YPos>0</YPos>
-																<Flags>5</Flags>
-															</Point>
-															<Point>
-																<XPos>1</XPos>
-																<YPos>49</YPos>
-																<Flags>37</Flags>
-															</Point>
-														</PointList>
-													</Curve>
-												</Custom>
-											</Reference>
-										</ReferenceList>
-									</RTPC>
-								</Local>
-							</Reference>
-							<Reference>
-								<Local>
-									<RTPC Name="" ID="{E1EFCC47-E393-4FD7-A075-FD157D5E76BC}" ShortID="146158561">
-										<PropertyList>
-											<Property Name="PropertyName" Type="string" Value="Highpass"/>
-										</PropertyList>
-										<ReferenceList>
-											<Reference Name="ControlInput">
-												<ObjectRef Name="IsESCPressed" ID="{76E42415-CC28-481A-BFEC-8F62AF4243C8}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
-											</Reference>
-											<Reference Name="Curve">
-												<Custom>
-													<Curve Name="" ID="{F3379024-E55F-41F7-AD25-E205D6BDA04F}">
-														<PropertyList>
-															<Property Name="Flags" Type="int32" Value="65537"/>
-														</PropertyList>
-														<PointList>
-															<Point>
-																<XPos>0</XPos>
-																<YPos>0</YPos>
-																<Flags>5</Flags>
-															</Point>
-															<Point>
-																<XPos>1</XPos>
-																<YPos>48</YPos>
 																<Flags>37</Flags>
 															</Point>
 														</PointList>

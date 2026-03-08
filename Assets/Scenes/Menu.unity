@@ -622,6 +622,7 @@ GameObject:
   - component: {fileID: 143424543}
   - component: {fileID: 143424549}
   - component: {fileID: 143424548}
+  - component: {fileID: 143424550}
   m_Layer: 0
   m_Name: BGM Controller
   m_TagString: Untagged
@@ -745,6 +746,23 @@ MonoBehaviour:
   groupIdInternal: 0
   valueGuidInternal: 
   groupGuidInternal: 
+--- !u!114 &143424550
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 143424541}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04923d197b4776348afe8235688698cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  Volume: 0
+  musicVolume:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 3546cd9eab967cb4180e196862aa89e5, type: 2}
 --- !u!1 &149635944
 GameObject:
   m_ObjectHideFlags: 0
