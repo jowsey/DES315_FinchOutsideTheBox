@@ -66,7 +66,7 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private Material _bodyMaterial;
     [SerializeField] private Material _player2Material;
 
-    [field: SerializeField] [field: ReadOnly] public Vector3 WorldSpaceMoveDir { get; private set; }
+    [field: SyncVar] [field: SerializeField] [field: ReadOnly] public Vector3 WorldSpaceMoveDir { get; private set; }
     [field: SyncVar] [field: ReadOnly] public float AnalogueMoveScale { get; private set; }
 
     private List<Vector3> _contactNormals = new();
