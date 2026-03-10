@@ -72,6 +72,9 @@ public class PlayerController : NetworkBehaviour
     private List<Vector3> _contactNormals = new();
     
     [SerializeField] private ActionCurveLine _actionCurveLinePrefab;
+
+    [SerializeField] private Transform _flaskPickupTarget;
+    public  static Flask HeldFlask; //todo: maybe find a better way of doing this that doesn't involve it being static
     
     private void Awake()
     {
@@ -79,6 +82,8 @@ public class PlayerController : NetworkBehaviour
         _networkAnimator = GetComponent<NetworkAnimator>();
         
         Checkpoint.respawnEvent.AddListener(OnRespawn);
+        
+        HeldFlask = null;
     }
 
     public override void OnStartServer()
@@ -174,12 +179,31 @@ public class PlayerController : NetworkBehaviour
         _contactNormals.Clear();
 
         _jumpPressed |= JumpAction.action.WasPressedThisFrame();
-        if (CrosshairDetection._hitTransform != null && CrosshairDetection._hitTransform.CompareTag("Flask"))
+        if (CrosshairDetection._hitTransform != null)
         {
-            Flask flask = CrosshairDetection._hitTransform.GetComponent<Flask>();
-            if (PickupAction.action.IsPressed())
+            if (CrosshairDetection._hitTransform.CompareTag("Flask"))
             {
-                flask.CmdPickup();
+                Flask flask = CrosshairDetection._hitTransform.GetComponentInParent<Flask>();
+                if (HeldFlask == null && flask.state == Flask.State.None)
+                {
+                    if (PickupAction.action.IsPressed())
+                    {
+                        HeldFlask = flask;
+                        flask.CmdPickup(_flaskPickupTarget);
+                    }
+                }
+            }
+            else if (CrosshairDetection._hitTransform.CompareTag("FlaskCarrier"))
+            {
+                if (HeldFlask != null && HeldFlask.state == Flask.State.Held)
+                {
+                    FlaskCarrier flaskCarrier = CrosshairDetection._hitTransform.GetComponentInParent<FlaskCarrier>();
+                    if (PickupAction.action.IsPressed())
+                    {
+                        HeldFlask.CmdPutdown(flaskCarrier.FlaskPutdownTarget);
+                        HeldFlask = null;
+                    }
+                }
             }
         }
     }

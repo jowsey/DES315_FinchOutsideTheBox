@@ -5,75 +5,72 @@ using System.Linq;
 [RequireComponent(typeof(Rigidbody))]
 public class Flask : Mirror.NetworkBehaviour
 {
-    public bool _highlighted;
-    private MeshRenderer[] _renderers;
-    [SerializeField] [Required] private Color _highlightedColour;
-    private Color _unhighlightedColour;
-    [SerializeField] [Required] private Transform _flaskPickupTarget;
+    public enum State
+    {
+        None,
+        PickingUp,
+        Held,
+        PuttingDown,
+    }
+
+    private Highlight _highlight;
+    private Transform _target;
     private Collider[] _colliders;
     private Rigidbody _rb;
-    private bool _moving;
+    [field: Mirror.SyncVar] public State state { get; private set; }
 
     private void Awake()
     {
-        _highlighted = false;
-        _renderers = GetComponentsInChildren<MeshRenderer>();
-        _unhighlightedColour = _renderers[0].material.GetColor("_BaseColor");
+        _highlight = GetComponent<Highlight>();
         _rb = GetComponent<Rigidbody>();
         _colliders = GetComponentsInChildren<Collider>();
-        _moving = false;
-    }
-
-    private void Update()
-    {
-        bool beingLookedAt = (CrosshairDetection._hitTransform == transform) || GetComponentsInChildren<Transform>().Contains(CrosshairDetection._hitTransform);
-
-        if (beingLookedAt && !_highlighted)
-        {
-            //Object is being looked at but is not highlighted, highlight it
-            foreach (MeshRenderer renderer in _renderers)
-            {
-                renderer.material.SetColor("_BaseColor", _highlightedColour);
-            }
-            _highlighted = true;
-        }
-        else if (!beingLookedAt && _highlighted)
-        {
-            //Object isn't being looked at but is highlighted, unhighlight it
-            foreach (MeshRenderer renderer in _renderers)
-            {
-                renderer.material.SetColor("_BaseColor", _unhighlightedColour);
-            }
-            _highlighted = false;
-        }
+        state = State.None;
     }
 
     [Mirror.Command(requiresAuthority = false)]
-    public void CmdPickup()
+    public void CmdPickup(Transform pickupTarget)
     {
-        //Pickup involves disabling colliders and setting rigidbody to kinematic, then moving flask towards the pickup target
-        //Movement of flask towards pickup target will be handled by NetworkRigidbody
+        //Pickup involves disabling colliders and setting rigidbody to kinematic, then moving flask towards the target
+        //Syncing of movement of flask towards pickup target will be handled by NetworkRigidbody
         //Disabling colliders and setting rigidbody to kinematic needs to be done per-client though, so use an RPC
-        RpcInitiatePickup();
-        _moving = true;
+        _target = pickupTarget;
+        RpcPickup();
+        state = State.PickingUp;
     }
 
     [Mirror.Command(requiresAuthority = false)]
-    public void CmdPutdown()
+    public void CmdPutdown(Transform putdownTarget)
     {
-        RpcPutdown();
-        _moving = false;
+        _target = putdownTarget;
+        state = State.PuttingDown;
+    }
+
+    //[Mirror.Command(requiresAuthority = false)]
+    //private void CmdEndPickup()
+    //{
+    //    RpcEndPickup();
+    //}
+
+    [Mirror.Command(requiresAuthority = false)]
+    private void CmdEndPutdown()
+    {
+        RpcEndPutdown();
     }
 
     [Mirror.ClientRpc]
-    public void RpcInitiatePickup()
+    private void RpcPickup()
     {
         foreach (Collider collider in _colliders) { collider.enabled = false; }
         _rb.isKinematic = true;
     }
 
+    //[Mirror.ClientRpc]
+    //private void RpcEndPickup()
+    //{
+    //}
+
     [Mirror.ClientRpc]
-    public void RpcPutdown()
+    private void RpcEndPutdown()
     {
         foreach (Collider collider in _colliders) { collider.enabled = true; }
         _rb.isKinematic = false;
@@ -83,15 +80,33 @@ public class Flask : Mirror.NetworkBehaviour
 
     private void FixedUpdate()
     {
-        if (!_moving) { return; }
+        if (state == State.Held)
+        {
+            if (_target) { _rb.MovePosition(_target.position); }
+            return;
+        }
+        if (state == State.None)
+        {
+            return;
+        }
 
         float movementSpeed = 10.0f;
-        Vector3 newPos = _rb.position + (_flaskPickupTarget.position - _rb.position).normalized * Time.fixedDeltaTime * movementSpeed;
+        Vector3 newPos = _rb.position + (_target.position - _rb.position).normalized * Time.fixedDeltaTime * movementSpeed;
         _rb.MovePosition(newPos);
 
-        if ((_rb.position - _flaskPickupTarget.position).sqrMagnitude < 1e-2)
+        if ((_rb.position - _target.position).sqrMagnitude < 1e-2)
         {
-            CmdPutdown();
+            if (state == State.PickingUp)
+            {
+                /*CmdEndPickup();*/
+                state = State.Held;
+            }
+            else
+            {
+                CmdEndPutdown();
+                _target = null;
+                state = State.None;
+            }
         }
     }
 }

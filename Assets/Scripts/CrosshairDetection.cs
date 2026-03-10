@@ -17,7 +17,7 @@ public class CrosshairDetection : MonoBehaviour
         Ray ray = _camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         if (Physics.Raycast(ray, out RaycastHit hit, _maxDistance, LayerMask.GetMask("Interactable")))
         {
-            _hitTransform = hit.transform;
+            _hitTransform = hit.collider.transform;
         }
         else
         {

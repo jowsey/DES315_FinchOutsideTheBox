@@ -1481,9 +1481,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3399036331931440497}
-  m_Layer: 7
+  m_Layer: 11
   m_Name: FlaskPickupTarget
-  m_TagString: Untagged
+  m_TagString: FlaskCarrier
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2368,7 +2368,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -7387700211241838384, guid: 8bbe3134c4398814ea1b1acb13239e6d, type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -7387700211241838384, guid: 8bbe3134c4398814ea1b1acb13239e6d, type: 3}
+      propertyPath: m_TagString
+      value: FlaskCarrier
       objectReference: {fileID: 0}
     - target: {fileID: -590628668473816732, guid: 8bbe3134c4398814ea1b1acb13239e6d, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2384,7 +2388,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 8bbe3134c4398814ea1b1acb13239e6d, type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 8bbe3134c4398814ea1b1acb13239e6d, type: 3}
+      propertyPath: m_TagString
+      value: FlaskCarrier
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
@@ -2394,6 +2402,12 @@ PrefabInstance:
       insertIndex: 0
       addedObject: {fileID: 3399036331931440497}
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8bbe3134c4398814ea1b1acb13239e6d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5582202601108590640}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8bbe3134c4398814ea1b1acb13239e6d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3963701282903887573}
     - targetCorrespondingSourceObject: {fileID: -7387700211241838384, guid: 8bbe3134c4398814ea1b1acb13239e6d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7615221182476939715}
@@ -2754,6 +2768,37 @@ MeshFilter:
   m_CorrespondingSourceObject: {fileID: 8674005741639881255, guid: 8bbe3134c4398814ea1b1acb13239e6d, type: 3}
   m_PrefabInstance: {fileID: 8051483117175930934}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &7169155482439826791 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 8bbe3134c4398814ea1b1acb13239e6d, type: 3}
+  m_PrefabInstance: {fileID: 8051483117175930934}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5582202601108590640
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7169155482439826791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f9a32749b40a23419fc637aa8999765, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FlaskCarrier
+  FlaskPutdownTarget: {fileID: 3399036331931440497}
+--- !u!114 &3963701282903887573
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7169155482439826791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5e5263c28d18964fb87d6ea1a00d5a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Highlight
+  _highlightedColour: {r: 1, g: 0.4117647, b: 0.7058824, a: 0}
 --- !u!4 &7509229294387652573 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 8bbe3134c4398814ea1b1acb13239e6d, type: 3}
