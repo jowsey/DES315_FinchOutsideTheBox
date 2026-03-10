@@ -26,6 +26,9 @@ public class Cart : NetworkBehaviour
     [Tooltip("Exponent for how much the amount of tilt-correction increases in response to tilting. 1 means consistent, higher makes it kick in far more when tilting more.")]
     [SerializeField] private float _tiltCorrectionScaling = 2f;
     
+    // UI
+    private Transform _uiCanvas;
+    
     // Flask carrying
     [SerializeField] [Required] private Collider _flaskBounds;
     
@@ -44,6 +47,7 @@ public class Cart : NetworkBehaviour
     private void Awake()
     {
         _rb  = GetComponent<Rigidbody>();
+        _uiCanvas = GameObject.FindGameObjectWithTag("UICanvas").transform;
     }
     
     private void Start()
@@ -105,8 +109,7 @@ public class Cart : NetworkBehaviour
                 CurrentCheckpointIndex = newIndex;
                 Debug.Log($"Hit checkpoint {newIndex}: {checkpoint.AreaName}");
 
-                var canvas = FindAnyObjectByType<Canvas>(); // todo we should probably have a global find object or similar for things like this. maybe tag it?
-                var checkpointBanner = Instantiate(_checkpointBannerPrefab, canvas.transform);
+                var checkpointBanner = Instantiate(_checkpointBannerPrefab, _uiCanvas.transform);
                 checkpointBanner.Checkpoint = checkpoint;
             }
         }
