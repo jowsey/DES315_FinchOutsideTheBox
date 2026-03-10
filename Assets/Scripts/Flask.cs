@@ -27,6 +27,16 @@ public class Flask : Mirror.NetworkBehaviour
         state = State.None;
     }
 
+    public void Start()
+    {
+        Checkpoint.respawnEvent.AddListener(OnRespawn);
+    }
+
+    private void OnRespawn(Checkpoint checkpoint)
+    {
+        gameObject.SetActive(true);
+    }
+
     [Mirror.Command(requiresAuthority = false)]
     public void CmdPickup(Transform pickupTarget)
     {
@@ -109,6 +119,19 @@ public class Flask : Mirror.NetworkBehaviour
                 _target = null;
                 state = State.None;
             }
+        }
+    }
+
+    private void OnCollisionEnter(Collision col)
+    {
+        if (!col.transform.CompareTag("Flask") && !col.transform.CompareTag("FlaskCarrier"))
+        {
+            Debug.Log(col.impulse.magnitude);
+        }
+        float smashImpulseThreshold = 0.25f;
+        if (col.impulse.magnitude > smashImpulseThreshold)
+        {
+            gameObject.SetActive(false);
         }
     }
 }
