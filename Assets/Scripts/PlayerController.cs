@@ -1,5 +1,6 @@
 using Mirror;
 using System.Collections.Generic;
+using TMPro;
 using UI;
 using Unity.Cinemachine;
 using UnityEngine;
@@ -14,14 +15,17 @@ public class PlayerController : NetworkBehaviour
     private static readonly int FallState = Animator.StringToHash("Fall");
     private static readonly int GlideState = Animator.StringToHash("Glide");
     
-    [SyncVar] private int _playerIndex;
-    public static int NextPlayerIndex = 0;
+    [Header("Network")]
+    [SyncVar] [ReadOnly] public int PlayerIndex;
+    [SyncVar] [ReadOnly] public string PlayerName;
 
     [Header("Components")]
     public Rigidbody Rb { get; private set; }
     private NetworkAnimator _networkAnimator;
     [SerializeField] private CrosshairDetection _crosshairDetector;
-
+    [SerializeField] private Canvas _nameplateCanvas;
+    [SerializeField] private TextMeshProUGUI _playerNameText;
+    
     [Header("Animation")]
     [Tooltip("The minimum velocity required to initiate the gliding animation (should be negative)")]
     [SerializeField] private float _fallAnimationMinDownardsVelocity;
@@ -30,7 +34,7 @@ public class PlayerController : NetworkBehaviour
     public InputActionReference MoveAction;
     public InputActionReference JumpAction;
     public InputActionReference PickupAction;
-
+    
     private bool _jumpPressed;
     
     //Car Stuff
@@ -81,15 +85,10 @@ public class PlayerController : NetworkBehaviour
         Checkpoint.respawnEvent.AddListener(OnRespawn);
     }
 
-    public override void OnStartServer()
-    {
-        _playerIndex = NextPlayerIndex++;
-    }
-
     public override void OnStartClient()
     {
         // Set every non-host player's texture to the alternate colour
-        if (_playerIndex > 0)
+        if (PlayerIndex > 0)
         {
             foreach (SkinnedMeshRenderer renderer in GetComponentsInChildren<SkinnedMeshRenderer>())
             {
@@ -97,6 +96,9 @@ public class PlayerController : NetworkBehaviour
                 renderer.sharedMaterial = _player2Material;
             }
         }
+        
+        _camera = FindAnyObjectByType<CinemachineCamera>(FindObjectsInactive.Include);
+        _playerNameText.text = PlayerName;
     }
 
     private void Start()
@@ -114,7 +116,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (authority)
         {
-            Transform newTransform = checkpoint.playerRespawnLocalTransforms[_playerIndex % checkpoint.playerRespawnLocalTransforms.Length];
+            Transform newTransform = checkpoint.playerRespawnLocalTransforms[PlayerIndex % checkpoint.playerRespawnLocalTransforms.Length];
 
             Rb.position = newTransform.position;
             Rb.rotation = newTransform.rotation;
@@ -132,13 +134,16 @@ public class PlayerController : NetworkBehaviour
     {
         Cursor.lockState = CursorLockMode.Locked;
         
-        _camera = FindAnyObjectByType<CinemachineCamera>(FindObjectsInactive.Include); //GameObject.Find doesn't work because camera is inactive
+        // Set camera follow target
         if (!_camera.Follow || !_camera.LookAt)
         {
             _camera.gameObject.SetActive(true);
             _camera.Follow = transform;
             _camera.LookAt = transform;
         }
+        
+        // Hide nameplate for local player
+        _nameplateCanvas.gameObject.SetActive(false);
         
         // todo this sucks
         // eventually we should just link carts to 2 players so we can have an arbitrary number of carts/players
@@ -192,6 +197,11 @@ public class PlayerController : NetworkBehaviour
             Physics.SyncTransforms();
             //Swap to no sound when sat on wheels
             AkSoundEngine.SetSwitch("Footsteps", "WheelSeat", gameObject);
+        }
+
+        if (_camera && !isLocalPlayer)
+        {
+            _nameplateCanvas.transform.rotation = Quaternion.LookRotation(_nameplateCanvas.transform.position - _camera.transform.position);
         }
     }
 

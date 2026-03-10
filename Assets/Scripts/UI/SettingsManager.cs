@@ -8,6 +8,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using VoIP;
+using Random = UnityEngine.Random;
 
 namespace UI
 {
@@ -17,23 +18,43 @@ namespace UI
         public bool PushToTalk = true;
         public string InputDevice = null;
         public float VoiceChatVolume = 1.0f;
+        public string PlayerName = SettingsManager.GetRandomName();
     }
 
     public class SettingsManager : MonoBehaviour
     {
+        public static readonly string[] DefaultPlayerNames =
+        {
+            "Buttons",
+            "Avocado", "Kato",
+            "Marley", "Mittens", "Chez", "Batman", "Juno",
+            "Felix", "Mollie", "Luna", "Kylo", "Padmé", "Clyde", "Julita",
+        };
+
+        public static string GetRandomName() => DefaultPlayerNames[Random.Range(0, DefaultPlayerNames.Length)];
+
         public static string SettingsFilePath => Application.persistentDataPath + "/settings.json";
 
         public static UserSettings ActiveSettings { get; private set; }
 
+        // Game
+        [SerializeField] [Required] private TMP_InputField _playerNameText;
+
+        // Audio
         [SerializeField] [Required] private Toggle _pttToggle;
         [SerializeField] [Required] private TMP_Dropdown _inputDeviceDropdown;
-        private string[] _oldInputDevices; //checked against Microphone.devices every frame for changes in the list
         [SerializeField] [Required] private Slider _voiceChatVolumeSlider;
+
+        private string[] _oldInputDevices; //checked against Microphone.devices every frame for changes in the list
 
         private void OnEnable()
         {
             LoadFromDisk();
 
+            // Game
+            _playerNameText.onValueChanged.AddListener(OnPlayerNameChanged);
+
+            // Audio
             _pttToggle.onValueChanged.AddListener(OnPttToggleChanged);
             _inputDeviceDropdown.onValueChanged.AddListener(OnInputDeviceChanged);
             _voiceChatVolumeSlider.onValueChanged.AddListener(OnVoiceChatVolumeChanged);
@@ -41,9 +62,14 @@ namespace UI
 
         private void OnDisable()
         {
+            // Game
+            _playerNameText.onValueChanged.RemoveListener(OnPlayerNameChanged);
+
+            // Audio
             _pttToggle.onValueChanged.RemoveListener(OnPttToggleChanged);
             _inputDeviceDropdown.onValueChanged.RemoveListener(OnInputDeviceChanged);
             _inputDeviceDropdown.ClearOptions();
+            _voiceChatVolumeSlider.onValueChanged.RemoveListener(OnVoiceChatVolumeChanged);
         }
 
         private void Start()
@@ -73,19 +99,26 @@ namespace UI
         private void SetInputDevice(string device)
         {
             ActiveSettings.InputDevice = device;
-            if (NetworkClient.localPlayer)
-            {
-                NetworkClient.localPlayer.GetComponent<VoipClient>().SetDevice(ActiveSettings.InputDevice);
-            }
+            NetworkClient.localPlayer?.GetComponent<VoipClient>().SetDevice(ActiveSettings.InputDevice);
         }
 
         private void AlignUIWithSettings()
         {
+            // Game
+            _playerNameText.text = ActiveSettings.PlayerName;
+
+            // Audio
             _pttToggle.isOn = ActiveSettings.PushToTalk;
             _inputDeviceDropdown.ClearOptions();
             _inputDeviceDropdown.AddOptions(new List<string> { "None" });
             _inputDeviceDropdown.AddOptions(Microphone.devices.ToList());
             _inputDeviceDropdown.value = (Microphone.devices.Length == 0) ? 0 : Microphone.devices.ToList().IndexOf(ActiveSettings.InputDevice) + 1;
+        }
+
+        private void OnPlayerNameChanged(string val)
+        {
+            ActiveSettings.PlayerName = val;
+            SaveToDisk();
         }
 
         private void OnPttToggleChanged(bool val)
@@ -119,16 +152,19 @@ namespace UI
             {
                 var json = System.IO.File.ReadAllText(SettingsFilePath);
                 ActiveSettings = JsonConvert.DeserializeObject<UserSettings>(json);
+
                 if (!Microphone.devices.Contains(ActiveSettings.InputDevice))
                 {
                     ActiveSettings.InputDevice = null;
                 }
+
                 SetInputDevice(ActiveSettings.InputDevice);
             }
             else
             {
                 Debug.Log("Tried loading settings but no file found, using defaults");
                 ActiveSettings = new UserSettings();
+                SaveToDisk();
             }
 
             AlignUIWithSettings();
