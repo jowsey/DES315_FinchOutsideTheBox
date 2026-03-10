@@ -45,11 +45,13 @@ public class Flask : Mirror.NetworkBehaviour
         state = State.PuttingDown;
     }
 
-    //[Mirror.Command(requiresAuthority = false)]
-    //private void CmdEndPickup()
-    //{
-    //    RpcEndPickup();
-    //}
+    [Mirror.Command(requiresAuthority = false)]
+    public void CmdDrop()
+    {
+        _target = null;
+        state = State.None;
+        RpcEndPutdown();
+    }
 
     [Mirror.Command(requiresAuthority = false)]
     private void CmdEndPutdown()

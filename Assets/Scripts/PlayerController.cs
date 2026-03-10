@@ -206,6 +206,14 @@ public class PlayerController : NetworkBehaviour
                 }
             }
         }
+        if (HeldFlask != null && HeldFlask.state == Flask.State.Held)
+        {
+            if (PickupAction.action.IsPressed())
+            {
+                HeldFlask.CmdDrop();
+                HeldFlask = null;
+            }
+        }
     }
 
     private void LateUpdate()
