@@ -11,7 +11,7 @@ public class Cart : NetworkBehaviour
 {
     private Rigidbody _rb;
     
-    [ValidateInput("@$value.Count > 0", "Cart doesn't have any checkpoints linked.", InfoMessageType.Warning)]
+    [ValidateInput("@gameObject.scene.isLoaded ? $value.Count > 0 : true", "Cart doesn't have any checkpoints linked.", InfoMessageType.Warning)]
     [SerializeField] private List<Checkpoint> _checkpoints;
     [field: SerializeField] public int CurrentCheckpointIndex { get; private set; }
 
