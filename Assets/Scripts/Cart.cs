@@ -21,9 +21,6 @@ public class Cart : NetworkBehaviour
     [SerializeField] [Required] private InputActionReference _devCheckpointBackAction;
     [SerializeField] [Required] private InputActionReference _devCheckpointForwardAction;
 
-    [Tooltip("Whether to move the wheels using torque instead of flat forces. Should result in more consistent movement, but less tested.")]
-    [field: SerializeField] [field: SyncVar] public bool UseNewTorqueSystem { get; private set; } = true;
-
     [Tooltip("Base amount of tilt-correct to apply. Higher reduces overall amount of tilting.")]
     [SerializeField] private float _tiltCorrection = 1.1f;
     [Tooltip("Exponent for how much the amount of tilt-correction increases in response to tilting. 1 means consistent, higher makes it kick in far more when tilting more.")]
@@ -77,19 +74,6 @@ public class Cart : NetworkBehaviour
         else if (_devCheckpointForwardAction.action.WasPressedThisFrame() && CurrentCheckpointIndex != _checkpoints.Count - 1)
         {
             CmdInvokeRespawnEvent(CurrentCheckpointIndex + 1);
-        }
-
-        // temp: debug, horrible, etc - swap between wheel force systems
-        if (Keyboard.current.tKey.wasPressedThisFrame && isServer)
-        {
-            UseNewTorqueSystem = !UseNewTorqueSystem;
-            Debug.Log($"UseNewTorqueSystem set to {UseNewTorqueSystem}");
-
-            var wheels = GetComponentsInChildren<WheelSeat>();
-            foreach (var wheel in wheels)
-            {
-                wheel.MoveForce *= !UseNewTorqueSystem ? 0.6f : 1 / 0.6f;
-            }
         }
         
         // todo bad perf, should can probably just track in bounds trigger enter/exit
