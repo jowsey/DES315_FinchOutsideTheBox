@@ -71,9 +71,6 @@ namespace UI
                 _kcpTransport = Instantiate(_kcpTransportPrefab);
                 DontDestroyOnLoad(_kcpTransport);
             }
-
-            // Reset player IDs before going into a new game
-            PlayerController.NextPlayerIndex = 0;
         }
 
         private void OnDestroy()
