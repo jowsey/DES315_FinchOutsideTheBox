@@ -18,6 +18,7 @@ public class PlayerController : NetworkBehaviour
     [Header("Network")]
     [SyncVar] [ReadOnly] public int PlayerIndex;
     [SyncVar] [ReadOnly] public string PlayerName;
+    [SyncVar] [ReadOnly] public PlayerPresenceFeed.CatSkin PlayerSkin;
 
     [Header("Components")]
     public Rigidbody Rb { get; private set; }
@@ -87,8 +88,7 @@ public class PlayerController : NetworkBehaviour
 
     public override void OnStartClient()
     {
-        // Set every non-host player's texture to the alternate colour
-        if (PlayerIndex > 0)
+        if (PlayerSkin == PlayerPresenceFeed.CatSkin.Blue)
         {
             foreach (SkinnedMeshRenderer renderer in GetComponentsInChildren<SkinnedMeshRenderer>())
             {
