@@ -190,6 +190,7 @@ public class PlayerController : NetworkBehaviour
                     {
                         HeldFlask = flask;
                         flask.CmdPickup(_flaskPickupTarget);
+                        Highlight.SetHighlightable("Flask", false);
                     }
                 }
             }
@@ -201,6 +202,7 @@ public class PlayerController : NetworkBehaviour
                     if (PickupAction.action.IsPressed())
                     {
                         HeldFlask.CmdPutdown(flaskCarrier.FlaskPutdownTarget);
+                        Highlight.SetHighlightable("Flask", true);
                         HeldFlask = null;
                     }
                 }
@@ -211,9 +213,11 @@ public class PlayerController : NetworkBehaviour
             if (PickupAction.action.IsPressed())
             {
                 HeldFlask.CmdDrop();
+                Highlight.SetHighlightable("Flask", true);
                 HeldFlask = null;
             }
         }
+        Highlight.SetHighlightable("FlaskCarrier", HeldFlask != null);
     }
 
     private void LateUpdate()

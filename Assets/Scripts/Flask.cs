@@ -1,6 +1,4 @@
 using UnityEngine;
-using Sirenix.OdinInspector;
-using System.Linq;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Flask : Mirror.NetworkBehaviour
@@ -13,7 +11,6 @@ public class Flask : Mirror.NetworkBehaviour
         PuttingDown,
     }
 
-    private Highlight _highlight;
     private Transform _target;
     private Collider[] _colliders;
     private Rigidbody _rb;
@@ -21,7 +18,6 @@ public class Flask : Mirror.NetworkBehaviour
 
     private void Awake()
     {
-        _highlight = GetComponent<Highlight>();
         _rb = GetComponent<Rigidbody>();
         _colliders = GetComponentsInChildren<Collider>();
         state = State.None;
@@ -124,14 +120,15 @@ public class Flask : Mirror.NetworkBehaviour
 
     private void OnCollisionEnter(Collision col)
     {
-        if (!col.transform.CompareTag("Flask") && !col.transform.CompareTag("FlaskCarrier"))
+        if (!col.collider.transform.CompareTag("Flask") && !col.collider.transform.CompareTag("FlaskCarrier") && LayerMask.LayerToName(col.collider.gameObject.layer) != "Cart")
         {
-            Debug.Log(col.impulse.magnitude);
+            Smash();
         }
-        float smashImpulseThreshold = 0.25f;
-        if (col.impulse.magnitude > smashImpulseThreshold)
-        {
-            gameObject.SetActive(false);
-        }
+    }
+
+    void Smash()
+    {
+        //todo: implement visually
+        Destroy(gameObject);
     }
 }
