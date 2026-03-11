@@ -117,20 +117,23 @@ public class Cart : NetworkBehaviour
 
     private void OnRespawn(Checkpoint checkpoint)
     {
-        Transform newTransform = checkpoint.cartRespawnLocalTransform;
-        gameObject.SetActive(false);
-        foreach (var rb in GetComponentsInChildren<Rigidbody>())
+        if (authority)
         {
-            if (rb.isKinematic) continue;
-            rb.linearVelocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
-        }
+            Transform newTransform = checkpoint.cartRespawnLocalTransform;
+            gameObject.SetActive(false);
+            foreach (var rb in GetComponentsInChildren<Rigidbody>())
+            {
+                if (rb.isKinematic) continue;
+                rb.linearVelocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+            }
 
-        transform.position = newTransform.position;
-        transform.rotation = newTransform.rotation;
-        gameObject.SetActive(true);
-        
-        ResetFlasks(true);
+            transform.position = newTransform.position;
+            transform.rotation = newTransform.rotation;
+            gameObject.SetActive(true);
+
+            ResetFlasks(true);
+        }
     }
     
     public void ResetFlasks(bool includeOutOfBounds = false)
