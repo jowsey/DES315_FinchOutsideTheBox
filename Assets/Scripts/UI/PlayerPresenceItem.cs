@@ -11,8 +11,8 @@ namespace UI
         [SerializeField] private Sprite _greenCatFace;
         [SerializeField] private Sprite _blueCatFace;
 
-        [SerializeField] private Color _joinColour;
-        [SerializeField] private Color _leaveColour;
+        [SerializeField] private Color _joinBackground;
+        [SerializeField] private Color _leaveBackground;
 
         [SerializeField] private CanvasGroup _canvasGroup;
         [SerializeField] private RoundedRect _backgroundImage;
@@ -23,7 +23,7 @@ namespace UI
         public void Render(string playerName, PlayerPresenceFeed.CatSkin skin, PlayerPresenceFeed.PresenceType presenceType)
         {
             _catFaceIcon.Sprite = skin == PlayerPresenceFeed.CatSkin.Green ? _greenCatFace : _blueCatFace;
-            _backgroundImage.color = presenceType == PlayerPresenceFeed.PresenceType.Join ? _joinColour : _leaveColour;
+            _backgroundImage.color = presenceType == PlayerPresenceFeed.PresenceType.Join ? _joinBackground : _leaveBackground;
             _label.text = _template
                 .Replace("[[name]]", playerName)
                 .Replace("[[activity]]", presenceType == PlayerPresenceFeed.PresenceType.Join ? "joined" : "left");
