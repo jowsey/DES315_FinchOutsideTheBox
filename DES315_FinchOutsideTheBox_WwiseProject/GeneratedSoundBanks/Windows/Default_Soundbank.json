@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{46173D95-DFFE-4BE9-8209-57EB1CFCE1F7}",
     "Language": "SFX",
-    "Hash": "{16B32466-7254-9773-0FBF-22E085A40667}",
+    "Hash": "{64302540-F996-E8E9-4A0E-EC792E1A15B8}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Default_Soundbank",
     "ShortName": "Default_Soundbank",
     "Path": "Default_Soundbank.bnk",
@@ -78,6 +78,14 @@
       "Location": "Memory",
       "ShortName": "LooseJuice - DesertCave8BarLoop - 80bpm.wav",
       "CachePath": "3B/{3B4B9067-D1BF-0234-BC79-3634F62E8CFA}.wem"
+     },
+     {
+      "Id": "125132462",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "StartHeavenlyGates.wav",
+      "CachePath": "B9/{B9547BDC-EF92-B6D8-A6B0-CB0CC9937C86}.wem"
      },
      {
       "Id": "130954462",
@@ -422,6 +430,14 @@
       "Location": "Memory",
       "ShortName": "WoodFts-007.wav",
       "CachePath": "96/{96A0026F-D63F-4555-E137-4D605046B466}.wem"
+     },
+     {
+      "Id": "681258764",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "LooseJuice - HeavenlyGates - 105bpm.wav",
+      "CachePath": "96/{96DEAF32-6C83-6FF5-AC16-215114F6BE45}.wem"
      },
      {
       "Id": "681894879",
@@ -1015,7 +1031,21 @@
          "Id": "702482391",
          "GUID": "{55D680FE-ACF4-4E2B-8EFB-B5EC4D541F7C}"
         },
-        "Children": []
+        "Children": [
+         {
+          "SwitchValue": {
+           "GroupType": "State",
+           "GroupId": "3991942870",
+           "Id": "621537501",
+           "GUID": "{095B469A-61A9-4F3A-B675-171CBA6B9A43}"
+          },
+          "MediaRefs": [
+           {
+            "Id": "438899495"
+           }
+          ]
+         }
+        ]
        },
        {
         "SwitchValue": {
@@ -1029,12 +1059,15 @@
           "SwitchValue": {
            "GroupType": "State",
            "GroupId": "3991942870",
-           "Id": "621537501",
-           "GUID": "{095B469A-61A9-4F3A-B675-171CBA6B9A43}"
+           "Id": "3598752419",
+           "GUID": "{1438661A-17AC-4386-93AE-57C9FE7EC55E}"
           },
           "MediaRefs": [
            {
-            "Id": "438899495"
+            "Id": "125132462"
+           },
+           {
+            "Id": "681258764"
            }
           ]
          }
@@ -1189,6 +1222,6 @@
     ]
    }
   ],
-  "FileHash": "{71BD4CA5-9F82-0AE9-CA98-D79B406BC772}"
+  "FileHash": "{3540B54A-06EF-35D4-606B-96ABF1793FDA}"
  }
 }

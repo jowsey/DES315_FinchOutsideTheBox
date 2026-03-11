@@ -2149,14 +2149,57 @@
 					<ChildrenList>
 						<SourcePlugin Name="Soundseed Air Wind" ID="{E7118BEA-5598-494A-8E92-E1B3DCF30936}" ShortID="90448540" PluginName="SoundSeed Air Wind" CompanyID="0" PluginID="119">
 							<PropertyList>
-								<Property Name="Duration" Type="Real64" Value="1.9"/>
-								<Property Name="FrequencyScale" Type="Real32" Value="0.83"/>
-								<Property Name="FrequencyScaleRandom" Type="Real32" Value="1.02"/>
-								<Property Name="Gustiness" Type="Real32" Value="0.38"/>
-								<Property Name="Variability" Type="Real32" Value="0.69"/>
+								<Property Name="AverageVelocity" Type="Real32" Value="-1550"/>
+								<Property Name="AverageVelocityRandom" Type="Real32" Value="1150"/>
+								<Property Name="Duration" Type="Real64" Value="11"/>
+								<Property Name="FrequencyScale" Type="Real32" Value="0.17"/>
+								<Property Name="Gustiness" Type="Real32" Value="0"/>
+								<Property Name="Variability" Type="Real32" Value="0"/>
 							</PropertyList>
 							<Language>SFX</Language>
-							<PluginData/>
+							<PluginData>
+	<CurveList Version="1">
+		<CurveInfo Name="AverageVelocity">
+			<Curve Name="" ID="{4EE6A5A3-3FE8-4934-82A5-D5966F4BE3AF}">
+				<PropertyList>
+					<Property Name="Flags" Type="int32" Value="1"/>
+				</PropertyList>
+				<PointList>
+					<Point>
+						<XPos>0</XPos>
+						<YPos>681.6568</YPos>
+						<Flags>5</Flags>
+					</Point>
+					<Point>
+						<XPos>1.59474</XPos>
+						<YPos>1164.49704</YPos>
+						<Flags>0</Flags>
+					</Point>
+					<Point>
+						<XPos>3.99998</XPos>
+						<YPos>-397.63313</YPos>
+						<Flags>0</Flags>
+					</Point>
+					<Point>
+						<XPos>7.54001</XPos>
+						<YPos>426.0355</YPos>
+						<Flags>0</Flags>
+					</Point>
+					<Point>
+						<XPos>9.27999</XPos>
+						<YPos>766.86391</YPos>
+						<Flags>0</Flags>
+					</Point>
+					<Point>
+						<XPos>11</XPos>
+						<YPos>766.86391</YPos>
+						<Flags>37</Flags>
+					</Point>
+				</PointList>
+			</Curve>
+		</CurveInfo>
+	</CurveList>
+</PluginData>
 							<PluginInnerObjectList>
 								<List Name="Deflectors">
 									<PluginInnerObject Name="" ID="{B6DE8D39-A9C4-4791-99B8-9E1F0CF7F78D}" PluginName="Deflector" CompanyID="0" PluginID="121">
