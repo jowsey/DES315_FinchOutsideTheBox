@@ -47,6 +47,13 @@ namespace UI
 
         private string[] _oldInputDevices; //checked against Microphone.devices every frame for changes in the list
 
+        private void Awake()
+        {
+            // Guarantee ActiveSettings is populated, even if menu was immediately inactivated.
+            // We still want to pull it fresh every time we re-enable.
+            LoadFromDisk();
+        }
+        
         private void OnEnable()
         {
             LoadFromDisk();
