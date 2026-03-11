@@ -30,12 +30,12 @@ namespace UI
             
             var rt = (RectTransform)transform;
             LayoutRebuilder.ForceRebuildLayoutImmediate(rt);
-
+            
             Sequence.Create()
-                .Group(Tween.Alpha(_canvasGroup, 0f, 1f, 1f, Ease.OutCubic))
+                .Group(Tween.Alpha(_canvasGroup, 1f, 1f, Ease.OutCubic))
                 .Group(Tween.UIAnchoredPositionX(rt, rt.anchoredPosition.x - rt.sizeDelta.x, rt.anchoredPosition.x, 1f, Ease.OutCubic))
                 .ChainDelay(2f)
-                .Chain(Tween.Alpha(_canvasGroup, 1f, 0f, 1f, Ease.InCubic))
+                .Chain(Tween.Alpha(_canvasGroup, 0f, 1f, Ease.InCubic))
                 .Group(Tween.UIAnchoredPositionX(rt, rt.anchoredPosition.x, rt.anchoredPosition.x - rt.sizeDelta.x, 1f, Ease.InCubic))
                 .OnComplete(() => Destroy(gameObject), false);
         }
@@ -44,6 +44,8 @@ namespace UI
         {
             if (!_greenCatFace) _greenCatFace = Resources.Load<Sprite>("UI/GreenCatFace");
             if (!_blueCatFace) _blueCatFace = Resources.Load<Sprite>("UI/BlueCatFace");
+
+            _canvasGroup.alpha = 0;
         }
     }
 }
