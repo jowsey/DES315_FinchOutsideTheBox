@@ -69,6 +69,61 @@
 						</Action>
 					</ChildrenList>
 				</Event>
+				<Event Name="GlassPickup" ID="{C8D622C3-FF91-4155-8FB1-8EE36F6856D0}">
+					<ChildrenList>
+						<Action Name="" ID="{8CC36220-093A-4F8C-9A59-0F4DD74C0A7A}" ShortID="536179099">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Glass Pickup" ID="{931B27A9-B2AB-4375-B8AD-4171D34BB70F}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="GlassShatter" ID="{3424897A-51B9-4FFA-9D5C-C2B281226ABA}">
+					<ChildrenList>
+						<Action Name="" ID="{1A5CB188-CA0F-40FD-8E99-F6A371F381DB}" ShortID="582785893">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Glass Shatter" ID="{B5EAEFFE-F16B-447B-9189-71A0BC254594}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="HoverTick" ID="{B4CB3AE0-1B30-497D-8D72-395680799650}">
+					<ChildrenList>
+						<Action Name="" ID="{95631BE5-161B-4724-A904-3495F6423A52}" ShortID="399271992">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="HoverTick" ID="{62A3EC49-B31F-4A10-B141-CA127238C9DE}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="PlatformMoving" ID="{D6E6FD58-CC6F-4E5F-AB14-F03D9AF211CA}">
+					<ChildrenList>
+						<Action Name="" ID="{07ACABF0-338C-44CA-940F-159B8B7C7864}" ShortID="560534194">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="PlatformMoving" ID="{C1A54276-1AA1-4606-B7F8-EDB6EB85EBCC}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="GlassinVehilce" ID="{8E4273D3-7D88-4554-8406-B937D5ADA178}">
+					<ChildrenList>
+						<Action Name="" ID="{90E5A154-0587-4E09-8D18-2C45CC73F3AD}" ShortID="81059850">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="GlassInVehicle" ID="{F1648B82-7036-41A0-A2DA-67925D9B74A6}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>
