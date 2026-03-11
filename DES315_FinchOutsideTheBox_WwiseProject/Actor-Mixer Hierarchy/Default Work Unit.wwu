@@ -296,6 +296,45 @@
 									</ActiveSourceList>
 								</Sound>
 							</ChildrenList>
+							<ObjectLists>
+								<ObjectList Name="RTPC">
+									<Reference>
+										<Local>
+											<RTPC Name="" ID="{1F612737-2F4B-4399-A3D5-0C60D1784A2F}" ShortID="1010465176">
+												<PropertyList>
+													<Property Name="PropertyName" Type="string" Value="Volume"/>
+												</PropertyList>
+												<ReferenceList>
+													<Reference Name="ControlInput">
+														<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+													</Reference>
+													<Reference Name="Curve">
+														<Custom>
+															<Curve Name="" ID="{198A7030-E34E-426B-93FC-8B9374A3E895}">
+																<PropertyList>
+																	<Property Name="Flags" Type="int32" Value="3"/>
+																</PropertyList>
+																<PointList>
+																	<Point>
+																		<XPos>0</XPos>
+																		<YPos>-200</YPos>
+																		<Flags>5</Flags>
+																	</Point>
+																	<Point>
+																		<XPos>30</XPos>
+																		<YPos>0</YPos>
+																		<Flags>37</Flags>
+																	</Point>
+																</PointList>
+															</Curve>
+														</Custom>
+													</Reference>
+												</ReferenceList>
+											</RTPC>
+										</Local>
+									</Reference>
+								</ObjectList>
+							</ObjectLists>
 							<BlendTrackList>
 								<BlendTrack Name="CarOnStone" ID="{14C402FC-EC7B-4A78-9230-0178CF4B1DBA}" ShortID="669035288">
 									<PropertyList>
@@ -366,6 +405,196 @@
 												<LeftEdgePos>12.5</LeftEdgePos>
 												<LeftFadingMode>Automatic</LeftFadingMode>
 												<RightEdgePos>100</RightEdgePos>
+												<RightFadingMode>Automatic</RightFadingMode>
+											</CrossfadingInfo>
+										</BlendTrackAssoc>
+									</BlendTrackAssocList>
+								</BlendTrack>
+							</BlendTrackList>
+						</BlendContainer>
+						<BlendContainer Name="GlassInVehicle" ID="{F1648B82-7036-41A0-A2DA-67925D9B74A6}" ShortID="774914538">
+							<PropertyList>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>-13</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<Sound Name="GlassMovement3-8" ID="{DB410BC3-87D9-4290-8549-9B9E8238BC9C}" ShortID="884251247">
+									<PropertyList>
+										<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="GlassMovement3-8" ID="{76833022-A24F-4120-BD22-A8A2C57685A5}">
+											<Language>SFX</Language>
+											<AudioFile>GlassMovement3-8.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="604711773"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="GlassMovement3-8" ID="{76833022-A24F-4120-BD22-A8A2C57685A5}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="GlassMovement8-10" ID="{1AC8A58E-66B7-4A01-9C1B-843CCA837315}" ShortID="95907020">
+									<PropertyList>
+										<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="GlassMovement8-10" ID="{275D14FB-AE00-430F-A2AB-F96114EB0599}">
+											<Language>SFX</Language>
+											<AudioFile>GlassMovement8-10.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="57345173"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="GlassMovement8-10" ID="{275D14FB-AE00-430F-A2AB-F96114EB0599}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+							</ChildrenList>
+							<BlendTrackList>
+								<BlendTrack Name="New Blend Track" ID="{C73DB365-BED7-4B5F-8F12-A6522B2B8559}" ShortID="1071756932">
+									<PropertyList>
+										<Property Name="EnableCrossFading" Type="bool" Value="True"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="LayerCrossFadeControlInput">
+											<ObjectRef Name="GlassAmount" ID="{1BCC60E6-39B7-488E-A532-430D03891736}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+										</Reference>
+									</ReferenceList>
+									<ObjectLists>
+										<ObjectList Name="RTPC">
+											<Reference>
+												<Local>
+													<RTPC Name="" ID="{BA1388F6-67CF-49E0-B2C3-AF19D6ED9589}" ShortID="119007170">
+														<PropertyList>
+															<Property Name="PropertyName" Type="string" Value="MakeUpGain"/>
+														</PropertyList>
+														<ReferenceList>
+															<Reference Name="ControlInput">
+																<ObjectRef Name="WheelsMoving" ID="{BFB55191-504D-499C-86D7-AC07C3A38E15}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+															</Reference>
+															<Reference Name="Curve">
+																<Custom>
+																	<Curve Name="" ID="{5EF1FCD2-2185-4FD7-86AF-C34FA20922CA}">
+																		<PropertyList>
+																			<Property Name="Flags" Type="int32" Value="3"/>
+																		</PropertyList>
+																		<PointList>
+																			<Point>
+																				<XPos>0</XPos>
+																				<YPos>-200</YPos>
+																				<Flags>5</Flags>
+																			</Point>
+																			<Point>
+																				<XPos>100</XPos>
+																				<YPos>0</YPos>
+																				<Flags>37</Flags>
+																			</Point>
+																		</PointList>
+																	</Curve>
+																</Custom>
+															</Reference>
+														</ReferenceList>
+													</RTPC>
+												</Local>
+											</Reference>
+											<Reference>
+												<Local>
+													<RTPC Name="" ID="{BB14FB81-05FE-44FB-B162-88065E9969BC}" ShortID="531779673">
+														<PropertyList>
+															<Property Name="PropertyName" Type="string" Value="MakeUpGain"/>
+														</PropertyList>
+														<ReferenceList>
+															<Reference Name="ControlInput">
+																<ObjectRef Name="GlassAmount" ID="{1BCC60E6-39B7-488E-A532-430D03891736}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+															</Reference>
+															<Reference Name="Curve">
+																<Custom>
+																	<Curve Name="" ID="{2CC53240-C9B9-40B6-A0EB-BFE8F66EA1E7}">
+																		<PropertyList>
+																			<Property Name="Flags" Type="int32" Value="3"/>
+																		</PropertyList>
+																		<PointList>
+																			<Point>
+																				<XPos>0</XPos>
+																				<YPos>-200</YPos>
+																				<Flags>5</Flags>
+																			</Point>
+																			<Point>
+																				<XPos>2.50591016548463</XPos>
+																				<YPos>-12.0206900396079</YPos>
+																				<Flags>0</Flags>
+																			</Point>
+																			<Point>
+																				<XPos>4.1844</XPos>
+																				<YPos>-1.80353</YPos>
+																				<Flags>0</Flags>
+																			</Point>
+																			<Point>
+																				<XPos>5.95745</XPos>
+																				<YPos>0</YPos>
+																				<Flags>0</Flags>
+																			</Point>
+																			<Point>
+																				<XPos>10</XPos>
+																				<YPos>0</YPos>
+																				<Flags>37</Flags>
+																			</Point>
+																		</PointList>
+																	</Curve>
+																</Custom>
+															</Reference>
+														</ReferenceList>
+													</RTPC>
+												</Local>
+											</Reference>
+										</ObjectList>
+									</ObjectLists>
+									<BlendTrackAssocList>
+										<BlendTrackAssoc>
+											<ItemRef Name="GlassMovement3-8" ID="{DB410BC3-87D9-4290-8549-9B9E8238BC9C}"/>
+											<CrossfadingInfo>
+												<LeftEdgePos>2</LeftEdgePos>
+												<LeftFadingMode>Automatic</LeftFadingMode>
+												<RightEdgePos>8.25</RightEdgePos>
+												<RightFadingMode>Automatic</RightFadingMode>
+											</CrossfadingInfo>
+										</BlendTrackAssoc>
+										<BlendTrackAssoc>
+											<ItemRef Name="GlassMovement8-10" ID="{1AC8A58E-66B7-4A01-9C1B-843CCA837315}"/>
+											<CrossfadingInfo>
+												<LeftEdgePos>8</LeftEdgePos>
+												<LeftFadingMode>Automatic</LeftFadingMode>
+												<RightEdgePos>10</RightEdgePos>
 												<RightFadingMode>Automatic</RightFadingMode>
 											</CrossfadingInfo>
 										</BlendTrackAssoc>
@@ -2087,6 +2316,45 @@
 									</ReferenceList>
 								</RandomSequenceContainer>
 							</ChildrenList>
+							<ObjectLists>
+								<ObjectList Name="RTPC">
+									<Reference>
+										<Local>
+											<RTPC Name="" ID="{B686DA0B-60B4-4913-98B1-EA20C8785BB3}" ShortID="606215795">
+												<PropertyList>
+													<Property Name="PropertyName" Type="string" Value="Volume"/>
+												</PropertyList>
+												<ReferenceList>
+													<Reference Name="ControlInput">
+														<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+													</Reference>
+													<Reference Name="Curve">
+														<Custom>
+															<Curve Name="" ID="{25A6AF30-4D09-443D-8814-2576D4BA1111}">
+																<PropertyList>
+																	<Property Name="Flags" Type="int32" Value="3"/>
+																</PropertyList>
+																<PointList>
+																	<Point>
+																		<XPos>0</XPos>
+																		<YPos>-200</YPos>
+																		<Flags>5</Flags>
+																	</Point>
+																	<Point>
+																		<XPos>30</XPos>
+																		<YPos>0</YPos>
+																		<Flags>37</Flags>
+																	</Point>
+																</PointList>
+															</Curve>
+														</Custom>
+													</Reference>
+												</ReferenceList>
+											</RTPC>
+										</Local>
+									</Reference>
+								</ObjectList>
+							</ObjectLists>
 							<GroupingInfo>
 								<GroupingBehaviorList>
 									<GroupingBehavior>
@@ -2581,6 +2849,45 @@
 									</ActiveSourceList>
 								</Sound>
 							</ChildrenList>
+							<ObjectLists>
+								<ObjectList Name="RTPC">
+									<Reference>
+										<Local>
+											<RTPC Name="" ID="{8E6D72B7-8885-4E1F-A5E1-1E4D66DF0AF5}" ShortID="883623183">
+												<PropertyList>
+													<Property Name="PropertyName" Type="string" Value="Volume"/>
+												</PropertyList>
+												<ReferenceList>
+													<Reference Name="ControlInput">
+														<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+													</Reference>
+													<Reference Name="Curve">
+														<Custom>
+															<Curve Name="" ID="{B8F87440-2788-422A-AE2F-5D549EDAFB46}">
+																<PropertyList>
+																	<Property Name="Flags" Type="int32" Value="3"/>
+																</PropertyList>
+																<PointList>
+																	<Point>
+																		<XPos>0</XPos>
+																		<YPos>-200</YPos>
+																		<Flags>5</Flags>
+																	</Point>
+																	<Point>
+																		<XPos>30</XPos>
+																		<YPos>0</YPos>
+																		<Flags>37</Flags>
+																	</Point>
+																</PointList>
+															</Curve>
+														</Custom>
+													</Reference>
+												</ReferenceList>
+											</RTPC>
+										</Local>
+									</Reference>
+								</ObjectList>
+							</ObjectLists>
 						</RandomSequenceContainer>
 						<RandomSequenceContainer Name="CatLand" ID="{228F6641-C973-4E46-959F-42430FCE12ED}" ShortID="104924236">
 							<ReferenceList>
@@ -2767,6 +3074,612 @@
 									</ActiveSourceList>
 								</Sound>
 							</ChildrenList>
+							<ObjectLists>
+								<ObjectList Name="RTPC">
+									<Reference>
+										<Local>
+											<RTPC Name="" ID="{7E71085C-00DB-47DF-9621-094B83729619}" ShortID="644505017">
+												<PropertyList>
+													<Property Name="PropertyName" Type="string" Value="Volume"/>
+												</PropertyList>
+												<ReferenceList>
+													<Reference Name="ControlInput">
+														<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+													</Reference>
+													<Reference Name="Curve">
+														<Custom>
+															<Curve Name="" ID="{F1CD18FB-E7C4-419B-AA90-E902018334C4}">
+																<PropertyList>
+																	<Property Name="Flags" Type="int32" Value="3"/>
+																</PropertyList>
+																<PointList>
+																	<Point>
+																		<XPos>0</XPos>
+																		<YPos>-200</YPos>
+																		<Flags>5</Flags>
+																	</Point>
+																	<Point>
+																		<XPos>30</XPos>
+																		<YPos>0</YPos>
+																		<Flags>37</Flags>
+																	</Point>
+																</PointList>
+															</Curve>
+														</Custom>
+													</Reference>
+												</ReferenceList>
+											</RTPC>
+										</Local>
+									</Reference>
+								</ObjectList>
+							</ObjectLists>
+						</RandomSequenceContainer>
+					</ChildrenList>
+				</Folder>
+				<Folder Name="Misc" ID="{3417AFB2-A550-4A60-A3B2-7107B7F7D5E3}" ShortID="205536101">
+					<PropertyList>
+						<Property Name="Color" Type="int16" Value="19"/>
+						<Property Name="OverrideColor" Type="bool" Value="True"/>
+					</PropertyList>
+					<ChildrenList>
+						<RandomSequenceContainer Name="HoverTick" ID="{62A3EC49-B31F-4A10-B141-CA127238C9DE}" ShortID="37500226">
+							<PropertyList>
+								<Property Name="Pitch" Type="int32">
+									<ModifierList>
+										<ModifierInfo>
+											<Modifier Name="" ID="{D4BF9339-77C2-4155-8BB0-317A91684F1F}">
+												<PropertyList>
+													<Property Name="Enabled" Type="bool" Value="True"/>
+													<Property Name="Max" Type="Real64" Value="425"/>
+													<Property Name="Min" Type="Real64" Value="-125"/>
+												</PropertyList>
+											</Modifier>
+										</ModifierInfo>
+									</ModifierList>
+								</Property>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>-10</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<Sound Name="CatBells (MenuItem)-001" ID="{77EB837A-6A44-4655-8963-E9F2D09E157C}" ShortID="915672876">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="CatBells (MenuItem)-001" ID="{B630210F-5E07-4D88-87A8-D1E79F07A3CD}">
+											<Language>SFX</Language>
+											<AudioFile>CatBells (MenuItem)-001.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="865910838"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="CatBells (MenuItem)-001" ID="{B630210F-5E07-4D88-87A8-D1E79F07A3CD}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="CatBells (MenuItem)-002" ID="{38DB12C1-6EB9-40BA-846F-9BDA84F13837}" ShortID="44156918">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="CatBells (MenuItem)-002" ID="{C11718E9-8A02-467D-9C36-3A4C3F753938}">
+											<Language>SFX</Language>
+											<AudioFile>CatBells (MenuItem)-002.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="494314553"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="CatBells (MenuItem)-002" ID="{C11718E9-8A02-467D-9C36-3A4C3F753938}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="CatBells (MenuItem)-003" ID="{4240FF22-9215-4969-A2C2-AB36C21F7ADA}" ShortID="132192685">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="CatBells (MenuItem)-003" ID="{9733F5CF-5653-4F8F-A714-43C7906795B4}">
+											<Language>SFX</Language>
+											<AudioFile>CatBells (MenuItem)-003.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="813686735"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="CatBells (MenuItem)-003" ID="{9733F5CF-5653-4F8F-A714-43C7906795B4}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="CatBells (MenuItem)-004" ID="{8C210CBC-0206-4BE1-8B2E-863DA305EA34}" ShortID="340592296">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="CatBells (MenuItem)-004" ID="{FF057592-E77F-4902-B0ED-9B0B09CF678F}">
+											<Language>SFX</Language>
+											<AudioFile>CatBells (MenuItem)-004.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="105321291"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="CatBells (MenuItem)-004" ID="{FF057592-E77F-4902-B0ED-9B0B09CF678F}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+							</ChildrenList>
+							<ObjectLists>
+								<ObjectList Name="RTPC">
+									<Reference>
+										<Local>
+											<RTPC Name="" ID="{C908ED03-0414-4A58-B5C9-FA02F84EBB0C}" ShortID="165942104">
+												<PropertyList>
+													<Property Name="PropertyName" Type="string" Value="Volume"/>
+												</PropertyList>
+												<ReferenceList>
+													<Reference Name="ControlInput">
+														<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+													</Reference>
+													<Reference Name="Curve">
+														<Custom>
+															<Curve Name="" ID="{71A27FD4-0771-4A7D-9031-1ED3AAAA62C2}">
+																<PropertyList>
+																	<Property Name="Flags" Type="int32" Value="3"/>
+																</PropertyList>
+																<PointList>
+																	<Point>
+																		<XPos>0</XPos>
+																		<YPos>-200</YPos>
+																		<Flags>5</Flags>
+																	</Point>
+																	<Point>
+																		<XPos>30</XPos>
+																		<YPos>0</YPos>
+																		<Flags>37</Flags>
+																	</Point>
+																</PointList>
+															</Curve>
+														</Custom>
+													</Reference>
+												</ReferenceList>
+											</RTPC>
+										</Local>
+									</Reference>
+								</ObjectList>
+							</ObjectLists>
+						</RandomSequenceContainer>
+						<Sound Name="PlatformMoving" ID="{C1A54276-1AA1-4606-B7F8-EDB6EB85EBCC}" ShortID="682702749">
+							<PropertyList>
+								<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>-18</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="PlatformMoving" ID="{C8FA898D-58C4-40DD-8122-AF1516489261}">
+									<PropertyList>
+										<Property Name="FadeOutDuration" Type="Real64" Value="0.0225881242752077"/>
+										<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+									</PropertyList>
+									<Language>SFX</Language>
+									<AudioFile>PlatformMoving.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="83499910"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ObjectLists>
+								<ObjectList Name="RTPC">
+									<Reference>
+										<Local>
+											<RTPC Name="" ID="{85AE07E4-DC56-4A62-8F6F-B7AA4F80565A}" ShortID="560524975">
+												<PropertyList>
+													<Property Name="PropertyName" Type="string" Value="Volume"/>
+												</PropertyList>
+												<ReferenceList>
+													<Reference Name="ControlInput">
+														<ObjectRef Name="PlatformSpeed" ID="{67AF4BD6-3CC9-47FF-BDF7-451BFB6D2032}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+													</Reference>
+													<Reference Name="Curve">
+														<Custom>
+															<Curve Name="" ID="{BDE16066-C8C6-4156-90B1-830EF92F022E}">
+																<PropertyList>
+																	<Property Name="Flags" Type="int32" Value="3"/>
+																</PropertyList>
+																<PointList>
+																	<Point>
+																		<XPos>0</XPos>
+																		<YPos>-200</YPos>
+																		<Flags>5</Flags>
+																	</Point>
+																	<Point>
+																		<XPos>2.98938</XPos>
+																		<YPos>-2.4677</YPos>
+																		<Flags>0</Flags>
+																	</Point>
+																	<Point>
+																		<XPos>5.99393</XPos>
+																		<YPos>-0.61262</YPos>
+																		<Flags>0</Flags>
+																	</Point>
+																	<Point>
+																		<XPos>10</XPos>
+																		<YPos>0</YPos>
+																		<Flags>37</Flags>
+																	</Point>
+																</PointList>
+															</Curve>
+														</Custom>
+													</Reference>
+												</ReferenceList>
+											</RTPC>
+										</Local>
+									</Reference>
+								</ObjectList>
+							</ObjectLists>
+							<ActiveSourceList>
+								<ActiveSource Name="PlatformMoving" ID="{C8FA898D-58C4-40DD-8122-AF1516489261}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+					</ChildrenList>
+				</Folder>
+				<Folder Name="Glass" ID="{AC24148B-0883-47BC-B76B-8B8183D11104}" ShortID="190016116">
+					<PropertyList>
+						<Property Name="Color" Type="int16" Value="15"/>
+						<Property Name="OverrideColor" Type="bool" Value="True"/>
+					</PropertyList>
+					<ChildrenList>
+						<RandomSequenceContainer Name="Glass Shatter" ID="{B5EAEFFE-F16B-447B-9189-71A0BC254594}" ShortID="77406098">
+							<PropertyList>
+								<Property Name="Pitch" Type="int32">
+									<ModifierList>
+										<ModifierInfo>
+											<Modifier Name="" ID="{1CEA460D-03D6-4DB8-91E8-51A0B00E51CB}">
+												<PropertyList>
+													<Property Name="Enabled" Type="bool" Value="True"/>
+													<Property Name="Max" Type="Real64" Value="525"/>
+												</PropertyList>
+											</Modifier>
+										</ModifierInfo>
+									</ModifierList>
+								</Property>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>-24</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<Sound Name="GlassShatter-001" ID="{6BC6CAA3-936F-4C8D-B7E4-C8558E155B2A}" ShortID="551491189">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="GlassShatter-001" ID="{02EB3DB2-8BD2-46D7-B3A4-25961DD03D07}">
+											<Language>SFX</Language>
+											<AudioFile>GlassShatter-001.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="122508796"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="GlassShatter-001" ID="{02EB3DB2-8BD2-46D7-B3A4-25961DD03D07}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="GlassShatter-002" ID="{15702286-15B9-4078-8968-59ADF74A059E}" ShortID="819901092">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="GlassShatter-002" ID="{CAC86481-2165-4C46-8B4D-FCE8CC36117C}">
+											<Language>SFX</Language>
+											<AudioFile>GlassShatter-002.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="916349021"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="GlassShatter-002" ID="{CAC86481-2165-4C46-8B4D-FCE8CC36117C}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="GlassShatter-003" ID="{5682DC7F-F743-4144-B2EB-A57A10AABCC7}" ShortID="561317703">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="GlassShatter-003" ID="{8F85AE23-B652-4075-886F-1A3BCD2FAE77}">
+											<Language>SFX</Language>
+											<AudioFile>GlassShatter-003.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="287921902"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="GlassShatter-003" ID="{8F85AE23-B652-4075-886F-1A3BCD2FAE77}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+							</ChildrenList>
+							<ObjectLists>
+								<ObjectList Name="RTPC">
+									<Reference>
+										<Local>
+											<RTPC Name="" ID="{A4D5D47B-CFF0-4975-B80A-35FE7857B988}" ShortID="924566632">
+												<PropertyList>
+													<Property Name="PropertyName" Type="string" Value="Volume"/>
+												</PropertyList>
+												<ReferenceList>
+													<Reference Name="ControlInput">
+														<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+													</Reference>
+													<Reference Name="Curve">
+														<Custom>
+															<Curve Name="" ID="{0A568935-7789-40C9-8013-C803C317F9D9}">
+																<PropertyList>
+																	<Property Name="Flags" Type="int32" Value="3"/>
+																</PropertyList>
+																<PointList>
+																	<Point>
+																		<XPos>0</XPos>
+																		<YPos>-200</YPos>
+																		<Flags>5</Flags>
+																	</Point>
+																	<Point>
+																		<XPos>30</XPos>
+																		<YPos>0</YPos>
+																		<Flags>37</Flags>
+																	</Point>
+																</PointList>
+															</Curve>
+														</Custom>
+													</Reference>
+												</ReferenceList>
+											</RTPC>
+										</Local>
+									</Reference>
+								</ObjectList>
+							</ObjectLists>
+						</RandomSequenceContainer>
+						<RandomSequenceContainer Name="Glass Pickup" ID="{931B27A9-B2AB-4375-B8AD-4171D34BB70F}" ShortID="157052593">
+							<PropertyList>
+								<Property Name="Pitch" Type="int32">
+									<ValueList>
+										<Value>250</Value>
+									</ValueList>
+								</Property>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>-16</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<Sound Name="GlassPickup-001" ID="{760895DC-AA31-4BCB-A9D7-A19E0C9BC4D4}" ShortID="77265077">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="GlassPickup-001" ID="{C377C75E-54FF-4CEE-A2CC-13E8EE9F500B}">
+											<Language>SFX</Language>
+											<AudioFile>GlassPickup-001.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="790262208"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="GlassPickup-001" ID="{C377C75E-54FF-4CEE-A2CC-13E8EE9F500B}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="GlassPickup-002" ID="{70661FCF-7CDD-44D3-8115-1E227A6B2090}" ShortID="475971983">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="GlassPickup-002" ID="{84D59DAA-DEE1-4244-A24E-F8D47A5DE4B9}">
+											<Language>SFX</Language>
+											<AudioFile>GlassPickup-002.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="444069552"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="GlassPickup-002" ID="{84D59DAA-DEE1-4244-A24E-F8D47A5DE4B9}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="GlassPickup-003" ID="{7EFC4980-78A7-44B5-B167-D963BB5A8C5E}" ShortID="816780808">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="GlassPickup-003" ID="{6261D362-C4D5-4533-BC29-AD446749E534}">
+											<Language>SFX</Language>
+											<AudioFile>GlassPickup-003.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="529726635"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="GlassPickup-003" ID="{6261D362-C4D5-4533-BC29-AD446749E534}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="GlassPickup-004" ID="{1487B76F-0260-4739-ACB8-4515B14EBEF1}" ShortID="426514102">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="GlassPickup-004" ID="{9D94C359-2CCB-4C1E-BAFC-A1CC53DA994C}">
+											<Language>SFX</Language>
+											<AudioFile>GlassPickup-004.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="316576253"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="GlassPickup-004" ID="{9D94C359-2CCB-4C1E-BAFC-A1CC53DA994C}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="GlassPickup-005" ID="{941B5B99-05E5-4E14-8688-C04CCD74CF43}" ShortID="1045943339">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="GlassPickup-005" ID="{A9E37880-E92F-4EFF-9B17-8AFAABF31443}">
+											<Language>SFX</Language>
+											<AudioFile>GlassPickup-005.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="608241914"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="GlassPickup-005" ID="{A9E37880-E92F-4EFF-9B17-8AFAABF31443}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+							</ChildrenList>
+							<ObjectLists>
+								<ObjectList Name="RTPC">
+									<Reference>
+										<Local>
+											<RTPC Name="" ID="{45F2E828-B71D-462C-9D5F-88C0F1CB9FB5}" ShortID="169269748">
+												<PropertyList>
+													<Property Name="PropertyName" Type="string" Value="Volume"/>
+												</PropertyList>
+												<ReferenceList>
+													<Reference Name="ControlInput">
+														<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+													</Reference>
+													<Reference Name="Curve">
+														<Custom>
+															<Curve Name="" ID="{44D9B34E-C425-461F-9193-34ABA971CED6}">
+																<PropertyList>
+																	<Property Name="Flags" Type="int32" Value="3"/>
+																</PropertyList>
+																<PointList>
+																	<Point>
+																		<XPos>0</XPos>
+																		<YPos>-200</YPos>
+																		<Flags>5</Flags>
+																	</Point>
+																	<Point>
+																		<XPos>30</XPos>
+																		<YPos>0</YPos>
+																		<Flags>37</Flags>
+																	</Point>
+																</PointList>
+															</Curve>
+														</Custom>
+													</Reference>
+												</ReferenceList>
+											</RTPC>
+										</Local>
+									</Reference>
+								</ObjectList>
+							</ObjectLists>
 						</RandomSequenceContainer>
 					</ChildrenList>
 				</Folder>
