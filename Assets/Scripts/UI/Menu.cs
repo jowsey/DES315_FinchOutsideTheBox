@@ -53,7 +53,6 @@ namespace UI
         
         private void Awake()
         {
-            _settings.gameObject.SetActive(false);
             Cursor.lockState = CursorLockMode.None;
             
             // Clean up previously-used transport if we're coming back from the game
@@ -71,6 +70,12 @@ namespace UI
                 _kcpTransport = Instantiate(_kcpTransportPrefab);
                 DontDestroyOnLoad(_kcpTransport);
             }
+        }
+
+        private void Start()
+        {
+            // Allow SettingsManager to run its Awake.
+            _settings.gameObject.SetActive(false);
         }
 
         private void OnDestroy()
