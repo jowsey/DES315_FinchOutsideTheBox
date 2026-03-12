@@ -25,8 +25,8 @@ namespace UI
         // Fire-and-forget predicate that runs every frame, will destroy self when returns true
         public System.Func<bool> ShouldDestroy;
 
-        private static Canvas _canvas;
-        private static Camera _camera;
+        private Transform _uiCanvas;
+        private Camera _camera;
 
         private void OnValidate()
         {
@@ -37,10 +37,10 @@ namespace UI
         {
             if (Application.isPlaying)
             {
-                if (!_canvas) _canvas = FindAnyObjectByType<Canvas>();
-                if (!_camera) _camera = FindAnyObjectByType<Camera>();
+                if (!_uiCanvas) _uiCanvas = GameObject.FindGameObjectWithTag("UICanvas").transform;
+                if (!_camera) _camera = Camera.main;
 
-                _promptLabel.SetParent(_canvas.transform, false);
+                _promptLabel.SetParent(_uiCanvas.transform, false);
                 _promptLabel.GetComponentInChildren<TextMeshProUGUI>().text = PromptLabel;
             }
         }

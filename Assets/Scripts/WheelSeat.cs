@@ -112,16 +112,8 @@ public class WheelSeat : NetworkBehaviour
     {
         if (!_seatedPlayer) return;
         
-        if (_cart.UseNewTorqueSystem)
-        {
-            var torqueAxis = Vector3.Cross(Vector3.up, _seatedPlayer.WorldSpaceMoveDir);
-            _wheelRb.AddTorque(torqueAxis * MoveForce * _seatedPlayer.AnalogueMoveScale);
-        }
-        else
-        {
-            var wheelTop = transform.position + Vector3.up * (_sphereCollider.radius * transform.lossyScale.y);
-            _wheelRb.AddForceAtPosition(_seatedPlayer.WorldSpaceMoveDir * MoveForce * _seatedPlayer.AnalogueMoveScale, wheelTop);
-        }
+        var torqueAxis = Vector3.Cross(Vector3.up, _seatedPlayer.WorldSpaceMoveDir);
+        _wheelRb.AddTorque(torqueAxis * (MoveForce * _seatedPlayer.AnalogueMoveScale));
     }
 
     private void OnDrawGizmosSelected()

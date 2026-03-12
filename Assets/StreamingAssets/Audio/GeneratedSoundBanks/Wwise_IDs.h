@@ -15,8 +15,13 @@ namespace AK
     {
         static const AkUniqueID CARMOVEMENT = 2594767402U;
         static const AkUniqueID CARMOVEMENTTERRAIN = 2369444485U;
+        static const AkUniqueID CATJUMP = 244401571U;
         static const AkUniqueID FOOTSTEPS = 2385628198U;
+        static const AkUniqueID GLASSPICKUP = 1188386847U;
+        static const AkUniqueID GLASSSHATTER = 206611762U;
+        static const AkUniqueID HOVERTICK = 2670946266U;
         static const AkUniqueID MUSIC = 3991942870U;
+        static const AkUniqueID PLATFORMMOVING = 4208999138U;
         static const AkUniqueID TESTSOUJD1 = 1035878255U;
     } // namespace EVENTS
 
@@ -62,6 +67,7 @@ namespace AK
             {
                 static const AkUniqueID SAND = 803837735U;
                 static const AkUniqueID STONE = 1216965916U;
+                static const AkUniqueID WHEELSEAT = 2287828297U;
                 static const AkUniqueID WOOD = 2058049674U;
             } // namespace SWITCH
         } // namespace FOOTSTEPS
@@ -71,8 +77,10 @@ namespace AK
     namespace GAME_PARAMETERS
     {
         static const AkUniqueID CAROVERSTONE = 588369366U;
+        static const AkUniqueID GLASSAMOUNT = 1090606811U;
         static const AkUniqueID ISESCPRESSED = 651854690U;
         static const AkUniqueID MUSICVOLUME = 2346531308U;
+        static const AkUniqueID PLATFORMSPEED = 1907997609U;
         static const AkUniqueID SFXVOLUME = 988953028U;
         static const AkUniqueID WHEELSMOVING = 1023454587U;
     } // namespace GAME_PARAMETERS

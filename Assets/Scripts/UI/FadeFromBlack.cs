@@ -24,7 +24,7 @@ namespace UI
             _canvasGroup.alpha = 1;
 
             Tween.Alpha(_canvasGroup, 0, 2f, Ease.InSine)
-                .OnComplete(() => Destroy(gameObject));
+                .OnComplete(() => Destroy(gameObject), false);
         }
     }
 }

@@ -1,5 +1,6 @@
 using Mirror;
 using System.Collections.Generic;
+using TMPro;
 using UI;
 using Unity.Cinemachine;
 using UnityEngine;
@@ -14,14 +15,18 @@ public class PlayerController : NetworkBehaviour
     private static readonly int FallState = Animator.StringToHash("Fall");
     private static readonly int GlideState = Animator.StringToHash("Glide");
     
-    [SyncVar] private int _playerIndex;
-    public static int NextPlayerIndex = 0;
+    [Header("Network")]
+    [SyncVar] [ReadOnly] public int PlayerIndex;
+    [SyncVar] [ReadOnly] public string PlayerName;
+    [SyncVar] [ReadOnly] public PlayerPresenceFeed.CatSkin PlayerSkin;
 
     [Header("Components")]
     public Rigidbody Rb { get; private set; }
     private NetworkAnimator _networkAnimator;
     [SerializeField] private CrosshairDetection _crosshairDetector;
-
+    [SerializeField] private Canvas _nameplateCanvas;
+    [SerializeField] private TextMeshProUGUI _playerNameText;
+    
     [Header("Animation")]
     [Tooltip("The minimum velocity required to initiate the gliding animation (should be negative)")]
     [SerializeField] private float _fallAnimationMinDownardsVelocity;
@@ -30,11 +35,8 @@ public class PlayerController : NetworkBehaviour
     public InputActionReference MoveAction;
     public InputActionReference JumpAction;
     public InputActionReference PickupAction;
-
+    
     private bool _jumpPressed;
-
-    //Wwise Event to trigger footstep sound
-    public AK.Wwise.Event FootstepSound = new();
     
     //Car Stuff
     public AK.Wwise.Event CarSound = new();
@@ -76,6 +78,9 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private Transform _flaskPickupTarget;
     public  static Flask HeldFlask; //todo: maybe find a better way of doing this that doesn't involve it being static
     
+    //Swap to "WheelSeat" (aka dont make a sound when on wheels) 
+    public AK.Wwise.Switch footsteps;
+
     private void Awake()
     {
         Rb = GetComponent<Rigidbody>();
@@ -86,15 +91,9 @@ public class PlayerController : NetworkBehaviour
         HeldFlask = null;
     }
 
-    public override void OnStartServer()
-    {
-        _playerIndex = NextPlayerIndex++;
-    }
-
     public override void OnStartClient()
     {
-        // Set every non-host player's texture to the alternate colour
-        if (_playerIndex > 0)
+        if (PlayerSkin == PlayerPresenceFeed.CatSkin.Blue)
         {
             foreach (SkinnedMeshRenderer renderer in GetComponentsInChildren<SkinnedMeshRenderer>())
             {
@@ -102,6 +101,9 @@ public class PlayerController : NetworkBehaviour
                 renderer.sharedMaterial = _player2Material;
             }
         }
+        
+        _camera = FindAnyObjectByType<CinemachineCamera>(FindObjectsInactive.Include);
+        _playerNameText.text = PlayerName;
     }
 
     private void Start()
@@ -119,7 +121,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (authority)
         {
-            Transform newTransform = checkpoint.playerRespawnLocalTransforms[_playerIndex % checkpoint.playerRespawnLocalTransforms.Length];
+            Transform newTransform = checkpoint.playerRespawnLocalTransforms[PlayerIndex % checkpoint.playerRespawnLocalTransforms.Length];
 
             Rb.position = newTransform.position;
             Rb.rotation = newTransform.rotation;
@@ -137,13 +139,16 @@ public class PlayerController : NetworkBehaviour
     {
         Cursor.lockState = CursorLockMode.Locked;
         
-        _camera = FindAnyObjectByType<CinemachineCamera>(FindObjectsInactive.Include); //GameObject.Find doesn't work because camera is inactive
+        // Set camera follow target
         if (!_camera.Follow || !_camera.LookAt)
         {
             _camera.gameObject.SetActive(true);
             _camera.Follow = transform;
             _camera.LookAt = transform;
         }
+        
+        // Hide nameplate for local player
+        _nameplateCanvas.gameObject.SetActive(false);
         
         // todo this sucks
         // eventually we should just link carts to 2 players so we can have an arbitrary number of carts/players
@@ -226,6 +231,13 @@ public class PlayerController : NetworkBehaviour
         {
             transform.position = Seat.SeatedPosition;
             Physics.SyncTransforms();
+            //Swap to no sound when sat on wheels
+            AkSoundEngine.SetSwitch("Footsteps", "WheelSeat", gameObject);
+        }
+
+        if (_camera && !isLocalPlayer)
+        {
+            _nameplateCanvas.transform.rotation = Quaternion.LookRotation(_nameplateCanvas.transform.position - _camera.transform.position);
         }
     }
 
@@ -257,15 +269,13 @@ public class PlayerController : NetworkBehaviour
         if (WorldSpaceMoveDir.sqrMagnitude > 0)
         {
             _networkAnimator.animator.SetBool(RunningState, true);
-            // todo this should definitely run outside of localplayer (for other players' footsteps) and rtpc speed should be based on actual wheel speed, not input time
+            // todo this should definitely run outside of localplayer (for other players' footsteps) ---> Paolo: I think this is fixed now by adding sounds to the animation
+            // and rtpc speed should be based on actual wheel speed, not input time, ---> Paolo: Also, I think this should somehow be attached to the cart instead, as right now it only plays the sound when a specific player is riding, but as a temp solution this works
             if (Seat)
             {
                 RTPCSpeedValue += 4f;
             }
-            else
-            {
-                FootstepSound.Post(gameObject);
-            }
+            
             
             Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, Quaternion.LookRotation(WorldSpaceMoveDir, Vector3.up), Time.fixedDeltaTime * rotationSmoothingSpeed));
         }

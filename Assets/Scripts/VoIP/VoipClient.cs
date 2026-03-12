@@ -6,6 +6,7 @@ using Mirror;
 using UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 using VoIP.Util;
 
 namespace VoIP
@@ -28,6 +29,10 @@ namespace VoIP
         [SerializeField] private AudioSource _source;
 
         [SerializeField] private InputActionReference _pushToTalkAction;
+
+        [SerializeField] private Image _vcIcon;
+        [SerializeField] private Sprite _vcActiveIcon;
+        [SerializeField] private Sprite _vcInactiveIcon;
 
         //Mic clip
         private AudioClip _micClip; //clip the mic will record into (loops)
@@ -80,6 +85,8 @@ namespace VoIP
                 _source.clip = clip;
                 _source.loop = true;
                 _source.Play();
+                
+                _vcIcon.sprite = _vcInactiveIcon;
             }
         }
 
@@ -167,6 +174,11 @@ namespace VoIP
 
         public void Update()
         {
+            if (!isLocalPlayer)
+            {
+                _vcIcon.sprite = _playbackActive ? _vcActiveIcon : _vcInactiveIcon;
+            }
+            
             if (!isLocalPlayer || !_isRecording || !Microphone.IsRecording(_device)) return;
 
             int micWritePos = Microphone.GetPosition(_device);
