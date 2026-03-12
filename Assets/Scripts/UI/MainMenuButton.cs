@@ -5,13 +5,9 @@ using UnityEngine.UI;
 
 namespace UI
 {
-
     [RequireComponent(typeof(Button), typeof(TextMeshProUGUI))]
-
-    
     public class MainMenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
-        //button sfx
         public AK.Wwise.Event buttonSfx;
 
         private TextMeshProUGUI _text;
@@ -58,6 +54,7 @@ namespace UI
             {
                 _text.color = _highlightColor;
                 _text.fontStyle |= FontStyles.Bold;
+
                 buttonSfx.Post(gameObject);
             }
         }
