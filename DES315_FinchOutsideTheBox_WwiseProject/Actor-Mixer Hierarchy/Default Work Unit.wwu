@@ -322,7 +322,7 @@
 																	</Point>
 																	<Point>
 																		<XPos>30</XPos>
-																		<YPos>0</YPos>
+																		<YPos>5.88381</YPos>
 																		<Flags>37</Flags>
 																	</Point>
 																</PointList>
@@ -759,7 +759,7 @@
 										<Property Name="RandomAvoidRepeatingCount" Type="int32" Value="5"/>
 										<Property Name="Volume" Type="Real64">
 											<ValueList>
-												<Value>4</Value>
+												<Value>7</Value>
 											</ValueList>
 										</Property>
 									</PropertyList>
@@ -1106,7 +1106,7 @@
 										<Property Name="RandomAvoidRepeatingCount" Type="int32" Value="5"/>
 										<Property Name="Volume" Type="Real64">
 											<ValueList>
-												<Value>6</Value>
+												<Value>2</Value>
 											</ValueList>
 										</Property>
 									</PropertyList>
@@ -1550,6 +1550,11 @@
 								<RandomSequenceContainer Name="Footsteps - Sand" ID="{A11EF6CE-F6ED-45CB-A86A-74D2FC6DB98A}" ShortID="314435157">
 									<PropertyList>
 										<Property Name="RandomAvoidRepeatingCount" Type="int32" Value="5"/>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-7</Value>
+											</ValueList>
+										</Property>
 									</PropertyList>
 									<ReferenceList>
 										<Reference Name="Attenuation">
@@ -2342,7 +2347,7 @@
 																	</Point>
 																	<Point>
 																		<XPos>30</XPos>
-																		<YPos>0</YPos>
+																		<YPos>6</YPos>
 																		<Flags>37</Flags>
 																	</Point>
 																</PointList>
@@ -2875,7 +2880,7 @@
 																	</Point>
 																	<Point>
 																		<XPos>30</XPos>
-																		<YPos>0</YPos>
+																		<YPos>5.74914</YPos>
 																		<Flags>37</Flags>
 																	</Point>
 																</PointList>
@@ -3100,7 +3105,7 @@
 																	</Point>
 																	<Point>
 																		<XPos>30</XPos>
-																		<YPos>0</YPos>
+																		<YPos>5.88381</YPos>
 																		<Flags>37</Flags>
 																	</Point>
 																</PointList>
@@ -3267,7 +3272,7 @@
 																	</Point>
 																	<Point>
 																		<XPos>30</XPos>
-																		<YPos>0</YPos>
+																		<YPos>5.88381</YPos>
 																		<Flags>37</Flags>
 																	</Point>
 																</PointList>
@@ -3362,6 +3367,74 @@
 							</ObjectLists>
 							<ActiveSourceList>
 								<ActiveSource Name="PlatformMoving" ID="{C8FA898D-58C4-40DD-8122-AF1516489261}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="CheckpointDrums" ID="{A82B935D-A3D7-4E82-B34D-74D4C093FA6C}" ShortID="1000135876">
+							<PropertyList>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>-15</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="CheckpointDrums" ID="{BB00AB7F-7A7E-44C6-9D61-BF7E38E423DB}">
+									<Language>SFX</Language>
+									<AudioFile>CheckpointDrums.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="476242004"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ObjectLists>
+								<ObjectList Name="RTPC">
+									<Reference>
+										<Local>
+											<RTPC Name="" ID="{9635549E-50C9-40E8-8FBA-C5378C949758}" ShortID="735724424">
+												<PropertyList>
+													<Property Name="PropertyName" Type="string" Value="Volume"/>
+												</PropertyList>
+												<ReferenceList>
+													<Reference Name="ControlInput">
+														<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+													</Reference>
+													<Reference Name="Curve">
+														<Custom>
+															<Curve Name="" ID="{DAD0277F-4D74-4825-9A1D-25F396191840}">
+																<PropertyList>
+																	<Property Name="Flags" Type="int32" Value="3"/>
+																</PropertyList>
+																<PointList>
+																	<Point>
+																		<XPos>0</XPos>
+																		<YPos>-200</YPos>
+																		<Flags>5</Flags>
+																	</Point>
+																	<Point>
+																		<XPos>30</XPos>
+																		<YPos>6.0206</YPos>
+																		<Flags>37</Flags>
+																	</Point>
+																</PointList>
+															</Curve>
+														</Custom>
+													</Reference>
+												</ReferenceList>
+											</RTPC>
+										</Local>
+									</Reference>
+								</ObjectList>
+							</ObjectLists>
+							<ActiveSourceList>
+								<ActiveSource Name="CheckpointDrums" ID="{BB00AB7F-7A7E-44C6-9D61-BF7E38E423DB}" Platform="Linked"/>
 							</ActiveSourceList>
 						</Sound>
 					</ChildrenList>
@@ -3510,14 +3583,27 @@
 						</RandomSequenceContainer>
 						<RandomSequenceContainer Name="Glass Pickup" ID="{931B27A9-B2AB-4375-B8AD-4171D34BB70F}" ShortID="157052593">
 							<PropertyList>
+								<Property Name="IgnoreParentMaxSoundInstance" Type="bool" Value="True"/>
+								<Property Name="IsGlobalLimit" Type="int16" Value="1"/>
+								<Property Name="MaxSoundPerInstance" Type="int16">
+									<ValueList>
+										<Value>1</Value>
+									</ValueList>
+								</Property>
 								<Property Name="Pitch" Type="int32">
 									<ValueList>
 										<Value>250</Value>
 									</ValueList>
 								</Property>
+								<Property Name="RandomAvoidRepeatingCount" Type="int32" Value="3"/>
+								<Property Name="UseMaxSoundPerInstance" Type="bool">
+									<ValueList>
+										<Value>True</Value>
+									</ValueList>
+								</Property>
 								<Property Name="Volume" Type="Real64">
 									<ValueList>
-										<Value>-16</Value>
+										<Value>-12</Value>
 									</ValueList>
 								</Property>
 							</PropertyList>
