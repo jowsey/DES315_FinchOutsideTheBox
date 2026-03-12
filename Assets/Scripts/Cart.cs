@@ -13,11 +13,10 @@ public class Cart : NetworkBehaviour
     
     [ValidateInput("@gameObject.scene.isLoaded ? $value.Count > 0 : true", "Cart doesn't have any checkpoints linked.", InfoMessageType.Warning)]
     [SerializeField] private List<Checkpoint> _checkpoints;
-    [field: SerializeField] public int CurrentCheckpointIndex { get; private set; }
+    [field: SerializeField] public int CurrentCheckpointIndex { get; private set; } = -1;
 
     [SerializeField] [Required] private CheckpointBanner _checkpointBannerPrefab;
     
-    [SerializeField] [Required] private InputActionReference _respawnAction;
     [SerializeField] [Required] private InputActionReference _devCheckpointBackAction;
     [SerializeField] [Required] private InputActionReference _devCheckpointForwardAction;
 
@@ -25,39 +24,36 @@ public class Cart : NetworkBehaviour
     [SerializeField] private float _tiltCorrection = 1.1f;
     [Tooltip("Exponent for how much the amount of tilt-correction increases in response to tilting. 1 means consistent, higher makes it kick in far more when tilting more.")]
     [SerializeField] private float _tiltCorrectionScaling = 2f;
-    
+
+    public List<Flask> Flasks; //temp - please remove
+
     // UI
     private Transform _uiCanvas;
-    
+
     // Flask carrying
-    [SerializeField] [Required] private Collider _flaskBounds;
-    
-    private Dictionary<GameObject, Vector3> _initialFlaskPositions = new();
-    
-    [field: SerializeField] [field: Sirenix.OdinInspector.ReadOnly] public int CarriedFlasks { get; private set; }
-    
-    [ValidateInput("@$value.Count > 0", "Cart doesn't have any flasks linked.", InfoMessageType.Warning)]
-    [SerializeField] private List<GameObject> _trackedFlasks = new();
-    
-    public int MaxFlasks => _trackedFlasks.Count;
-    
-    // Ratio of flasks currently being carried
-    public float FlasksRemainingRatio => (float)CarriedFlasks / _trackedFlasks.Count;
+    [SerializeField][Required] private Collider _flaskBounds;
+    public HashSet<Flask> CarriedFlasks = new();
+    private Dictionary<Rigidbody, Vector3>[] _flasksAtCheckpoint;
+
 
     private void Awake()
     {
+        foreach (var flask in Flasks)
+        {
+            CarriedFlasks.Add(flask);
+        }
         _rb  = GetComponent<Rigidbody>();
         _uiCanvas = GameObject.FindGameObjectWithTag("UICanvas").transform;
+        _flasksAtCheckpoint = new Dictionary<Rigidbody, Vector3>[_checkpoints.Count];
+        for (int i = 0; i < _flasksAtCheckpoint.Length; ++i)
+        {
+            _flasksAtCheckpoint[i] = new Dictionary<Rigidbody, Vector3>();
+        }
     }
     
     private void Start()
     {
         Checkpoint.respawnEvent.AddListener(OnRespawn);
-        
-        foreach (var flask in _trackedFlasks)
-        {
-            _initialFlaskPositions[flask] = transform.InverseTransformPoint(flask.transform.position);
-        }
     }
     
     private void OnDestroy()
@@ -74,13 +70,6 @@ public class Cart : NetworkBehaviour
         else if (_devCheckpointForwardAction.action.WasPressedThisFrame() && CurrentCheckpointIndex != _checkpoints.Count - 1)
         {
             CmdInvokeRespawnEvent(CurrentCheckpointIndex + 1);
-        }
-        
-        // todo bad perf, should can probably just track in bounds trigger enter/exit
-        CarriedFlasks = _trackedFlasks.Count(f => _flaskBounds.bounds.Contains(f.transform.position));
-        if (isServer && CarriedFlasks == 0 && MaxFlasks > 0)
-        {
-            CmdInvokeRespawnEvent(CurrentCheckpointIndex);
         }
     }
 
@@ -104,9 +93,15 @@ public class Cart : NetworkBehaviour
                 // New checkpoint reached
                 CurrentCheckpointIndex = newIndex;
                 Debug.Log($"Hit checkpoint {newIndex}: {checkpoint.AreaName}");
-
                 var checkpointBanner = Instantiate(_checkpointBannerPrefab, _uiCanvas.transform);
                 checkpointBanner.Checkpoint = checkpoint;
+
+                Physics.SyncTransforms();
+                foreach (Flask flask in CarriedFlasks)
+                {
+                    Rigidbody flaskRb = flask.GetComponent<Rigidbody>();
+                    _flasksAtCheckpoint[CurrentCheckpointIndex][flaskRb] = transform.InverseTransformPoint(flask.transform.position);
+                }
             }
         }
     }
@@ -128,21 +123,19 @@ public class Cart : NetworkBehaviour
             transform.rotation = newTransform.rotation;
             gameObject.SetActive(true);
 
-            ResetFlasks(true);
+            ResetFlasks();
         }
     }
     
-    public void ResetFlasks(bool includeOutOfBounds = false)
+    public void ResetFlasks()
     {
-        foreach (var flask in _trackedFlasks)
+        foreach (KeyValuePair<Rigidbody, Vector3> flaskState in _flasksAtCheckpoint[CurrentCheckpointIndex])
         {
-            if (includeOutOfBounds || _flaskBounds.bounds.Contains(flask.transform.position))
-            {
-                var rb = flask.GetComponent<Rigidbody>();
-                rb.position = transform.TransformPoint(_initialFlaskPositions[flask]);
-                rb.linearVelocity = Vector3.zero;
-                rb.angularVelocity = Vector3.zero;
-            }
+            Rigidbody rb = flaskState.Key;
+            rb.gameObject.SetActive(true);
+            rb.position = transform.TransformPoint(flaskState.Value);
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
         }
     }
     

@@ -279,6 +279,7 @@ GameObject:
   - component: {fileID: 6521320286991680151}
   - component: {fileID: 7001608086643137539}
   - component: {fileID: 4328611406986470432}
+  - component: {fileID: 3557071885313689952}
   m_Layer: 7
   m_Name: SpinningBall
   m_TagString: Untagged
@@ -570,6 +571,19 @@ MonoBehaviour:
   groupIdInternal: 0
   valueGuidInternal: 
   groupGuidInternal: 
+--- !u!114 &3557071885313689952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2234672341356039100}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a4c0a2cc04197f4c87580b54c1d9b7f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Interactable
+  <InteractedTransform>k__BackingField: {fileID: 7509229294387652573}
 --- !u!1 &3213205800609717158
 GameObject:
   m_ObjectHideFlags: 0
@@ -805,6 +819,7 @@ GameObject:
   - component: {fileID: 6249258237167811541}
   - component: {fileID: 2821899426136488224}
   - component: {fileID: 1902630114370404671}
+  - component: {fileID: 6050807644054048839}
   m_Layer: 7
   m_Name: Cart
   m_TagString: Untagged
@@ -877,14 +892,12 @@ MonoBehaviour:
   _checkpoints: []
   <CurrentCheckpointIndex>k__BackingField: 0
   _checkpointBannerPrefab: {fileID: 2550055375057606039, guid: 92851f9434601b54699a7986d3e29baa, type: 3}
-  _respawnAction: {fileID: -8233647895968499144, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
   _devCheckpointBackAction: {fileID: -5390487181371502964, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
   _devCheckpointForwardAction: {fileID: 2059469255060023462, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
   _tiltCorrection: 5.2
   _tiltCorrectionScaling: 2
+  Flasks: []
   _flaskBounds: {fileID: 5701368598674622850}
-  <CarriedFlasks>k__BackingField: 0
-  _trackedFlasks: []
 --- !u!114 &6249258237167811541
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -961,6 +974,19 @@ MonoBehaviour:
   groupIdInternal: 0
   valueGuidInternal: 
   groupGuidInternal: 
+--- !u!114 &6050807644054048839
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3913858289453775590}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a4c0a2cc04197f4c87580b54c1d9b7f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Interactable
+  <InteractedTransform>k__BackingField: {fileID: 7509229294387652573}
 --- !u!1 &4047298172779109505
 GameObject:
   m_ObjectHideFlags: 0
@@ -1304,6 +1330,7 @@ GameObject:
   - component: {fileID: 4795167691161300528}
   - component: {fileID: 3849088544374647796}
   - component: {fileID: 6391373010634746411}
+  - component: {fileID: 7091827790693960479}
   m_Layer: 7
   m_Name: SpinningBall
   m_TagString: Untagged
@@ -1571,6 +1598,19 @@ MonoBehaviour:
   positionSensitivity: 0.01
   rotationSensitivity: 0.01
   scaleSensitivity: 0.01
+--- !u!114 &7091827790693960479
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7919487994921861755}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a4c0a2cc04197f4c87580b54c1d9b7f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Interactable
+  <InteractedTransform>k__BackingField: {fileID: 7509229294387652573}
 --- !u!1 &9222746410960691854
 GameObject:
   m_ObjectHideFlags: 0
@@ -1580,9 +1620,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3399036331931440497}
-  m_Layer: 7
+  m_Layer: 11
   m_Name: FlaskPickupTarget
-  m_TagString: Untagged
+  m_TagString: FlaskCarrier
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2467,7 +2507,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -7387700211241838384, guid: 8bbe3134c4398814ea1b1acb13239e6d, type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -7387700211241838384, guid: 8bbe3134c4398814ea1b1acb13239e6d, type: 3}
+      propertyPath: m_TagString
+      value: FlaskCarrier
       objectReference: {fileID: 0}
     - target: {fileID: -590628668473816732, guid: 8bbe3134c4398814ea1b1acb13239e6d, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2483,7 +2527,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 8bbe3134c4398814ea1b1acb13239e6d, type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 8bbe3134c4398814ea1b1acb13239e6d, type: 3}
+      propertyPath: m_TagString
+      value: FlaskCarrier
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
@@ -2493,6 +2541,15 @@ PrefabInstance:
       insertIndex: 0
       addedObject: {fileID: 3399036331931440497}
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8bbe3134c4398814ea1b1acb13239e6d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5582202601108590640}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8bbe3134c4398814ea1b1acb13239e6d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3963701282903887573}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8bbe3134c4398814ea1b1acb13239e6d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 341129353538463740}
     - targetCorrespondingSourceObject: {fileID: -7387700211241838384, guid: 8bbe3134c4398814ea1b1acb13239e6d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7615221182476939715}
@@ -2853,6 +2910,51 @@ MeshFilter:
   m_CorrespondingSourceObject: {fileID: 8674005741639881255, guid: 8bbe3134c4398814ea1b1acb13239e6d, type: 3}
   m_PrefabInstance: {fileID: 8051483117175930934}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &7169155482439826791 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 8bbe3134c4398814ea1b1acb13239e6d, type: 3}
+  m_PrefabInstance: {fileID: 8051483117175930934}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5582202601108590640
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7169155482439826791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f9a32749b40a23419fc637aa8999765, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FlaskCarrier
+  FlaskPutdownTarget: {fileID: 3399036331931440497}
+  _cart: {fileID: 4472236861815727159}
+--- !u!114 &3963701282903887573
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7169155482439826791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5e5263c28d18964fb87d6ea1a00d5a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Highlight
+  _highlightedColour: {r: 1, g: 0.4117647, b: 0.7058824, a: 0}
+--- !u!114 &341129353538463740
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7169155482439826791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a4c0a2cc04197f4c87580b54c1d9b7f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Interactable
+  <InteractedTransform>k__BackingField: {fileID: 7509229294387652573}
 --- !u!4 &7509229294387652573 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 8bbe3134c4398814ea1b1acb13239e6d, type: 3}

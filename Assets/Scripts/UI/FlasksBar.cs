@@ -7,9 +7,9 @@ namespace UI
 {
     public class FlasksBar : MonoBehaviour
     {
-        [SerializeField] [Required] private Cart _linkedCart;
-        [SerializeField] [Required] private TextMeshProUGUI _countText;
-        [SerializeField] [Required] private Image _fillImage;
+        [SerializeField][Required] private Cart _linkedCart;
+        [SerializeField][Required] private TextMeshProUGUI _countText;
+        [SerializeField][Required] private Image _fillImage;
 
         private void OnValidate()
         {
@@ -18,11 +18,13 @@ namespace UI
                 _linkedCart = FindAnyObjectByType<Cart>();
             }
         }
-        
+
         private void Update()
         {
-            _fillImage.fillAmount = _linkedCart.FlasksRemainingRatio;
-            _countText.text = $"{_linkedCart.CarriedFlasks} / {_linkedCart.MaxFlasks}";
+            //_fillImage.fillAmount = _linkedCart.FlasksRemainingRatio;
+            //_countText.text = $"{_linkedCart.CarriedFlasks} / {_linkedCart.MaxFlasks}";
+            _fillImage.fillAmount = 1.0f;
+            _countText.text = $"{_linkedCart.CarriedFlasks.Count}";
         }
     }
 }

@@ -270,6 +270,8 @@ GameObject:
   - component: {fileID: 1061238724838936957}
   - component: {fileID: 3285323394339922491}
   - component: {fileID: 2470135020409499539}
+  - component: {fileID: -4395463060295971911}
+  - component: {fileID: -1458237757761867293}
   m_Layer: 11
   m_Name: Flask
   m_TagString: Flask
@@ -301,7 +303,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8121012120109722422}
   serializedVersion: 5
-  m_Mass: 0.05
+  m_Mass: 5
   m_LinearDamping: 0.3
   m_AngularDamping: 2
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -319,7 +321,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!114 &1061238724838936957
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -388,6 +390,30 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _highlighted: 0
+  Smashable: 0
+--- !u!114 &-4395463060295971911
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8121012120109722422}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5e5263c28d18964fb87d6ea1a00d5a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Assets.Scripts.Highlight
   _highlightedColour: {r: 1, g: 0.4117647, b: 0.7058824, a: 0}
-  _flaskPickupTarget: {fileID: 0}
+--- !u!114 &-1458237757761867293
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8121012120109722422}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a4c0a2cc04197f4c87580b54c1d9b7f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Interactable
+  <InteractedTransform>k__BackingField: {fileID: 7788027509240571938}

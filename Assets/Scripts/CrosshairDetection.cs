@@ -15,22 +15,21 @@ public class CrosshairDetection : MonoBehaviour
     private void LateUpdate()
     {
         Ray ray = _camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
-        if (Physics.Raycast(ray, out RaycastHit hit, _maxDistance, LayerMask.GetMask("Interactable")))
+        if (Physics.Raycast(ray, out RaycastHit hit, _maxDistance, ~LayerMask.GetMask("Player"), QueryTriggerInteraction.Ignore))
         {
-            _hitTransform = hit.transform;
+            if (hit.transform == _hitTransform) { return; }
+            if (hit.transform.TryGetComponent<Interactable>(out Interactable interactable))
+            {
+                _hitTransform = interactable.InteractedTransform;
+            }
+            else
+            {
+                _hitTransform = null;
+            }
         }
         else
         {
             _hitTransform = null;
         }
     }
-
-    //private void OnDrawGizmos()
-    //{
-    //    if (_camera != null)
-    //    {
-    //        Ray ray = _camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
-    //        Gizmos.DrawRay(ray.origin, ray.direction * _maxDistance);
-    //    }
-    //}
 }
