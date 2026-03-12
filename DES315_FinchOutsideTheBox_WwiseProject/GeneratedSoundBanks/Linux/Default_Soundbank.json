@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{46173D95-DFFE-4BE9-8209-57EB1CFCE1F7}",
     "Language": "SFX",
-    "Hash": "{7AB70A4B-B65F-5D4A-5255-0BBFEA23FA9B}",
+    "Hash": "{EA470748-D6ED-17EA-A1D7-87B4A056DD0A}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Default_Soundbank",
     "ShortName": "Default_Soundbank",
     "Path": "Default_Soundbank.bnk",
@@ -61,7 +61,7 @@
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "PlatformMoving.wav",
-      "CachePath": "70/{7030D9BE-EBB5-C541-C333-F7796D1395C3}.wem"
+      "CachePath": "54/{54D47CEB-7FEA-C386-6607-15AF7B4903B0}.wem"
      },
      {
       "Id": "85742166",
@@ -366,6 +366,14 @@
       "Location": "Memory",
       "ShortName": "WoodFts-004.wav",
       "CachePath": "D7/{D72182A7-5398-AE2F-53BE-813F7C4B5FA8}.wem"
+     },
+     {
+      "Id": "476242004",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "CheckpointDrums.wav",
+      "CachePath": "7E/{7EAAE046-3B52-A3D7-A1AF-A7C5D52192FE}.wem"
      },
      {
       "Id": "479244383",
@@ -835,6 +843,20 @@
        },
        {
         "Id": "940937087"
+       }
+      ]
+     },
+     {
+      "Id": "2509294038",
+      "Name": "CheckpointDrums",
+      "ObjectPath": "\\Events\\Default Work Unit\\CheckpointDrums",
+      "GUID": "{97158A25-1E29-4946-8374-C28DA18A143B}",
+      "DurationType": "OneShot",
+      "DurationMin": "2.5",
+      "DurationMax": "2.5",
+      "MediaRefs": [
+       {
+        "Id": "476242004"
        }
       ]
      },
@@ -1419,6 +1441,6 @@
     ]
    }
   ],
-  "FileHash": "{43DCC4AB-D4F6-B6FD-8158-F3CBDA221C7A}"
+  "FileHash": "{2E2934F5-CBE8-1E23-5D19-A82A03239054}"
  }
 }

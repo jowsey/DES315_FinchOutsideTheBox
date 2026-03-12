@@ -16,6 +16,7 @@ namespace AK
         static const AkUniqueID CARMOVEMENT = 2594767402U;
         static const AkUniqueID CARMOVEMENTTERRAIN = 2369444485U;
         static const AkUniqueID CATJUMP = 244401571U;
+        static const AkUniqueID CHECKPOINTDRUMS = 2509294038U;
         static const AkUniqueID FOOTSTEPS = 2385628198U;
         static const AkUniqueID GLASSPICKUP = 1188386847U;
         static const AkUniqueID GLASSSHATTER = 206611762U;

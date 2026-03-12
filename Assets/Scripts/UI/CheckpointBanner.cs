@@ -14,6 +14,8 @@ namespace UI
 
         [ReadOnly] public Checkpoint Checkpoint;
 
+        public AK.Wwise.Event CheckpointJingle;
+
         private void Start()
         {
             _areaNameText.text = Checkpoint.AreaName;
