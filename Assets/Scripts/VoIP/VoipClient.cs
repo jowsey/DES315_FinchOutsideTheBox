@@ -14,10 +14,13 @@ namespace VoIP
     public class VoipClient : NetworkBehaviour
     {
         public const int SampleRate = 48000;
+
         //Number of available samples before we start playing, gives some leeway for latency changes
         public const int JitterBufferSamples = OpusProcessor.FrameSize * 3;
+
         //Number of samples we store before dropping old ones, prevents lagging too far behind head
         public const int ReceiveBufferSamples = OpusProcessor.FrameSize * 10;
+
         //Max number of PLC frames to be generated after reaching end of receive buffer
         public const int MaxPlcFrames = 3;
 
@@ -50,7 +53,7 @@ namespace VoIP
 
         //Number of PLC frames generated since last received audio
         private uint _plcFramesGenerated;
-        
+
         //Latest sequence number received/sent for dropping out-of-order unreliable packets
         private uint _lastReceivedSequence;
         private uint _lastSentSequence;
@@ -85,7 +88,7 @@ namespace VoIP
                 _source.clip = clip;
                 _source.loop = true;
                 _source.Play();
-                
+
                 _vcIcon.sprite = _vcInactiveIcon;
             }
         }
@@ -178,7 +181,7 @@ namespace VoIP
             {
                 _vcIcon.sprite = _playbackActive ? _vcActiveIcon : _vcInactiveIcon;
             }
-            
+
             if (!isLocalPlayer || !_isRecording || !Microphone.IsRecording(_device)) return;
 
             int micWritePos = Microphone.GetPosition(_device);
@@ -225,22 +228,31 @@ namespace VoIP
 
             while (_accumulationBuffer.Available >= OpusProcessor.FrameSize)
             {
-                // 0-10ms
-                _accumulationBuffer.ReadInto(_denoiseBuffer, RnNoiseProcessor.FrameSize);
-                var vad1 = _denoiser?.ProcessFrame(_denoiseBuffer, _denoiseBuffer);
-                Array.Copy(_denoiseBuffer, _opusFrameBuffer, RnNoiseProcessor.FrameSize);
-
-                // 10-20ms
-                _accumulationBuffer.ReadInto(_denoiseBuffer, RnNoiseProcessor.FrameSize);
-                var vad2 = _denoiser?.ProcessFrame(_denoiseBuffer, _denoiseBuffer);
-                Array.Copy(_denoiseBuffer, 0, _opusFrameBuffer, RnNoiseProcessor.FrameSize, RnNoiseProcessor.FrameSize);
-
-                if (vad1 < RnNoiseProcessor.VoiceThreshold && vad2 < RnNoiseProcessor.VoiceThreshold)
+                if (SettingsManager.ActiveSettings.NoiseSuppression)
                 {
-                    // Entire frame is noise, don't bother sending
-                    continue;
+                    // 0-10ms
+                    _accumulationBuffer.ReadInto(_denoiseBuffer, RnNoiseProcessor.FrameSize);
+                    var vad1 = _denoiser?.ProcessFrame(_denoiseBuffer, _denoiseBuffer);
+                    Array.Copy(_denoiseBuffer, _opusFrameBuffer, RnNoiseProcessor.FrameSize);
+
+                    // 10-20ms
+                    _accumulationBuffer.ReadInto(_denoiseBuffer, RnNoiseProcessor.FrameSize);
+                    var vad2 = _denoiser?.ProcessFrame(_denoiseBuffer, _denoiseBuffer);
+                    Array.Copy(_denoiseBuffer, 0, _opusFrameBuffer, RnNoiseProcessor.FrameSize, RnNoiseProcessor.FrameSize);
+
+                    if (vad1 < RnNoiseProcessor.VoiceThreshold && vad2 < RnNoiseProcessor.VoiceThreshold)
+                    {
+                        // Entire frame is noise, don't bother sending
+                        continue;
+                    }
                 }
-                
+                else
+                {
+                    // Just passthrough accumulation buffer into opus frame buffer
+                    _accumulationBuffer.ReadInto(_denoiseBuffer, OpusProcessor.FrameSize);
+                    Array.Copy(_denoiseBuffer, _opusFrameBuffer, OpusProcessor.FrameSize);
+                }
+
                 int packetSize = _opus.Encode(_opusFrameBuffer, _opusPacketBuffer);
 
                 var packetSegment = new ArraySegment<byte>(_opusPacketBuffer, 0, packetSize);
@@ -263,7 +275,7 @@ namespace VoIP
                 Debug.Log($"Received VoIP seq {seq}, but latest is {_lastReceivedSequence}");
                 return;
             }
-            
+
             _lastReceivedSequence = seq;
             _plcFramesGenerated = 0;
 
@@ -306,7 +318,7 @@ namespace VoIP
             {
                 _opus.Decode(null, _opusFrameBuffer);
                 _plcFramesGenerated++;
-                
+
                 // Debug.Log($"Generating PLC frame {_plcFramesGenerated}");
 
                 // todo make reusable "resample or write" method
