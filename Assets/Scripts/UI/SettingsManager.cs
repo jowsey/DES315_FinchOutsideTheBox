@@ -15,10 +15,14 @@ namespace UI
     [Serializable]
     public class UserSettings
     {
+        // Game
+        public string PlayerName = SettingsManager.GetRandomName();
+        
+        // Audio
         public bool PushToTalk = true;
+        public bool NoiseSuppression = true;
         public string InputDevice = null;
         public float VoiceChatVolume = 1.0f;
-        public string PlayerName = SettingsManager.GetRandomName();
     }
 
     public class SettingsManager : MonoBehaviour
@@ -42,6 +46,7 @@ namespace UI
 
         // Audio
         [SerializeField] [Required] private Toggle _pttToggle;
+        [SerializeField] [Required] private Toggle _noiseSuppressionToggle;
         [SerializeField] [Required] private TMP_Dropdown _inputDeviceDropdown;
         [SerializeField] [Required] private Slider _voiceChatVolumeSlider;
 
@@ -63,6 +68,7 @@ namespace UI
 
             // Audio
             _pttToggle.onValueChanged.AddListener(OnPttToggleChanged);
+            _noiseSuppressionToggle.onValueChanged.AddListener(OnNoiseSuppressionToggleChanged);
             _inputDeviceDropdown.onValueChanged.AddListener(OnInputDeviceChanged);
             _voiceChatVolumeSlider.onValueChanged.AddListener(OnVoiceChatVolumeChanged);
         }
@@ -74,6 +80,7 @@ namespace UI
 
             // Audio
             _pttToggle.onValueChanged.RemoveListener(OnPttToggleChanged);
+            _noiseSuppressionToggle.onValueChanged.RemoveListener(OnNoiseSuppressionToggleChanged);
             _inputDeviceDropdown.onValueChanged.RemoveListener(OnInputDeviceChanged);
             _inputDeviceDropdown.ClearOptions();
             _voiceChatVolumeSlider.onValueChanged.RemoveListener(OnVoiceChatVolumeChanged);
@@ -129,6 +136,12 @@ namespace UI
         }
 
         private void OnPttToggleChanged(bool val)
+        {
+            ActiveSettings.PushToTalk = val;
+            SaveToDisk();
+        }
+
+        private void OnNoiseSuppressionToggleChanged(bool val)
         {
             ActiveSettings.PushToTalk = val;
             SaveToDisk();
