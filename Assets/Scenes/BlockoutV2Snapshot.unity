@@ -24274,6 +24274,10 @@ PrefabInstance:
       propertyPath: _flaskPickupTarget
       value: 
       objectReference: {fileID: 864766130}
+    - target: {fileID: 3285323394339922491, guid: a34e45bdc1faa4ecfb2665d22d526ae0, type: 3}
+      propertyPath: onlySyncOnChange
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6994367387021924349, guid: a34e45bdc1faa4ecfb2665d22d526ae0, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -30558,6 +30562,10 @@ PrefabInstance:
       propertyPath: _flaskPickupTarget
       value: 
       objectReference: {fileID: 864766130}
+    - target: {fileID: 3285323394339922491, guid: a34e45bdc1faa4ecfb2665d22d526ae0, type: 3}
+      propertyPath: onlySyncOnChange
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6994367387021924349, guid: a34e45bdc1faa4ecfb2665d22d526ae0, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -34938,12 +34946,56 @@ PrefabInstance:
       value: Cart
       objectReference: {fileID: 0}
     - target: {fileID: 4472236861815727159, guid: b84a22b1fb6eaca4bbca03a691fda216, type: 3}
+      propertyPath: Flasks.Array.size
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4472236861815727159, guid: b84a22b1fb6eaca4bbca03a691fda216, type: 3}
+      propertyPath: 'Flasks.Array.data[0]'
+      value: 
+      objectReference: {fileID: 539825111}
+    - target: {fileID: 4472236861815727159, guid: b84a22b1fb6eaca4bbca03a691fda216, type: 3}
+      propertyPath: 'Flasks.Array.data[1]'
+      value: 
+      objectReference: {fileID: 1861761794}
+    - target: {fileID: 4472236861815727159, guid: b84a22b1fb6eaca4bbca03a691fda216, type: 3}
+      propertyPath: 'Flasks.Array.data[2]'
+      value: 
+      objectReference: {fileID: 1162147576}
+    - target: {fileID: 4472236861815727159, guid: b84a22b1fb6eaca4bbca03a691fda216, type: 3}
+      propertyPath: 'Flasks.Array.data[3]'
+      value: 
+      objectReference: {fileID: 645586827}
+    - target: {fileID: 4472236861815727159, guid: b84a22b1fb6eaca4bbca03a691fda216, type: 3}
+      propertyPath: 'Flasks.Array.data[4]'
+      value: 
+      objectReference: {fileID: 1151420257}
+    - target: {fileID: 4472236861815727159, guid: b84a22b1fb6eaca4bbca03a691fda216, type: 3}
+      propertyPath: 'Flasks.Array.data[5]'
+      value: 
+      objectReference: {fileID: 1238129525}
+    - target: {fileID: 4472236861815727159, guid: b84a22b1fb6eaca4bbca03a691fda216, type: 3}
+      propertyPath: 'Flasks.Array.data[6]'
+      value: 
+      objectReference: {fileID: 467599456}
+    - target: {fileID: 4472236861815727159, guid: b84a22b1fb6eaca4bbca03a691fda216, type: 3}
+      propertyPath: 'Flasks.Array.data[7]'
+      value: 
+      objectReference: {fileID: 1454805483}
+    - target: {fileID: 4472236861815727159, guid: b84a22b1fb6eaca4bbca03a691fda216, type: 3}
+      propertyPath: 'Flasks.Array.data[8]'
+      value: 
+      objectReference: {fileID: 1993303540}
+    - target: {fileID: 4472236861815727159, guid: b84a22b1fb6eaca4bbca03a691fda216, type: 3}
+      propertyPath: 'Flasks.Array.data[9]'
+      value: 
+      objectReference: {fileID: 768598483}
+    - target: {fileID: 4472236861815727159, guid: b84a22b1fb6eaca4bbca03a691fda216, type: 3}
       propertyPath: _checkpoints.Array.size
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4472236861815727159, guid: b84a22b1fb6eaca4bbca03a691fda216, type: 3}
       propertyPath: CarriedFlasks.Array.size
-      value: 10
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4472236861815727159, guid: b84a22b1fb6eaca4bbca03a691fda216, type: 3}
       propertyPath: _trackedFlasks.Array.size
@@ -34980,39 +35032,39 @@ PrefabInstance:
     - target: {fileID: 4472236861815727159, guid: b84a22b1fb6eaca4bbca03a691fda216, type: 3}
       propertyPath: 'CarriedFlasks.Array.data[0]'
       value: 
-      objectReference: {fileID: 539825111}
+      objectReference: {fileID: 768598483}
     - target: {fileID: 4472236861815727159, guid: b84a22b1fb6eaca4bbca03a691fda216, type: 3}
       propertyPath: 'CarriedFlasks.Array.data[1]'
       value: 
-      objectReference: {fileID: 1861761794}
+      objectReference: {fileID: 768598483}
     - target: {fileID: 4472236861815727159, guid: b84a22b1fb6eaca4bbca03a691fda216, type: 3}
       propertyPath: 'CarriedFlasks.Array.data[2]'
       value: 
-      objectReference: {fileID: 1162147576}
+      objectReference: {fileID: 768598483}
     - target: {fileID: 4472236861815727159, guid: b84a22b1fb6eaca4bbca03a691fda216, type: 3}
       propertyPath: 'CarriedFlasks.Array.data[3]'
       value: 
-      objectReference: {fileID: 645586827}
+      objectReference: {fileID: 768598483}
     - target: {fileID: 4472236861815727159, guid: b84a22b1fb6eaca4bbca03a691fda216, type: 3}
       propertyPath: 'CarriedFlasks.Array.data[4]'
       value: 
-      objectReference: {fileID: 1151420257}
+      objectReference: {fileID: 768598483}
     - target: {fileID: 4472236861815727159, guid: b84a22b1fb6eaca4bbca03a691fda216, type: 3}
       propertyPath: 'CarriedFlasks.Array.data[5]'
       value: 
-      objectReference: {fileID: 1238129525}
+      objectReference: {fileID: 768598483}
     - target: {fileID: 4472236861815727159, guid: b84a22b1fb6eaca4bbca03a691fda216, type: 3}
       propertyPath: 'CarriedFlasks.Array.data[6]'
       value: 
-      objectReference: {fileID: 467599456}
+      objectReference: {fileID: 768598483}
     - target: {fileID: 4472236861815727159, guid: b84a22b1fb6eaca4bbca03a691fda216, type: 3}
       propertyPath: 'CarriedFlasks.Array.data[7]'
       value: 
-      objectReference: {fileID: 1454805483}
+      objectReference: {fileID: 768598483}
     - target: {fileID: 4472236861815727159, guid: b84a22b1fb6eaca4bbca03a691fda216, type: 3}
       propertyPath: 'CarriedFlasks.Array.data[8]'
       value: 
-      objectReference: {fileID: 1993303540}
+      objectReference: {fileID: 768598483}
     - target: {fileID: 4472236861815727159, guid: b84a22b1fb6eaca4bbca03a691fda216, type: 3}
       propertyPath: 'CarriedFlasks.Array.data[9]'
       value: 
@@ -35057,6 +35109,10 @@ PrefabInstance:
       propertyPath: '_trackedFlasks.Array.data[9]'
       value: 
       objectReference: {fileID: 768598481}
+    - target: {fileID: 4472236861815727159, guid: b84a22b1fb6eaca4bbca03a691fda216, type: 3}
+      propertyPath: <CurrentCheckpointIndex>k__BackingField
+      value: -1
+      objectReference: {fileID: 0}
     - target: {fileID: 6249258237167811541, guid: b84a22b1fb6eaca4bbca03a691fda216, type: 3}
       propertyPath: sceneId
       value: 1793782665
@@ -35946,6 +36002,10 @@ PrefabInstance:
       propertyPath: _flaskPickupTarget
       value: 
       objectReference: {fileID: 864766130}
+    - target: {fileID: 3285323394339922491, guid: a34e45bdc1faa4ecfb2665d22d526ae0, type: 3}
+      propertyPath: onlySyncOnChange
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6994367387021924349, guid: a34e45bdc1faa4ecfb2665d22d526ae0, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -42229,6 +42289,10 @@ PrefabInstance:
       propertyPath: _flaskPickupTarget
       value: 
       objectReference: {fileID: 864766130}
+    - target: {fileID: 3285323394339922491, guid: a34e45bdc1faa4ecfb2665d22d526ae0, type: 3}
+      propertyPath: onlySyncOnChange
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6994367387021924349, guid: a34e45bdc1faa4ecfb2665d22d526ae0, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -61571,6 +61635,10 @@ PrefabInstance:
       propertyPath: _flaskPickupTarget
       value: 
       objectReference: {fileID: 864766130}
+    - target: {fileID: 3285323394339922491, guid: a34e45bdc1faa4ecfb2665d22d526ae0, type: 3}
+      propertyPath: onlySyncOnChange
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6994367387021924349, guid: a34e45bdc1faa4ecfb2665d22d526ae0, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -61801,6 +61869,10 @@ PrefabInstance:
       propertyPath: _flaskPickupTarget
       value: 
       objectReference: {fileID: 864766130}
+    - target: {fileID: 3285323394339922491, guid: a34e45bdc1faa4ecfb2665d22d526ae0, type: 3}
+      propertyPath: onlySyncOnChange
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6994367387021924349, guid: a34e45bdc1faa4ecfb2665d22d526ae0, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -66633,6 +66705,10 @@ PrefabInstance:
       propertyPath: _flaskPickupTarget
       value: 
       objectReference: {fileID: 864766130}
+    - target: {fileID: 3285323394339922491, guid: a34e45bdc1faa4ecfb2665d22d526ae0, type: 3}
+      propertyPath: onlySyncOnChange
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6994367387021924349, guid: a34e45bdc1faa4ecfb2665d22d526ae0, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -77257,6 +77333,10 @@ PrefabInstance:
       propertyPath: _flaskPickupTarget
       value: 
       objectReference: {fileID: 864766130}
+    - target: {fileID: 3285323394339922491, guid: a34e45bdc1faa4ecfb2665d22d526ae0, type: 3}
+      propertyPath: onlySyncOnChange
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6994367387021924349, guid: a34e45bdc1faa4ecfb2665d22d526ae0, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -101650,6 +101730,10 @@ PrefabInstance:
       propertyPath: _flaskPickupTarget
       value: 
       objectReference: {fileID: 864766130}
+    - target: {fileID: 3285323394339922491, guid: a34e45bdc1faa4ecfb2665d22d526ae0, type: 3}
+      propertyPath: onlySyncOnChange
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6994367387021924349, guid: a34e45bdc1faa4ecfb2665d22d526ae0, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -114168,6 +114252,10 @@ PrefabInstance:
       propertyPath: _flaskPickupTarget
       value: 
       objectReference: {fileID: 864766130}
+    - target: {fileID: 3285323394339922491, guid: a34e45bdc1faa4ecfb2665d22d526ae0, type: 3}
+      propertyPath: onlySyncOnChange
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6994367387021924349, guid: a34e45bdc1faa4ecfb2665d22d526ae0, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -150815,11 +150903,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6810257284287447472, guid: 0956a6b6c8e74b741a97b797c37089be, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6810257284287447472, guid: 0956a6b6c8e74b741a97b797c37089be, type: 3}
       propertyPath: m_SizeDelta.x
-      value: -17
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8417248369979282937, guid: 0956a6b6c8e74b741a97b797c37089be, type: 3}
       propertyPath: m_AnchorMax.y

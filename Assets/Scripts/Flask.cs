@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -133,5 +134,29 @@ public class Flask : Mirror.NetworkBehaviour
     {
         //todo: implement visually
         gameObject.SetActive(false);
+    }
+
+
+    private void OnTriggerEnter(Collider other)
+    {
+        FlaskCarrier carrier = other.GetComponentInParent<FlaskCarrier>();
+        if (carrier)
+        {
+            Cart cart = other.GetComponentInParent<Cart>();
+            Smashable = true;
+            cart.CarriedFlasks.Add(this);
+            Debug.Log("Enter " + cart.CarriedFlasks.Count);
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        FlaskCarrier carrier = other.GetComponentInParent<FlaskCarrier>();
+        if (carrier)
+        {
+            Cart cart = other.GetComponentInParent<Cart>();
+            cart.CarriedFlasks.Remove(this);
+            Debug.Log("Exit " + cart.CarriedFlasks.Count);
+        }
     }
 }
