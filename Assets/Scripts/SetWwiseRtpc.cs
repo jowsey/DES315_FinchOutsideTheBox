@@ -16,7 +16,7 @@ public class SetWwiseRtpc : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        musicFloat = 15.0f;
+        musicFloat = 20.0f;
         musicVolume.SetGlobalValue(musicFloat);
         sfxFloat = 15.0f;
         sfxVolume.SetGlobalValue(sfxFloat);
