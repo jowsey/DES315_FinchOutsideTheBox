@@ -67,11 +67,7 @@ public class Cart : NetworkBehaviour
     
     private void Update()
     {
-        if (_respawnAction.action.WasPressedThisFrame())
-        {
-            CmdInvokeRespawnEvent(CurrentCheckpointIndex);
-        }
-        else if (_devCheckpointBackAction.action.WasPressedThisFrame() && CurrentCheckpointIndex != 0)
+        if (_devCheckpointBackAction.action.WasPressedThisFrame() && CurrentCheckpointIndex != 0)
         {
             CmdInvokeRespawnEvent(CurrentCheckpointIndex - 1);
         }

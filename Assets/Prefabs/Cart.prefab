@@ -532,7 +532,7 @@ MonoBehaviour:
   syncPosition: 1
   syncRotation: 1
   syncScale: 0
-  onlySyncOnChange: 1
+  onlySyncOnChange: 0
   compressRotation: 1
   interpolatePosition: 1
   interpolateRotation: 1
@@ -803,7 +803,7 @@ GameObject:
   - component: {fileID: 5755687617286805364}
   - component: {fileID: 4472236861815727159}
   - component: {fileID: 6249258237167811541}
-  - component: {fileID: 154787217058412744}
+  - component: {fileID: 2821899426136488224}
   - component: {fileID: 1902630114370404671}
   m_Layer: 7
   m_Name: Cart
@@ -902,7 +902,7 @@ MonoBehaviour:
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
---- !u!114 &154787217058412744
+--- !u!114 &2821899426136488224
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -911,9 +911,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 3913858289453775590}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cb803efbe62c34d7baece46c9ffebad9, type: 3}
+  m_Script: {fileID: 11500000, guid: 3b20dc110904e47f8a154cdcf6433eae, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Mirror.Components::Mirror.NetworkRigidbodyReliable
+  m_EditorClassIdentifier: Mirror.Components::Mirror.NetworkRigidbodyUnreliable
   syncMethod: 0
   syncDirection: 0
   syncMode: 0
@@ -923,7 +923,7 @@ MonoBehaviour:
   syncPosition: 1
   syncRotation: 1
   syncScale: 0
-  onlySyncOnChange: 1
+  onlySyncOnChange: 0
   compressRotation: 1
   interpolatePosition: 1
   interpolateRotation: 1
@@ -933,10 +933,10 @@ MonoBehaviour:
   showGizmos: 0
   showOverlay: 0
   overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
-  onlySyncOnChangeCorrectionMultiplier: 2
+  bufferResetMultiplier: 3
+  positionSensitivity: 0.01
   rotationSensitivity: 0.01
-  positionPrecision: 0.01
-  scalePrecision: 0.01
+  scaleSensitivity: 0.01
 --- !u!114 &1902630114370404671
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1557,7 +1557,7 @@ MonoBehaviour:
   syncPosition: 1
   syncRotation: 1
   syncScale: 0
-  onlySyncOnChange: 1
+  onlySyncOnChange: 0
   compressRotation: 1
   interpolatePosition: 1
   interpolateRotation: 1
