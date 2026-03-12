@@ -20,7 +20,7 @@ public class PositionalPing : NetworkBehaviour
         if (_pingAction.action.WasPressedThisFrame())
         {
             var ray = _camera.ViewportPointToRay(new Vector2(0.5f, 0.5f));
-            if (Physics.Raycast(ray, out var hit, 100, ~0, QueryTriggerInteraction.Ignore))
+            if (Physics.Raycast(ray, out var hit, 100, ~LayerMask.GetMask("Player"), QueryTriggerInteraction.Ignore))
             {
                 const float visualOffset = 0.25f;
                 CmdPingPosition(hit.point + hit.normal * visualOffset, -hit.normal);
