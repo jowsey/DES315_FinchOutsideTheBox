@@ -213,15 +213,15 @@ public class PlayerController : NetworkBehaviour
                 }
             }
         }
-        if (HeldFlask != null && HeldFlask.state == Flask.State.Held)
-        {
-            if (PickupAction.action.IsPressed())
-            {
-                HeldFlask.CmdDrop();
-                Highlight.SetHighlightable("Flask", true);
-                HeldFlask = null;
-            }
-        }
+        //if (HeldFlask != null && HeldFlask.state == Flask.State.Held)
+        //{
+        //    if (PickupAction.action.IsPressed())
+        //    {
+        //        HeldFlask.CmdDrop();
+        //        Highlight.SetHighlightable("Flask", true);
+        //        HeldFlask = null;
+        //    }
+        //}
         Highlight.SetHighlightable("FlaskCarrier", HeldFlask != null);
     }
 

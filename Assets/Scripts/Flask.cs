@@ -15,6 +15,7 @@ public class Flask : Mirror.NetworkBehaviour
     private Collider[] _colliders;
     private Rigidbody _rb;
     [field: Mirror.SyncVar] public State state { get; private set; }
+    [SerializeField] public bool Smashable;
 
     private void Awake()
     {
@@ -49,6 +50,7 @@ public class Flask : Mirror.NetworkBehaviour
     {
         _target = putdownTarget;
         state = State.PuttingDown;
+        Smashable = true;
     }
 
     [Mirror.Command(requiresAuthority = false)]
@@ -63,6 +65,7 @@ public class Flask : Mirror.NetworkBehaviour
     private void CmdEndPutdown()
     {
         RpcEndPutdown();
+        Smashable = true;
     }
 
     [Mirror.ClientRpc]
@@ -122,13 +125,13 @@ public class Flask : Mirror.NetworkBehaviour
     {
         if (!col.collider.transform.CompareTag("Flask") && !col.collider.transform.CompareTag("FlaskCarrier") && LayerMask.LayerToName(col.collider.gameObject.layer) != "Cart")
         {
-            Smash();
+            if (Smashable) { Smash(); }
         }
     }
 
     void Smash()
     {
         //todo: implement visually
-        Destroy(gameObject);
+        gameObject.SetActive(false);
     }
 }
