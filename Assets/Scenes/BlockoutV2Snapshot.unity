@@ -109642,9 +109642,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineRotationComposer
   Composition:
-    ScreenPosition: {x: 0, y: 0.1}
+    ScreenPosition: {x: 0, y: 0}
     DeadZone:
-      Enabled: 1
+      Enabled: 0
       Size: {x: 0.5, y: 0.5}
     HardLimits:
       Enabled: 0
@@ -109652,7 +109652,7 @@ MonoBehaviour:
       Offset: {x: 0, y: 0}
   CenterOnActivate: 1
   TargetOffset: {x: 0, y: 1, z: 0}
-  Damping: {x: 1, y: 1}
+  Damping: {x: 5, y: 5}
   Lookahead:
     Enabled: 0
     Time: 0
