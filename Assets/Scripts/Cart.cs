@@ -31,18 +31,8 @@ public class Cart : NetworkBehaviour
     
     // Flask carrying
     [SerializeField] [Required] private Collider _flaskBounds;
-    
-    private Dictionary<GameObject, Vector3> _initialFlaskPositions = new();
-    
-    [field: SerializeField] [field: Sirenix.OdinInspector.ReadOnly] public int CarriedFlasks { get; private set; }
-    
-    [ValidateInput("@$value.Count > 0", "Cart doesn't have any flasks linked.", InfoMessageType.Warning)]
-    [SerializeField] private List<GameObject> _trackedFlasks = new();
-    
-    public int MaxFlasks => _trackedFlasks.Count;
-    
-    // Ratio of flasks currently being carried
-    public float FlasksRemainingRatio => (float)CarriedFlasks / _trackedFlasks.Count;
+    private Dictionary<Flask, Vector3> _initialFlaskPositions = new();
+    public List<Flask> CarriedFlasks = new();
 
     private void Awake()
     {
@@ -52,11 +42,6 @@ public class Cart : NetworkBehaviour
     private void Start()
     {
         Checkpoint.respawnEvent.AddListener(OnRespawn);
-        
-        foreach (var flask in _trackedFlasks)
-        {
-            _initialFlaskPositions[flask] = transform.InverseTransformPoint(flask.transform.position);
-        }
     }
     
     private void OnDestroy()
@@ -90,13 +75,6 @@ public class Cart : NetworkBehaviour
             {
                 wheel.MoveForce *= !UseNewTorqueSystem ? 0.6f : 1 / 0.6f;
             }
-        }
-        
-        // todo bad perf, should can probably just track in bounds trigger enter/exit
-        CarriedFlasks = _trackedFlasks.Count(f => _flaskBounds.bounds.Contains(f.transform.position));
-        if (isServer && CarriedFlasks == 0 && MaxFlasks > 0)
-        {
-            CmdInvokeRespawnEvent(CurrentCheckpointIndex);
         }
     }
 
@@ -143,12 +121,12 @@ public class Cart : NetworkBehaviour
         transform.rotation = newTransform.rotation;
         gameObject.SetActive(true);
         
-        ResetFlasks(true);
+        ResetFlasks(false);
     }
     
     public void ResetFlasks(bool includeOutOfBounds = false)
     {
-        foreach (var flask in _trackedFlasks)
+        foreach (var flask in CarriedFlasks)
         {
             if (includeOutOfBounds || _flaskBounds.bounds.Contains(flask.transform.position))
             {
