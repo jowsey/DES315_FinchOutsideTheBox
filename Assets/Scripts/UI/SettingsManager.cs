@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AK.Wwise;
 using Mirror;
 using Newtonsoft.Json;
 using Sirenix.OdinInspector;
@@ -16,17 +17,23 @@ namespace UI
     public class UserSettings
     {
         // Game
-        public string PlayerName = SettingsManager.GetRandomName();
-        
+        public string PlayerName;
+
         // Audio
+        public float MusicVolumePercent = 75.0f;
+        public float SfxVolumePercent = 75.0f;
+        public float VoiceVolumePercent = 100.0f;
         public bool PushToTalk = true;
         public bool NoiseSuppression = true;
         public string InputDevice = null;
-        public float VoiceChatVolume = 1.0f;
     }
 
     public class SettingsManager : MonoBehaviour
     {
+        // Wwise Authoring values. 15 is -6db, 30 is +6db, 22.5 is presumably +0dB.
+        public const float MaxMusicVolume = 30;
+        public const float MaxSfxVolume = 30;
+
         public static readonly string[] DefaultPlayerNames =
         {
             "Buttons", "Jupiter", "Misha",
@@ -45,12 +52,17 @@ namespace UI
         [SerializeField] [Required] private TMP_InputField _playerNameText;
 
         // Audio
+        [SerializeField] [Required] private Slider _musicVolumeSlider;
+        [SerializeField] [Required] private Slider _sfxVolumeSlider;
+        [SerializeField] [Required] private Slider _voiceVolumeSlider;
         [SerializeField] [Required] private Toggle _pttToggle;
         [SerializeField] [Required] private Toggle _noiseSuppressionToggle;
         [SerializeField] [Required] private TMP_Dropdown _inputDeviceDropdown;
-        [SerializeField] [Required] private Slider _voiceChatVolumeSlider;
 
         private string[] _oldInputDevices; //checked against Microphone.devices every frame for changes in the list
+
+        [SerializeField] [Required] private RTPC _musicVolumeRtpc;
+        [SerializeField] [Required] private RTPC _sfxVolumeRtpc;
 
         private void Awake()
         {
@@ -58,7 +70,7 @@ namespace UI
             // We still want to pull it fresh every time we re-enable.
             LoadFromDisk();
         }
-        
+
         private void OnEnable()
         {
             LoadFromDisk();
@@ -67,10 +79,13 @@ namespace UI
             _playerNameText.onValueChanged.AddListener(OnPlayerNameChanged);
 
             // Audio
+            _musicVolumeSlider.onValueChanged.AddListener(OnMusicVolumeChanged);
+            _sfxVolumeSlider.onValueChanged.AddListener(OnSfxVolumeChanged);
+            _voiceVolumeSlider.onValueChanged.AddListener(OnVoiceVolumeChanged);
+
             _pttToggle.onValueChanged.AddListener(OnPttToggleChanged);
             _noiseSuppressionToggle.onValueChanged.AddListener(OnNoiseSuppressionToggleChanged);
             _inputDeviceDropdown.onValueChanged.AddListener(OnInputDeviceChanged);
-            _voiceChatVolumeSlider.onValueChanged.AddListener(OnVoiceChatVolumeChanged);
         }
 
         private void OnDisable()
@@ -79,11 +94,14 @@ namespace UI
             _playerNameText.onValueChanged.RemoveListener(OnPlayerNameChanged);
 
             // Audio
+            _musicVolumeSlider.onValueChanged.RemoveListener(OnMusicVolumeChanged);
+            _sfxVolumeSlider.onValueChanged.RemoveListener(OnSfxVolumeChanged);
+            _voiceVolumeSlider.onValueChanged.RemoveListener(OnVoiceVolumeChanged);
+
             _pttToggle.onValueChanged.RemoveListener(OnPttToggleChanged);
             _noiseSuppressionToggle.onValueChanged.RemoveListener(OnNoiseSuppressionToggleChanged);
             _inputDeviceDropdown.onValueChanged.RemoveListener(OnInputDeviceChanged);
             _inputDeviceDropdown.ClearOptions();
-            _voiceChatVolumeSlider.onValueChanged.RemoveListener(OnVoiceChatVolumeChanged);
         }
 
         private void Start()
@@ -122,7 +140,13 @@ namespace UI
             _playerNameText.text = ActiveSettings.PlayerName;
 
             // Audio
+            _musicVolumeSlider.value = ActiveSettings.MusicVolumePercent;
+            _sfxVolumeSlider.value = ActiveSettings.SfxVolumePercent;
+            _voiceVolumeSlider.value = ActiveSettings.VoiceVolumePercent;
+            
+            _noiseSuppressionToggle.isOn = ActiveSettings.NoiseSuppression;
             _pttToggle.isOn = ActiveSettings.PushToTalk;
+            
             _inputDeviceDropdown.ClearOptions();
             _inputDeviceDropdown.AddOptions(new List<string> { "None" });
             _inputDeviceDropdown.AddOptions(Microphone.devices.ToList());
@@ -132,6 +156,28 @@ namespace UI
         private void OnPlayerNameChanged(string val)
         {
             ActiveSettings.PlayerName = val;
+            SaveToDisk();
+        }
+
+        private void OnMusicVolumeChanged(float val)
+        {
+            ActiveSettings.MusicVolumePercent = val;
+            SaveToDisk();
+
+            _musicVolumeRtpc.SetGlobalValue((val / 100) * MaxMusicVolume);
+        }
+
+        private void OnSfxVolumeChanged(float val)
+        {
+            ActiveSettings.SfxVolumePercent = val;
+            SaveToDisk();
+
+            _sfxVolumeRtpc.SetGlobalValue((val / 100) * MaxSfxVolume);
+        }
+
+        private void OnVoiceVolumeChanged(float val)
+        {
+            ActiveSettings.VoiceVolumePercent = val;
             SaveToDisk();
         }
 
@@ -154,12 +200,6 @@ namespace UI
             SaveToDisk();
         }
 
-        private void OnVoiceChatVolumeChanged(float val)
-        {
-            ActiveSettings.VoiceChatVolume = val;
-            SaveToDisk();
-        }
-
         private void SaveToDisk()
         {
             var json = JsonConvert.SerializeObject(ActiveSettings, Formatting.Indented);
@@ -172,7 +212,10 @@ namespace UI
             {
                 var json = System.IO.File.ReadAllText(SettingsFilePath);
                 ActiveSettings = JsonConvert.DeserializeObject<UserSettings>(json);
-
+                
+                _musicVolumeRtpc.SetGlobalValue((ActiveSettings.VoiceVolumePercent / 100) * MaxMusicVolume);
+                _sfxVolumeRtpc.SetGlobalValue((ActiveSettings.VoiceVolumePercent / 100) * MaxSfxVolume);
+                
                 if (!Microphone.devices.Contains(ActiveSettings.InputDevice))
                 {
                     ActiveSettings.InputDevice = null;
