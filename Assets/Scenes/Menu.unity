@@ -639,7 +639,6 @@ GameObject:
   - component: {fileID: 143424543}
   - component: {fileID: 143424549}
   - component: {fileID: 143424548}
-  - component: {fileID: 143424550}
   m_Layer: 0
   m_Name: BGM Controller
   m_TagString: Untagged
@@ -763,28 +762,6 @@ MonoBehaviour:
   groupIdInternal: 0
   valueGuidInternal: 
   groupGuidInternal: 
---- !u!114 &143424550
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 143424541}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04923d197b4776348afe8235688698cb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
-  musicFloat: 0
-  sfxFloat: 0
-  musicVolume:
-    idInternal: 0
-    valueGuidInternal: 
-    WwiseObjectReference: {fileID: 11400000, guid: 3546cd9eab967cb4180e196862aa89e5, type: 2}
-  sfxVolume:
-    idInternal: 0
-    valueGuidInternal: 
-    WwiseObjectReference: {fileID: 11400000, guid: d4eb3b1d8f841194999ef209e0ad5839, type: 2}
 --- !u!1 &149635944
 GameObject:
   m_ObjectHideFlags: 0
@@ -3214,18 +3191,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1251743720}
     m_Modifications:
-    - target: {fileID: 1444857110994938882, guid: 0956a6b6c8e74b741a97b797c37089be, type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1444857110994938882, guid: 0956a6b6c8e74b741a97b797c37089be, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1444857110994938882, guid: 0956a6b6c8e74b741a97b797c37089be, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 2074572012000344214, guid: 0956a6b6c8e74b741a97b797c37089be, type: 3}
       propertyPath: m_Name
       value: SettingsMenu
@@ -3384,14 +3349,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6619413929593567775, guid: 0956a6b6c8e74b741a97b797c37089be, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6810257284287447472, guid: 0956a6b6c8e74b741a97b797c37089be, type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6810257284287447472, guid: 0956a6b6c8e74b741a97b797c37089be, type: 3}
-      propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8417248369979282937, guid: 0956a6b6c8e74b741a97b797c37089be, type: 3}

@@ -352,8 +352,10 @@ namespace VoIP
             {
                 for (int c = 0; c < channels; c++)
                 {
-                    float vcVolLin = SettingsManager.ActiveSettings.VoiceChatVolume;
-                    data[s * channels + c] = samples[s] * (vcVolLin * vcVolLin); //quadratic gain
+                    data[s * channels + c] = samples[s];
+
+                    float voiceVolLinear = SettingsManager.ActiveSettings.VoiceVolumePercent / 100f;
+                    data[s * channels + c] *= (voiceVolLinear * voiceVolLinear); // apply quadratic gain
                 }
             }
 

@@ -24,12 +24,15 @@ namespace UI
             _taglineText.alpha = 0f;
             _areaNameText.alpha = 0f;
 
+            Tween.Delay(1.5f, () => CheckpointJingle.Post(gameObject));
+            
             Sequence.Create()
-                .Group(Tween.Alpha(_mainGroup, 1, 3f, ease: Ease.InOutCubic))
-                .Group(Tween.Alpha(_taglineText, 1, 3.5f, ease: Ease.InOutCubic, startDelay: 0.5f))
-                .Group(Tween.Alpha(_areaNameText, 1, 3.5f, ease: Ease.InOutCubic, startDelay: 1f))
-                .Chain(Tween.Alpha(_mainGroup, 0, 3f, ease: Ease.InOutCubic, startDelay: 3f))
-                .OnComplete(() => Destroy(gameObject));
+                .Group(Tween.Alpha(_mainGroup, 1, 2.5f, ease: Ease.InOutCubic))
+                .Group(Tween.Alpha(_taglineText, 1, 3f, ease: Ease.InOutCubic, startDelay: 0.5f))
+                .Group(Tween.Alpha(_areaNameText, 1, 3f, ease: Ease.InOutCubic, startDelay: 1f))
+                .ChainDelay(3f)
+                .Chain(Tween.Alpha(_mainGroup, 0, 3f, ease: Ease.InOutCubic))
+                .OnComplete(() => Destroy(gameObject), false);
         }
     }
 }

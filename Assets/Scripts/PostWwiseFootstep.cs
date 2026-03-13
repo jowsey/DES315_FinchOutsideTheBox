@@ -9,21 +9,11 @@ public class PostWwiseFootstep : MonoBehaviour
 
     public void PlayFootstepSound()
     {
-        
-            Footstep.Post(gameObject);
-        
-        
+        Footstep.Post(gameObject);
     }
 
     public void PlayJumpSound()
     {
         Jump.Post(gameObject);
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
 }
