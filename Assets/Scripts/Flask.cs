@@ -1,10 +1,11 @@
-using Unity.VisualScripting;
+using System;
+using Mirror;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
-public class Flask : Mirror.NetworkBehaviour
+public class Flask : NetworkBehaviour
 {
-    public enum State
+    public enum HeldState
     {
         None,
         PickingUp,
@@ -12,151 +13,174 @@ public class Flask : Mirror.NetworkBehaviour
         PuttingDown,
     }
 
-    private Transform _target;
+    private Transform _moveTarget;
     private Collider[] _colliders;
     private Rigidbody _rb;
-    [field: Mirror.SyncVar] public State state { get; private set; }
+
+    [SerializeField] private float _movementSpeed;
+
+    [field: SyncVar] public HeldState State { get; private set; }
     [SerializeField] public bool Smashable;
+
+    private PlayerController _holder;
 
     private void Awake()
     {
         _rb = GetComponent<Rigidbody>();
         _colliders = GetComponentsInChildren<Collider>();
-        state = State.None;
     }
 
-    public void Start()
+    [Command(requiresAuthority = false)]
+    public void CmdTryPickup(NetworkConnectionToClient sender = null)
     {
-        Checkpoint.respawnEvent.AddListener(OnRespawn);
+        if (State != HeldState.None) return;
+
+        var player = sender!.identity.GetComponent<PlayerController>();
+        if (player.HeldFlask) return;
+
+        _holder = player;
+
+        _moveTarget = _holder.FlaskPickupTarget;
+        State = HeldState.PickingUp;
+
+        RpcPickup(sender.identity);
     }
 
-    private void OnRespawn(Checkpoint checkpoint)
+    [ClientRpc]
+    private void RpcPickup(NetworkIdentity holderIdentity)
     {
-        gameObject.SetActive(true);
+        _holder = holderIdentity.GetComponent<PlayerController>();
+
+        foreach (Collider col in _colliders)
+        {
+            col.enabled = false;
+        }
+
+        if (authority)
+        {
+            _rb.isKinematic = true;
+        }
+
+        _holder.HeldFlask = this;
+        if (_holder.isLocalPlayer)
+        {
+            _holder.FlaskPickup.Post(gameObject);
+            Highlight.SetHighlightable("Flask", false);
+            Highlight.SetHighlightable("FlaskCarrier", true);
+        }
     }
 
-    [Mirror.Command(requiresAuthority = false)]
-    public void CmdPickup(Transform pickupTarget)
+    [Command(requiresAuthority = false)]
+    public void CmdTryPutdown(FlaskPutdownTarget target, NetworkConnectionToClient sender = null)
     {
-        //Pickup involves disabling colliders and setting rigidbody to kinematic, then moving flask towards the target
-        //Syncing of movement of flask towards pickup target will be handled by NetworkRigidbody
-        //Disabling colliders and setting rigidbody to kinematic needs to be done per-client though, so use an RPC
-        _target = pickupTarget;
-        RpcPickup();
-        state = State.PickingUp;
-    }
+        if (State != HeldState.Held) return;
 
-    [Mirror.Command(requiresAuthority = false)]
-    public void CmdPutdown(Transform putdownTarget)
-    {
-        _target = putdownTarget;
-        state = State.PuttingDown;
+        var player = sender!.identity.GetComponent<PlayerController>();
+        if (_holder != player) return;
+
+        _moveTarget = target.transform;
+        State = HeldState.PuttingDown;
         Smashable = true;
     }
 
-    [Mirror.Command(requiresAuthority = false)]
-    public void CmdDrop()
-    {
-        _target = null;
-        state = State.None;
-        RpcEndPutdown();
-    }
-
-    [Mirror.Command(requiresAuthority = false)]
-    private void CmdEndPutdown()
-    {
-        RpcEndPutdown();
-        Smashable = true;
-    }
-
-    [Mirror.ClientRpc]
-    private void RpcPickup()
-    {
-        foreach (Collider collider in _colliders) { collider.enabled = false; }
-        _rb.isKinematic = true;
-    }
-
-    //[Mirror.ClientRpc]
-    //private void RpcEndPickup()
-    //{
-    //}
-
-    [Mirror.ClientRpc]
+    [ClientRpc]
     private void RpcEndPutdown()
     {
-        foreach (Collider collider in _colliders) { collider.enabled = true; }
-        _rb.isKinematic = false;
-        _rb.linearVelocity = Vector3.zero;
-        _rb.angularVelocity = Vector3.zero;
+        foreach (Collider col in _colliders)
+        {
+            col.enabled = true;
+        }
+
+        if (authority)
+        {
+            _rb.isKinematic = false;
+            _rb.linearVelocity = Vector3.zero;
+            _rb.angularVelocity = Vector3.zero;
+        }
+
+        _holder.HeldFlask = null;
+        if (_holder.isLocalPlayer)
+        {
+            Highlight.SetHighlightable("Flask", true);
+            Highlight.SetHighlightable("FlaskCarrier", false);
+        }
+
+        _holder = null;
     }
 
     private void FixedUpdate()
     {
-        if (state == State.Held)
+        if (!authority || State == HeldState.None) return;
+
+        if (State == HeldState.Held)
         {
-            if (_target) { _rb.MovePosition(_target.position); }
-            return;
-        }
-        if (state == State.None)
-        {
+            _rb.MovePosition(_holder.FlaskPickupTarget.position);
             return;
         }
 
-        float movementSpeed = 10.0f;
-        Vector3 newPos = _rb.position + (_target.position - _rb.position).normalized * Time.fixedDeltaTime * movementSpeed;
-        _rb.MovePosition(newPos);
+        Vector3 delta = (_moveTarget.position - _rb.position).normalized * (Time.fixedDeltaTime * _movementSpeed);
+        _rb.MovePosition(_rb.position + delta);
 
-        if ((_rb.position - _target.position).sqrMagnitude < 1e-2)
+        if ((_rb.position - _moveTarget.position).sqrMagnitude < 1e-2)
         {
-            if (state == State.PickingUp)
+            if (State == HeldState.PickingUp)
             {
-                /*CmdEndPickup();*/
-                state = State.Held;
+                State = HeldState.Held;
             }
-            else
+            else if (State == HeldState.PuttingDown)
             {
-                CmdEndPutdown();
-                _target = null;
-                state = State.None;
+                State = HeldState.None;
+                _moveTarget = null;
+
+                RpcEndPutdown();
             }
+        }
+    }
+
+    private void LateUpdate()
+    {
+        // Clients simulate separately to mask latency
+        if (!authority && State == HeldState.Held)
+        {
+            transform.position = _holder.FlaskPickupTarget.position;
         }
     }
 
     private void OnCollisionEnter(Collision col)
     {
-        if (!col.collider.transform.CompareTag("Flask") && !col.collider.transform.CompareTag("FlaskCarrier") && LayerMask.LayerToName(col.collider.gameObject.layer) != "Cart")
+        if (!col.collider.transform.CompareTag("Flask") &&
+            !col.collider.transform.CompareTag("FlaskCarrier") &&
+            LayerMask.LayerToName(col.collider.gameObject.layer) != "Cart")
         {
-            if (Smashable) { Smash(); }
+            if (Smashable)
+            {
+                Smash();
+            }
         }
     }
 
-    void Smash()
+    private void Smash()
     {
         //todo: implement visually
         gameObject.SetActive(false);
     }
 
-
     private void OnTriggerEnter(Collider other)
     {
-        FlaskCarrier carrier = other.GetComponentInParent<FlaskCarrier>();
-        if (carrier)
+        if (other.CompareTag("FlaskCarrier"))
         {
             Cart cart = other.GetComponentInParent<Cart>();
-            Smashable = true;
             cart.CarriedFlasks.Add(this);
-            Debug.Log("Enter " + cart.CarriedFlasks.Count);
+            Smashable = true;
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        FlaskCarrier carrier = other.GetComponentInParent<FlaskCarrier>();
-        if (carrier)
+        if (other.CompareTag("FlaskCarrier"))
         {
             Cart cart = other.GetComponentInParent<Cart>();
             cart.CarriedFlasks.Remove(this);
-            Debug.Log("Exit " + cart.CarriedFlasks.Count);
         }
     }
 }

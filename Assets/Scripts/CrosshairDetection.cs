@@ -2,9 +2,11 @@ using UnityEngine;
 
 public class CrosshairDetection : MonoBehaviour
 {
-    [SerializeField] private float _maxDistance;
     private Camera _camera;
-    public static Transform _hitTransform { get; private set; } //The transform of the object currently being looked at
+    [SerializeField] private float _maxDistance;
+    
+    //The transform of the object currently being looked at
+    public static Transform TargetedTransform { get; private set; } 
 
     private void Awake()
     {
@@ -17,19 +19,19 @@ public class CrosshairDetection : MonoBehaviour
         Ray ray = _camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         if (Physics.Raycast(ray, out RaycastHit hit, _maxDistance, ~LayerMask.GetMask("Player"), QueryTriggerInteraction.Ignore))
         {
-            if (hit.transform == _hitTransform) { return; }
+            if (hit.transform == TargetedTransform) { return; }
             if (hit.transform.TryGetComponent<Interactable>(out Interactable interactable))
             {
-                _hitTransform = interactable.InteractedTransform;
+                TargetedTransform = interactable.InteractedTransform;
             }
             else
             {
-                _hitTransform = null;
+                TargetedTransform = null;
             }
         }
         else
         {
-            _hitTransform = null;
+            TargetedTransform = null;
         }
     }
 }

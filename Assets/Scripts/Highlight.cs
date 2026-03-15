@@ -3,72 +3,87 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class Highlight: MonoBehaviour
+public class Highlight : MonoBehaviour
 {
+    private static readonly int BaseColor = Shader.PropertyToID("_BaseColor");
+
+    //Mapping from tag to whether or not that tag can be highlighted
+    private static readonly Dictionary<string, bool> _isTagHighlightable = new();
+
+    private static readonly Dictionary<string, List<Highlight>> _lookupByTag = new();
+
     private bool _highlighted;
-    private MeshRenderer[] _renderers;
-    [SerializeField][Required] private Color _highlightedColour;
-    private Color _unhighlightedColour;
-    private static Dictionary<string, bool> _highlightable = new(); //Mapping from tag to whether or not that tag can be highlighted
+    private Renderer[] _renderers;
+
+    [SerializeField] [Required] private Color _highlightedColour;
 
     private void Awake()
     {
         _highlighted = false;
-        _renderers = GetComponentsInChildren<MeshRenderer>();
-        _unhighlightedColour = _renderers[0].material.GetColor("_BaseColor");
+        _renderers = GetComponentsInChildren<Renderer>();
     }
 
-    private void Start()
+    private void OnEnable()
     {
-        if (!_highlightable.ContainsKey(tag)) { _highlightable.Add(tag, true); }
-    }
-
-    static public bool GetHighlightable(string tag) => _highlightable[tag];
-    static public void SetHighlightable(string tag, bool val)
-    {
-        _highlightable[tag] = val;
-        foreach (GameObject o in GameObject.FindGameObjectsWithTag(tag))
+        // Init lookup maps
+        _isTagHighlightable.TryAdd(tag, true);
+        if (!_lookupByTag.ContainsKey(tag))
         {
-            if (o.TryGetComponent<Highlight>(out Highlight highlight))
-            {                
-                //No mismatch
-                if (_highlightable[tag] == highlight._highlighted) { return; }
+            _lookupByTag.Add(tag, new List<Highlight>());
+        }
 
-                //Mismatch between _highlighted and _highlightable
-                //If object is highlightable but not highlighted, no issues
-                if (_highlightable[tag] && !highlight._highlighted) { return; }
+        _lookupByTag[tag].Add(this);
+    }
 
+    private void OnDisable()
+    {
+        _lookupByTag[tag].Remove(this);
+    }
+
+    public static void SetHighlightable(string tag, bool val)
+    {
+        _isTagHighlightable[tag] = val;
+        foreach (Highlight highlight in _lookupByTag[tag])
+        {
+            if (!_isTagHighlightable[tag] && highlight._highlighted)
+            {
                 //Object is highlighted but not highlightable, unhighlight it
-                foreach (MeshRenderer renderer in highlight._renderers)
-                {
-                    renderer.material.SetColor("_BaseColor", highlight._unhighlightedColour);
-                }
-                highlight._highlighted = false;
+                highlight.Unhighlight();
             }
         }
     }
 
-	private void Update()
-	{
-        bool beingLookedAt = (CrosshairDetection._hitTransform == transform) || GetComponentsInChildren<Transform>().Contains(CrosshairDetection._hitTransform);
+    private void Unhighlight()
+    {
+        foreach (var rend in _renderers)
+        {
+            rend.SetPropertyBlock(null);
+        }
 
-        if (beingLookedAt && !_highlighted && _highlightable[tag])
+        _highlighted = false;
+    }
+
+    private void Update()
+    {
+        // todo profile
+        bool beingLookedAt = CrosshairDetection.TargetedTransform == transform || GetComponentsInChildren<Transform>().Contains(CrosshairDetection.TargetedTransform);
+
+        if (beingLookedAt && !_highlighted && _isTagHighlightable[tag])
         {
             //Object is being looked at and is highlightable, but is not highlighted, highlight it
-            foreach (MeshRenderer renderer in _renderers)
+            foreach (Renderer rend in _renderers)
             {
-                renderer.material.SetColor("_BaseColor", _highlightedColour);
+                var mpb = new MaterialPropertyBlock();
+                mpb.SetColor(BaseColor, _highlightedColour);
+                rend.SetPropertyBlock(mpb);
             }
+
             _highlighted = true;
         }
         else if (!beingLookedAt && _highlighted)
         {
-            //Object isn't being looked at but is highlighted, unhighlight it
-            foreach (MeshRenderer renderer in _renderers)
-            {
-                renderer.material.SetColor("_BaseColor", _unhighlightedColour);
-            }
-            _highlighted = false;
+            //Object is highlighted but not highlightable, unhighlight it
+            Unhighlight();
         }
     }
 }
