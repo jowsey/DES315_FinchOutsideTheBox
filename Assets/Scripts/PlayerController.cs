@@ -154,6 +154,10 @@ public class PlayerController : NetworkBehaviour
         // Hide nameplate for local player
         _nameplateCanvas.gameObject.SetActive(false);
 
+        // Set default highlight states for interactables
+        Highlight.SetHighlightable("Flask", true);
+        Highlight.SetHighlightable("FlaskCarrier", false);
+
         // todo this sucks
         // eventually we should just link carts to 2 players so we can have an arbitrary number of carts/players
         var wheels = FindObjectsByType<WheelSeat>(FindObjectsSortMode.None);
