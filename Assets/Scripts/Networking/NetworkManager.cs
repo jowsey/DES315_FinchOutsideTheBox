@@ -1,4 +1,5 @@
-﻿using Mirror;
+﻿using System.Linq;
+using Mirror;
 using UI;
 using UnityEngine;
 
@@ -58,6 +59,12 @@ namespace Networking
                 return;
             }
 
+            // todo eventually this should first assign the player to a cart, and then get *that* cart's checkpoints
+            // todo also it should cache this on reaching checkpoint instead of re-running on every join
+            var cart = FindAnyObjectByType<Cart>();
+            var activeCheckpoint = cart.Checkpoints[Mathf.Clamp(cart.CurrentCheckpointIndex, 0, cart.Checkpoints.Count - 1)]; // clamp because it starts at -1
+            startPositions = activeCheckpoint.playerRespawnLocalTransforms.ToList();
+
             var startPos = GetStartPosition();
 
             var player = Instantiate(playerPrefab, startPos.position, startPos.rotation).GetComponent<PlayerController>();
@@ -66,7 +73,7 @@ namespace Networking
             player.PlayerSkin = player.PlayerIndex == 0 ? PlayerPresenceFeed.CatSkin.Green : PlayerPresenceFeed.CatSkin.Blue;
 
             NetworkServer.AddPlayerForConnection(conn, player.gameObject);
-            
+
             NetworkServer.SendToAll(new PresenceFeedMessage
             {
                 PlayerNetId = conn.identity.netId,
@@ -88,7 +95,7 @@ namespace Networking
                     PresenceType = PlayerPresenceFeed.PresenceType.Leave
                 });
             }
-            
+
             base.OnServerDisconnect(conn);
         }
 
@@ -96,10 +103,10 @@ namespace Networking
         {
             // No need to report on our own presence
             if (msg.PlayerNetId == NetworkClient.connection.identity.netId) return;
-                
+
             if (msg.PresenceType == PlayerPresenceFeed.PresenceType.Join)
                 PlayerPresenceFeed.OnPlayerJoin.Invoke(msg.PlayerName, msg.Skin);
-            else if (msg.PresenceType == PlayerPresenceFeed.PresenceType.Leave) 
+            else if (msg.PresenceType == PlayerPresenceFeed.PresenceType.Leave)
                 PlayerPresenceFeed.OnPlayerLeave.Invoke(msg.PlayerName, msg.Skin);
         }
     }
