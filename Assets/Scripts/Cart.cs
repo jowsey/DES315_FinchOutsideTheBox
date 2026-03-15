@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using Mirror;
 using Sirenix.OdinInspector;
 using UI;
@@ -12,7 +11,8 @@ public class Cart : NetworkBehaviour
     private Rigidbody _rb;
     
     [ValidateInput("@gameObject.scene.isLoaded ? $value.Count > 0 : true", "Cart doesn't have any checkpoints linked.", InfoMessageType.Warning)]
-    [SerializeField] private List<Checkpoint> _checkpoints;
+    [field: SerializeField] public List<Checkpoint> Checkpoints { get; private set; }
+
     [field: SerializeField] public int CurrentCheckpointIndex { get; private set; } = -1;
 
     [SerializeField] [Required] private CheckpointBanner _checkpointBannerPrefab;
@@ -44,7 +44,7 @@ public class Cart : NetworkBehaviour
         }
         _rb  = GetComponent<Rigidbody>();
         _uiCanvas = GameObject.FindGameObjectWithTag("UICanvas").transform;
-        _flasksAtCheckpoint = new Dictionary<Rigidbody, Vector3>[_checkpoints.Count];
+        _flasksAtCheckpoint = new Dictionary<Rigidbody, Vector3>[Checkpoints.Count];
         for (int i = 0; i < _flasksAtCheckpoint.Length; ++i)
         {
             _flasksAtCheckpoint[i] = new Dictionary<Rigidbody, Vector3>();
@@ -67,7 +67,7 @@ public class Cart : NetworkBehaviour
         {
             CmdInvokeRespawnEvent(CurrentCheckpointIndex - 1);
         }
-        else if (_devCheckpointForwardAction.action.WasPressedThisFrame() && CurrentCheckpointIndex != _checkpoints.Count - 1)
+        else if (_devCheckpointForwardAction.action.WasPressedThisFrame() && CurrentCheckpointIndex != Checkpoints.Count - 1)
         {
             CmdInvokeRespawnEvent(CurrentCheckpointIndex + 1);
         }
@@ -86,7 +86,7 @@ public class Cart : NetworkBehaviour
         if (other.CompareTag("Checkpoint"))
         {
             Checkpoint checkpoint = other.GetComponent<Checkpoint>();
-            var newIndex = _checkpoints.IndexOf(checkpoint);
+            var newIndex = Checkpoints.IndexOf(checkpoint);
             
             if (newIndex > CurrentCheckpointIndex)
             {
@@ -149,13 +149,13 @@ public class Cart : NetworkBehaviour
     [ClientRpc]
     private void RpcInvokeRespawnEvent(int newCheckpointIndex)
     {
-        if (newCheckpointIndex < 0 || newCheckpointIndex >= _checkpoints.Count)
+        if (newCheckpointIndex < 0 || newCheckpointIndex >= Checkpoints.Count)
         {
             Debug.LogWarning($"Tried to respawn at invalid checkpoint index {newCheckpointIndex}");
             return;
         }
 
         CurrentCheckpointIndex = newCheckpointIndex;
-        Checkpoint.RespawnEvent.Invoke(_checkpoints[CurrentCheckpointIndex]);
+        Checkpoint.RespawnEvent.Invoke(Checkpoints[CurrentCheckpointIndex]);
     }
 }
