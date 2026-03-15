@@ -16,51 +16,59 @@ public class Cart : NetworkBehaviour
     [field: SerializeField] public int CurrentCheckpointIndex { get; private set; } = -1;
 
     [SerializeField] [Required] private CheckpointBanner _checkpointBannerPrefab;
-    
+
     [SerializeField] [Required] private InputActionReference _devCheckpointBackAction;
     [SerializeField] [Required] private InputActionReference _devCheckpointForwardAction;
 
     [Tooltip("Base amount of tilt-correct to apply. Higher reduces overall amount of tilting.")]
     [SerializeField] private float _tiltCorrection = 1.1f;
+
     [Tooltip("Exponent for how much the amount of tilt-correction increases in response to tilting. 1 means consistent, higher makes it kick in far more when tilting more.")]
     [SerializeField] private float _tiltCorrectionScaling = 2f;
-
-    public List<Flask> Flasks; //temp - please remove
 
     // UI
     private Transform _uiCanvas;
 
     // Flask carrying
-    [SerializeField][Required] private Collider _flaskBounds;
+    [SerializeField] [Required] private Collider _flaskBounds;
     public HashSet<Flask> CarriedFlasks = new();
     private Dictionary<Rigidbody, Vector3>[] _flasksAtCheckpoint;
 
-
     private void Awake()
     {
-        foreach (var flask in Flasks)
-        {
-            CarriedFlasks.Add(flask);
-        }
-        _rb  = GetComponent<Rigidbody>();
+        _rb = GetComponent<Rigidbody>();
         _uiCanvas = GameObject.FindGameObjectWithTag("UICanvas").transform;
+
         _flasksAtCheckpoint = new Dictionary<Rigidbody, Vector3>[Checkpoints.Count];
         for (int i = 0; i < _flasksAtCheckpoint.Length; ++i)
         {
             _flasksAtCheckpoint[i] = new Dictionary<Rigidbody, Vector3>();
         }
+        
+        // First checkpoint runs on Frame 0 before flasks run OnTriggerEnter so we need to manually init
+        // - Bounds check isn't perfectly accurate, but we can reasonably assume
+        // there won't be flasks in the level that are both within the bounds of
+        // the flask carrier on scene start yet not meant to be in the flask
+        var allFlasks = FindObjectsByType<Flask>(FindObjectsSortMode.None);
+        foreach (var flask in allFlasks)
+        {
+            if (_flaskBounds.bounds.Contains(flask.transform.position))
+            {
+                CarriedFlasks.Add(flask);
+            }
+        }
     }
-    
+
     private void Start()
     {
         Checkpoint.RespawnEvent.AddListener(OnRespawn);
     }
-    
+
     private void OnDestroy()
     {
         Checkpoint.RespawnEvent.RemoveListener(OnRespawn);
     }
-    
+
     private void Update()
     {
         if (_devCheckpointBackAction.action.WasPressedThisFrame() && CurrentCheckpointIndex != 0)
@@ -81,13 +89,26 @@ public class Cart : NetworkBehaviour
         _rb.AddTorque(_tiltCorrection * rotExp * transform.forward);
     }
 
+    // Records the local positions of all CarriedFlasks and writes them to the current checkpoint's snapshot
+    private void CaptureCheckpointFlasksSnapshot()
+    {
+        _flasksAtCheckpoint[CurrentCheckpointIndex].Clear();
+        
+        Physics.SyncTransforms();
+        foreach (Flask flask in CarriedFlasks)
+        {
+            Rigidbody flaskRb = flask.GetComponent<Rigidbody>();
+            _flasksAtCheckpoint[CurrentCheckpointIndex][flaskRb] = transform.InverseTransformPoint(flask.transform.position);
+        }
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Checkpoint"))
         {
             Checkpoint checkpoint = other.GetComponent<Checkpoint>();
             var newIndex = Checkpoints.IndexOf(checkpoint);
-            
+
             if (newIndex > CurrentCheckpointIndex)
             {
                 // New checkpoint reached
@@ -96,13 +117,8 @@ public class Cart : NetworkBehaviour
                 var checkpointBanner = Instantiate(_checkpointBannerPrefab, _uiCanvas.transform);
                 checkpointBanner.Checkpoint = checkpoint;
                 checkpointBanner.IsFirst = newIndex == 0;
-
-                Physics.SyncTransforms();
-                foreach (Flask flask in CarriedFlasks)
-                {
-                    Rigidbody flaskRb = flask.GetComponent<Rigidbody>();
-                    _flasksAtCheckpoint[CurrentCheckpointIndex][flaskRb] = transform.InverseTransformPoint(flask.transform.position);
-                }
+                
+                CaptureCheckpointFlasksSnapshot();
             }
         }
     }
@@ -127,7 +143,7 @@ public class Cart : NetworkBehaviour
             ResetFlasks();
         }
     }
-    
+
     public void ResetFlasks()
     {
         foreach (KeyValuePair<Rigidbody, Vector3> flaskState in _flasksAtCheckpoint[CurrentCheckpointIndex])
@@ -139,7 +155,7 @@ public class Cart : NetworkBehaviour
             rb.angularVelocity = Vector3.zero;
         }
     }
-    
+
     [Command(requiresAuthority = false)]
     public void CmdInvokeRespawnEvent(int newCheckpointIndex)
     {
@@ -156,6 +172,7 @@ public class Cart : NetworkBehaviour
         }
 
         CurrentCheckpointIndex = newCheckpointIndex;
+        CaptureCheckpointFlasksSnapshot();
         Checkpoint.RespawnEvent.Invoke(Checkpoints[CurrentCheckpointIndex]);
     }
 }
