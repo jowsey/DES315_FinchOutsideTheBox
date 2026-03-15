@@ -14,7 +14,7 @@ public class PlayerController : NetworkBehaviour
     private static readonly int GroundedState = Animator.StringToHash("Grounded");
     private static readonly int FallState = Animator.StringToHash("Fall");
     private static readonly int GlideState = Animator.StringToHash("Glide");
-    
+
     [Header("Network")]
     [SyncVar] [ReadOnly] public int PlayerIndex;
 
@@ -28,7 +28,7 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private CrosshairDetection _crosshairDetector;
     [SerializeField] private Canvas _nameplateCanvas;
     [SerializeField] private TextMeshProUGUI _playerNameText;
-    
+
     [Header("Animation")]
     [Tooltip("The minimum velocity required to initiate the gliding animation (should be negative)")]
     [SerializeField] private float _fallAnimationMinDownardsVelocity;
@@ -80,7 +80,7 @@ public class PlayerController : NetworkBehaviour
     [field: SyncVar] [field: ReadOnly] public float AnalogueMoveScale { get; private set; }
 
     private List<Vector3> _contactNormals = new();
-    
+
     [SerializeField] private ActionCurveLine _actionCurveLinePrefab;
 
     [field: SerializeField] public Transform FlaskPickupTarget { get; private set; }
@@ -92,7 +92,7 @@ public class PlayerController : NetworkBehaviour
     {
         Rb = GetComponent<Rigidbody>();
         _networkAnimator = GetComponent<NetworkAnimator>();
-        
+
         Checkpoint.respawnEvent.AddListener(OnRespawn);
     }
 
@@ -106,7 +106,7 @@ public class PlayerController : NetworkBehaviour
                 renderer.sharedMaterial = _player2Material;
             }
         }
-        
+
         _camera = FindAnyObjectByType<CinemachineCamera>(FindObjectsInactive.Include);
         _playerNameText.text = PlayerName;
     }
@@ -142,7 +142,7 @@ public class PlayerController : NetworkBehaviour
     public override void OnStartLocalPlayer()
     {
         Cursor.lockState = CursorLockMode.Locked;
-        
+
         // Set camera follow target
         if (!_camera.Follow || !_camera.LookAt)
         {
@@ -150,10 +150,10 @@ public class PlayerController : NetworkBehaviour
             _camera.Follow = transform;
             _camera.LookAt = transform;
         }
-        
+
         // Hide nameplate for local player
         _nameplateCanvas.gameObject.SetActive(false);
-        
+
         // todo this sucks
         // eventually we should just link carts to 2 players so we can have an arbitrary number of carts/players
         var wheels = FindObjectsByType<WheelSeat>(FindObjectsSortMode.None);
@@ -264,8 +264,8 @@ public class PlayerController : NetworkBehaviour
             {
                 RTPCSpeedValue += 4f;
             }
-            
-            
+
+
             Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, Quaternion.LookRotation(WorldSpaceMoveDir, Vector3.up), Time.fixedDeltaTime * rotationSmoothingSpeed));
         }
         else
@@ -281,7 +281,7 @@ public class PlayerController : NetworkBehaviour
         if (Seat && _jumpPressed)
         {
             Seat.CmdUnsitPlayer();
-            
+
             CleanupFixedUpdate();
             return;
         }
@@ -304,7 +304,7 @@ public class PlayerController : NetworkBehaviour
 
             Rb.MovePosition(Rb.position + delta);
         }
-        
+
         if (_jumpPressed && (grounded || groundedOnBumpy))
         {
             _networkAnimator.SetTrigger(JumpTrigger);
