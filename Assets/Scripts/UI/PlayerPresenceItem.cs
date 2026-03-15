@@ -8,8 +8,7 @@ namespace UI
 {
     public class PlayerPresenceItem : MonoBehaviour
     {
-        [SerializeField] private Sprite _greenCatFace;
-        [SerializeField] private Sprite _blueCatFace;
+        public static Sprite[] SkinIcons;
 
         [SerializeField] private Color _joinBackground;
         [SerializeField] private Color _leaveBackground;
@@ -20,9 +19,9 @@ namespace UI
         [SerializeField] private TextMeshProUGUI _label;
         [SerializeField] private string _template = "<b>[[name]]</b> [[activity]]";
 
-        public void Render(string playerName, PlayerPresenceFeed.CatSkin skin, PlayerPresenceFeed.PresenceType presenceType)
+        public void Render(string playerName, int skin, PlayerPresenceFeed.PresenceType presenceType)
         {
-            _catFaceIcon.Sprite = skin == PlayerPresenceFeed.CatSkin.Green ? _greenCatFace : _blueCatFace;
+            _catFaceIcon.Sprite = SkinIcons[skin];
             _backgroundImage.color = presenceType == PlayerPresenceFeed.PresenceType.Join ? _joinBackground : _leaveBackground;
             _label.text = _template
                 .Replace("[[name]]", playerName)
@@ -42,8 +41,7 @@ namespace UI
 
         private void Awake()
         {
-            if (!_greenCatFace) _greenCatFace = Resources.Load<Sprite>("UI/GreenCatFace");
-            if (!_blueCatFace) _blueCatFace = Resources.Load<Sprite>("UI/BlueCatFace");
+            if (SkinIcons == null) SkinIcons = Resources.LoadAll<Sprite>("PlayerSkins/Icons");
 
             _canvasGroup.alpha = 0;
         }
