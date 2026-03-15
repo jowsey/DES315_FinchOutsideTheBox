@@ -64,9 +64,9 @@ public class Flask : NetworkBehaviour
         _holder.HeldFlask = this;
         if (_holder.isLocalPlayer)
         {
-            _holder.FlaskPickup.Post(gameObject);
             Highlight.SetHighlightable("Flask", false);
             Highlight.SetHighlightable("FlaskCarrier", true);
+            _holder.FlaskPickupFX.Post(gameObject);
         }
     }
 

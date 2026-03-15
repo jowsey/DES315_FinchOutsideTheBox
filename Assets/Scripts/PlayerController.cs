@@ -46,7 +46,7 @@ public class PlayerController : NetworkBehaviour
     public AK.Wwise.RTPC RTPCSpeed;
     public float RTPCSpeedValue;
 
-    public AK.Wwise.Event FlaskPickup;
+    public AK.Wwise.Event FlaskPickupFX;
 
     [Tooltip("Percentage of gravity to negate when gliding")]
     [SerializeField] [Range(0, 100)] private float gravityNegationPercentage;
