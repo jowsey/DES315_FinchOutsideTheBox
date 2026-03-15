@@ -51,6 +51,17 @@ namespace Networking
             });
         }
 
+        public override Transform GetStartPosition()
+        {
+            // todo eventually this should first assign the player to a cart, and then get *that* cart's checkpoints
+            // todo also it should cache this on reaching checkpoint instead of re-running on every join
+            var cart = FindAnyObjectByType<Cart>();
+            var activeCheckpoint = cart.Checkpoints[Mathf.Clamp(cart.CurrentCheckpointIndex, 0, cart.Checkpoints.Count - 1)]; // clamp because it starts at -1
+            startPositions = activeCheckpoint.playerRespawnLocalTransforms.ToList();
+            
+            return base.GetStartPosition();
+        }
+
         private void OnClientInfoMessage(NetworkConnectionToClient conn, ClientInfoMessage msg)
         {
             if (conn.identity)
@@ -58,13 +69,7 @@ namespace Networking
                 Debug.LogWarning($"Client {conn.connectionId} sent PlayerJoinMessage but has already joined");
                 return;
             }
-
-            // todo eventually this should first assign the player to a cart, and then get *that* cart's checkpoints
-            // todo also it should cache this on reaching checkpoint instead of re-running on every join
-            var cart = FindAnyObjectByType<Cart>();
-            var activeCheckpoint = cart.Checkpoints[Mathf.Clamp(cart.CurrentCheckpointIndex, 0, cart.Checkpoints.Count - 1)]; // clamp because it starts at -1
-            startPositions = activeCheckpoint.playerRespawnLocalTransforms.ToList();
-
+            
             var startPos = GetStartPosition();
 
             var player = Instantiate(playerPrefab, startPos.position, startPos.rotation).GetComponent<PlayerController>();
