@@ -95,6 +95,7 @@ public class Cart : NetworkBehaviour
                 Debug.Log($"Hit checkpoint {newIndex}: {checkpoint.AreaName}");
                 var checkpointBanner = Instantiate(_checkpointBannerPrefab, _uiCanvas.transform);
                 checkpointBanner.Checkpoint = checkpoint;
+                checkpointBanner.IsFirst = newIndex == 0;
 
                 Physics.SyncTransforms();
                 foreach (Flask flask in CarriedFlasks)
