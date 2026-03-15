@@ -6,7 +6,7 @@ namespace UI
     public class NavbarButton : MonoBehaviour
     {
         private MainMenuButton _mainMenuButton;
-        [SerializeField] [Required] private Transform _settingsTab;
+        [SerializeField] [RequiredIn(PrefabKind.PrefabInstance)] private Transform _settingsTab;
 
         private void Awake()
         {
