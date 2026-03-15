@@ -1,67 +1,66 @@
-using System;
 using Mirror;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Flask : NetworkBehaviour
 {
-    public enum HeldState
+    public enum FlaskState
     {
-        None,
+        Idle,
         PickingUp,
         Held,
         PuttingDown,
+        Smashed
     }
+
+    public Rigidbody Rb { get; private set; }
 
     private Transform _moveTarget;
     private Collider[] _colliders;
-    private Rigidbody _rb;
+    private Renderer[] _renderers;
 
     [SerializeField] private float _movementSpeed;
 
-    [field: SyncVar] public HeldState State { get; private set; }
+    [field: SyncVar] public FlaskState State { get; private set; }
     [SerializeField] public bool Smashable;
 
     private PlayerController _holder;
 
     private void Awake()
     {
-        _rb = GetComponent<Rigidbody>();
+        Rb = GetComponent<Rigidbody>();
         _colliders = GetComponentsInChildren<Collider>();
+        _renderers = GetComponentsInChildren<Renderer>();
     }
 
     [Command(requiresAuthority = false)]
     public void CmdTryPickup(NetworkConnectionToClient sender = null)
     {
-        if (State != HeldState.None) return;
+        if (State != FlaskState.Idle) return;
 
         var player = sender!.identity.GetComponent<PlayerController>();
         if (player.HeldFlask) return;
 
         _holder = player;
-
         _moveTarget = _holder.FlaskPickupTarget;
-        State = HeldState.PickingUp;
 
+        Rb.isKinematic = true;
+
+        State = FlaskState.PickingUp;
         RpcPickup(sender.identity);
     }
 
     [ClientRpc]
     private void RpcPickup(NetworkIdentity holderIdentity)
     {
-        _holder = holderIdentity.GetComponent<PlayerController>();
-
         foreach (Collider col in _colliders)
         {
             col.enabled = false;
         }
 
-        if (authority)
-        {
-            _rb.isKinematic = true;
-        }
-
+        _holder = holderIdentity.GetComponent<PlayerController>();
         _holder.HeldFlask = this;
+
         if (_holder.isLocalPlayer)
         {
             Highlight.SetHighlightable("Flask", false);
@@ -73,13 +72,13 @@ public class Flask : NetworkBehaviour
     [Command(requiresAuthority = false)]
     public void CmdTryPutdown(FlaskPutdownTarget target, NetworkConnectionToClient sender = null)
     {
-        if (State != HeldState.Held) return;
+        if (State != FlaskState.Held) return;
 
         var player = sender!.identity.GetComponent<PlayerController>();
         if (_holder != player) return;
 
         _moveTarget = target.transform;
-        State = HeldState.PuttingDown;
+        State = FlaskState.PuttingDown;
         Smashable = true;
     }
 
@@ -91,48 +90,92 @@ public class Flask : NetworkBehaviour
             col.enabled = true;
         }
 
-        if (authority)
-        {
-            _rb.isKinematic = false;
-            _rb.linearVelocity = Vector3.zero;
-            _rb.angularVelocity = Vector3.zero;
-        }
-
-        _holder.HeldFlask = null;
         if (_holder.isLocalPlayer)
         {
             Highlight.SetHighlightable("Flask", true);
             Highlight.SetHighlightable("FlaskCarrier", false);
         }
 
+        _holder.HeldFlask = null;
         _holder = null;
+    }
+
+    [ClientRpc]
+    public void RpcSmash()
+    {
+        foreach (Collider col in _colliders)
+        {
+            col.enabled = false;
+        }
+
+        foreach (Renderer rend in _renderers)
+        {
+            rend.enabled = false;
+        }
+
+        if (isServer)
+        {
+            Rb.isKinematic = true;
+            State = FlaskState.Smashed;
+        }
+    }
+
+    [ClientRpc]
+    public void RpcUnsmash()
+    {
+        foreach (Collider col in _colliders)
+        {
+            col.enabled = true;
+        }
+
+        foreach (Renderer rend in _renderers)
+        {
+            rend.enabled = true;
+        }
+
+        if (isServer)
+        {
+            Rb.isKinematic = false;
+            Rb.linearVelocity = Vector3.zero;
+            Rb.angularVelocity = Vector3.zero;
+
+            State = FlaskState.Idle;
+        }
     }
 
     private void FixedUpdate()
     {
-        if (!authority || State == HeldState.None) return;
+        if (!isServer) return;
 
-        if (State == HeldState.Held)
+        if (State == FlaskState.Held)
         {
-            _rb.MovePosition(_holder.FlaskPickupTarget.position);
+            Rb.MovePosition(_holder.FlaskPickupTarget.position);
             return;
         }
 
-        Vector3 delta = (_moveTarget.position - _rb.position).normalized * (Time.fixedDeltaTime * _movementSpeed);
-        _rb.MovePosition(_rb.position + delta);
-
-        if ((_rb.position - _moveTarget.position).sqrMagnitude < 1e-2)
+        if (State == FlaskState.PickingUp || State == FlaskState.PuttingDown)
         {
-            if (State == HeldState.PickingUp)
-            {
-                State = HeldState.Held;
-            }
-            else if (State == HeldState.PuttingDown)
-            {
-                State = HeldState.None;
-                _moveTarget = null;
+            Vector3 targetVec = _moveTarget.position - transform.position;
+            Vector3 delta = targetVec.normalized * (Time.fixedDeltaTime * _movementSpeed);
+            Rb.MovePosition(Rb.position + delta);
 
-                RpcEndPutdown();
+            if (targetVec.sqrMagnitude < 0.01f)
+            {
+                if (State == FlaskState.PickingUp)
+                {
+                    State = FlaskState.Held;
+                }
+                else if (State == FlaskState.PuttingDown)
+                {
+                    Rb.isKinematic = false;
+                    Rb.linearVelocity = Vector3.zero;
+                    Rb.angularVelocity = Vector3.zero;
+
+                    _moveTarget = null;
+                    State = FlaskState.Idle;
+
+                    RpcEndPutdown();
+                }
             }
         }
     }
@@ -140,7 +183,7 @@ public class Flask : NetworkBehaviour
     private void LateUpdate()
     {
         // Clients simulate separately to mask latency
-        if (!authority && State == HeldState.Held)
+        if (!isServer && State == FlaskState.Held)
         {
             transform.position = _holder.FlaskPickupTarget.position;
         }
@@ -148,21 +191,17 @@ public class Flask : NetworkBehaviour
 
     private void OnCollisionEnter(Collision col)
     {
-        if (!col.collider.transform.CompareTag("Flask") &&
-            !col.collider.transform.CompareTag("FlaskCarrier") &&
+        if (!isServer) return;
+
+        if (!col.collider.CompareTag("Flask") &&
+            !col.collider.CompareTag("FlaskCarrier") &&
             LayerMask.LayerToName(col.collider.gameObject.layer) != "Cart")
         {
             if (Smashable)
             {
-                Smash();
+                RpcSmash();
             }
         }
-    }
-
-    private void Smash()
-    {
-        //todo: implement visually
-        gameObject.SetActive(false);
     }
 
     private void OnTriggerEnter(Collider other)
