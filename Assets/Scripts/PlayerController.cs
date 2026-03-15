@@ -200,14 +200,14 @@ public class PlayerController : NetworkBehaviour
                 if (!CrosshairDetection.TargetedTransform.CompareTag("Flask")) return;
 
                 Flask newFlask = CrosshairDetection.TargetedTransform.GetComponentInParent<Flask>();
-                if (newFlask.State != Flask.HeldState.None) return;
+                if (newFlask.State != Flask.FlaskState.Idle) return;
 
                 if (InteractAction.action.IsPressed())
                 {
                     newFlask.CmdTryPickup();
                 }
             }
-            else if (HeldFlask.State == Flask.HeldState.Held && CrosshairDetection.TargetedTransform.CompareTag("FlaskCarrier"))
+            else if (HeldFlask.State == Flask.FlaskState.Held && CrosshairDetection.TargetedTransform.CompareTag("FlaskCarrier"))
             {
                 FlaskPutdownTarget carrierTarget = CrosshairDetection.TargetedTransform.GetComponentInChildren<FlaskPutdownTarget>();
                 if (InteractAction.action.IsPressed())
