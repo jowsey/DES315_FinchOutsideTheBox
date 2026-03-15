@@ -12,15 +12,9 @@ namespace UI
             Join,
             Leave
         }
-
-        public enum CatSkin
-        {
-            Green,
-            Blue
-        }
         
-        public static readonly UnityEvent<string, CatSkin> OnPlayerJoin = new();
-        public static readonly UnityEvent<string, CatSkin> OnPlayerLeave = new();
+        public static readonly UnityEvent<string, int> OnPlayerJoin = new();
+        public static readonly UnityEvent<string, int> OnPlayerLeave = new();
 
         [SerializeField] private PlayerPresenceItem _playerPresenceItemPrefab;
         
@@ -46,16 +40,16 @@ namespace UI
             OnPlayerLeave.RemoveListener(OnPlayerLeaveListener);
         }
 
-        private void OnPlayerJoinListener(string playerName, CatSkin catSkin)
+        private void OnPlayerJoinListener(string playerName, int skin)
         {
             var item = Instantiate(_playerPresenceItemPrefab, transform);
-            item.Render(playerName, catSkin, PresenceType.Join);
+            item.Render(playerName, skin, PresenceType.Join);
         }
 
-        private void OnPlayerLeaveListener(string playerName, CatSkin catSkin)
+        private void OnPlayerLeaveListener(string playerName, int skin)
         {
             var item = Instantiate(_playerPresenceItemPrefab, transform);
-            item.Render(playerName, catSkin, PresenceType.Leave);
+            item.Render(playerName, skin, PresenceType.Leave);
         }
     }
 }

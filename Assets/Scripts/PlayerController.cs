@@ -15,17 +15,18 @@ public class PlayerController : NetworkBehaviour
     private static readonly int FallState = Animator.StringToHash("Fall");
     private static readonly int GlideState = Animator.StringToHash("Glide");
 
+    public static Material[] SkinMaterials;
+
     [Header("Network")]
     [SyncVar] [ReadOnly] public int PlayerIndex;
 
     [SyncVar] [ReadOnly] public string PlayerName;
-    [SyncVar] [ReadOnly] public PlayerPresenceFeed.CatSkin PlayerSkin;
+    [SyncVar] [ReadOnly] public int PlayerSkinIndex;
 
     [Header("Components")]
     public Rigidbody Rb { get; private set; }
 
     private NetworkAnimator _networkAnimator;
-    [SerializeField] private CrosshairDetection _crosshairDetector;
     [SerializeField] private Canvas _nameplateCanvas;
     [SerializeField] private TextMeshProUGUI _playerNameText;
 
@@ -71,10 +72,8 @@ public class PlayerController : NetworkBehaviour
 
     [ReadOnly] public Flask HeldFlask;
 
-    [Header("Material Update Data")]
-    [SerializeField] private Material _bodyMaterial;
-
-    [SerializeField] private Material _player2Material;
+    [Header("Skin materials")]
+    [SerializeField] private Renderer[] _skinnedRenderers;
 
     [field: SyncVar] [field: SerializeField] [field: ReadOnly] public Vector3 WorldSpaceMoveDir { get; private set; }
     [field: SyncVar] [field: ReadOnly] public float AnalogueMoveScale { get; private set; }
@@ -90,6 +89,8 @@ public class PlayerController : NetworkBehaviour
 
     private void Awake()
     {
+        if (SkinMaterials == null) SkinMaterials = Resources.LoadAll<Material>("PlayerSkins/Materials");
+        
         Rb = GetComponent<Rigidbody>();
         _networkAnimator = GetComponent<NetworkAnimator>();
 
@@ -98,13 +99,9 @@ public class PlayerController : NetworkBehaviour
 
     public override void OnStartClient()
     {
-        if (PlayerSkin == PlayerPresenceFeed.CatSkin.Blue)
+        foreach (Renderer renderer in _skinnedRenderers)
         {
-            foreach (SkinnedMeshRenderer renderer in GetComponentsInChildren<SkinnedMeshRenderer>())
-            {
-                if (renderer.sharedMaterial != _bodyMaterial) continue;
-                renderer.sharedMaterial = _player2Material;
-            }
+            renderer.sharedMaterial = SkinMaterials[PlayerSkinIndex];
         }
 
         _camera = FindAnyObjectByType<CinemachineCamera>(FindObjectsInactive.Include);

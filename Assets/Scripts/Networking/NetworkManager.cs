@@ -14,7 +14,7 @@ namespace Networking
     {
         public uint PlayerNetId;
         public string PlayerName;
-        public PlayerPresenceFeed.CatSkin Skin;
+        public int SkinIndex;
         public PlayerPresenceFeed.PresenceType PresenceType;
     }
 
@@ -75,7 +75,7 @@ namespace Networking
             var player = Instantiate(playerPrefab, startPos.position, startPos.rotation).GetComponent<PlayerController>();
             player.PlayerIndex = _nextPlayerIndex++;
             player.PlayerName = msg.PlayerName;
-            player.PlayerSkin = player.PlayerIndex == 0 ? PlayerPresenceFeed.CatSkin.Green : PlayerPresenceFeed.CatSkin.Blue;
+            player.PlayerSkinIndex = player.PlayerIndex % PlayerController.SkinMaterials.Length; // round-robin
 
             NetworkServer.AddPlayerForConnection(conn, player.gameObject);
 
@@ -83,7 +83,7 @@ namespace Networking
             {
                 PlayerNetId = conn.identity.netId,
                 PlayerName = player.PlayerName,
-                Skin = player.PlayerSkin,
+                SkinIndex = player.PlayerSkinIndex,
                 PresenceType = PlayerPresenceFeed.PresenceType.Join
             });
         }
@@ -96,7 +96,7 @@ namespace Networking
                 {
                     PlayerNetId = conn.identity.netId,
                     PlayerName = player.PlayerName,
-                    Skin = player.PlayerSkin,
+                    SkinIndex = player.PlayerSkinIndex,
                     PresenceType = PlayerPresenceFeed.PresenceType.Leave
                 });
             }
@@ -110,9 +110,9 @@ namespace Networking
             if (msg.PlayerNetId == NetworkClient.connection.identity.netId) return;
 
             if (msg.PresenceType == PlayerPresenceFeed.PresenceType.Join)
-                PlayerPresenceFeed.OnPlayerJoin.Invoke(msg.PlayerName, msg.Skin);
+                PlayerPresenceFeed.OnPlayerJoin.Invoke(msg.PlayerName, msg.SkinIndex);
             else if (msg.PresenceType == PlayerPresenceFeed.PresenceType.Leave)
-                PlayerPresenceFeed.OnPlayerLeave.Invoke(msg.PlayerName, msg.Skin);
+                PlayerPresenceFeed.OnPlayerLeave.Invoke(msg.PlayerName, msg.SkinIndex);
         }
     }
 }
