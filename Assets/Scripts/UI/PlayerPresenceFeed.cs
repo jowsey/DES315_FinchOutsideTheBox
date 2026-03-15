@@ -1,6 +1,7 @@
 ﻿using Networking;
 using UnityEngine;
 using UnityEngine.Events;
+using Util;
 
 namespace UI
 {
@@ -28,8 +29,8 @@ namespace UI
         private void OnEnable()
         {
             _networkManager = FindAnyObjectByType<NetworkManager>();
-
-            if (!_networkManager)
+            
+            if (!_networkManager && !FindAnyObjectByType<EnsureNetworked>())
             {
                 Debug.LogWarning("No NetworkManager found");
                 return;
