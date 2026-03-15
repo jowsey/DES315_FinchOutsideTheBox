@@ -7,27 +7,30 @@ namespace Tools
 {
     public class Cleaner : MonoBehaviour
     {
+#if UNITY_EDITOR
         [ShowInInspector] private int _numEmpty;
+
+        private bool ShouldMarkTransform(Transform t) => t.childCount == 0 &&
+                                                         t.GetComponents<Component>().Length == 1 &&
+                                                         !UnityEditor.PrefabUtility.IsPartOfPrefabInstance(t.gameObject);
 
         [Button("Count empty")]
         public void CountEmpty()
         {
-            _numEmpty = GetComponentsInChildren<Transform>()
-                .Count(child => child.childCount == 0 && child.GetComponents<Component>().Length == 1);
+            _numEmpty = GetComponentsInChildren<Transform>().Count(ShouldMarkTransform);
         }
 
         [Button("Cleanup empty in hierarchy")]
         public void CleanEmpty()
         {
-#if UNITY_EDITOR
             var allTransforms = GetComponentsInChildren<Transform>();
-            
+
             List<GameObject> markedForDeletion = new();
 
-            // If object has no children and no components, mark for deletion
+            // If object has no children and no components, and is not part of a prefab instace, mark for deletion
             foreach (var child in allTransforms)
             {
-                if (child.childCount == 0 && child.GetComponents<Component>().Length == 1)
+                if (ShouldMarkTransform(child))
                 {
                     markedForDeletion.Add(child.gameObject);
                 }
@@ -37,7 +40,7 @@ namespace Tools
             {
                 UnityEditor.Undo.DestroyObjectImmediate(obj);
             }
-#endif
         }
+#endif
     }
 }
