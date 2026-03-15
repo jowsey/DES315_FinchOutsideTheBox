@@ -143,7 +143,8 @@ namespace UI
                 yield return new WaitUntil(() => NetworkServer.localConnection?.isReady == true);
 
                 // manually spawn 2nd player with server authority
-                var spawnPoint = FindAnyObjectByType<NetworkStartPosition>();
+                var spawnPoint = FindAnyObjectByType<Networking.NetworkManager>().GetStartPosition();
+                
                 var otherPlayer = Instantiate(_networkManager.playerPrefab, spawnPoint.transform.position, spawnPoint.transform.rotation);
                 var otherPlayerController = otherPlayer.GetComponent<PlayerController>();
                 otherPlayerController.MoveAction = _altMoveAction;
