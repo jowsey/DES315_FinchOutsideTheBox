@@ -165,8 +165,18 @@ namespace UI
                         // Charge vote
                         _lastActivityTime = Time.time;
                         _lastChargeTime = Time.time;
-                        _voteCharge = Mathf.Min(1, _voteCharge + Time.deltaTime * _chargeSpeed);
 
+                        var oldCharge = _voteCharge;
+                        _voteCharge = Mathf.Min(1, _voteCharge + Time.deltaTime * _chargeSpeed);
+                        
+                        // Detect passing boundary
+                        const int divisions = 4;
+                        if (Mathf.FloorToInt(oldCharge * divisions) < Mathf.FloorToInt(_voteCharge * divisions))
+                        {
+                            // We just passed a boundary, juice tick
+                            Tween.Scale(_chargeImage.transform, Vector3.one * 1.2f, 0.12f, Ease.InCubic, 2, CycleMode.Rewind);
+                        }
+                        
                         if (_voteCharge >= 1 && !_voteLocked)
                         {
                             _voteLocked = true;
@@ -194,14 +204,14 @@ namespace UI
             {
                 // Charge undo ending, animate prompt visible
                 Tween.CompleteAll(_keyPrompt);
-                Tween.Scale(_keyPrompt, Vector3.one, 0.5f, Ease.OutBack);
+                Tween.Scale(_keyPrompt, Vector3.one, 0.3f, Ease.OutBack);
                 _keyPromptHidden = false;
             }
             else if (_voteCharge > 0 && !_keyPromptHidden)
             {
                 // Charge starting, animate prompt hidden
                 Tween.CompleteAll(_keyPrompt);
-                Tween.Scale(_keyPrompt, Vector3.zero, 0.5f, Ease.InBack);
+                Tween.Scale(_keyPrompt, Vector3.zero, 0.3f, Ease.InBack);
                 _keyPromptHidden = true;
             }
 
