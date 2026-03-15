@@ -236,7 +236,7 @@ public class PlayerController : NetworkBehaviour
             transform.position = Seat.SeatedPosition;
             Physics.SyncTransforms();
             //Swap to no sound when sat on wheels
-            AkSoundEngine.SetSwitch("Footsteps", "WheelSeat", gameObject);
+            AkUnitySoundEngine.SetSwitch("Footsteps", "WheelSeat", gameObject);
         }
 
         if (_camera && !isLocalPlayer)
