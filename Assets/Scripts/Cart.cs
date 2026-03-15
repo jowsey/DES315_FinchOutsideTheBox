@@ -33,6 +33,8 @@ public class Cart : NetworkBehaviour
     [SerializeField] [Required] private Collider _flaskBounds;
     public HashSet<Flask> CarriedFlasks = new();
     private Dictionary<Rigidbody, Vector3>[] _flasksAtCheckpoint;
+    // The number of flasks we'll respawn with
+    public int FlasksOnRespawn => _flasksAtCheckpoint[Mathf.Clamp(CurrentCheckpointIndex, 0, _flasksAtCheckpoint.Length - 1)].Count;
 
     private void Awake()
     {
