@@ -53,12 +53,12 @@ public class Cart : NetworkBehaviour
     
     private void Start()
     {
-        Checkpoint.respawnEvent.AddListener(OnRespawn);
+        Checkpoint.RespawnEvent.AddListener(OnRespawn);
     }
     
     private void OnDestroy()
     {
-        Checkpoint.respawnEvent.RemoveListener(OnRespawn);
+        Checkpoint.RespawnEvent.RemoveListener(OnRespawn);
     }
     
     private void Update()
@@ -156,6 +156,6 @@ public class Cart : NetworkBehaviour
         }
 
         CurrentCheckpointIndex = newCheckpointIndex;
-        Checkpoint.respawnEvent.Invoke(_checkpoints[CurrentCheckpointIndex]);
+        Checkpoint.RespawnEvent.Invoke(_checkpoints[CurrentCheckpointIndex]);
     }
 }

@@ -93,7 +93,7 @@ public class PlayerController : NetworkBehaviour
         Rb = GetComponent<Rigidbody>();
         _networkAnimator = GetComponent<NetworkAnimator>();
 
-        Checkpoint.respawnEvent.AddListener(OnRespawn);
+        Checkpoint.RespawnEvent.AddListener(OnRespawn);
     }
 
     public override void OnStartClient()
@@ -119,7 +119,7 @@ public class PlayerController : NetworkBehaviour
 
     private void OnDestroy()
     {
-        Checkpoint.respawnEvent.RemoveListener(OnRespawn);
+        Checkpoint.RespawnEvent.RemoveListener(OnRespawn);
     }
 
     private void OnRespawn(Checkpoint checkpoint)
