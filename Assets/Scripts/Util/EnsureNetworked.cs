@@ -11,6 +11,11 @@ namespace Util
             {
                 SceneManager.LoadScene("Menu");
             }
+            else
+            {
+                // https://tenor.com/view/job-is-done-gif-6327344616414725502
+                Destroy(gameObject);
+            }
         }
     }
 }
