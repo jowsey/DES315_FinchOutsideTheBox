@@ -16,8 +16,15 @@ namespace UI
 
         public AK.Wwise.Event CheckpointJingle;
 
+        public bool IsFirst;
+
         private void Start()
         {
+            if (IsFirst)
+            {
+                _taglineText.text = "YOUR JOURNEY BEGINS";
+            }
+
             _areaNameText.text = Checkpoint.AreaName;
 
             _mainGroup.alpha = 0;
@@ -25,7 +32,7 @@ namespace UI
             _areaNameText.alpha = 0f;
 
             Tween.Delay(1.5f, () => CheckpointJingle.Post(gameObject));
-            
+
             Sequence.Create()
                 .Group(Tween.Alpha(_mainGroup, 1, 2.5f, ease: Ease.InOutCubic))
                 .Group(Tween.Alpha(_taglineText, 1, 3f, ease: Ease.InOutCubic, startDelay: 0.5f))
