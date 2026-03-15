@@ -96,7 +96,7 @@ MonoBehaviour:
   _fallAnimationMinDownardsVelocity: -2.5
   MoveAction: {fileID: -1680190386980627800, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
   JumpAction: {fileID: -2099379676528639254, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
-  PickupAction: {fileID: -2039900678409227085, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
+  InteractAction: {fileID: 1781555164194001046, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
   CarSound:
     idInternal: 0
     valueGuidInternal: 
@@ -117,11 +117,12 @@ MonoBehaviour:
   _moveForce: 6
   _groundedSphereRadius: 0.1
   Seat: {fileID: 0}
+  HeldFlask: {fileID: 0}
   _bodyMaterial: {fileID: 2100000, guid: 50a0662de81ee71418e151b9646cfe43, type: 2}
   _player2Material: {fileID: 2100000, guid: a2bb44dc23368dc4f9569bc5ce6a1309, type: 2}
   <WorldSpaceMoveDir>k__BackingField: {x: 0, y: 0, z: 0}
   _actionCurveLinePrefab: {fileID: 7011724201460765554, guid: 8110da47f80f14b1e92c4f0876b3ad30, type: 3}
-  _flaskPickupTarget: {fileID: 6669740496216783317}
+  <FlaskPickupTarget>k__BackingField: {fileID: 6669740496216783317}
   footsteps:
     idInternal: 0
     valueGuidInternal: 
@@ -625,7 +626,7 @@ Transform:
   m_GameObject: {fileID: 5126379394602529249}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.774, z: 0.51}
+  m_LocalPosition: {x: 0, y: 0.756, z: 0.598}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

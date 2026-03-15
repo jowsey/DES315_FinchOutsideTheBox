@@ -17,11 +17,13 @@ public class PlayerController : NetworkBehaviour
     
     [Header("Network")]
     [SyncVar] [ReadOnly] public int PlayerIndex;
+
     [SyncVar] [ReadOnly] public string PlayerName;
     [SyncVar] [ReadOnly] public PlayerPresenceFeed.CatSkin PlayerSkin;
 
     [Header("Components")]
     public Rigidbody Rb { get; private set; }
+
     private NetworkAnimator _networkAnimator;
     [SerializeField] private CrosshairDetection _crosshairDetector;
     [SerializeField] private Canvas _nameplateCanvas;
@@ -33,17 +35,17 @@ public class PlayerController : NetworkBehaviour
 
     [Header("Input")]
     public InputActionReference MoveAction;
+
     public InputActionReference JumpAction;
-    public InputActionReference PickupAction;
-    
+    public InputActionReference InteractAction;
+
     private bool _jumpPressed;
-    
-    //Car Stuff
+
+    //Wwise values
     public AK.Wwise.Event CarSound = new();
     public AK.Wwise.RTPC RTPCSpeed;
     public float RTPCSpeedValue;
 
-    //flaskpikcup
     public AK.Wwise.Event FlaskPickup;
 
     [Tooltip("Percentage of gravity to negate when gliding")]
@@ -67,8 +69,11 @@ public class PlayerController : NetworkBehaviour
     [Header("State")]
     [ReadOnly] public WheelSeat Seat;
 
+    [ReadOnly] public Flask HeldFlask;
+
     [Header("Material Update Data")]
     [SerializeField] private Material _bodyMaterial;
+
     [SerializeField] private Material _player2Material;
 
     [field: SyncVar] [field: SerializeField] [field: ReadOnly] public Vector3 WorldSpaceMoveDir { get; private set; }
@@ -78,9 +83,8 @@ public class PlayerController : NetworkBehaviour
     
     [SerializeField] private ActionCurveLine _actionCurveLinePrefab;
 
-    [SerializeField] private Transform _flaskPickupTarget;
-    public  static Flask HeldFlask; //todo: maybe find a better way of doing this that doesn't involve it being static
-    
+    [field: SerializeField] public Transform FlaskPickupTarget { get; private set; }
+
     //Swap to "WheelSeat" (aka dont make a sound when on wheels) 
     public AK.Wwise.Switch footsteps;
 
@@ -90,8 +94,6 @@ public class PlayerController : NetworkBehaviour
         _networkAnimator = GetComponent<NetworkAnimator>();
         
         Checkpoint.respawnEvent.AddListener(OnRespawn);
-        
-        HeldFlask = null;
     }
 
     public override void OnStartClient()
@@ -122,20 +124,19 @@ public class PlayerController : NetworkBehaviour
 
     private void OnRespawn(Checkpoint checkpoint)
     {
-        if (authority)
+        if (!authority) return;
+
+        Transform newTransform = checkpoint.playerRespawnLocalTransforms[PlayerIndex % checkpoint.playerRespawnLocalTransforms.Length];
+
+        Rb.position = newTransform.position;
+        Rb.rotation = newTransform.rotation;
+        if (!Rb.isKinematic)
         {
-            Transform newTransform = checkpoint.playerRespawnLocalTransforms[PlayerIndex % checkpoint.playerRespawnLocalTransforms.Length];
-
-            Rb.position = newTransform.position;
-            Rb.rotation = newTransform.rotation;
-            if (!Rb.isKinematic)
-            {
-                Rb.linearVelocity = Vector3.zero;
-                Rb.angularVelocity = Vector3.zero;
-            }
-
-            _camera.PreviousStateIsValid = false;
+            Rb.linearVelocity = Vector3.zero;
+            Rb.angularVelocity = Vector3.zero;
         }
+
+        _camera.PreviousStateIsValid = false;
     }
 
     public override void OnStartLocalPlayer()
@@ -182,51 +183,35 @@ public class PlayerController : NetworkBehaviour
 
     private void Update()
     {
-        if (!authority) { return; }
+        if (!authority) return;
 
         _contactNormals.Clear();
 
         _jumpPressed |= JumpAction.action.WasPressedThisFrame();
-        if (CrosshairDetection._hitTransform != null)
+
+        if (CrosshairDetection.TargetedTransform)
         {
-            if (CrosshairDetection._hitTransform.CompareTag("Flask"))
+            if (!HeldFlask)
             {
-                Flask flask = CrosshairDetection._hitTransform.GetComponentInParent<Flask>();
-                if (HeldFlask == null && flask.state == Flask.State.None)
+                if (!CrosshairDetection.TargetedTransform.CompareTag("Flask")) return;
+
+                Flask newFlask = CrosshairDetection.TargetedTransform.GetComponentInParent<Flask>();
+                if (newFlask.State != Flask.HeldState.None) return;
+
+                if (InteractAction.action.IsPressed())
                 {
-                    if (PickupAction.action.IsPressed())
-                    {
-                        HeldFlask = flask;
-                        flask.CmdPickup(_flaskPickupTarget);
-                        Highlight.SetHighlightable("Flask", false);
-                        FlaskPickup.Post(gameObject);
-                    }
+                    newFlask.CmdTryPickup();
                 }
             }
-            else if (CrosshairDetection._hitTransform.CompareTag("FlaskCarrier"))
+            else if (HeldFlask.State == Flask.HeldState.Held && CrosshairDetection.TargetedTransform.CompareTag("FlaskCarrier"))
             {
-                if (HeldFlask != null && HeldFlask.state == Flask.State.Held)
+                FlaskPutdownTarget carrierTarget = CrosshairDetection.TargetedTransform.GetComponentInChildren<FlaskPutdownTarget>();
+                if (InteractAction.action.IsPressed())
                 {
-                    FlaskCarrier flaskCarrier = CrosshairDetection._hitTransform.GetComponentInParent<FlaskCarrier>();
-                    if (PickupAction.action.IsPressed())
-                    {
-                        HeldFlask.CmdPutdown(flaskCarrier.FlaskPutdownTarget);
-                        Highlight.SetHighlightable("Flask", true);
-                        HeldFlask = null;
-                    }
+                    HeldFlask.CmdTryPutdown(carrierTarget);
                 }
             }
         }
-        //if (HeldFlask != null && HeldFlask.state == Flask.State.Held)
-        //{
-        //    if (PickupAction.action.IsPressed())
-        //    {
-        //        HeldFlask.CmdDrop();
-        //        Highlight.SetHighlightable("Flask", true);
-        //        HeldFlask = null;
-        //    }
-        //}
-        Highlight.SetHighlightable("FlaskCarrier", HeldFlask != null);
     }
 
     private void LateUpdate()
@@ -255,7 +240,7 @@ public class PlayerController : NetworkBehaviour
 
     private void FixedUpdate()
     {
-        if (!authority) { return; }
+        if (!authority) return;
 
         _networkAnimator.animator.SetBool(RunningState, false);
         _networkAnimator.animator.SetBool(FallState, false);
@@ -301,7 +286,7 @@ public class PlayerController : NetworkBehaviour
             return;
         }
 
-        bool grounded = Physics.CheckSphere(Rb.position, _groundedSphereRadius, ~(1 << gameObject.layer),  QueryTriggerInteraction.Ignore);
+        bool grounded = Physics.CheckSphere(Rb.position, _groundedSphereRadius, ~(1 << gameObject.layer), QueryTriggerInteraction.Ignore);
         bool groundedOnBumpy = Physics.CheckSphere(Rb.position, _groundedSphereRadius, LayerMask.GetMask("Bumpy"), QueryTriggerInteraction.Ignore);
         Rb.useGravity = !groundedOnBumpy;
         _networkAnimator.animator.SetBool(GroundedState, grounded || groundedOnBumpy);
@@ -352,7 +337,7 @@ public class PlayerController : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!authority) { return; }
+        if (!authority) return;
 
         WheelSeat newSeat = other.GetComponentInParent<WheelSeat>();
         if (newSeat && !Seat)
