@@ -27,6 +27,7 @@ namespace UI
         [SerializeField] private TextMeshProUGUI _countText;
         [SerializeField] private Image _chargeImage;
         [SerializeField] private RectTransform _keyPrompt;
+        [SerializeField] private TextMeshProUGUI _flaskCountOnRespawnText;
 
         [Tooltip("How much vote charge is generated per second of holding the respawn key?")]
         [SerializeField] [SuffixLabel("/second")] private float _chargeSpeed = 1 / 1.5f;
@@ -65,6 +66,8 @@ namespace UI
         private Vector2 _openPosition;
         private Vector2 _hiddenPosition => _openPosition + ((RectTransform)transform).sizeDelta * Vector2.up;
 
+        private Cart _linkedCart;
+
         private void Awake()
         {
             // Initialize
@@ -73,6 +76,7 @@ namespace UI
             _openPosition = rt.anchoredPosition;
             rt.anchoredPosition = _hiddenPosition;
 
+            _linkedCart = FindAnyObjectByType<Cart>();
             Checkpoint.RespawnEvent.AddListener(OnRespawn);
         }
 
@@ -217,6 +221,7 @@ namespace UI
 
             _chargeImage.fillAmount = _voteCharge;
             _countText.text = $"<b>{_votesActive}</b>/{_votesRequired}";
+            _flaskCountOnRespawnText.text = $"You will respawn with <b>{_linkedCart.FlasksOnRespawn}</b> flasks.";
         }
 
         [Command(requiresAuthority = false)]
