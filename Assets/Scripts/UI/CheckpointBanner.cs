@@ -31,7 +31,10 @@ namespace UI
             _taglineText.alpha = 0f;
             _areaNameText.alpha = 0f;
 
-            Tween.Delay(1.5f, () => CheckpointJingle.Post(gameObject));
+            Tween.Delay(1.5f, () =>
+            {
+                if (gameObject) CheckpointJingle.Post(gameObject);
+            }, warnIfTargetDestroyed: false);
 
             Sequence.Create()
                 .Group(Tween.Alpha(_mainGroup, 1, 2.5f, ease: Ease.InOutCubic))
