@@ -106,10 +106,7 @@ public class PlayerController : NetworkBehaviour
 
         _camera = FindAnyObjectByType<CinemachineCamera>(FindObjectsInactive.Include);
         _playerNameText.text = PlayerName;
-    }
 
-    private void Start()
-    {
         CarSound.Post(gameObject);
         RTPCSpeed.SetGlobalValue(0);
     }
@@ -194,7 +191,7 @@ public class PlayerController : NetworkBehaviour
         {
             if (!HeldFlask)
             {
-                if (!CrosshairDetection.TargetedTransform.CompareTag("Flask")) return;
+                if (Seat || !CrosshairDetection.TargetedTransform.CompareTag("Flask")) return;
 
                 Flask newFlask = CrosshairDetection.TargetedTransform.GetComponentInParent<Flask>();
                 if (newFlask.State != Flask.FlaskState.Idle) return;

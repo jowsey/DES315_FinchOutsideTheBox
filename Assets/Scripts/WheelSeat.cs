@@ -40,6 +40,8 @@ public class WheelSeat : NetworkBehaviour
     public void CmdTrySitPlayer(NetworkIdentity playerIdentity)
     {
         if (_seatedPlayer || Time.time < _lastUnsitTime + _sitCooldown) return;
+        if (playerIdentity.GetComponent<PlayerController>().HeldFlask) return; // dont allow sitting while holding a flask
+        
         _seatedPlayerIdentity = playerIdentity; //synced to all clients
     }
 
@@ -61,6 +63,11 @@ public class WheelSeat : NetworkBehaviour
             _seatedPlayer.Rb.isKinematic = true;
             _seatedPlayer.Rb.excludeLayers |= 1 << gameObject.layer;
             _seatedPlayer.Seat = this;
+
+            if (_seatedPlayer.isLocalPlayer)
+            {
+                Highlight.SetHighlightable("Flask", false);
+            }
         }
         else if (oldPlayer != null)
         {
@@ -71,6 +78,11 @@ public class WheelSeat : NetworkBehaviour
             oldPlayer.Seat = null;
 
             _lastUnsitTime = Time.time;
+
+            if (oldPlayer.isLocalPlayer)
+            {
+                Highlight.SetHighlightable("Flask", true);
+            }
         }
     }
 
