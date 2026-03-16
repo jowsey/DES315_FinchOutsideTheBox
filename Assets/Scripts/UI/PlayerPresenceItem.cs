@@ -41,7 +41,7 @@ namespace UI
 
         private void Awake()
         {
-            if (SkinIcons == null) SkinIcons = Resources.LoadAll<Sprite>("PlayerSkins/Icons");
+            SkinIcons ??= Resources.LoadAll<Sprite>("PlayerSkins/Icons");
 
             _canvasGroup.alpha = 0;
         }

@@ -89,7 +89,7 @@ public class PlayerController : NetworkBehaviour
 
     private void Awake()
     {
-        if (SkinMaterials == null) SkinMaterials = Resources.LoadAll<Material>("PlayerSkins/Materials");
+        SkinMaterials ??= Resources.LoadAll<Material>("PlayerSkins/Materials");
         
         Rb = GetComponent<Rigidbody>();
         _networkAnimator = GetComponent<NetworkAnimator>();
