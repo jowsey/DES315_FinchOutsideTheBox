@@ -75,8 +75,12 @@ namespace UI
             _openPosition = rt.anchoredPosition;
             rt.anchoredPosition = _hiddenPosition;
 
-            _linkedCart = FindAnyObjectByType<Cart>();
             Checkpoint.RespawnEvent.AddListener(OnRespawn);
+        }
+
+        private void Start()
+        {
+            _linkedCart = FindAnyObjectByType<Cart>();
         }
 
         private void OnDestroy()
