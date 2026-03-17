@@ -705,7 +705,7 @@
 								<Property Name="IsGlobalLimit" Type="int16" Value="1"/>
 								<Property Name="MaxSoundPerInstance" Type="int16">
 									<ValueList>
-										<Value>2</Value>
+										<Value>1</Value>
 									</ValueList>
 								</Property>
 								<Property Name="OverrideClockSettings" Type="bool" Value="True"/>
@@ -777,6 +777,17 @@
 								<MusicSegment Name="LooseJuice - DesertCaveIntro - 80bpm" ID="{01FEBF00-2BFA-4795-B7BE-B86861A775DA}" ShortID="1043414304">
 									<PropertyList>
 										<Property Name="EndPosition" Type="Real64" Value="12966.6410645107"/>
+										<Property Name="IgnoreParentMaxSoundInstance" Type="bool" Value="True"/>
+										<Property Name="MaxSoundPerInstance" Type="int16">
+											<ValueList>
+												<Value>2</Value>
+											</ValueList>
+										</Property>
+										<Property Name="UseMaxSoundPerInstance" Type="bool">
+											<ValueList>
+												<Value>True</Value>
+											</ValueList>
+										</Property>
 									</PropertyList>
 									<ReferenceList>
 										<Reference Name="Conversion">
@@ -926,6 +937,18 @@
 								<MusicSegment Name="LooseJuice - DesertCave8BarLoop - 80bpm" ID="{22ACBBFF-02D2-473C-B43F-0AE6406D0095}" ShortID="180941211">
 									<PropertyList>
 										<Property Name="EndPosition" Type="Real64" Value="23995.0719379107"/>
+										<Property Name="IgnoreParentMaxSoundInstance" Type="bool" Value="True"/>
+										<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
+										<Property Name="MaxSoundPerInstance" Type="int16">
+											<ValueList>
+												<Value>2</Value>
+											</ValueList>
+										</Property>
+										<Property Name="UseMaxSoundPerInstance" Type="bool">
+											<ValueList>
+												<Value>True</Value>
+											</ValueList>
+										</Property>
 									</PropertyList>
 									<ReferenceList>
 										<Reference Name="Conversion">

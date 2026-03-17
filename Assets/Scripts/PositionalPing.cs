@@ -10,6 +10,8 @@ public class PositionalPing : NetworkBehaviour
 
     private Camera _camera;
 
+    public AK.Wwise.Event catMeow;
+
     private void Awake()
     {
         _camera = GetComponent<Camera>();
@@ -38,5 +40,6 @@ public class PositionalPing : NetworkBehaviour
     private void RpcPingPosition(Vector3 position, Vector3 normal)
     {
         Instantiate(_pingPrefab, position, Quaternion.LookRotation(normal));
+        catMeow.Post(gameObject);
     }
 }
