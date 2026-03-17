@@ -98,7 +98,7 @@ ConfigurableJoint:
   m_ConnectedArticulationBody: {fileID: 0}
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
-  m_AutoConfigureConnectedAnchor: 0
+  m_AutoConfigureConnectedAnchor: 1
   m_ConnectedAnchor: {x: 0, y: -1, z: -2.38}
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
@@ -436,8 +436,8 @@ ConfigurableJoint:
   m_ConnectedArticulationBody: {fileID: 0}
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
-  m_AutoConfigureConnectedAnchor: 0
-  m_ConnectedAnchor: {x: 0, y: -1, z: 2.38}
+  m_AutoConfigureConnectedAnchor: 1
+  m_ConnectedAnchor: {x: 0, y: 0, z: 2.38}
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
   m_YMotion: 0
@@ -629,7 +629,7 @@ Transform:
   m_GameObject: {fileID: 3913858289453775590}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.964, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -805,7 +805,7 @@ Transform:
   m_GameObject: {fileID: 4321114025990273547}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -1, z: 2.38}
+  m_LocalPosition: {x: 0, y: 1, z: 2.38}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -941,7 +941,7 @@ Transform:
   m_GameObject: {fileID: 5636680629954494916}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -1, z: -2.38}
+  m_LocalPosition: {x: 0, y: 1, z: -2.38}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -1047,7 +1047,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 008ea26ce26d66c42abe1a6e92f864d1, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 008ea26ce26d66c42abe1a6e92f864d1, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1085,13 +1085,25 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 7
       objectReference: {fileID: 0}
+    - target: {fileID: -7399006668046671671, guid: 008ea26ce26d66c42abe1a6e92f864d1, type: 3}
+      propertyPath: m_TagString
+      value: FlaskCarrier
+      objectReference: {fileID: 0}
     - target: {fileID: -6377958603440598000, guid: 008ea26ce26d66c42abe1a6e92f864d1, type: 3}
       propertyPath: m_Layer
       value: 7
       objectReference: {fileID: 0}
+    - target: {fileID: -6377958603440598000, guid: 008ea26ce26d66c42abe1a6e92f864d1, type: 3}
+      propertyPath: m_TagString
+      value: FlaskCarrier
+      objectReference: {fileID: 0}
     - target: {fileID: -4680566820163676890, guid: 008ea26ce26d66c42abe1a6e92f864d1, type: 3}
       propertyPath: m_Layer
       value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -4680566820163676890, guid: 008ea26ce26d66c42abe1a6e92f864d1, type: 3}
+      propertyPath: m_TagString
+      value: FlaskCarrier
       objectReference: {fileID: 0}
     - target: {fileID: -2151678649322744341, guid: 008ea26ce26d66c42abe1a6e92f864d1, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -1105,13 +1117,25 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 7
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 008ea26ce26d66c42abe1a6e92f864d1, type: 3}
+      propertyPath: m_TagString
+      value: FlaskCarrier
+      objectReference: {fileID: 0}
     - target: {fileID: 7585877377044528328, guid: 008ea26ce26d66c42abe1a6e92f864d1, type: 3}
       propertyPath: m_Layer
       value: 7
       objectReference: {fileID: 0}
+    - target: {fileID: 7585877377044528328, guid: 008ea26ce26d66c42abe1a6e92f864d1, type: 3}
+      propertyPath: m_TagString
+      value: FlaskCarrier
+      objectReference: {fileID: 0}
     - target: {fileID: 8555046904898354361, guid: 008ea26ce26d66c42abe1a6e92f864d1, type: 3}
       propertyPath: m_Layer
       value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8555046904898354361, guid: 008ea26ce26d66c42abe1a6e92f864d1, type: 3}
+      propertyPath: m_TagString
+      value: FlaskCarrier
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3740,7 +3764,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3e34183276fbf0b4a880e78dd53fd510, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3e34183276fbf0b4a880e78dd53fd510, type: 3}
       propertyPath: m_LocalPosition.z
