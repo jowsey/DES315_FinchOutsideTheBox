@@ -213,8 +213,8 @@ namespace UI
                 var json = System.IO.File.ReadAllText(SettingsFilePath);
                 ActiveSettings = JsonConvert.DeserializeObject<UserSettings>(json);
                 
-                _musicVolumeRtpc.SetGlobalValue((ActiveSettings.VoiceVolumePercent / 100) * MaxMusicVolume);
-                _sfxVolumeRtpc.SetGlobalValue((ActiveSettings.VoiceVolumePercent / 100) * MaxSfxVolume);
+                _musicVolumeRtpc.SetGlobalValue((ActiveSettings.MusicVolumePercent / 100) * MaxMusicVolume);
+                _sfxVolumeRtpc.SetGlobalValue((ActiveSettings.SfxVolumePercent / 100) * MaxSfxVolume);
                 
                 if (!Microphone.devices.Contains(ActiveSettings.InputDevice))
                 {
