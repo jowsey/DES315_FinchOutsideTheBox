@@ -26,6 +26,8 @@ public class Flask : NetworkBehaviour
 
     private PlayerController _holder;
 
+    public AK.Wwise.Event flaskSmash; 
+
     private void Awake()
     {
         Rb = GetComponent<Rigidbody>();
@@ -117,6 +119,7 @@ public class Flask : NetworkBehaviour
         {
             Rb.isKinematic = true;
             State = FlaskState.Smashed;
+            flaskSmash.Post(gameObject);
         }
     }
 

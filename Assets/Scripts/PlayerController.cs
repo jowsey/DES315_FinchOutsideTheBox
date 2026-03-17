@@ -47,6 +47,8 @@ public class PlayerController : NetworkBehaviour
     public AK.Wwise.RTPC RTPCSpeed;
     public float RTPCSpeedValue;
 
+    public PostWwiseFootstep postWwiseFootstep;
+
     public AK.Wwise.Event FlaskPickupFX;
 
     [Tooltip("Percentage of gravity to negate when gliding")]
@@ -172,6 +174,8 @@ public class PlayerController : NetworkBehaviour
         onboardingJumpLine.EndTrackingOffset = closestWheel.transform.InverseTransformPoint(closestWheel.SeatedPosition);
         onboardingJumpLine.PromptLabel = "Hop on with <b>[Space]</b>!";
         onboardingJumpLine.ShouldDestroy = () => Seat; // if we're sat, job's done
+
+        postWwiseFootstep = GetComponent<PostWwiseFootstep>();
     }
 
     public override void OnStopLocalPlayer()
@@ -207,6 +211,7 @@ public class PlayerController : NetworkBehaviour
                 if (InteractAction.action.IsPressed())
                 {
                     HeldFlask.CmdTryPutdown(carrierTarget);
+                    FlaskPickupFX.Post(gameObject);
                 }
             }
         }
@@ -288,6 +293,11 @@ public class PlayerController : NetworkBehaviour
         bool groundedOnBumpy = Physics.CheckSphere(Rb.position, _groundedSphereRadius, LayerMask.GetMask("Bumpy"), QueryTriggerInteraction.Ignore);
         Rb.useGravity = !groundedOnBumpy;
         _networkAnimator.animator.SetBool(GroundedState, grounded || groundedOnBumpy);
+
+        if(grounded == true)
+        {
+            postWwiseFootstep.fallCount= 0;
+        }
 
         if (!Seat)
         {

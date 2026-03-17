@@ -30,7 +30,7 @@ namespace UI
 
     public class SettingsManager : MonoBehaviour
     {
-        // Wwise Authoring values. 15 is -6db, 30 is +6db, 22.5 is presumably +0dB.
+        // Wwise Authoring values. 10 is -6db, 30 is +6db, 20.0 is +0dB.
         public const float MaxMusicVolume = 30;
         public const float MaxSfxVolume = 30;
 
