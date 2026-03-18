@@ -1,9 +1,10 @@
+using Mirror;
 using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RandomObstacleSpawner : MonoBehaviour
+public class RandomObstacleSpawner : NetworkBehaviour
 {
     //todo: make it pull from a list of random objects if this shit graduates from being a prototype
 
@@ -19,37 +20,44 @@ public class RandomObstacleSpawner : MonoBehaviour
 
     void Start()
     {
-        _inARow = 0;
-        _lastObjectSpawnLocation = null;
+        if (authority)
+        {
+            _inARow = 0;
+            _lastObjectSpawnLocation = null;
 
-        //todo: make api for starting/stopping if necessary and if, once again, see above comment
-        StartCoroutine("SpawnObstacles");
+            //todo: make api for starting/stopping if necessary and if, once again, see above comment
+            StartCoroutine("SpawnObstacles");
+        }
     }
 
     IEnumerator SpawnObstacles()
     {
-        while (true)
+        if (authority)
         {
-            Transform t = _objectSpawnLocations[Random.Range(0, _objectSpawnLocations.Count)];
-
-            if (_lastObjectSpawnLocation == t) { ++_inARow; }
-            else { _inARow = 1; }
-            
-            if (_inARow > 2)
+            while (true)
             {
-                //Max of 3 in a row allowed, pick another
-                do
-                {
-                    t = _objectSpawnLocations[Random.Range(0, _objectSpawnLocations.Count)];
-                }
-                while (t == _lastObjectSpawnLocation);
-                _inARow = 1;
-            }
-            _lastObjectSpawnLocation = t;
+                Transform t = _objectSpawnLocations[Random.Range(0, _objectSpawnLocations.Count)];
 
-            GameObject obj = Instantiate(obstacle, t.position, t.rotation, transform);
-            obj.GetComponent<Rigidbody>().linearVelocity = t.forward * 10.0f;
-            yield return new WaitForSeconds(Random.Range(_minSpawnRate, _maxSpawnRate)); //add initial offset to start-time if.... ykno what just pin that top comment jarvis
+                if (_lastObjectSpawnLocation == t) { ++_inARow; }
+                else { _inARow = 1; }
+
+                if (_inARow > 2)
+                {
+                    //Max of 3 in a row allowed, pick another
+                    do
+                    {
+                        t = _objectSpawnLocations[Random.Range(0, _objectSpawnLocations.Count)];
+                    }
+                    while (t == _lastObjectSpawnLocation);
+                    _inARow = 1;
+                }
+                _lastObjectSpawnLocation = t;
+
+                GameObject obj = Instantiate(obstacle, t.position, t.rotation, transform);
+                NetworkServer.Spawn(obj);
+                obj.GetComponent<Rigidbody>().linearVelocity = t.forward * 10.0f;
+                yield return new WaitForSeconds(Random.Range(_minSpawnRate, _maxSpawnRate)); //add initial offset to start-time if.... ykno what just pin that top comment jarvis
+            }
         }
     }
 

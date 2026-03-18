@@ -1,19 +1,23 @@
+using Mirror;
 using UnityEngine;
 
-public class PillarFall : MonoBehaviour
+public class PillarFall : NetworkBehaviour
 {
-    [SerializeField] private Animator _animator;
+    [SerializeField] private NetworkAnimator _animator;
     private bool _activated = false;
 
     void OnTriggerEnter(Collider other)
     {
-        if (_activated) { return; }
-
-        if (((1 << other.gameObject.layer) & LayerMask.GetMask("Cart", "Player")) != 0)
+        if (authority)
         {
-            _animator.SetTrigger("Fall");
-            _activated = true;
+            if (_activated) { return; }
 
+            if (((1 << other.gameObject.layer) & LayerMask.GetMask("Cart", "Player")) != 0)
+            {
+                _animator.SetTrigger("Fall");
+                _activated = true;
+
+            }
         }
     }
 }
