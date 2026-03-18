@@ -22,15 +22,19 @@ namespace UI
         // Audio
         public float MusicVolumePercent = 75.0f;
         public float SfxVolumePercent = 75.0f;
-        public float VoiceVolumePercent = 100.0f;
         public bool PushToTalk = true;
         public bool NoiseSuppression = true;
         public string InputDevice = null;
+
+        public Dictionary<string, float> PlayerVoiceVolumePercents = new();
+
+        // Backend
+        public string UserID = Guid.NewGuid().ToString();
     }
 
     public class SettingsManager : MonoBehaviour
     {
-        // Wwise Authoring values. 10 is -6db, 30 is +6db, 20.0 is +0dB.
+        // Wwise Authoring values. 10 is -6db, 20 is +0dB, 30 is +6db.
         public const float MaxMusicVolume = 30;
         public const float MaxSfxVolume = 30;
 
@@ -44,7 +48,7 @@ namespace UI
 
         public static string GetRandomName() => DefaultPlayerNames[Random.Range(0, DefaultPlayerNames.Length)];
 
-        public static string SettingsFilePath => Application.persistentDataPath + "/settings.json";
+        public static string SettingsFilePath => $"{Application.persistentDataPath}/settings{(Application.isEditor ? "-editor" : "")}.json";
 
         public static UserSettings ActiveSettings { get; private set; }
 
@@ -54,7 +58,6 @@ namespace UI
         // Audio
         [SerializeField] [Required] private Slider _musicVolumeSlider;
         [SerializeField] [Required] private Slider _sfxVolumeSlider;
-        [SerializeField] [Required] private Slider _voiceVolumeSlider;
         [SerializeField] [Required] private Toggle _pttToggle;
         [SerializeField] [Required] private Toggle _noiseSuppressionToggle;
         [SerializeField] [Required] private TMP_Dropdown _inputDeviceDropdown;
@@ -81,7 +84,6 @@ namespace UI
             // Audio
             _musicVolumeSlider.onValueChanged.AddListener(OnMusicVolumeChanged);
             _sfxVolumeSlider.onValueChanged.AddListener(OnSfxVolumeChanged);
-            _voiceVolumeSlider.onValueChanged.AddListener(OnVoiceVolumeChanged);
 
             _pttToggle.onValueChanged.AddListener(OnPttToggleChanged);
             _noiseSuppressionToggle.onValueChanged.AddListener(OnNoiseSuppressionToggleChanged);
@@ -96,7 +98,6 @@ namespace UI
             // Audio
             _musicVolumeSlider.onValueChanged.RemoveListener(OnMusicVolumeChanged);
             _sfxVolumeSlider.onValueChanged.RemoveListener(OnSfxVolumeChanged);
-            _voiceVolumeSlider.onValueChanged.RemoveListener(OnVoiceVolumeChanged);
 
             _pttToggle.onValueChanged.RemoveListener(OnPttToggleChanged);
             _noiseSuppressionToggle.onValueChanged.RemoveListener(OnNoiseSuppressionToggleChanged);
@@ -134,25 +135,6 @@ namespace UI
             NetworkClient.localPlayer?.GetComponent<VoipClient>().SetDevice(ActiveSettings.InputDevice);
         }
 
-        private void AlignUIWithSettings()
-        {
-            // Game
-            _playerNameText.text = ActiveSettings.PlayerName;
-
-            // Audio
-            _musicVolumeSlider.value = ActiveSettings.MusicVolumePercent;
-            _sfxVolumeSlider.value = ActiveSettings.SfxVolumePercent;
-            _voiceVolumeSlider.value = ActiveSettings.VoiceVolumePercent;
-            
-            _noiseSuppressionToggle.isOn = ActiveSettings.NoiseSuppression;
-            _pttToggle.isOn = ActiveSettings.PushToTalk;
-            
-            _inputDeviceDropdown.ClearOptions();
-            _inputDeviceDropdown.AddOptions(new List<string> { "None" });
-            _inputDeviceDropdown.AddOptions(Microphone.devices.ToList());
-            _inputDeviceDropdown.value = (Microphone.devices.Length == 0) ? 0 : Microphone.devices.ToList().IndexOf(ActiveSettings.InputDevice) + 1;
-        }
-
         private void OnPlayerNameChanged(string val)
         {
             ActiveSettings.PlayerName = val;
@@ -175,12 +157,6 @@ namespace UI
             _sfxVolumeRtpc.SetGlobalValue((val / 100) * MaxSfxVolume);
         }
 
-        private void OnVoiceVolumeChanged(float val)
-        {
-            ActiveSettings.VoiceVolumePercent = val;
-            SaveToDisk();
-        }
-
         private void OnPttToggleChanged(bool val)
         {
             ActiveSettings.PushToTalk = val;
@@ -193,14 +169,14 @@ namespace UI
             SaveToDisk();
         }
 
-        private void OnInputDeviceChanged(int _)
+        private void OnInputDeviceChanged(int val)
         {
-            string uiText = _inputDeviceDropdown.options[_inputDeviceDropdown.value].text;
+            string uiText = _inputDeviceDropdown.options[val].text;
             SetInputDevice(uiText == "None" ? null : uiText);
             SaveToDisk();
         }
 
-        private void SaveToDisk()
+        public static void SaveToDisk()
         {
             var json = JsonConvert.SerializeObject(ActiveSettings, Formatting.Indented);
             System.IO.File.WriteAllText(SettingsFilePath, json);
@@ -212,16 +188,6 @@ namespace UI
             {
                 var json = System.IO.File.ReadAllText(SettingsFilePath);
                 ActiveSettings = JsonConvert.DeserializeObject<UserSettings>(json);
-                
-                _musicVolumeRtpc.SetGlobalValue((ActiveSettings.MusicVolumePercent / 100) * MaxMusicVolume);
-                _sfxVolumeRtpc.SetGlobalValue((ActiveSettings.SfxVolumePercent / 100) * MaxSfxVolume);
-                
-                if (!Microphone.devices.Contains(ActiveSettings.InputDevice))
-                {
-                    ActiveSettings.InputDevice = null;
-                }
-
-                SetInputDevice(ActiveSettings.InputDevice);
             }
             else
             {
@@ -230,7 +196,35 @@ namespace UI
                 SaveToDisk();
             }
 
-            AlignUIWithSettings();
+            if (!Microphone.devices.Contains(ActiveSettings.InputDevice))
+            {
+                ActiveSettings.InputDevice = null;
+            }
+
+            SetInputDevice(ActiveSettings.InputDevice);
+
+            ApplySettings();
+        }
+
+        private void ApplySettings()
+        {
+            // Game
+            _playerNameText.text = ActiveSettings.PlayerName;
+
+            // Audio
+            _musicVolumeSlider.value = ActiveSettings.MusicVolumePercent;
+            _sfxVolumeSlider.value = ActiveSettings.SfxVolumePercent;
+
+            _noiseSuppressionToggle.isOn = ActiveSettings.NoiseSuppression;
+            _pttToggle.isOn = ActiveSettings.PushToTalk;
+
+            _inputDeviceDropdown.ClearOptions();
+            _inputDeviceDropdown.AddOptions(new List<string> { "None" });
+            _inputDeviceDropdown.AddOptions(Microphone.devices.ToList());
+            _inputDeviceDropdown.value = (Microphone.devices.Length == 0) ? 0 : Microphone.devices.ToList().IndexOf(ActiveSettings.InputDevice) + 1;
+
+            _musicVolumeRtpc.SetGlobalValue((ActiveSettings.MusicVolumePercent / 100) * MaxMusicVolume);
+            _sfxVolumeRtpc.SetGlobalValue((ActiveSettings.SfxVolumePercent / 100) * MaxSfxVolume);
         }
     }
 }

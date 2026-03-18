@@ -1,9 +1,11 @@
+using System;
 using Mirror;
 using System.Collections.Generic;
 using TMPro;
 using UI;
 using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -16,9 +18,12 @@ public class PlayerController : NetworkBehaviour
     private static readonly int GlideState = Animator.StringToHash("Glide");
 
     public static Material[] SkinMaterials;
+    public static Sprite[] SkinIcons;
 
     [Header("Network")]
     [SyncVar] [ReadOnly] public int PlayerIndex;
+
+    [SyncVar] [ReadOnly] public string PlayerUID;
 
     [SyncVar] [ReadOnly] public string PlayerName;
     [SyncVar] [ReadOnly] public int PlayerSkinIndex;
@@ -89,10 +94,15 @@ public class PlayerController : NetworkBehaviour
     //Swap to "WheelSeat" (aka dont make a sound when on wheels) 
     public AK.Wwise.Switch footsteps;
 
+    // Called when a player object is done being initially setup
+    // Does NOT imply the player has just joined
+    public static UnityEvent<PlayerController> OnPlayerReady = new();
+
     private void Awake()
     {
         SkinMaterials ??= Resources.LoadAll<Material>("PlayerSkins/Materials");
-        
+        SkinIcons ??= Resources.LoadAll<Sprite>("PlayerSkins/Icons");
+
         Rb = GetComponent<Rigidbody>();
         _networkAnimator = GetComponent<NetworkAnimator>();
 
@@ -111,6 +121,14 @@ public class PlayerController : NetworkBehaviour
 
         CarSound.Post(gameObject);
         RTPCSpeed.SetGlobalValue(0);
+        
+        OnPlayerReady.Invoke(this);
+    }
+    
+    public override void OnStopClient()
+    {
+        if (isLocalPlayer) return;
+        PlayerPresenceFeed.OnPlayerLeave.Invoke(this);
     }
 
     private void OnDestroy()
@@ -294,9 +312,9 @@ public class PlayerController : NetworkBehaviour
         Rb.useGravity = !groundedOnBumpy;
         _networkAnimator.animator.SetBool(GroundedState, grounded || groundedOnBumpy);
 
-        if(grounded == true)
+        if (grounded == true)
         {
-            postWwiseFootstep.fallCount= 0;
+            postWwiseFootstep.fallCount = 0;
         }
 
         if (!Seat)

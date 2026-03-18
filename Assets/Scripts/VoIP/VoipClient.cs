@@ -1,5 +1,6 @@
 using System;
 using System.Buffers;
+using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using Mirror;
@@ -37,6 +38,8 @@ namespace VoIP
         [SerializeField] private Sprite _vcActiveIcon;
         [SerializeField] private Sprite _vcInactiveIcon;
 
+        [SerializeField] private PlayerController _player;
+
         //Mic clip
         private AudioClip _micClip; //clip the mic will record into (loops)
         private int _micReadPos;
@@ -61,6 +64,11 @@ namespace VoIP
         private readonly float[] _denoiseBuffer = new float[RnNoiseProcessor.FrameSize];
         private readonly float[] _opusFrameBuffer = new float[OpusProcessor.FrameSize];
         private readonly byte[] _opusPacketBuffer = new byte[OpusProcessor.MaxPacketSize];
+
+        protected override void OnValidate()
+        {
+            if (!_player) _player = GetComponent<PlayerController>();
+        }
 
         public void Start()
         {
@@ -90,6 +98,8 @@ namespace VoIP
                 _source.Play();
 
                 _vcIcon.sprite = _vcInactiveIcon;
+                
+                SettingsManager.ActiveSettings.PlayerVoiceVolumePercents.TryAdd(_player.PlayerUID, 100);
             }
         }
 
@@ -354,7 +364,7 @@ namespace VoIP
                 {
                     data[s * channels + c] = samples[s];
 
-                    float voiceVolLinear = SettingsManager.ActiveSettings.VoiceVolumePercent / 100f;
+                    float voiceVolLinear = SettingsManager.ActiveSettings.PlayerVoiceVolumePercents.GetValueOrDefault(_player.PlayerUID, 100f) / 100f;
                     data[s * channels + c] *= (voiceVolLinear * voiceVolLinear); // apply quadratic gain
                 }
             }

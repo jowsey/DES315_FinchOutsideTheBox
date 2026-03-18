@@ -8,8 +8,6 @@ namespace UI
 {
     public class PlayerPresenceItem : MonoBehaviour
     {
-        public static Sprite[] SkinIcons;
-
         [SerializeField] private Color _joinBackground;
         [SerializeField] private Color _leaveBackground;
 
@@ -19,12 +17,12 @@ namespace UI
         [SerializeField] private TextMeshProUGUI _label;
         [SerializeField] private string _template = "<b>[[name]]</b> [[activity]]";
 
-        public void Render(string playerName, int skin, PlayerPresenceFeed.PresenceType presenceType)
+        public void Build(PlayerController player, PlayerPresenceFeed.PresenceType presenceType)
         {
-            _catFaceIcon.Sprite = SkinIcons[skin];
+            _catFaceIcon.Sprite = PlayerController.SkinIcons[player.PlayerSkinIndex];
             _backgroundImage.color = presenceType == PlayerPresenceFeed.PresenceType.Join ? _joinBackground : _leaveBackground;
             _label.text = _template
-                .Replace("[[name]]", playerName)
+                .Replace("[[name]]", player.PlayerName)
                 .Replace("[[activity]]", presenceType == PlayerPresenceFeed.PresenceType.Join ? "joined" : "left");
             
             var rt = (RectTransform)transform;
@@ -41,8 +39,6 @@ namespace UI
 
         private void Awake()
         {
-            SkinIcons ??= Resources.LoadAll<Sprite>("PlayerSkins/Icons");
-
             _canvasGroup.alpha = 0;
         }
     }
