@@ -20,7 +20,7 @@ public class RandomObstacleSpawner : NetworkBehaviour
 
     void Start()
     {
-        if (authority)
+        if (isServer)
         {
             _inARow = 0;
             _lastObjectSpawnLocation = null;
@@ -32,32 +32,29 @@ public class RandomObstacleSpawner : NetworkBehaviour
 
     IEnumerator SpawnObstacles()
     {
-        if (authority)
+        while (true)
         {
-            while (true)
+            Transform t = _objectSpawnLocations[Random.Range(0, _objectSpawnLocations.Count)];
+
+            if (_lastObjectSpawnLocation == t) { ++_inARow; }
+            else { _inARow = 1; }
+
+            if (_inARow > 2)
             {
-                Transform t = _objectSpawnLocations[Random.Range(0, _objectSpawnLocations.Count)];
-
-                if (_lastObjectSpawnLocation == t) { ++_inARow; }
-                else { _inARow = 1; }
-
-                if (_inARow > 2)
+                //Max of 3 in a row allowed, pick another
+                do
                 {
-                    //Max of 3 in a row allowed, pick another
-                    do
-                    {
-                        t = _objectSpawnLocations[Random.Range(0, _objectSpawnLocations.Count)];
-                    }
-                    while (t == _lastObjectSpawnLocation);
-                    _inARow = 1;
+                    t = _objectSpawnLocations[Random.Range(0, _objectSpawnLocations.Count)];
                 }
-                _lastObjectSpawnLocation = t;
-
-                GameObject obj = Instantiate(obstacle, t.position, t.rotation, transform);
-                NetworkServer.Spawn(obj);
-                obj.GetComponent<Rigidbody>().linearVelocity = t.forward * 10.0f;
-                yield return new WaitForSeconds(Random.Range(_minSpawnRate, _maxSpawnRate)); //add initial offset to start-time if.... ykno what just pin that top comment jarvis
+                while (t == _lastObjectSpawnLocation);
+                _inARow = 1;
             }
+            _lastObjectSpawnLocation = t;
+
+            GameObject obj = Instantiate(obstacle, t.position, t.rotation);
+            NetworkServer.Spawn(obj);
+            obj.GetComponent<Rigidbody>().linearVelocity = t.forward * 10.0f;
+            yield return new WaitForSeconds(Random.Range(_minSpawnRate, _maxSpawnRate)); //add initial offset to start-time if.... ykno what just pin that top comment jarvis
         }
     }
 
