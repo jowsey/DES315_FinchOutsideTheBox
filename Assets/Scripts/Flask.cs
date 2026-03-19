@@ -26,6 +26,8 @@ public class Flask : NetworkBehaviour
 
     private PlayerController _holder;
 
+    [SerializeField] private GameObject _smashedFlask;
+
     public AK.Wwise.Event flaskSmash; 
 
     private void Awake()
@@ -121,6 +123,8 @@ public class Flask : NetworkBehaviour
             State = FlaskState.Smashed;
             flaskSmash.Post(gameObject);
         }
+
+        Instantiate(_smashedFlask, transform.position, transform.rotation);
     }
 
     [ClientRpc]
