@@ -47,11 +47,6 @@ public class PlayerController : NetworkBehaviour
 
     private bool _jumpPressed;
 
-    //Wwise values
-    public AK.Wwise.Event CarSound = new();
-    public AK.Wwise.RTPC RTPCSpeed;
-    public float RTPCSpeedValue;
-
     public PostWwiseFootstep postWwiseFootstep;
 
     public AK.Wwise.Event FlaskPickupFX;
@@ -119,9 +114,6 @@ public class PlayerController : NetworkBehaviour
         _camera = FindAnyObjectByType<CinemachineCamera>(FindObjectsInactive.Include);
         _playerNameText.text = PlayerName;
 
-        CarSound.Post(gameObject);
-        RTPCSpeed.SetGlobalValue(0);
-        
         OnPlayerReady.Invoke(this);
     }
     
@@ -279,24 +271,8 @@ public class PlayerController : NetworkBehaviour
         if (WorldSpaceMoveDir.sqrMagnitude > 0)
         {
             _networkAnimator.animator.SetBool(RunningState, true);
-            // todo this should definitely run outside of localplayer (for other players' footsteps) ---> Paolo: I think this is fixed now by adding sounds to the animation
-            // and rtpc speed should be based on actual wheel speed, not input time, ---> Paolo: Also, I think this should somehow be attached to the cart instead, as right now it only plays the sound when a specific player is riding, but as a temp solution this works
-            if (Seat)
-            {
-                RTPCSpeedValue += 4f;
-            }
-
-
             Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, Quaternion.LookRotation(WorldSpaceMoveDir, Vector3.up), Time.fixedDeltaTime * rotationSmoothingSpeed));
         }
-        else
-        {
-            // todo again should be based on cart speed
-            RTPCSpeedValue -= 3f;
-        }
-
-        RTPCSpeedValue = Mathf.Clamp(RTPCSpeedValue, 0, 100);
-        RTPCSpeed.SetGlobalValue(RTPCSpeedValue);
 
         //Unsitting
         if (Seat && _jumpPressed)
