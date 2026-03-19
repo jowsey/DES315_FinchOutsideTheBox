@@ -352,7 +352,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 25082166}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f8e0173a5d5e43b4180fc4037058bfee, type: 3}
   m_Name: 
@@ -368,7 +368,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 25082166}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a90d7b99174e89648b3326be8087467a, type: 3}
   m_Name: 
@@ -636,9 +636,9 @@ GameObject:
   m_Component:
   - component: {fileID: 143424542}
   - component: {fileID: 143424544}
-  - component: {fileID: 143424543}
   - component: {fileID: 143424549}
   - component: {fileID: 143424548}
+  - component: {fileID: 143424550}
   m_Layer: 0
   m_Name: BGM Controller
   m_TagString: Untagged
@@ -661,35 +661,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &143424543
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 143424541}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 26af493bcf67119428782973bd957798, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: AK.Wwise.Unity.MonoBehaviour::AkEvent
-  triggerList: f7e1664c
-  useOtherObject: 0
-  actionOnEventType: 0
-  curveInterpolation: 4
-  enableActionOnEvent: 0
-  data:
-    idInternal: 0
-    valueGuidInternal: 
-    WwiseObjectReference: {fileID: 11400000, guid: ed73435669042ff4d882bef663272b6f, type: 2}
-  useCallbacks: 0
-  stopSoundOnDestroy: 1
-  Callbacks: []
-  soundEmitterObject: {fileID: 0}
-  transitionDuration: 0
-  eventIdInternal: 0
-  valueGuidInternal: 
-  m_callbackDataInternal: {fileID: 0}
 --- !u!114 &143424544
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -750,7 +721,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 937e8f72859d4ce4ea1b3541961bade8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: AK.Wwise.Unity.MonoBehaviour::AkState
-  triggerList: ae8d9d44f7e1664c
+  triggerList: f7e1664c
   useOtherObject: 0
   data:
     idInternal: 0
@@ -762,6 +733,22 @@ MonoBehaviour:
   groupIdInternal: 0
   valueGuidInternal: 
   groupGuidInternal: 
+--- !u!114 &143424550
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 143424541}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4fa1da0b530d0d445964dba058149697, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  menuMusicInit:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: ed73435669042ff4d882bef663272b6f, type: 2}
 --- !u!1 &149635944
 GameObject:
   m_ObjectHideFlags: 0
@@ -3365,6 +3352,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6619413929593567775, guid: 0956a6b6c8e74b741a97b797c37089be, type: 3}
       propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6810257284287447472, guid: 0956a6b6c8e74b741a97b797c37089be, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6810257284287447472, guid: 0956a6b6c8e74b741a97b797c37089be, type: 3}
+      propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8417248369979282937, guid: 0956a6b6c8e74b741a97b797c37089be, type: 3}

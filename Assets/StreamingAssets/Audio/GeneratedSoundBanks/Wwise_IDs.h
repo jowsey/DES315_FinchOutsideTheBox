@@ -20,6 +20,7 @@ namespace AK
         static const AkUniqueID CATPING = 3173738935U;
         static const AkUniqueID CHECKPOINTDRUMS = 2509294038U;
         static const AkUniqueID FOOTSTEPS = 2385628198U;
+        static const AkUniqueID GLASSINVEHILCE = 2158283652U;
         static const AkUniqueID GLASSPICKUP = 1188386847U;
         static const AkUniqueID GLASSSHATTER = 206611762U;
         static const AkUniqueID HOVERTICK = 2670946266U;
