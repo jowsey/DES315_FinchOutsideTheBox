@@ -63,6 +63,7 @@ public class PlayerController : NetworkBehaviour
 
     [Header("Camera")]
     [SerializeField] [ReadOnly] private CinemachineCamera _camera;
+    private Transform _seatedCameraFollow;
 
     [Header("Movement")]
     [Tooltip("Amount of upwards force applied when jumping")]
@@ -205,6 +206,16 @@ public class PlayerController : NetworkBehaviour
     {
         if (!authority) return;
 
+        //todo this is kinda yucky
+        if (_seatedCameraFollow == null)
+        {
+            GameObject obj = GameObject.FindGameObjectWithTag("SeatedCameraFollow");
+            if (obj)
+            {
+                _seatedCameraFollow = obj.transform;
+            }
+        }
+
         _contactNormals.Clear();
 
         _jumpPressed |= JumpAction.action.WasPressedThisFrame();
@@ -303,6 +314,9 @@ public class PlayerController : NetworkBehaviour
         {
             Seat.CmdUnsitPlayer();
 
+            _camera.Follow = transform;
+            _camera.LookAt = transform;
+
             CleanupFixedUpdate();
             return;
         }
@@ -370,6 +384,8 @@ public class PlayerController : NetworkBehaviour
         {
             NetworkIdentity identity = GetComponent<NetworkIdentity>();
             newSeat.CmdTrySitPlayer(identity);
+            _camera.Follow = _seatedCameraFollow;
+            _camera.LookAt = _seatedCameraFollow;
         }
     }
 
