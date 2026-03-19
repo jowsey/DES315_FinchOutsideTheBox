@@ -17,6 +17,7 @@ namespace UI
         public AK.Wwise.RTPC RTPCMenuOnOff;
 
         [SerializeField] [Required] private CinemachineInputAxisController _playerCamInput;
+        [SerializeField] [Required] private CameraController _playerCamController;
 
         private void OnEnable()
         {
@@ -46,6 +47,7 @@ namespace UI
 
             Cursor.lockState = active ? CursorLockMode.None : CursorLockMode.Locked;
             _playerCamInput.enabled = !active;
+            _playerCamController.enabled = !active;
 
             // we don't use SetActive since we want the menu to still receive input events, and being inactive would disable that
             _canvasGroup.alpha = active ? 1 : 0;
@@ -54,7 +56,7 @@ namespace UI
 
             // bring to front
             if (active) transform.SetAsLastSibling();
-            
+
             // set wwise rtpc
             RTPCMenuOnOff.SetGlobalValue(active ? 1 : 0);
         }
