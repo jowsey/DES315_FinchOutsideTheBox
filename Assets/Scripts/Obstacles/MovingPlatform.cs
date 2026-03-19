@@ -35,11 +35,11 @@ public class MovingPlatform : MonoBehaviour
         _rb = GetComponentInChildren<Rigidbody>();
         _container = GetComponentInChildren<SplineContainer>();
         _isMoving = _moveByDefault;
-        _timeElapsed = 0;
-        _targetT = 0.0f;
+        _timeElapsed = _startT * _duration;
+        _targetT = (float)_timeElapsed;
         _useTargetT = false;
-        _tLastTick = 0.0f;
-        _currentT = 0.0f;
+        _tLastTick = (float)_timeElapsed;
+        _currentT = _startT;
     }
 
     public void StartMoving()
@@ -93,7 +93,7 @@ public class MovingPlatform : MonoBehaviour
 
             //Map the absolute t value to the splinal t value shaped by the _displacementCurve
             //Range [0, 1]
-            _currentT = _startT + _displacementCurve.Evaluate(absoluteT);
+            _currentT = _displacementCurve.Evaluate(absoluteT);
             //Evaluate spline
             Vector3 localPos = _container.Splines[0].EvaluatePosition(_currentT);
             Vector3 worldPos = _container.transform.TransformPoint(localPos);
