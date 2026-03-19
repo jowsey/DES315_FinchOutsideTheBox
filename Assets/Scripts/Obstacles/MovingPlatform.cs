@@ -13,6 +13,7 @@ public class MovingPlatform : MonoBehaviour
     [SerializeField] private float _duration;
     [SerializeField] private AnimationCurve _displacementCurve;
     [SerializeField] private bool _moveByDefault;
+    [SerializeField] private float _startT;
     private bool _isMoving;
     private double _timeElapsed; //Tracks the passing Time.fixedDeltaTime but only when _isMoving is true
     private float _targetT;
@@ -92,7 +93,7 @@ public class MovingPlatform : MonoBehaviour
 
             //Map the absolute t value to the splinal t value shaped by the _displacementCurve
             //Range [0, 1]
-            _currentT = _displacementCurve.Evaluate(absoluteT);
+            _currentT = _startT + _displacementCurve.Evaluate(absoluteT);
             //Evaluate spline
             Vector3 localPos = _container.Splines[0].EvaluatePosition(_currentT);
             Vector3 worldPos = _container.transform.TransformPoint(localPos);
