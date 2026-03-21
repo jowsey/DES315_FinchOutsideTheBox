@@ -3,26 +3,12 @@ using UnityEngine.Events;
 
 public class TriggerZoneMovement : MonoBehaviour
 {
-    [SerializeField] private float _speed;
-    private bool _triggerColliding;
-
-    [Tooltip("Invoked when the zone is entered")]
+    [Tooltip("Triggerzone Start Event")]
     [SerializeField] private UnityEvent _triggerZoneEntered;
-
-
-    private void Start()
-    {
-        _triggerColliding = false;
-    }
 
     private void OnTriggerEnter(Collider other)
     {
-        _triggerColliding = true;
-    }
-
-    private void FixedUpdate()
-    {
-        if (_triggerColliding)
+        if (other.gameObject.layer == LayerMask.NameToLayer("Player") || (other.gameObject.layer == LayerMask.NameToLayer("Cart")))
         {
             _triggerZoneEntered.Invoke();
         }
