@@ -1,30 +1,30 @@
+using Mirror;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class LeverMovement : MonoBehaviour
+public class LeverMovement : NetworkBehaviour
 {
-    [SerializeField] private Transform[] _holder;
-    [SerializeField] private Transform _pivot;
-    [Tooltip("The rotation of the lever by default")]
-    [SerializeField] private Quaternion _defaultTarget;
-    [Tooltip("The rotation of the lever that it will approach when being pressed down")]
-    [SerializeField] private Quaternion _activeTarget;
-    [SerializeField] private float _speed;
+    private Animator _animator;
+    bool _forward; //True when going forward, false when going backwards
+
     private bool _triggerColliding;
     private bool _triggerCollidingLastTick;
 
-    [Tooltip("Invoked when the lever starts moving towards target rotation")]
+    [Tooltip("Invoked when the lever starts moving down")]
     [SerializeField] private UnityEvent _onLeverActivate;
-    [Tooltip("Invoked when the lever starts moving back to default rotation")]
+    [Tooltip("Invoked when the lever starts moving up")]
     [SerializeField] private UnityEvent _onLeverDeactivate;
-    [Tooltip("Invoked when the lever has reached target rotation")]
-    [SerializeField] private UnityEvent _onLeverTargetRot;
-    [Tooltip("Invoked when the lever has reached default rotation (not triggered on first tick)")]
-    [SerializeField] private UnityEvent _onLeverDefaultRot;
+    [Tooltip("Invoked when the lever has reached fully down")]
+    [SerializeField] private UnityEvent _onLeverTargetPos;
+    [Tooltip("Invoked when the lever has reached fully up (not triggered on first tick)")]
+    [SerializeField] private UnityEvent _onLeverDefaultPos;
 
 
     private void Start()
     {
+        _animator = GetComponentInParent<Animator>();
+        _animator.SetFloat("AnimSpeed", 0.0f);
+        _forward = true;
         _triggerColliding = false;
         _triggerCollidingLastTick = false;
     }
@@ -36,27 +36,19 @@ public class LeverMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (_triggerColliding && (_pivot.localRotation != _activeTarget))
+        AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(0);
+        Debug.Log(_forward + " " + stateInfo.normalizedTime);
+        if ((stateInfo.normalizedTime >= 0.99f) && _forward)
         {
-            //Move lever towards active target
-            _pivot.localRotation = Quaternion.RotateTowards(_pivot.localRotation, _activeTarget, _speed * Time.fixedDeltaTime);
-
-            //Check if the lever has reached target rotation
-            if (_pivot.localRotation == _activeTarget)
-            {
-                _onLeverTargetRot.Invoke();
-            }
+            _onLeverTargetPos.Invoke();
         }
-        else if (!_triggerColliding && (_pivot.localRotation != _defaultTarget))
+        else if ((stateInfo.normalizedTime <= 0.01f) && !_forward)
         {
-            //Move lever towards default target
-            _pivot.localRotation = Quaternion.RotateTowards(_pivot.localRotation, _defaultTarget, _speed * Time.fixedDeltaTime);
+            _onLeverDefaultPos.Invoke();
 
-            //Check if the lever has reached default rotation
-            if (_pivot.localRotation == _defaultTarget)
-            {
-                _onLeverDefaultRot.Invoke();
-            }
+            //AnimSpeed of -1 makes time go below 0 so need to reset and stop it (cheers unity)
+            _animator.Play(stateInfo.fullPathHash, 0, 0.0f);
+            _animator.SetFloat("AnimSpeed", 0.0f);
         }
 
         //Check for changes in _triggerColliding state
@@ -64,18 +56,15 @@ public class LeverMovement : MonoBehaviour
         {
             //Trigger is now active
             _onLeverActivate.Invoke();
+            _animator.SetFloat("AnimSpeed", 1.0f);
+            _forward = true;
         }
         else if (_triggerCollidingLastTick && !_triggerColliding)
         {
             //Trigger is no longer active
             _onLeverDeactivate.Invoke();
-        }
-
-        //Keep the transform of the holder facing world-up
-        //todo: this will obviously just be one mesh - im just kinda dumb and dont know how to use probuilder so it's two meshes for now
-        foreach (Transform t in _holder)
-        {
-            t.rotation = Quaternion.identity;
+            _animator.SetFloat("AnimSpeed", -1.0f);
+            _forward = false;
         }
 
         //Reset
