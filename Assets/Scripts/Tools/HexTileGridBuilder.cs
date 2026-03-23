@@ -27,7 +27,7 @@ namespace Tools
         [Button]
         private void RebuildGrid()
         {
-            if (Application.isPlaying || !gameObject) return;
+            if (Application.isPlaying || !this) return;
             
             var tiles = GetComponentsInChildren<HexTile>();
 
