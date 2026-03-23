@@ -27,18 +27,15 @@ namespace Tools
         [Button]
         private void RebuildGrid()
         {
-            if (Application.isPlaying) return;
-
+            if (Application.isPlaying || !gameObject) return;
+            
             var tiles = GetComponentsInChildren<HexTile>();
 
             foreach (var tile in tiles)
             {
                 if (!tile) continue;
 
-                if (Application.isPlaying)
-                    Destroy(tile.gameObject);
-                else
-                    DestroyImmediate(tile.gameObject);
+                DestroyImmediate(tile.gameObject);
             }
 
             if (!_hexTilePrefab) return;
