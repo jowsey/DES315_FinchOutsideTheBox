@@ -259,8 +259,7 @@ namespace VoIP
                 else
                 {
                     // Just passthrough accumulation buffer into opus frame buffer
-                    _accumulationBuffer.ReadInto(_denoiseBuffer, OpusProcessor.FrameSize);
-                    Array.Copy(_denoiseBuffer, _opusFrameBuffer, OpusProcessor.FrameSize);
+                    _accumulationBuffer.ReadInto(_opusFrameBuffer, OpusProcessor.FrameSize);
                 }
 
                 int packetSize = _opus.Encode(_opusFrameBuffer, _opusPacketBuffer);
