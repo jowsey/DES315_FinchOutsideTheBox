@@ -100806,6 +100806,7 @@ GameObject:
   - component: {fileID: 1804469459}
   - component: {fileID: 1804469458}
   - component: {fileID: 1804469457}
+  - component: {fileID: 1804469467}
   - component: {fileID: 1804469456}
   - component: {fileID: 1804469464}
   - component: {fileID: 1804469462}
@@ -101167,6 +101168,14 @@ MonoBehaviour:
   scalingFactor: 1
   m_posOffsetData: {fileID: 0}
   listenerMask: 1
+--- !u!81 &1804469467
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1804469453}
+  m_Enabled: 1
 --- !u!43 &1804683768
 Mesh:
   m_ObjectHideFlags: 0
@@ -180961,8 +180970,8 @@ SceneRoots:
   m_Roots:
   - {fileID: 2013410475}
   - {fileID: 1926499501}
-  - {fileID: 832693987}
   - {fileID: 1804469459}
+  - {fileID: 832693987}
   - {fileID: 731343934}
   - {fileID: 1773578278}
   - {fileID: 252450010}
