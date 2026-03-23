@@ -41,12 +41,16 @@ public class LeverMovement : NetworkBehaviour
         if ((stateInfo.normalizedTime >= 0.99f) && _forward)
         {
             _onLeverTargetPos.Invoke();
+
+            //Clamp to 1 and stop animation so it doesn't go past 1
+            _animator.Play(stateInfo.fullPathHash, 0, 1.0f);
+            _animator.SetFloat("AnimSpeed", 0.0f);
         }
         else if ((stateInfo.normalizedTime <= 0.01f) && !_forward)
         {
             _onLeverDefaultPos.Invoke();
 
-            //AnimSpeed of -1 makes time go below 0 so need to reset and stop it (cheers unity)
+            //Clamp to 0 and stop animation so it doesn't go past 0 into negatives
             _animator.Play(stateInfo.fullPathHash, 0, 0.0f);
             _animator.SetFloat("AnimSpeed", 0.0f);
         }
