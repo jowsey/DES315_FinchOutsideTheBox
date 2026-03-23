@@ -29,7 +29,7 @@ namespace VoIP
         [CanBeNull] private SpeexResampler _resampler;
         [CanBeNull] private RnNoiseProcessor _denoiser;
 
-        [SerializeField] private string _device;
+        [SerializeField] [ReadOnly] private string _device;
         [SerializeField] private AudioSource _source;
 
         [SerializeField] private InputActionReference _pushToTalkAction;
