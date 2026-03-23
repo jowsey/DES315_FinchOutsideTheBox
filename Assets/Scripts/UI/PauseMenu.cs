@@ -11,6 +11,8 @@ namespace UI
     {
         [SerializeField] private InputActionReference _openAction;
 
+        [SerializeField] private RectTransform _hostLeaveDisbandWarning;
+
         private bool _isActive;
         private CanvasGroup _canvasGroup;
 
@@ -25,6 +27,11 @@ namespace UI
 
             _openAction.action.performed += OnOpen;
             OnOpen(false);
+
+            if (!NetworkServer.active)
+            {
+                _hostLeaveDisbandWarning.gameObject.SetActive(false);
+            }
         }
 
         private void OnDisable()
