@@ -150,6 +150,8 @@ public class AkWwisePicker : UnityEditor.EditorWindow
 				string wwiseInstallationPath = AkWwiseEditorSettings.Instance.WwiseInstallationPathWindows;
 #elif UNITY_EDITOR_OSX
 				string wwiseInstallationPath = AkWwiseEditorSettings.Instance.WwiseInstallationPathMac;
+#else
+				string wwiseInstallationPath = null;
 #endif
 				if (AkUtilities.IsSoundbankGenerationAvailable(wwiseInstallationPath))
 				{
