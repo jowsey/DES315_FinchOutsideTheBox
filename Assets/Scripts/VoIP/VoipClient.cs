@@ -16,11 +16,14 @@ namespace VoIP
     {
         public const int SampleRate = 48000;
 
+        //Number of samples stored
+        public const int ReceiveBufferSamples = OpusProcessor.FrameSize * 10;
+
         //Number of available samples before we start playing, gives some leeway for latency changes
         public const int JitterBufferSamples = OpusProcessor.FrameSize * 3;
 
-        //Number of samples we store before dropping old ones, prevents lagging too far behind head
-        public const int ReceiveBufferSamples = OpusProcessor.FrameSize * 10;
+        //Max number of samples behind head before we skip ahead to mitigate latency
+        public const int BacklogSkipTriggerSamples = OpusProcessor.FrameSize * 5;
 
         //Max number of PLC frames to be generated after reaching end of receive buffer
         public const int MaxPlcFrames = 3;
@@ -98,7 +101,7 @@ namespace VoIP
                 _source.Play();
 
                 _vcIcon.sprite = _vcInactiveIcon;
-                
+
                 SettingsManager.ActiveSettings.PlayerVoiceVolumePercents.TryAdd(_player.PlayerUID, 100);
             }
         }
@@ -253,6 +256,7 @@ namespace VoIP
                     if (vad1 < RnNoiseProcessor.VoiceThreshold && vad2 < RnNoiseProcessor.VoiceThreshold)
                     {
                         // Entire frame is noise, don't bother sending
+                        _lastSentSequence++;
                         continue;
                     }
                 }
@@ -279,9 +283,9 @@ namespace VoIP
         void RpcReceiveAudio(uint seq, ArraySegment<byte> opusPacket)
         {
             // UDP out-of-order check
-            if (seq < _lastReceivedSequence)
+            if (seq <= _lastReceivedSequence)
             {
-                Debug.Log($"Received VoIP seq {seq}, but latest is {_lastReceivedSequence}");
+                Debug.Log($"Received VoIP seq {seq}, but latest is already {_lastReceivedSequence}");
                 return;
             }
 
@@ -310,8 +314,20 @@ namespace VoIP
             //Clear entire buffer in case of gaps
             Array.Clear(data, 0, data.Length);
 
+            //Skip excess if we're running behind
+            if (_receiveBuffer.Available > BacklogSkipTriggerSamples)
+            {
+                // Debug.Log($"Receive buffer at {_receiveBuffer.Available / (float)OpusProcessor.FrameSize} frames, skipping ahead");
+
+                // we explicitly skip to the edge of the jitter buffer instead of the backlog max to avoid constant tiny skips
+                // the trigger is just an indicator of when the situation gets dire, not how many samples we'd *like* to have
+                var excess = _receiveBuffer.Available - JitterBufferSamples;
+                _receiveBuffer.Skip(excess);
+            }
+
             int samplesRequested = data.Length / channels;
 
+            //Start playback once we have a full jitter buffer
             if (!_playbackActive)
             {
                 if (_receiveBuffer.Available < JitterBufferSamples)
