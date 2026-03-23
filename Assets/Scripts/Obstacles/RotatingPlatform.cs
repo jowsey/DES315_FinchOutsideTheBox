@@ -34,8 +34,6 @@ public class RotatingPlatform : MonoBehaviour
 
     public void StartRotating()
     {
-        if (_isRotating == false) _timeElapsed = 0f;
-
         _isRotating = true;
     }
 
