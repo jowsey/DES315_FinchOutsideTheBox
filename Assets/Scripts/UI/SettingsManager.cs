@@ -165,7 +165,7 @@ namespace UI
 
         private void OnNoiseSuppressionToggleChanged(bool val)
         {
-            ActiveSettings.PushToTalk = val;
+            ActiveSettings.NoiseSuppression = val;
             SaveToDisk();
         }
 
