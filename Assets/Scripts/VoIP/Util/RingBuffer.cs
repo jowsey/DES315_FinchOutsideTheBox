@@ -79,6 +79,20 @@ namespace VoIP.Util
             }
         }
 
+        /// <summary>
+        /// Skips forward without reading by a given number of values
+        /// </summary>
+        /// <param name="count"></param>
+        public void Skip(int count = -1)
+        {
+            lock (_lock)
+            {
+                if (count < 0) count = Available;
+
+                _readPos = (_readPos + count) % _capacity;
+            }
+        }
+
         public void Clear()
         {
             lock (_lock)
