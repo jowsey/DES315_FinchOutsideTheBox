@@ -20,7 +20,7 @@ public class RandomObstacleSpawner : NetworkBehaviour
 
     void Start()
     {
-        if (isServer)
+        if (authority)
         {
             _inARow = 0;
             _lastObjectSpawnLocation = null;
