@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{46173D95-DFFE-4BE9-8209-57EB1CFCE1F7}",
     "Language": "SFX",
-    "Hash": "{9BF2F5C3-538F-FF7C-D59C-AA86C486F702}",
+    "Hash": "{2A93326D-58B9-CDDF-0DDE-7E75B686B5F7}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Default_Soundbank",
     "ShortName": "Default_Soundbank",
     "Path": "Default_Soundbank.bnk",
@@ -22,6 +22,14 @@
       "Location": "Memory",
       "ShortName": "Cat Jump-004.wav",
       "CachePath": "AB/{AB0766A4-BF46-391B-649D-BA83D5629C3A}.wem"
+     },
+     {
+      "Id": "31898552",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "CarOverStone - Light.wav",
+      "CachePath": "BC/{BC6601FE-2934-4836-6D52-08DA2DF9342F}.wem"
      },
      {
       "Id": "45237936",
@@ -176,6 +184,14 @@
       "CachePath": "9C/{9C81760D-8C5B-EC91-2D89-1E58C8D733EC}.wem"
      },
      {
+      "Id": "216274555",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "Upper Level Ambience.wav",
+      "CachePath": "43/{4343154E-DC6D-5F56-1B8D-04E28440084E}.wem"
+     },
+     {
       "Id": "220837832",
       "Language": "SFX",
       "Streaming": "false",
@@ -280,6 +296,14 @@
       "CachePath": "1E/{1E61DFE2-8E1A-EAAF-2FF7-B3022E8CDBDB}.wem"
      },
      {
+      "Id": "350426967",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "PostHeavenAmbience.wav",
+      "CachePath": "7C/{7C21934A-DD3A-F829-938F-6AF85C0B6E88}.wem"
+     },
+     {
       "Id": "353257543",
       "Language": "SFX",
       "Streaming": "false",
@@ -302,6 +326,14 @@
       "Location": "Memory",
       "ShortName": "Sand Fts-013.wav",
       "CachePath": "A0/{A0743748-4F97-068D-AF4C-CEE9CF54387F}.wem"
+     },
+     {
+      "Id": "371424420",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "Pre HeavenlyGates.wav",
+      "CachePath": "DF/{DF78CD04-9C86-B24A-56C2-D6E9546E913F}.wem"
      },
      {
       "Id": "378091100",
@@ -672,6 +704,14 @@
       "CachePath": "40/{405C65B9-E9E2-C5E5-9454-C8677FB2BE5E}.wem"
      },
      {
+      "Id": "864515579",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "CarOverStone - Heavy.wav",
+      "CachePath": "5F/{5F56F7E8-F599-DEFC-134D-C3D85CD99CC7}.wem"
+     },
+     {
       "Id": "865910838",
       "Language": "SFX",
       "Streaming": "false",
@@ -848,6 +888,18 @@
       "CachePath": "6E/{6E9D87CB-CC97-FD87-040F-E2B1A5D5C151}.wem"
      }
     ],
+    "Plugins": {
+     "ShareSets": [
+      {
+       "Id": "3657550167",
+       "Name": "New_Parametric_EQ",
+       "ObjectPath": "\\Effects\\Default Work Unit\\New_Parametric_EQ",
+       "GUID": "{3ABAFE3E-AE23-4434-A688-C915E3621DE7}",
+       "LibName": "Wwise Parametric EQ",
+       "LibId": "6881283"
+      }
+     ]
+    },
     "Events": [
      {
       "Id": "2594767402",
@@ -871,9 +923,22 @@
       "ObjectPath": "\\Events\\Default Work Unit\\CarMovementTerrain",
       "GUID": "{17780900-EB99-4F4D-8E1A-EA3562BF16FD}",
       "MaxAttenuation": "15",
-      "DurationType": "OneShot",
-      "DurationMin": "0",
-      "DurationMax": "0"
+      "DurationType": "Infinite",
+      "MediaRefs": [
+       {
+        "Id": "31898552"
+       },
+       {
+        "Id": "864515579"
+       }
+      ],
+      "PluginRefs": {
+       "ShareSets": [
+        {
+         "Id": "3657550167"
+        }
+       ]
+      }
      },
      {
       "Id": "244401571",
@@ -1304,7 +1369,7 @@
           "SwitchValue": {
            "GroupType": "State",
            "GroupId": "3991942870",
-           "Id": "3604647259",
+           "Id": "2161037101",
            "GUID": "{5CF4C524-2019-4F96-94A1-9639625D404E}"
           },
           "MediaRefs": [
@@ -1327,7 +1392,7 @@
           "SwitchValue": {
            "GroupType": "State",
            "GroupId": "3991942870",
-           "Id": "2333184713",
+           "Id": "1718884477",
            "GUID": "{36CEFC04-4BC4-4FB6-824C-BB554CD3631E}"
           },
           "MediaRefs": [
@@ -1353,7 +1418,7 @@
           "SwitchValue": {
            "GroupType": "State",
            "GroupId": "3991942870",
-           "Id": "1149458632",
+           "Id": "113405466",
            "GUID": "{7993C810-EA59-4AF2-ADB1-A944DF921E78}"
           },
           "MediaRefs": [
@@ -1379,7 +1444,30 @@
           "SwitchValue": {
            "GroupType": "State",
            "GroupId": "3991942870",
-           "Id": "621537501",
+           "Id": "4149392012",
+           "GUID": "{41D3C7E7-1D94-45AD-BB37-BD0228A1AF3D}"
+          },
+          "MediaRefs": [
+           {
+            "Id": "216274555"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "SwitchValue": {
+         "GroupType": "State",
+         "GroupId": "1926883983",
+         "Id": "702482391",
+         "GUID": "{55D680FE-ACF4-4E2B-8EFB-B5EC4D541F7C}"
+        },
+        "Children": [
+         {
+          "SwitchValue": {
+           "GroupType": "State",
+           "GroupId": "3991942870",
+           "Id": "2762083766",
            "GUID": "{095B469A-61A9-4F3A-B675-171CBA6B9A43}"
           },
           "MediaRefs": [
@@ -1402,7 +1490,7 @@
           "SwitchValue": {
            "GroupType": "State",
            "GroupId": "3991942870",
-           "Id": "3598752419",
+           "Id": "748692459",
            "GUID": "{1438661A-17AC-4386-93AE-57C9FE7EC55E}"
           },
           "MediaRefs": [
@@ -1411,6 +1499,52 @@
            },
            {
             "Id": "681258764"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "SwitchValue": {
+         "GroupType": "State",
+         "GroupId": "1926883983",
+         "Id": "702482391",
+         "GUID": "{55D680FE-ACF4-4E2B-8EFB-B5EC4D541F7C}"
+        },
+        "Children": [
+         {
+          "SwitchValue": {
+           "GroupType": "State",
+           "GroupId": "3991942870",
+           "Id": "3652794670",
+           "GUID": "{B3F97A02-BE6B-4D6D-8C09-245831C8D5EE}"
+          },
+          "MediaRefs": [
+           {
+            "Id": "371424420"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "SwitchValue": {
+         "GroupType": "State",
+         "GroupId": "1926883983",
+         "Id": "702482391",
+         "GUID": "{55D680FE-ACF4-4E2B-8EFB-B5EC4D541F7C}"
+        },
+        "Children": [
+         {
+          "SwitchValue": {
+           "GroupType": "State",
+           "GroupId": "3991942870",
+           "Id": "3425779733",
+           "GUID": "{834B27D3-026F-469F-873E-5B4A52C420DC}"
+          },
+          "MediaRefs": [
+           {
+            "Id": "350426967"
            }
           ]
          }
@@ -1445,6 +1579,12 @@
      }
     ],
     "GameParameters": [
+     {
+      "Id": "588369366",
+      "Name": "CarOverStone",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\CarOverStone",
+      "GUID": "{32E54A42-8D27-45A1-903D-094D115060C1}"
+     },
      {
       "Id": "988953028",
       "Name": "SFXVolume",
@@ -1510,10 +1650,16 @@
       "GUID": "{76760B35-8366-48C7-8775-08A18124DF1A}",
       "States": [
        {
-        "Id": "621537501",
-        "Name": "PreDesertCaveAmbi",
-        "ObjectPath": "\\States\\Default Work Unit\\Music\\PreDesertCaveAmbi",
-        "GUID": "{095B469A-61A9-4F3A-B675-171CBA6B9A43}"
+        "Id": "113405466",
+        "Name": "_4_DesertWails",
+        "ObjectPath": "\\States\\Default Work Unit\\Music\\_4_DesertWails",
+        "GUID": "{7993C810-EA59-4AF2-ADB1-A944DF921E78}"
+       },
+       {
+        "Id": "748692459",
+        "Name": "_6_HeavenlyGates",
+        "ObjectPath": "\\States\\Default Work Unit\\Music\\_6_HeavenlyGates",
+        "GUID": "{1438661A-17AC-4386-93AE-57C9FE7EC55E}"
        },
        {
         "Id": "748895195",
@@ -1522,34 +1668,40 @@
         "GUID": "{967B1C40-2409-44AC-9EAF-8FE4D0324E47}"
        },
        {
-        "Id": "1149458632",
-        "Name": "DesertWails",
-        "ObjectPath": "\\States\\Default Work Unit\\Music\\DesertWails",
-        "GUID": "{7993C810-EA59-4AF2-ADB1-A944DF921E78}"
-       },
-       {
-        "Id": "2333184713",
-        "Name": "DesertCave",
-        "ObjectPath": "\\States\\Default Work Unit\\Music\\DesertCave",
+        "Id": "1718884477",
+        "Name": "_2_DesertCave",
+        "ObjectPath": "\\States\\Default Work Unit\\Music\\_2_DesertCave",
         "GUID": "{36CEFC04-4BC4-4FB6-824C-BB554CD3631E}"
        },
        {
-        "Id": "2889645033",
-        "Name": "RuinsSave",
-        "ObjectPath": "\\States\\Default Work Unit\\Music\\RuinsSave",
-        "GUID": "{41D3C7E7-1D94-45AD-BB37-BD0228A1AF3D}"
-       },
-       {
-        "Id": "3598752419",
-        "Name": "HeavenlyGates",
-        "ObjectPath": "\\States\\Default Work Unit\\Music\\HeavenlyGates",
-        "GUID": "{1438661A-17AC-4386-93AE-57C9FE7EC55E}"
-       },
-       {
-        "Id": "3604647259",
-        "Name": "MainMenu",
-        "ObjectPath": "\\States\\Default Work Unit\\Music\\MainMenu",
+        "Id": "2161037101",
+        "Name": "_0_MainMenu",
+        "ObjectPath": "\\States\\Default Work Unit\\Music\\_0_MainMenu",
         "GUID": "{5CF4C524-2019-4F96-94A1-9639625D404E}"
+       },
+       {
+        "Id": "2762083766",
+        "Name": "_1_PreDesertCaveAmbi",
+        "ObjectPath": "\\States\\Default Work Unit\\Music\\_1_PreDesertCaveAmbi",
+        "GUID": "{095B469A-61A9-4F3A-B675-171CBA6B9A43}"
+       },
+       {
+        "Id": "3425779733",
+        "Name": "_7_PostHeaven",
+        "ObjectPath": "\\States\\Default Work Unit\\Music\\_7_PostHeaven",
+        "GUID": "{834B27D3-026F-469F-873E-5B4A52C420DC}"
+       },
+       {
+        "Id": "3652794670",
+        "Name": "_5_PreheavenAmb",
+        "ObjectPath": "\\States\\Default Work Unit\\Music\\_5_PreheavenAmb",
+        "GUID": "{B3F97A02-BE6B-4D6D-8C09-245831C8D5EE}"
+       },
+       {
+        "Id": "4149392012",
+        "Name": "_3_UpperLevelAmb",
+        "ObjectPath": "\\States\\Default Work Unit\\Music\\_3_UpperLevelAmb",
+        "GUID": "{41D3C7E7-1D94-45AD-BB37-BD0228A1AF3D}"
        }
       ]
      }
@@ -1590,6 +1742,6 @@
     ]
    }
   ],
-  "FileHash": "{DE95C47B-2CB1-AA9A-A97C-D7C8B53D463B}"
+  "FileHash": "{29FE73B0-8B7E-0C62-EBBD-54541D20A415}"
  }
 }

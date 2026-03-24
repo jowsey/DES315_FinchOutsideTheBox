@@ -37,13 +37,15 @@ namespace AK
 
             namespace STATE
             {
-                static const AkUniqueID DESERTCAVE = 2333184713U;
-                static const AkUniqueID DESERTWAILS = 1149458632U;
-                static const AkUniqueID HEAVENLYGATES = 3598752419U;
-                static const AkUniqueID MAINMENU = 3604647259U;
+                static const AkUniqueID _0_MAINMENU = 2161037101U;
+                static const AkUniqueID _1_PREDESERTCAVEAMBI = 2762083766U;
+                static const AkUniqueID _2_DESERTCAVE = 1718884477U;
+                static const AkUniqueID _3_UPPERLEVELAMB = 4149392012U;
+                static const AkUniqueID _4_DESERTWAILS = 113405466U;
+                static const AkUniqueID _5_PREHEAVENAMB = 3652794670U;
+                static const AkUniqueID _6_HEAVENLYGATES = 748692459U;
+                static const AkUniqueID _7_POSTHEAVEN = 3425779733U;
                 static const AkUniqueID NONE = 748895195U;
-                static const AkUniqueID PREDESERTCAVEAMBI = 621537501U;
-                static const AkUniqueID RUINSSAVE = 2889645033U;
             } // namespace STATE
         } // namespace MUSIC
 
