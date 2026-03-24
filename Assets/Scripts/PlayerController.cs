@@ -155,6 +155,9 @@ public class PlayerController : NetworkBehaviour
             _camera.gameObject.SetActive(true);
             _camera.Follow = transform;
             _camera.LookAt = transform;
+
+            var orbitalFollow = _camera.GetComponent<CinemachineOrbitalFollow>();
+            orbitalFollow.HorizontalAxis.Value = transform.eulerAngles.y;
         }
 
         // Hide nameplate for local player
