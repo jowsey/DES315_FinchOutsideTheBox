@@ -40,6 +40,17 @@ public class Cart : NetworkBehaviour
     private Dictionary<Flask, FlaskSnapshot>[] _flasksAtCheckpoint;
     public HashSet<Flask> CarriedFlasks = new();
 
+    //sound for the cart
+    public AK.Wwise.Event CarSound = new();
+    public AK.Wwise.RTPC RTPCSpeed;
+
+    //cart for when on surface
+    public AK.Wwise.Event CarOnSurface = new();
+
+    //sound for the flasks
+    public AK.Wwise.Event glassInVehicle = new();
+    public AK.Wwise.RTPC glassInDaVehicle = new();
+
     // The number of flasks we'll respawn with
     public int FlasksOnRespawn => _flasksAtCheckpoint[Mathf.Clamp(CurrentCheckpointIndex, 0, _flasksAtCheckpoint.Length - 1)].Count;
 
@@ -71,6 +82,10 @@ public class Cart : NetworkBehaviour
     public override void OnStartServer()
     {
         Checkpoint.RespawnEvent.AddListener(OnRespawn);
+
+        CarSound.Post(gameObject);
+        glassInVehicle.Post(gameObject);
+        CarOnSurface.Post(gameObject);
     }
 
     private void OnDestroy()
@@ -88,6 +103,11 @@ public class Cart : NetworkBehaviour
         {
             CmdInvokeRespawnEvent(CurrentCheckpointIndex + 1);
         }
+
+        //Car speed
+        RTPCSpeed.SetGlobalValue(_rb.linearVelocity.magnitude*20);
+        glassInDaVehicle.SetGlobalValue(CarriedFlasks.Count);
+        
     }
 
     private void FixedUpdate()

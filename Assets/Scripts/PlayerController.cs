@@ -1,9 +1,11 @@
+using System;
 using Mirror;
 using System.Collections.Generic;
 using TMPro;
 using UI;
 using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -16,9 +18,12 @@ public class PlayerController : NetworkBehaviour
     private static readonly int GlideState = Animator.StringToHash("Glide");
 
     public static Material[] SkinMaterials;
+    public static Sprite[] SkinIcons;
 
     [Header("Network")]
     [SyncVar] [ReadOnly] public int PlayerIndex;
+
+    [SyncVar] [ReadOnly] public string PlayerUID;
 
     [SyncVar] [ReadOnly] public string PlayerName;
     [SyncVar] [ReadOnly] public int PlayerSkinIndex;
@@ -42,10 +47,7 @@ public class PlayerController : NetworkBehaviour
 
     private bool _jumpPressed;
 
-    //Wwise values
-    public AK.Wwise.Event CarSound = new();
-    public AK.Wwise.RTPC RTPCSpeed;
-    public float RTPCSpeedValue;
+    public PostWwiseFootstep postWwiseFootstep;
 
     public AK.Wwise.Event FlaskPickupFX;
 
@@ -87,10 +89,15 @@ public class PlayerController : NetworkBehaviour
     //Swap to "WheelSeat" (aka dont make a sound when on wheels) 
     public AK.Wwise.Switch footsteps;
 
+    // Called when a player object is done being initially setup
+    // Does NOT imply the player has just joined
+    public static UnityEvent<PlayerController> OnPlayerReady = new();
+
     private void Awake()
     {
         SkinMaterials ??= Resources.LoadAll<Material>("PlayerSkins/Materials");
-        
+        SkinIcons ??= Resources.LoadAll<Sprite>("PlayerSkins/Icons");
+
         Rb = GetComponent<Rigidbody>();
         _networkAnimator = GetComponent<NetworkAnimator>();
 
@@ -107,8 +114,13 @@ public class PlayerController : NetworkBehaviour
         _camera = FindAnyObjectByType<CinemachineCamera>(FindObjectsInactive.Include);
         _playerNameText.text = PlayerName;
 
-        CarSound.Post(gameObject);
-        RTPCSpeed.SetGlobalValue(0);
+        OnPlayerReady.Invoke(this);
+    }
+    
+    public override void OnStopClient()
+    {
+        if (isLocalPlayer) return;
+        PlayerPresenceFeed.OnPlayerLeave.Invoke(this);
     }
 
     private void OnDestroy()
@@ -172,6 +184,8 @@ public class PlayerController : NetworkBehaviour
         onboardingJumpLine.EndTrackingOffset = closestWheel.transform.InverseTransformPoint(closestWheel.SeatedPosition);
         onboardingJumpLine.PromptLabel = "Hop on with <b>[Space]</b>!";
         onboardingJumpLine.ShouldDestroy = () => Seat; // if we're sat, job's done
+
+        postWwiseFootstep = GetComponent<PostWwiseFootstep>();
     }
 
     public override void OnStopLocalPlayer()
@@ -207,6 +221,7 @@ public class PlayerController : NetworkBehaviour
                 if (InteractAction.action.IsPressed())
                 {
                     HeldFlask.CmdTryPutdown(carrierTarget);
+                    FlaskPickupFX.Post(gameObject);
                 }
             }
         }
@@ -256,24 +271,8 @@ public class PlayerController : NetworkBehaviour
         if (WorldSpaceMoveDir.sqrMagnitude > 0)
         {
             _networkAnimator.animator.SetBool(RunningState, true);
-            // todo this should definitely run outside of localplayer (for other players' footsteps) ---> Paolo: I think this is fixed now by adding sounds to the animation
-            // and rtpc speed should be based on actual wheel speed, not input time, ---> Paolo: Also, I think this should somehow be attached to the cart instead, as right now it only plays the sound when a specific player is riding, but as a temp solution this works
-            if (Seat)
-            {
-                RTPCSpeedValue += 4f;
-            }
-
-
             Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, Quaternion.LookRotation(WorldSpaceMoveDir, Vector3.up), Time.fixedDeltaTime * rotationSmoothingSpeed));
         }
-        else
-        {
-            // todo again should be based on cart speed
-            RTPCSpeedValue -= 3f;
-        }
-
-        RTPCSpeedValue = Mathf.Clamp(RTPCSpeedValue, 0, 100);
-        RTPCSpeed.SetGlobalValue(RTPCSpeedValue);
 
         //Unsitting
         if (Seat && _jumpPressed)
@@ -288,6 +287,11 @@ public class PlayerController : NetworkBehaviour
         bool groundedOnBumpy = Physics.CheckSphere(Rb.position, _groundedSphereRadius, LayerMask.GetMask("Bumpy"), QueryTriggerInteraction.Ignore);
         Rb.useGravity = !groundedOnBumpy;
         _networkAnimator.animator.SetBool(GroundedState, grounded || groundedOnBumpy);
+
+        if (grounded == true)
+        {
+            postWwiseFootstep.fallCount = 0;
+        }
 
         if (!Seat)
         {

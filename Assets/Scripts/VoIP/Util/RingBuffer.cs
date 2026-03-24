@@ -24,6 +24,11 @@ namespace VoIP.Util
             }
         }
 
+        /// <summary>
+        /// Read a given number of values from the provided buffer and write to the ring buffer
+        /// </summary>
+        /// <param name="data">The buffer to pull from</param>
+        /// <param name="count">The number of values to write. Leave default to write the full buffer</param>
         public void Write(T[] data, int count = -1)
         {
             if (count < 0) count = data.Length;
@@ -44,6 +49,12 @@ namespace VoIP.Util
             }
         }
 
+        /// <summary>
+        /// Read a given number of values from the ring buffer and write to the provided buffer
+        /// </summary>
+        /// <param name="output">Buffer to write into</param>
+        /// <param name="count">The number of values to read. Leave default to fill the output buffer</param>
+        /// <returns></returns>
         public int ReadInto(T[] output, int count = -1)
         {
             if (count < 0) count = output.Length;
@@ -65,6 +76,20 @@ namespace VoIP.Util
                 }
 
                 return itemsRead;
+            }
+        }
+
+        /// <summary>
+        /// Skips forward without reading by a given number of values
+        /// </summary>
+        /// <param name="count"></param>
+        public void Skip(int count = -1)
+        {
+            lock (_lock)
+            {
+                if (count < 0) count = Available;
+
+                _readPos = (_readPos + count) % _capacity;
             }
         }
 

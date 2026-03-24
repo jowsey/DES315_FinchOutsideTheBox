@@ -1,3 +1,4 @@
+using Mirror;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Splines;
@@ -21,15 +22,14 @@ public class MovingPlatform : MonoBehaviour
     private float _tLastTick;
 
 #if UNITY_EDITOR
-    [ShowInInspector, ReadOnly, ProgressBar(0, 1)] private float _currentT;
+    [Sirenix.OdinInspector.ShowInInspector, Sirenix.OdinInspector.ReadOnly, ProgressBar(0, 1)] private float _currentT;
 
-        //Used to detect changes in _duration for calling ScaleEditorAnimationCurve
-        private float _oldDuration = -1.0f;
-    #else
+    //Used to detect changes in _duration for calling ScaleEditorAnimationCurve
+    private float _oldDuration = -1.0f;
+#else
         private float _currentT;
-    #endif
-
-
+#endif
+    
     private void Awake()
     {
         _rb = GetComponentInChildren<Rigidbody>();
@@ -62,6 +62,9 @@ public class MovingPlatform : MonoBehaviour
 
     private void FixedUpdate()
     {
+        // band-aid fix for network syncing. todo needs proper re-think
+        if (!NetworkServer.active) return;
+        
         if (_useTargetT)
         {
             _isMoving = (Mathf.Abs(_currentT - _targetT) > 0.001f);
@@ -98,7 +101,6 @@ public class MovingPlatform : MonoBehaviour
             Vector3 localPos = _container.Splines[0].EvaluatePosition(_currentT);
             Vector3 worldPos = _container.transform.TransformPoint(localPos);
             _rb.MovePosition(worldPos);
-
         }
     }
 

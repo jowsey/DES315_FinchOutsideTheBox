@@ -1,7 +1,7 @@
-﻿using Networking;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
 using Util;
+using NetworkManager = Mirror.NetworkManager;
 
 namespace UI
 {
@@ -13,18 +13,14 @@ namespace UI
             Leave
         }
         
-        public static readonly UnityEvent<string, int> OnPlayerJoin = new();
-        public static readonly UnityEvent<string, int> OnPlayerLeave = new();
+        public static readonly UnityEvent<PlayerController> OnPlayerJoin = new();
+        public static readonly UnityEvent<PlayerController> OnPlayerLeave = new();
 
         [SerializeField] private PlayerPresenceItem _playerPresenceItemPrefab;
-        
-        private NetworkManager _networkManager;
 
         private void OnEnable()
         {
-            _networkManager = FindAnyObjectByType<NetworkManager>();
-            
-            if (!_networkManager && !FindAnyObjectByType<EnsureNetworked>())
+            if (!NetworkManager.singleton && !FindAnyObjectByType<EnsureNetworked>())
             {
                 Debug.LogWarning("No NetworkManager found");
                 return;
@@ -40,16 +36,16 @@ namespace UI
             OnPlayerLeave.RemoveListener(OnPlayerLeaveListener);
         }
 
-        private void OnPlayerJoinListener(string playerName, int skin)
+        private void OnPlayerJoinListener(PlayerController player)
         {
             var item = Instantiate(_playerPresenceItemPrefab, transform);
-            item.Render(playerName, skin, PresenceType.Join);
+            item.Build(player, PresenceType.Join);
         }
 
-        private void OnPlayerLeaveListener(string playerName, int skin)
+        private void OnPlayerLeaveListener(PlayerController player)
         {
             var item = Instantiate(_playerPresenceItemPrefab, transform);
-            item.Render(playerName, skin, PresenceType.Leave);
+            item.Build(player, PresenceType.Leave);
         }
     }
 }
