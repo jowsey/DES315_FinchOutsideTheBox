@@ -6,6 +6,7 @@ using UnityEngine.Splines;
     using Sirenix.Utilities.Editor;
 #endif
 
+[InfoBox("When designing: SCALE the Arch object inside the Platform, and MOVE the top-level MovingPlatform object.")]
 public class MovingPlatform : MonoBehaviour
 {
     private Rigidbody _rb;
