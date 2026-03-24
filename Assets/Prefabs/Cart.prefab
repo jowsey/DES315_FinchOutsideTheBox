@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8738124681835076787}
   - component: {fileID: 7799447581473435484}
   - component: {fileID: 6521320286991680151}
-  - component: {fileID: 7001608086643137539}
+  - component: {fileID: 1624682344869754495}
   - component: {fileID: 4328611406986470432}
   - component: {fileID: 3557071885313689952}
   m_Layer: 7
@@ -98,8 +98,8 @@ ConfigurableJoint:
   m_ConnectedArticulationBody: {fileID: 0}
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
-  m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 0, y: -1, z: -2.38}
+  m_AutoConfigureConnectedAnchor: 0
+  m_ConnectedAnchor: {x: 0, y: 1, z: -2.38}
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
   m_YMotion: 0
@@ -188,7 +188,7 @@ ConfigurableJoint:
   m_EnablePreprocessing: 1
   m_MassScale: 1
   m_ConnectedMassScale: 1
---- !u!114 &7001608086643137539
+--- !u!114 &1624682344869754495
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -197,9 +197,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 2234672341356039100}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3b20dc110904e47f8a154cdcf6433eae, type: 3}
+  m_Script: {fileID: 11500000, guid: cb803efbe62c34d7baece46c9ffebad9, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Mirror.Components::Mirror.NetworkRigidbodyUnreliable
+  m_EditorClassIdentifier: Mirror.Components::Mirror.NetworkRigidbodyReliable
   syncMethod: 0
   syncDirection: 0
   syncMode: 0
@@ -214,15 +214,15 @@ MonoBehaviour:
   interpolatePosition: 1
   interpolateRotation: 1
   interpolateScale: 1
-  coordinateSpace: 1
+  coordinateSpace: 0
   timelineOffset: 1
   showGizmos: 0
   showOverlay: 0
   overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
-  bufferResetMultiplier: 3
-  positionSensitivity: 0.01
+  onlySyncOnChangeCorrectionMultiplier: 2
   rotationSensitivity: 0.01
-  scaleSensitivity: 0.01
+  positionPrecision: 0.01
+  scalePrecision: 0.01
 --- !u!114 &4328611406986470432
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -350,7 +350,7 @@ GameObject:
   - component: {fileID: 4394277693100152712}
   - component: {fileID: 2934175773372239080}
   - component: {fileID: 581364601676529307}
-  - component: {fileID: 968909397404402492}
+  - component: {fileID: 1201822933279046488}
   - component: {fileID: 2351435481122297397}
   - component: {fileID: 822409010293383377}
   m_Layer: 7
@@ -436,8 +436,8 @@ ConfigurableJoint:
   m_ConnectedArticulationBody: {fileID: 0}
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
-  m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 0, y: 0, z: 2.38}
+  m_AutoConfigureConnectedAnchor: 0
+  m_ConnectedAnchor: {x: 0, y: 1, z: 2.38}
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
   m_YMotion: 0
@@ -526,7 +526,7 @@ ConfigurableJoint:
   m_EnablePreprocessing: 1
   m_MassScale: 1
   m_ConnectedMassScale: 1
---- !u!114 &968909397404402492
+--- !u!114 &1201822933279046488
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -535,9 +535,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 3260413456745295566}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3b20dc110904e47f8a154cdcf6433eae, type: 3}
+  m_Script: {fileID: 11500000, guid: cb803efbe62c34d7baece46c9ffebad9, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Mirror.Components::Mirror.NetworkRigidbodyUnreliable
+  m_EditorClassIdentifier: Mirror.Components::Mirror.NetworkRigidbodyReliable
   syncMethod: 0
   syncDirection: 0
   syncMode: 0
@@ -552,15 +552,15 @@ MonoBehaviour:
   interpolatePosition: 1
   interpolateRotation: 1
   interpolateScale: 1
-  coordinateSpace: 1
+  coordinateSpace: 0
   timelineOffset: 1
   showGizmos: 0
   showOverlay: 0
   overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
-  bufferResetMultiplier: 3
-  positionSensitivity: 0.01
+  onlySyncOnChangeCorrectionMultiplier: 2
   rotationSensitivity: 0.01
-  scaleSensitivity: 0.01
+  positionPrecision: 0.01
+  scalePrecision: 0.01
 --- !u!114 &2351435481122297397
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -610,7 +610,7 @@ GameObject:
   - component: {fileID: 5755687617286805364}
   - component: {fileID: 4472236861815727159}
   - component: {fileID: 6249258237167811541}
-  - component: {fileID: 2821899426136488224}
+  - component: {fileID: 7218388891731409169}
   - component: {fileID: 1902630114370404671}
   - component: {fileID: 6050807644054048839}
   m_Layer: 7
@@ -727,7 +727,7 @@ MonoBehaviour:
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
---- !u!114 &2821899426136488224
+--- !u!114 &7218388891731409169
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -736,9 +736,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 3913858289453775590}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3b20dc110904e47f8a154cdcf6433eae, type: 3}
+  m_Script: {fileID: 11500000, guid: cb803efbe62c34d7baece46c9ffebad9, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Mirror.Components::Mirror.NetworkRigidbodyUnreliable
+  m_EditorClassIdentifier: Mirror.Components::Mirror.NetworkRigidbodyReliable
   syncMethod: 0
   syncDirection: 0
   syncMode: 0
@@ -758,10 +758,10 @@ MonoBehaviour:
   showGizmos: 0
   showOverlay: 0
   overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
-  bufferResetMultiplier: 3
-  positionSensitivity: 0.01
+  onlySyncOnChangeCorrectionMultiplier: 2
   rotationSensitivity: 0.01
-  scaleSensitivity: 0.01
+  positionPrecision: 0.01
+  scalePrecision: 0.01
 --- !u!114 &1902630114370404671
 MonoBehaviour:
   m_ObjectHideFlags: 0
