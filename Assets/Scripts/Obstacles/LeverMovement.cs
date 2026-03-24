@@ -42,7 +42,7 @@ public class LeverMovement : NetworkBehaviour
         if (authority)
         {
             AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(0);
-            Debug.Log(_forward + " " + stateInfo.normalizedTime);
+            // Debug.Log(_forward + " " + stateInfo.normalizedTime);
             if ((stateInfo.normalizedTime >= 0.99f) && _forward)
             {
                 _onLeverTargetPos.Invoke();

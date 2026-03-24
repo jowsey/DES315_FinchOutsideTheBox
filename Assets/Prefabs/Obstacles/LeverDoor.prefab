@@ -66,73 +66,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5ac0392b9e073649a2c6a81181a0743, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  _holder:
-  - {fileID: 6828398471541895029}
-  - {fileID: 8305501190849014497}
-  _pivot: {fileID: 4269668459226294314}
-  _defaultTarget: {x: 0, y: 0, z: 0, w: 1}
-  _activeTarget: {x: 0, y: 0, z: 0.25881904, w: 0.9659258}
-  _speed: 60
+  syncMethod: 0
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _onLeverActivate:
     m_PersistentCalls:
       m_Calls: []
   _onLeverDeactivate:
     m_PersistentCalls:
       m_Calls: []
-  _onLeverTargetRot:
+  _onLeverTargetPos:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 8941417452315487999}
-        m_TargetAssemblyTypeName: MovingPlatform, Assembly-CSharp
-        m_MethodName: StartMoving
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 8941417452315487999}
-        m_TargetAssemblyTypeName: MovingPlatform, Assembly-CSharp
-        m_MethodName: SetTargetT
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0.5
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  _onLeverDefaultRot:
+      m_Calls: []
+  _onLeverDefaultPos:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 8941417452315487999}
-        m_TargetAssemblyTypeName: MovingPlatform, Assembly-CSharp
-        m_MethodName: StopMoving
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 8941417452315487999}
-        m_TargetAssemblyTypeName: MovingPlatform, Assembly-CSharp
-        m_MethodName: SetTargetT
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &296047860331019736
 GameObject:
   m_ObjectHideFlags: 0
@@ -11333,6 +11282,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4733184329650009035}
+  - component: {fileID: -6126050256625811656}
   m_Layer: 0
   m_Name: LeverDoor
   m_TagString: Untagged
@@ -11357,6 +11307,23 @@ Transform:
   - {fileID: 1301576176921658087}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-6126050256625811656
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 490046391876047908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 0
+  _assetId: 1438204610
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1 &1168871952229694464
 GameObject:
   m_ObjectHideFlags: 0
@@ -14770,6 +14737,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   _moveByDefault: 0
+  _startT: 0
 --- !u!114 &6752057027165765472
 MonoBehaviour:
   m_ObjectHideFlags: 0
