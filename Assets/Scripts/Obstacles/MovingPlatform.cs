@@ -14,6 +14,7 @@ public class MovingPlatform : MonoBehaviour
     [SerializeField] private float _duration;
     [SerializeField] private AnimationCurve _displacementCurve;
     [SerializeField] private bool _moveByDefault;
+    [SerializeField] private float _startT;
     private bool _isMoving;
     private double _timeElapsed; //Tracks the passing Time.fixedDeltaTime but only when _isMoving is true
     private float _targetT;
@@ -34,11 +35,11 @@ public class MovingPlatform : MonoBehaviour
         _rb = GetComponentInChildren<Rigidbody>();
         _container = GetComponentInChildren<SplineContainer>();
         _isMoving = _moveByDefault;
-        _timeElapsed = 0;
-        _targetT = 0.0f;
+        _timeElapsed = _startT * _duration;
+        _targetT = (float)_timeElapsed;
         _useTargetT = false;
-        _tLastTick = 0.0f;
-        _currentT = 0.0f;
+        _tLastTick = (float)_timeElapsed;
+        _currentT = _startT;
     }
 
     public void StartMoving()

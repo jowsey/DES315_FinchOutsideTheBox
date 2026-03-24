@@ -9,6 +9,7 @@ public class Pusher : Mirror.NetworkBehaviour
     [SerializeField] private float _duration;
     [SerializeField] private AnimationCurve _scaleCurve;
     [SerializeField] private bool _moveByDefault;
+    [SerializeField] private bool _noLoop;
     private bool _isMoving;
     double _timeElapsed; //Tracks the passing Time.fixedDeltaTime but only when _isMoving is true
 
@@ -51,14 +52,29 @@ public class Pusher : Mirror.NetworkBehaviour
         if (_isMoving)
         {
             _timeElapsed += Time.fixedDeltaTime;
-            float t = (float)(_timeElapsed % _duration); //range [0, _duration]
+
+            //ADDED IN LOOP OFF FUNCTIONALITY FOR FAKEOUT CRUSHER
+            float t;
+            if (!_noLoop)
+            {
+                t = (float)(_timeElapsed % _duration);
+            }
+            else
+            {
+                t = Mathf.Min((float)_timeElapsed, _duration);
+                if (_timeElapsed >= _duration)
+                {
+                    _isMoving = false;
+                }
+            }
+
             _currentScale = _scaleCurve.Evaluate(t);
             transform.localScale = new Vector3(_currentScale, transform.localScale.y, transform.localScale.z);
         }
     }
 
 
-    #if UNITY_EDITOR
+#if UNITY_EDITOR
         [OnInspectorGUI]
         private void RepaintConstantly()
         {
@@ -122,5 +138,5 @@ public class Pusher : Mirror.NetworkBehaviour
                 if (val > _maxScale) { _maxScale = val; }
             }
         }
-    #endif
+#endif
 }
