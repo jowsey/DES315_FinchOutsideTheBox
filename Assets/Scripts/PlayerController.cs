@@ -7,6 +7,7 @@ using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : NetworkBehaviour
@@ -116,7 +117,7 @@ public class PlayerController : NetworkBehaviour
 
         OnPlayerReady.Invoke(this);
     }
-    
+
     public override void OnStopClient()
     {
         if (isLocalPlayer) return;
@@ -333,6 +334,36 @@ public class PlayerController : NetworkBehaviour
         }
 
         CleanupFixedUpdate();
+    }
+
+    public void ReturnToCart()
+    {
+        if (Seat) return;
+
+        var cart = FindAnyObjectByType<Cart>(); // todo use linked cart
+
+        const float radius = 5.5f;
+        Vector3 newPosition = default;
+
+        int tries = 0;
+        while (newPosition == default)
+        {
+            tries++;
+
+            var circularPos = Random.insideUnitCircle * radius;
+            var attemptedPosition = cart.transform.position + new Vector3(circularPos.x, 1, circularPos.y);
+
+            if (Physics.CheckSphere(attemptedPosition, 1f, ~0, QueryTriggerInteraction.Ignore))
+            {
+                continue;
+            }
+
+            newPosition = attemptedPosition;
+        }
+
+        // Debug.Log($"Found position after {tries} tries");
+        Rb.position = newPosition;
+        Rb.rotation = Quaternion.LookRotation(cart.transform.position - Rb.position, Vector3.up);
     }
 
     private void CleanupFixedUpdate()

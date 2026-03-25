@@ -68,6 +68,12 @@ namespace UI
             RTPCMenuOnOff.SetGlobalValue(active ? 1 : 0);
         }
 
+        public void ReturnToCart()
+        {
+            var player = NetworkClient.localPlayer.GetComponent<PlayerController>();
+            player.ReturnToCart();
+        }
+
         public void QuitToMenu()
         {
             if (NetworkServer.active)
