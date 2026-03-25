@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using PrimeTween;
 using Sirenix.OdinInspector;
 using TMPro;
@@ -61,6 +61,9 @@ namespace UI
 
                     return;
                 }
+
+                // animate advance prompt
+                Tween.Scale(_advanceFramePrompt.transform, Vector3.one * 0.9f, 0.1f, Ease.InCubic, 2, CycleMode.Yoyo);
 
                 Sequence.Create()
                     .Group(Tween.Scale(_frameImage.transform, Vector3.zero, 0.75f, Ease.InBack))
