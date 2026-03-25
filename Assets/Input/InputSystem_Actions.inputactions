@@ -140,6 +140,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "AdvanceCutscene",
+                    "type": "Button",
+                    "id": "9dda47c1-cb3f-40cb-b776-6c66703fb5eb",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -657,6 +666,28 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "Ping",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fde9cc6a-9384-4851-b9b9-84f3b5f3e8f7",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "AdvanceCutscene",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "395494d1-f29c-4990-ac46-324d9d870a3c",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "AdvanceCutscene",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
