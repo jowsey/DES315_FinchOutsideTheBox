@@ -45,6 +45,12 @@ public class Pusher : Mirror.NetworkBehaviour
         _currentT = _startT;
     }
 
+    private void Start()
+    {
+        _currentScale = _scaleCurve.Evaluate(_currentT);
+        transform.localScale = new Vector3(_currentScale, transform.localScale.y, transform.localScale.z);
+    }
+
     public void StartMoving()
     {
         _isMoving = true;
