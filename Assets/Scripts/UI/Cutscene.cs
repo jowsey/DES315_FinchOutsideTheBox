@@ -1,5 +1,4 @@
 ﻿using System;
-using JetBrains.Annotations;
 using PrimeTween;
 using Sirenix.OdinInspector;
 using TMPro;
@@ -38,6 +37,7 @@ namespace UI
         private void Start()
         {
             _canvasGroup.alpha = 1;
+            transform.SetAsLastSibling();
             
             DrawFrame(0);
         }
