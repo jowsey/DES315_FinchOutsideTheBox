@@ -1,5 +1,7 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
+using Unity.VisualScripting;
+
 #if UNITY_EDITOR
     using Sirenix.Utilities.Editor;
 #endif
@@ -9,9 +11,13 @@ public class Pusher : Mirror.NetworkBehaviour
     [SerializeField] private float _duration;
     [SerializeField] private AnimationCurve _scaleCurve;
     [SerializeField] private bool _moveByDefault;
-    [SerializeField] private bool _noLoop;
+    [SerializeField] private float _startT;
     private bool _isMoving;
-    double _timeElapsed; //Tracks the passing Time.fixedDeltaTime but only when _isMoving is true
+    private double _timeElapsed; //Tracks the passing Time.fixedDeltaTime but only when _isMoving is true
+    private float _targetT;
+    private bool _useTargetT;
+    private float _tLastTick;
+    private float _currentT;
 
 #if UNITY_EDITOR
     //Used to detect changes in _duration for calling ScaleEditorAnimationCurve
@@ -32,43 +38,64 @@ public class Pusher : Mirror.NetworkBehaviour
     private void Awake()
     {
         _isMoving = _moveByDefault;
-        _timeElapsed = 0;
+        _timeElapsed = _startT * _duration;
+        _targetT = (float)_timeElapsed;
+        _useTargetT = false;
+        _tLastTick = (float)_timeElapsed;
+        _currentT = _startT;
     }
 
     public void StartMoving()
     {
         _isMoving = true;
+        _useTargetT = false;
     }
 
     public void StopMoving()
     {
         _isMoving = false;
+        _useTargetT = false;
+    }
+
+    public void SetTargetT(float t)
+    {
+        _useTargetT = true;
+        _targetT = t;
     }
 
     void FixedUpdate()
     {
         if (!isServer) { return; }
 
-        if (_isMoving)
+        if (_useTargetT)
         {
-            _timeElapsed += Time.fixedDeltaTime;
-
-            //ADDED IN LOOP OFF FUNCTIONALITY FOR FAKEOUT CRUSHER
-            float t;
-            if (!_noLoop)
+            _isMoving = (Mathf.Abs(_currentT - _targetT) > 0.01f);
+            if (_isMoving && Mathf.Abs(_targetT - _duration) < 0.01f)
             {
-                t = (float)(_timeElapsed % _duration);
-            }
-            else
-            {
-                t = Mathf.Min((float)_timeElapsed, _duration);
-                if (_timeElapsed >= _duration)
+                //_targetT is _duration, need to handle special case where t wraps around from _duration to 0
+                Debug.Log(_tLastTick + " " + _currentT);
+                if (_tLastTick > _currentT)
                 {
+                    //t has wrapped around from _duration to 0 and so has hit the target t
                     _isMoving = false;
+                    _currentScale = _scaleCurve.Evaluate(_tLastTick);
+                    transform.localScale = new Vector3(_currentScale, transform.localScale.y, transform.localScale.z);
                 }
             }
 
-            _currentScale = _scaleCurve.Evaluate(t);
+            //Just for cleanliness sake
+            if (!_isMoving)
+            {
+                _currentT = _targetT;
+            }
+        }
+
+        if (_isMoving)
+        {
+            _tLastTick = _currentT;
+            _timeElapsed += Time.fixedDeltaTime;
+            _currentT = (float)(_timeElapsed % _duration); //range [0, _duration]
+            _currentScale = _scaleCurve.Evaluate(_currentT);
             transform.localScale = new Vector3(_currentScale, transform.localScale.y, transform.localScale.z);
         }
     }
