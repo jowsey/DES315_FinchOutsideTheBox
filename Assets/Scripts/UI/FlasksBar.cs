@@ -7,9 +7,9 @@ namespace UI
 {
     public class FlasksBar : MonoBehaviour
     {
-        [SerializeField][Required] private Cart _linkedCart;
-        [SerializeField][Required] private TextMeshProUGUI _countText;
-        [SerializeField][Required] private Image _fillImage;
+        [SerializeField] [RequiredIn(PrefabKind.NonPrefabInstance)] private Cart _linkedCart;
+        [SerializeField] [Required] private TextMeshProUGUI _countText;
+        [SerializeField] [Required] private Image _fillImage;
 
         private void OnValidate()
         {
