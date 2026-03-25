@@ -18,6 +18,7 @@ namespace UI
     public class Cutscene : MonoBehaviour
     {
         [SerializeField] [Required] private InputActionReference _nextFrameAction;
+        [SerializeField] [Required] private InputActionReference _skipAction;
 
         [SerializeField] [Required] private CanvasGroup _canvasGroup;
         [SerializeField] [Required] private Image _frameImage;
@@ -38,15 +39,20 @@ namespace UI
         {
             _canvasGroup.alpha = 1;
             transform.SetAsLastSibling();
-            
+
             DrawFrame(0);
         }
 
         private void Update()
         {
             transform.SetAsLastSibling(); // force ensure we're absolutely on top always
-            
-            if (Tween.GetTweensCount(_frameImage.transform) > 0) return;
+            if (Tween.GetTweensCount(_frameImage.transform) > 0 || Tween.GetTweensCount(_canvasGroup) > 0) return;
+
+            if (_skipAction.action.WasPressedThisFrame())
+            {
+                Destroy(gameObject);
+                return;
+            }
 
             if (_nextFrameAction.action.WasPressedThisFrame())
             {
@@ -54,17 +60,15 @@ namespace UI
 
                 if (_currentFrame >= _frames.Length)
                 {
-                    if (Tween.GetTweensCount(_canvasGroup) > 0) return;
-
                     Tween.Alpha(_canvasGroup, 0f, 2f, Ease.InCubic)
                         .OnComplete(() => Destroy(gameObject), false);
-
                     return;
                 }
 
                 // animate advance prompt
                 Tween.Scale(_advanceFramePrompt.transform, Vector3.one * 0.9f, 0.1f, Ease.InCubic, 2, CycleMode.Yoyo);
 
+                // animate next frame transition
                 Sequence.Create()
                     .Group(Tween.Scale(_frameImage.transform, Vector3.zero, 0.75f, Ease.InBack))
                     .Group(Tween.Scale(_frameText.transform, Vector3.zero, 0.75f, Ease.InBack))
