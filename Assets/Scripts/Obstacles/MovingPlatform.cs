@@ -2,6 +2,8 @@ using Mirror;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Splines;
+using System.Linq;
+
 #if UNITY_EDITOR
     using Sirenix.Utilities.Editor;
 #endif
@@ -33,8 +35,8 @@ public class MovingPlatform : MonoBehaviour
     
     private void Awake()
     {
-        _rb = GetComponentInChildren<Rigidbody>();
-        _container = GetComponentInChildren<SplineContainer>();
+        _rb = GetComponentInChildren<Rigidbody>(true);
+        _container = GetComponentInChildren<SplineContainer>(true);
         _isMoving = _moveByDefault;
         _timeElapsed = _startT * _duration;
         _targetT = (float)_timeElapsed;

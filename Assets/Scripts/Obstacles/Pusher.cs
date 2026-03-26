@@ -79,7 +79,6 @@ public class Pusher : Mirror.NetworkBehaviour
             if (_isMoving && Mathf.Abs(_targetT - _duration) < 0.01f)
             {
                 //_targetT is _duration, need to handle special case where t wraps around from _duration to 0
-                Debug.Log(_tLastTick + " " + _currentT);
                 if (_tLastTick > _currentT)
                 {
                     //t has wrapped around from _duration to 0 and so has hit the target t
