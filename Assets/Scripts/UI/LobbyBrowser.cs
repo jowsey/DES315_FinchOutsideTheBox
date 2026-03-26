@@ -3,23 +3,25 @@ using Epic.OnlineServices.Lobby;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using NetworkManager = Mirror.NetworkManager;
 
 namespace UI
 {
     public class LobbyBrowser : MonoBehaviour
     {
         [SerializeField] [Required] private LobbyListing _lobbyListingPrefab;
-
         [SerializeField] [Required] private Transform _lobbyListContainer;
-
-        [ReadOnly] public EOSLobby EosLobby;
 
         [SerializeField] [Required] private TMP_InputField _lobbyNameField;
         [SerializeField] [Required] private Button _createLobbyButton;
 
-        private void Start()
+        [ReadOnly] public EOSLobby EosLobby;
+
+        private const string LobbyNameKey = "lobbyName";
+        private const string OwnerNameKey = "ownerName";
+
+        private void OnEnable()
         {
             _createLobbyButton.onClick.AddListener(TryCreateLobby);
 
@@ -31,11 +33,28 @@ namespace UI
 
             EosLobby.JoinLobbySucceeded += JoinLobbySucceeded;
             EosLobby.JoinLobbyFailed += JoinLobbyFailed;
+
+            EosLobby.LeaveLobbySucceeded += LeaveLobbySucceeded;
+            EosLobby.LeaveLobbyFailed += LeaveLobbyFailed;
+
+            EosLobby.FindLobbies();
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
+            _createLobbyButton.onClick.RemoveListener(TryCreateLobby);
+
             EosLobby.CreateLobbySucceeded -= CreateLobbySucceeded;
+            EosLobby.CreateLobbyFailed -= CreateLobbyFailed;
+
+            EosLobby.FindLobbiesSucceeded -= FindLobbiesSucceeded;
+            EosLobby.FindLobbiesFailed -= FindLobbiesFailed;
+
+            EosLobby.JoinLobbySucceeded -= JoinLobbySucceeded;
+            EosLobby.JoinLobbyFailed -= JoinLobbyFailed;
+
+            EosLobby.LeaveLobbySucceeded -= LeaveLobbySucceeded;
+            EosLobby.LeaveLobbyFailed -= LeaveLobbyFailed;
         }
 
         private void TryCreateLobby()
@@ -46,26 +65,24 @@ namespace UI
                 return;
             }
 
-            var lobbyAttributes = new AttributeData[]
+            EosLobby.CreateLobby((uint)NetworkManager.singleton.maxConnections, LobbyPermissionLevel.Publicadvertised, false, new AttributeData[]
             {
                 new()
                 {
-                    Key = "lobby_name",
+                    Key = LobbyNameKey,
                     Value = _lobbyNameField.text
                 },
                 new()
                 {
-                    Key = "max_players",
-                    Value = 2
+                    Key = OwnerNameKey,
+                    Value = SettingsManager.ActiveSettings.PlayerName
                 }
-            };
-
-            EosLobby.CreateLobby(2, LobbyPermissionLevel.Publicadvertised, false, lobbyAttributes);
+            });
         }
 
         private void CreateLobbySucceeded(List<Attribute> attributes)
         {
-            SceneManager.LoadScene("Game");
+            NetworkManager.singleton.StartHost();
         }
 
         private void CreateLobbyFailed(string error)
@@ -79,18 +96,25 @@ namespace UI
 
             foreach (var lobbyDetails in lobbies)
             {
-                var listing = Instantiate(_lobbyListingPrefab, transform);
+                var listing = Instantiate(_lobbyListingPrefab, _lobbyListContainer);
 
-                var lobbyNameKey = new LobbyDetailsCopyAttributeByKeyOptions { AttrKey = "lobby_name" };
+                var ownerNameOptions = new LobbyDetailsCopyAttributeByKeyOptions { AttrKey = OwnerNameKey };
+                lobbyDetails.CopyAttributeByKey(ref ownerNameOptions, out var ownerNameAttribute);
+
+                var lobbyNameOptions = new LobbyDetailsCopyAttributeByKeyOptions { AttrKey = LobbyNameKey };
+                lobbyDetails.CopyAttributeByKey(ref lobbyNameOptions, out var lobbyNameAttribute);
 
                 var memberCountOptions = new LobbyDetailsGetMemberCountOptions();
                 var memberCount = lobbyDetails.GetMemberCount(ref memberCountOptions);
 
-                // todo free memory
-                lobbyDetails.CopyAttributeByKey(ref lobbyNameKey, out var lobbyNameAttribute);
+                var copyInfoOptions = new LobbyDetailsCopyInfoOptions();
+                lobbyDetails.CopyInfo(ref copyInfoOptions, out var lobbyInfo);
 
-                listing.LobbyNameText.text = lobbyNameAttribute.ToString();
-                listing.PlayerCountText.text = $"{memberCount}/2";
+                // value.data.value.value you cannot be serious bro
+                listing.LobbyNameText.text = lobbyNameAttribute.Value.Data.Value.Value.AsUtf8;
+                listing.MetadataText.text = $"{memberCount}/{lobbyInfo.Value.MaxMembers} players" +
+                                            $" <color=#999>–</color> " +
+                                            $"Created by <b>{ownerNameAttribute.Value.Data.Value.Value.AsUtf8}</b>";
                 listing.JoinButton.onClick.AddListener(() => EosLobby.JoinLobby(lobbyDetails));
             }
         }
@@ -102,14 +126,27 @@ namespace UI
 
         private void JoinLobbySucceeded(List<Attribute> attributes)
         {
-            SceneManager.LoadScene("Game");
-            
-            // todo look into all this shit
+            var hostAttribute = attributes.Find(a => a.Data.HasValue && a.Data.Value.Key == EOSLobby.hostAddressKey);
+            var hostAddress = hostAttribute.Data.Value.Value.AsUtf8;
+
+            NetworkManager.singleton.networkAddress = hostAddress;
+            NetworkManager.singleton.StartClient();
         }
 
         private void JoinLobbyFailed(string error)
         {
             Debug.LogError($"Failed to join lobby: {error}");
+        }
+
+        private void LeaveLobbySucceeded()
+        {
+            NetworkManager.singleton.StopHost();
+            NetworkManager.singleton.StopClient();
+        }
+
+        private void LeaveLobbyFailed(string error)
+        {
+            Debug.LogError($"Failed to leave lobby: {error}");
         }
     }
 }

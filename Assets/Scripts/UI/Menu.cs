@@ -2,6 +2,7 @@ using System.Collections;
 using EpicTransport;
 using kcp2k;
 using Mirror;
+using PrimeTween;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -18,14 +19,16 @@ namespace UI
         private static EosTransport _eosTransport;
         private static KcpTransport _kcpTransport;
 
-        // [SerializeField] [Required] private LobbyBrowser _lobbyBrowser;
+        [SerializeField] [Required] private LobbyBrowser _lobbyBrowser;
+        [SerializeField] [Required] private SettingsManager _settingsMenu;
+
+        [SerializeField] [Required] private MainMenuButton _lobbyBrowserButton;
         [SerializeField] [Required] private MainMenuButton _settingsButton;
-        [SerializeField] [Required] private SettingsManager _settings;
 
         [SerializeField] [Required] private InputActionReference _altMoveAction;
         [SerializeField] [Required] private InputActionReference _altJumpAction;
 
-        private void ResetCurrentTransport()
+        private void ResetTransports()
         {
             var transport = NetworkManager.singleton?.transport;
             if (transport is EosTransport eosTransport)
@@ -36,28 +39,24 @@ namespace UI
                 {
                     eosLobby.LeaveLobby();
                 }
-
-                var eosLobbyHUD = eosTransport.GetComponent<EOSLobbyHUD>();
-                eosLobbyHUD.enabled = false;
-                eosLobbyHUD.manager = null;
             }
             else if (transport is KcpTransport kcpTransport)
             {
                 // not sure if we need to do anything here?
             }
-            
+
             _networkManager.transport = null;
             Transport.active = null;
             _networkManager.gameObject.SetActive(false);
         }
-        
+
         private void Awake()
         {
             Cursor.lockState = CursorLockMode.None;
-            
+
             // Clean up previously-used transport if we're coming back from the game
-            ResetCurrentTransport();
-            
+            ResetTransports();
+
             // Set up new transports if none exist
             if (!_eosTransport)
             {
@@ -70,12 +69,18 @@ namespace UI
                 _kcpTransport = Instantiate(_kcpTransportPrefab);
                 DontDestroyOnLoad(_kcpTransport);
             }
+
+            _lobbyBrowser.EosLobby = _eosTransport.GetComponent<EOSLobby>();
+
+            _settingsMenu.LoadFromDisk();
+            _settingsMenu.gameObject.SetActive(false);
         }
 
-        private void Start()
+        private IEnumerator Start()
         {
-            // Allow SettingsManager to run its Awake.
-            _settings.gameObject.SetActive(false);
+            _lobbyBrowserButton.Button.interactable = false;
+            yield return new WaitUntil(() => EOSSDKComponent.LocalUserProductId != null);
+            _lobbyBrowserButton.Button.interactable = true;
         }
 
         private void OnDestroy()
@@ -91,24 +96,48 @@ namespace UI
             Application.Quit();
 #endif
         }
-
-        public void PlayOnline()
+        
+        // override for button
+        public void ToggleLobbyBrowser() => ToggleLobbyBrowser(false);
+        
+        private void ToggleLobbyBrowser(bool force)
         {
-            Debug.Log("Playing online");
+            if (_settingsButton.Active)
+            {
+                ToggleSettingsMenu();
+            }
 
-            var eosLobbyHUD = _eosTransport.GetComponent<EOSLobbyHUD>();
-            eosLobbyHUD.manager = _networkManager;
-            eosLobbyHUD.enabled = true;
+            var lbrt = (RectTransform)_lobbyBrowser.transform;
+            if (Tween.GetTweensCount(lbrt) > 0 && !force) return; // be patient DAMN
 
-            _networkManager.transport = _eosTransport;
-            Transport.active = _eosTransport;
-            _networkManager.gameObject.SetActive(true);
+            var active = _lobbyBrowser.gameObject.activeSelf;
+            
+            _lobbyBrowserButton.SetActive(!active);
+
+            if (!active)
+            {
+                _networkManager.transport = _eosTransport;
+                Transport.active = _eosTransport;
+                _networkManager.gameObject.SetActive(true);
+
+                Tween.CompleteAll(lbrt);
+                _lobbyBrowser.gameObject.SetActive(true);
+                Tween.UIAnchoredPositionY(lbrt, -lbrt.sizeDelta.y, 0, 0.75f, Ease.OutCubic);
+            }
+            else
+            {
+                ResetTransports();
+
+                Tween.CompleteAll(lbrt);
+                Tween.UIAnchoredPositionY(lbrt, 0, -lbrt.sizeDelta.y, 0.75f, Ease.InCubic)
+                    .OnComplete(() => _lobbyBrowser.gameObject.SetActive(false));
+            }
         }
 
         private void InitLocal()
         {
-            ResetCurrentTransport(); // disables the EOS lobby UI and whatnot if they opened it. overkill but no reason not to
-            
+            ResetTransports(); // disables the EOS lobby UI and whatnot if they opened it. overkill but no reason not to
+
             _networkManager.transport = _kcpTransport;
             Transport.active = _kcpTransport;
             _networkManager.gameObject.SetActive(true);
@@ -144,7 +173,7 @@ namespace UI
 
                 // manually spawn 2nd player with server authority
                 var spawnPoint = FindAnyObjectByType<Networking.NetworkManager>().GetStartPosition();
-                
+
                 var otherPlayer = Instantiate(_networkManager.playerPrefab, spawnPoint.transform.position, spawnPoint.transform.rotation);
                 var otherPlayerController = otherPlayer.GetComponent<PlayerController>();
                 otherPlayerController.MoveAction = _altMoveAction;
@@ -158,10 +187,16 @@ namespace UI
             }
         }
 
-        public void Settings()
+        public void ToggleSettingsMenu()
         {
-            _settings.gameObject.SetActive(!_settings.gameObject.activeSelf);
-            _settingsButton.SetActive(_settings.gameObject.activeSelf);
+            // todo ideally we have a proper extensible Pages system
+            if (_lobbyBrowserButton.Active)
+            {
+                ToggleLobbyBrowser(true);
+            }
+
+            _settingsMenu.gameObject.SetActive(!_settingsMenu.gameObject.activeSelf);
+            _settingsButton.SetActive(_settingsMenu.gameObject.activeSelf);
         }
 
         public void OpenBluesky() => Application.OpenURL("https://finchoutsidethebox.bsky.social");

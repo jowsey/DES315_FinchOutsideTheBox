@@ -10,6 +10,7 @@ namespace UI
     {
         public AK.Wwise.Event buttonSfx;
 
+        public Button Button { get; private set; }
         private TextMeshProUGUI _text;
 
         private Color _originalColor;
@@ -22,8 +23,10 @@ namespace UI
         {
             if (!_highlightCursor) _highlightCursor = Resources.Load<Texture2D>("UI/paw");
 
+            Button = GetComponent<Button>();
             _text = GetComponent<TextMeshProUGUI>();
             _originalColor = _text.color;
+
 
             if (Active)
             {
@@ -49,6 +52,8 @@ namespace UI
 
         public void OnPointerEnter(PointerEventData eventData)
         {
+            if (!Button.interactable) return;
+
             Cursor.SetCursor(_highlightCursor, new Vector2(_highlightCursor.width / 2f, _highlightCursor.height / 2f), CursorMode.Auto);
             if (!Active)
             {

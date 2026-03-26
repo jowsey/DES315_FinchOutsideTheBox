@@ -67,13 +67,6 @@ namespace UI
         [SerializeField] [Required] private RTPC _musicVolumeRtpc;
         [SerializeField] [Required] private RTPC _sfxVolumeRtpc;
 
-        private void Awake()
-        {
-            // Guarantee ActiveSettings is populated, even if menu was immediately inactivated.
-            // We still want to pull it fresh every time we re-enable.
-            LoadFromDisk();
-        }
-
         private void OnEnable()
         {
             LoadFromDisk();
@@ -182,7 +175,7 @@ namespace UI
             System.IO.File.WriteAllText(SettingsFilePath, json);
         }
 
-        private void LoadFromDisk()
+        public void LoadFromDisk()
         {
             if (System.IO.File.Exists(SettingsFilePath))
             {
