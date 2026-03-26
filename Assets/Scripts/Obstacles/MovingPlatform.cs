@@ -121,10 +121,6 @@ public class MovingPlatform : NetworkBehaviour
     [ClientRpc(includeOwner = true)]
     void RpcSetRTPCGlobalValue(float val)
     {
-        if (transform.name == "LiftLever")
-        {
-            Debug.Log(val * 2);
-        }
         RTPCPlatform.SetGlobalValue(val * 2);
     }
 
