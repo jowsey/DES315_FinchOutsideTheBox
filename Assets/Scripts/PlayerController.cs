@@ -386,8 +386,8 @@ public class PlayerController : NetworkBehaviour
             newPosition = attemptedPosition;
         }
 
-        Rb.position = newPosition;
-        Rb.rotation = Quaternion.LookRotation(cart.transform.position - Rb.position, Vector3.up);
+        var newRotation = Quaternion.LookRotation(newPosition - transform.position, Vector3.up);
+        GetComponent<NetworkTransformBase>().CmdTeleport(newPosition, newRotation);
     }
 
     private void CleanupFixedUpdate()
