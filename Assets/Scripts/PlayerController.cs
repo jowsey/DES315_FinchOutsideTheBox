@@ -332,7 +332,7 @@ public class PlayerController : NetworkBehaviour
         }
 
         //Unsitting
-        if (Seat && _jumpPressed)
+        if (Seat && ControlsEnabled && _jumpPressed)
         {
             Seat.CmdUnsitPlayer();
 
