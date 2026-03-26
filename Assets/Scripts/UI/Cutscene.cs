@@ -41,6 +41,13 @@ namespace UI
             transform.SetAsLastSibling();
 
             DrawFrame(0);
+            
+            PlayerController.AddControlBlocker(this);
+        }
+
+        private void OnDestroy()
+        {
+            PlayerController.RemoveControlBlocker(this);
         }
 
         private void Update()

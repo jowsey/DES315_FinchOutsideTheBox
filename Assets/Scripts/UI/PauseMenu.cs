@@ -1,6 +1,4 @@
 using Mirror;
-using Sirenix.OdinInspector;
-using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -18,9 +16,6 @@ namespace UI
 
         public AK.Wwise.RTPC RTPCMenuOnOff;
 
-        [SerializeField] [Required] private CinemachineInputAxisController _playerCamInput;
-        [SerializeField] [Required] private CameraController _playerCamController;
-
         private void OnEnable()
         {
             _canvasGroup = GetComponent<CanvasGroup>();
@@ -37,24 +32,34 @@ namespace UI
         private void OnDisable()
         {
             _openAction.action.performed -= OnOpen;
+            OnOpen(false);
         }
 
         private void OnDestroy()
         {
             Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto); // if set by button
-            RTPCMenuOnOff.SetGlobalValue(0);
         }
 
         // Wrapper for event listener
-        private void OnOpen(InputAction.CallbackContext ctx) => OnOpen(!_isActive);
+        private void OnOpen(InputAction.CallbackContext ctx)
+        {
+            if (!PlayerController.ControlsEnabled && !_isActive) return;
+            OnOpen(!_isActive);
+        }
 
         private void OnOpen(bool active)
         {
             _isActive = active;
 
             Cursor.lockState = active ? CursorLockMode.None : CursorLockMode.Locked;
-            _playerCamInput.enabled = !active;
-            _playerCamController.enabled = !active;
+            if (active)
+            {
+                PlayerController.AddControlBlocker(this);
+            }
+            else
+            {
+                PlayerController.RemoveControlBlocker(this);
+            }
 
             // we don't use SetActive since we want the menu to still receive input events, and being inactive would disable that
             _canvasGroup.alpha = active ? 1 : 0;

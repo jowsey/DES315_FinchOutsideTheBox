@@ -144,7 +144,7 @@ namespace UI
             }
 
             // Force open if respawn pressed or there are active votes
-            if (_votesActive > 0 || _respawnAction.action.WasPressedThisFrame())
+            if (_votesActive > 0 || (PlayerController.ControlsEnabled && _respawnAction.action.WasPressedThisFrame()))
             {
                 _lastActivityTime = Time.time;
             }
@@ -167,7 +167,7 @@ namespace UI
                 }
                 case ShowState.Open:
                 {
-                    if (_respawnAction.action.IsPressed())
+                    if (PlayerController.ControlsEnabled && _respawnAction.action.IsPressed())
                     {
                         // Charge vote
                         _lastActivityTime = Time.time;
