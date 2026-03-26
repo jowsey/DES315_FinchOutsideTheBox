@@ -1,4 +1,3 @@
-using System;
 using Mirror;
 using System.Collections.Generic;
 using TMPro;
@@ -94,6 +93,32 @@ public class PlayerController : NetworkBehaviour
     // Does NOT imply the player has just joined
     public static UnityEvent<PlayerController> OnPlayerReady = new();
 
+    // While there are any control blockers, the player won't be able to be controlled
+    private static readonly HashSet<Object> _controlBlockers = new();
+    private static CinemachineInputAxisController _cinemachineInput;
+    
+    public static bool ControlsEnabled => _controlBlockers.Count == 0;
+
+    public static void AddControlBlocker(Object blocker)
+    {
+        _controlBlockers.Add(blocker);
+
+        if (_controlBlockers.Count == 1)
+        {
+            if (_cinemachineInput) _cinemachineInput.enabled = false;
+        }
+    }
+
+    public static void RemoveControlBlocker(Object blocker)
+    {
+        _controlBlockers.Remove(blocker);
+
+        if (_controlBlockers.Count == 0)
+        {
+            if (_cinemachineInput) _cinemachineInput.enabled = true;
+        }
+    }
+
     private void Awake()
     {
         SkinMaterials ??= Resources.LoadAll<Material>("PlayerSkins/Materials");
@@ -148,6 +173,9 @@ public class PlayerController : NetworkBehaviour
 
     public override void OnStartLocalPlayer()
     {
+        // Initialise statics
+        if (!_cinemachineInput) _cinemachineInput = FindAnyObjectByType<CinemachineInputAxisController>(FindObjectsInactive.Include);
+
         Cursor.lockState = CursorLockMode.Locked;
 
         // Set camera follow target
@@ -268,7 +296,7 @@ public class PlayerController : NetworkBehaviour
         Quaternion cameraOrientation = _camera ? _camera.State.GetFinalOrientation() : Quaternion.identity;
         Vector3 cameraForward = Vector3.Scale(cameraOrientation * Vector3.forward, new Vector3(1, 0, 1)).normalized;
         Vector3 cameraRight = cameraOrientation * Vector3.right;
-        Vector2 inputDirection = MoveAction.action.ReadValue<Vector2>();
+        Vector2 inputDirection = ControlsEnabled ? MoveAction.action.ReadValue<Vector2>() : Vector2.zero; //no input when controls are blocked
         WorldSpaceMoveDir = (cameraForward * inputDirection.y + cameraRight * inputDirection.x).normalized;
         AnalogueMoveScale = inputDirection.magnitude; //input system has a normalise processor on the move input action
 
@@ -311,7 +339,7 @@ public class PlayerController : NetworkBehaviour
             Rb.MovePosition(Rb.position + delta);
         }
 
-        if (_jumpPressed && (grounded || groundedOnBumpy))
+        if (ControlsEnabled && _jumpPressed && (grounded || groundedOnBumpy))
         {
             _networkAnimator.SetTrigger(JumpTrigger);
             Rb.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
@@ -319,7 +347,7 @@ public class PlayerController : NetworkBehaviour
         else if (Rb.linearVelocity.y < _fallAnimationMinDownardsVelocity)
         {
             //Player is falling - are they gliding?
-            if (JumpAction.action.IsPressed())
+            if (ControlsEnabled && JumpAction.action.IsPressed())
             {
                 //Player is gliding
                 _networkAnimator.animator.SetBool(GlideState, true);
