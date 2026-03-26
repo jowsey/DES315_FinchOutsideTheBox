@@ -373,11 +373,8 @@ public class PlayerController : NetworkBehaviour
         const float radius = 5.5f;
         Vector3 newPosition = default;
 
-        int tries = 0;
         while (newPosition == default)
         {
-            tries++;
-
             var circularPos = Random.insideUnitCircle * radius;
             var attemptedPosition = cart.transform.position + new Vector3(circularPos.x, 1, circularPos.y);
 
@@ -389,7 +386,6 @@ public class PlayerController : NetworkBehaviour
             newPosition = attemptedPosition;
         }
 
-        // Debug.Log($"Found position after {tries} tries");
         Rb.position = newPosition;
         Rb.rotation = Quaternion.LookRotation(cart.transform.position - Rb.position, Vector3.up);
     }
