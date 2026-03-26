@@ -33,7 +33,7 @@ namespace UI
 
             Tween.Delay(1.5f, () =>
             {
-                if (gameObject) CheckpointJingle.Post(gameObject);
+                if (this && gameObject) CheckpointJingle.Post(gameObject);
             }, warnIfTargetDestroyed: false);
 
             Sequence.Create()
