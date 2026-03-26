@@ -148,8 +148,7 @@ namespace UI
                 var copyInfoOptions = new LobbyDetailsCopyInfoOptions();
                 lobbyDetails.CopyInfo(ref copyInfoOptions, out var lobbyInfo);
 
-                // value.data.value.value you cannot be serious bro
-                listing.LobbyNameText.text = ownerName;
+                listing.LobbyNameText.text = lobbyName;
                 listing.MetadataText.text = $"{memberCount}/{lobbyInfo.Value.MaxMembers} players" +
                                             $" <color=#999>–</color> " +
                                             $"Created by <b>{ownerName}</b>" +
