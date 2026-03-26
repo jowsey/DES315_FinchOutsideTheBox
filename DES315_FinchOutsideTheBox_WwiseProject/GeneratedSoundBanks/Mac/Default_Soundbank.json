@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{46173D95-DFFE-4BE9-8209-57EB1CFCE1F7}",
     "Language": "SFX",
-    "Hash": "{2A93326D-58B9-CDDF-0DDE-7E75B686B5F7}",
+    "Hash": "{BD756CF7-55E9-831B-E540-051BDE08BB96}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Default_Soundbank",
     "ShortName": "Default_Soundbank",
     "Path": "Default_Soundbank.bnk",
@@ -656,6 +656,14 @@
       "CachePath": "24/{24CA115C-9746-ECB8-1078-4CFD65B0478F}.wem"
      },
      {
+      "Id": "793190196",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "LeverPressDown.wav",
+      "CachePath": "5A/{5AD4F288-38DF-F25B-26AC-22CD96433231}.wem"
+     },
+     {
       "Id": "799312172",
       "Language": "SFX",
       "Streaming": "false",
@@ -1056,6 +1064,19 @@
       ]
      },
      {
+      "Id": "758278606",
+      "Name": "DoorsMoving",
+      "ObjectPath": "\\Events\\Default Work Unit\\DoorsMoving",
+      "GUID": "{A1D8877E-5482-4E2B-9D8D-65CB70239F06}",
+      "MaxAttenuation": "15",
+      "DurationType": "Infinite",
+      "MediaRefs": [
+       {
+        "Id": "83499910"
+       }
+      ]
+     },
+     {
       "Id": "2385628198",
       "Name": "Footsteps",
       "ObjectPath": "\\Events\\Default Work Unit\\Footsteps",
@@ -1351,6 +1372,20 @@
       ]
      },
      {
+      "Id": "512917032",
+      "Name": "leverSound",
+      "ObjectPath": "\\Events\\Default Work Unit\\leverSound",
+      "GUID": "{DC6B7A02-6A77-4067-A6D9-90829ABD5742}",
+      "DurationType": "OneShot",
+      "DurationMin": "0.49247167",
+      "DurationMax": "0.49247167",
+      "MediaRefs": [
+       {
+        "Id": "793190196"
+       }
+      ]
+     },
+     {
       "Id": "3991942870",
       "Name": "Music",
       "ObjectPath": "\\Events\\Default Work Unit\\Music",
@@ -1553,9 +1588,22 @@
       ]
      },
      {
-      "Id": "4208999138",
-      "Name": "PlatformMoving",
-      "ObjectPath": "\\Events\\Default Work Unit\\PlatformMoving",
+      "Id": "1522771841",
+      "Name": "PlatfornMoving",
+      "ObjectPath": "\\Events\\Default Work Unit\\PlatfornMoving",
+      "GUID": "{4D7DAFCB-F619-4966-AF2E-CC4EB50DA477}",
+      "MaxAttenuation": "50",
+      "DurationType": "Infinite",
+      "MediaRefs": [
+       {
+        "Id": "83499910"
+       }
+      ]
+     },
+     {
+      "Id": "3496537566",
+      "Name": "SpinnerMoving",
+      "ObjectPath": "\\Events\\Default Work Unit\\SpinnerMoving",
       "GUID": "{D6E6FD58-CC6F-4E5F-AB14-F03D9AF211CA}",
       "MaxAttenuation": "15",
       "DurationType": "Infinite",
@@ -1602,6 +1650,12 @@
       "Name": "GlassAmount",
       "ObjectPath": "\\Game Parameters\\Default Work Unit\\GlassAmount",
       "GUID": "{1BCC60E6-39B7-488E-A532-430D03891736}"
+     },
+     {
+      "Id": "1853166429",
+      "Name": "DoorsSpeed",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\DoorsSpeed",
+      "GUID": "{F9F92E43-800C-46DC-A564-C4226723CD38}"
      },
      {
       "Id": "1907997609",
@@ -1742,6 +1796,6 @@
     ]
    }
   ],
-  "FileHash": "{DFE1CCF9-A58A-2034-8F0B-A87FAD5802C9}"
+  "FileHash": "{D75A7A34-EDE8-990B-DF8E-C97CC3B39B4C}"
  }
 }

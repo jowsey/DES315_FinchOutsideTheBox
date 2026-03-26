@@ -9,10 +9,13 @@ using System.Linq;
 #endif
 
 [InfoBox("When designing: SCALE the Arch object inside the Platform, and MOVE the top-level MovingPlatform object.")]
-public class MovingPlatform : MonoBehaviour
+public class MovingPlatform : NetworkBehaviour
 {
     private Rigidbody _rb;
     private SplineContainer _container;
+
+    public AK.Wwise.Event PlatformSound = new();
+    public AK.Wwise.RTPC RTPCPlatform;
 
     [SerializeField] private float _duration;
     [SerializeField] private AnimationCurve _displacementCurve;
@@ -43,10 +46,15 @@ public class MovingPlatform : MonoBehaviour
         _useTargetT = false;
         _tLastTick = (float)_timeElapsed;
         _currentT = _startT;
+
+
+
     }
 
     public void StartMoving()
     {
+        //Play platform sound perma but its default rtpc is 0
+        PlatformSound.Post(gameObject);
         _isMoving = true;
         _useTargetT = false;
     }
@@ -66,7 +74,7 @@ public class MovingPlatform : MonoBehaviour
     private void FixedUpdate()
     {
         // band-aid fix for network syncing. todo needs proper re-think
-        if (!NetworkServer.active) return;
+        if (!authority) return;
         
         if (_useTargetT)
         {
@@ -105,6 +113,19 @@ public class MovingPlatform : MonoBehaviour
             Vector3 worldPos = _container.transform.TransformPoint(localPos);
             _rb.MovePosition(worldPos);
         }
+
+        RpcSetRTPCGlobalValue(_rb.linearVelocity.magnitude);
+    }
+
+
+    [ClientRpc(includeOwner = true)]
+    void RpcSetRTPCGlobalValue(float val)
+    {
+        if (transform.name == "LiftLever")
+        {
+            Debug.Log(val * 2);
+        }
+        RTPCPlatform.SetGlobalValue(val * 2);
     }
 
 

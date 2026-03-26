@@ -323,6 +323,30 @@ public class PlayerController : NetworkBehaviour
         if (grounded == true)
         {
             postWwiseFootstep.fallCount = 0;
+            RaycastHit hit;
+            if (Physics.Raycast(Rb.position, Vector3.down, out hit, 0.1f, ~(1 << gameObject.layer), QueryTriggerInteraction.Ignore))
+            {
+                Renderer renderer = hit.transform.GetComponentInChildren<Renderer>();
+                if (renderer != null)
+                {
+                    if (renderer.sharedMaterial.name == "Sand_SD" || renderer.sharedMaterial.name == "Sand_Background")
+                    {
+                        AkUnitySoundEngine.SetSwitch("Footsteps", "Sand", gameObject);
+                    }
+                    else if (renderer.sharedMaterial.name == "Stone Floor Light" || renderer.sharedMaterial.name == "Stone Floor Dark")
+                    {
+                        AkUnitySoundEngine.SetSwitch("Footsteps", "Stone", gameObject);
+                    }
+                    else if (renderer.sharedMaterial.name == "Bricks_SD")
+                    {
+                        AkUnitySoundEngine.SetSwitch("Footsteps", "Wood", gameObject);
+                    }
+                    else if (renderer.sharedMaterial.name == "Prototype_512x512_White")
+                    {
+                        AkUnitySoundEngine.SetSwitch("Footsteps", "Stone", gameObject);
+                    }
+                }
+            }
         }
 
         if (!Seat)

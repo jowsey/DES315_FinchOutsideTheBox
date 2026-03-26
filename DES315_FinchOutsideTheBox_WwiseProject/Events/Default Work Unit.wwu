@@ -102,12 +102,12 @@
 						</Action>
 					</ChildrenList>
 				</Event>
-				<Event Name="PlatformMoving" ID="{D6E6FD58-CC6F-4E5F-AB14-F03D9AF211CA}">
+				<Event Name="SpinnerMoving" ID="{D6E6FD58-CC6F-4E5F-AB14-F03D9AF211CA}">
 					<ChildrenList>
 						<Action Name="" ID="{07ACABF0-338C-44CA-940F-159B8B7C7864}" ShortID="560534194">
 							<ReferenceList>
 								<Reference Name="Target">
-									<ObjectRef Name="PlatformMoving" ID="{C1A54276-1AA1-4606-B7F8-EDB6EB85EBCC}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+									<ObjectRef Name="SpinnerMoving" ID="{C1A54276-1AA1-4606-B7F8-EDB6EB85EBCC}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
 								</Reference>
 							</ReferenceList>
 						</Action>
@@ -152,6 +152,39 @@
 							<ReferenceList>
 								<Reference Name="Target">
 									<ObjectRef Name="CatLand" ID="{228F6641-C973-4E46-959F-42430FCE12ED}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="leverSound" ID="{DC6B7A02-6A77-4067-A6D9-90829ABD5742}">
+					<ChildrenList>
+						<Action Name="" ID="{CA17A533-8267-4D5B-AACA-17B7D18E7006}" ShortID="359436962">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="LeverPressDown" ID="{FDF71895-DAB3-4763-B2FD-53F68FEABDA6}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="DoorsMoving" ID="{A1D8877E-5482-4E2B-9D8D-65CB70239F06}">
+					<ChildrenList>
+						<Action Name="" ID="{8734DCD7-6D9B-4C6E-899C-F816D6E74D76}" ShortID="320904705">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="DoorsMoving" ID="{7E6DB947-C0AE-45AF-B121-04E546996415}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="PlatfornMoving" ID="{4D7DAFCB-F619-4966-AF2E-CC4EB50DA477}">
+					<ChildrenList>
+						<Action Name="" ID="{A8DCD27B-564B-4376-AF22-B09FCF3EE2BB}" ShortID="833155239">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="PlatformMoving" ID="{B4B1A32D-12D7-4D4E-BC5E-2A93004927B5}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
 								</Reference>
 							</ReferenceList>
 						</Action>

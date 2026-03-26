@@ -10,8 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1055038332339683578}
   - component: {fileID: 425738957050815675}
-  - component: {fileID: 5294656086542728365}
-  - component: {fileID: 5741773032257171348}
   m_Layer: 0
   m_Name: LiftLever
   m_TagString: Untagged
@@ -48,6 +46,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9be4b5da733385948a2feccf734d81f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MovingPlatform
+  PlatformSound:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 2b975ca2bbaf12b489a8723a06849068, type: 2}
+  RTPCPlatform:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: d1a9ac423e95e2245890f438f1ce2d5e, type: 2}
   _duration: 20
   _displacementCurve:
     serializedVersion: 2
@@ -84,54 +90,6 @@ MonoBehaviour:
     m_RotationOrder: 4
   _moveByDefault: 0
   _startT: 0
---- !u!114 &5294656086542728365
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 576369856270546802}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: baba1731ae1e0b948994819c2bbdb2b7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: AK.Wwise.Unity.MonoBehaviour::AkSwitch
-  triggerList: d1bbb3b5
-  useOtherObject: 1
-  data:
-    idInternal: 0
-    valueGuidInternal: 
-    groupIdInternal: 0
-    groupGuidInternal: 
-    WwiseObjectReference: {fileID: 11400000, guid: f9c5735dde218fb4cb465184c733cff5, type: 2}
-  valueIdInternal: 0
-  groupIdInternal: 0
-  valueGuidInternal: 
-  groupGuidInternal: 
---- !u!114 &5741773032257171348
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 576369856270546802}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: baba1731ae1e0b948994819c2bbdb2b7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: AK.Wwise.Unity.MonoBehaviour::AkSwitch
-  triggerList: f7e1664c
-  useOtherObject: 0
-  data:
-    idInternal: 0
-    valueGuidInternal: 
-    groupIdInternal: 0
-    groupGuidInternal: 
-    WwiseObjectReference: {fileID: 0}
-  valueIdInternal: 0
-  groupIdInternal: 0
-  valueGuidInternal: 
-  groupGuidInternal: 
 --- !u!1 &5356546915849323193
 GameObject:
   m_ObjectHideFlags: 0
