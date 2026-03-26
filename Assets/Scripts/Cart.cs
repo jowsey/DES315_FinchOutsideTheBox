@@ -82,7 +82,10 @@ public class Cart : NetworkBehaviour
     public override void OnStartServer()
     {
         Checkpoint.RespawnEvent.AddListener(OnRespawn);
+    }
 
+    public override void OnStartClient()
+    {
         CarSound.Post(gameObject);
         glassInVehicle.Post(gameObject);
         CarOnSurface.Post(gameObject);
