@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using Epic.OnlineServices.Lobby;
 using Sirenix.OdinInspector;
@@ -15,6 +16,9 @@ namespace UI
 
         [SerializeField] [Required] private TMP_InputField _lobbyNameField;
         [SerializeField] [Required] private Button _createLobbyButton;
+
+        [SerializeField] [Required] private GameObject _emptyListNotice;
+        [SerializeField] [Required] private GameObject _refreshNotice;
 
         [ReadOnly] public EOSLobby EosLobby;
 
@@ -37,7 +41,16 @@ namespace UI
             EosLobby.LeaveLobbySucceeded += LeaveLobbySucceeded;
             EosLobby.LeaveLobbyFailed += LeaveLobbyFailed;
 
-            EosLobby.FindLobbies();
+            StartCoroutine(RefreshLobbyInterval());
+        }
+
+        private IEnumerator RefreshLobbyInterval()
+        {
+            while (this && enabled)
+            {
+                EosLobby.FindLobbies();
+                yield return new WaitForSeconds(5f);
+            }
         }
 
         private void OnDisable()
@@ -92,8 +105,10 @@ namespace UI
 
         private void FindLobbiesSucceeded(List<LobbyDetails> lobbies)
         {
-            foreach (Transform child in _lobbyListContainer) Destroy(child.gameObject);
-
+            foreach (var listing in _lobbyListContainer.GetComponentsInChildren<LobbyListing>()) Destroy(listing.gameObject);
+            
+            _emptyListNotice.SetActive(lobbies.Count == 0);
+            
             foreach (var lobbyDetails in lobbies)
             {
                 var listing = Instantiate(_lobbyListingPrefab, _lobbyListContainer);
@@ -109,7 +124,7 @@ namespace UI
 
                 var copyInfoOptions = new LobbyDetailsCopyInfoOptions();
                 lobbyDetails.CopyInfo(ref copyInfoOptions, out var lobbyInfo);
-
+                
                 // value.data.value.value you cannot be serious bro
                 listing.LobbyNameText.text = lobbyNameAttribute.Value.Data.Value.Value.AsUtf8;
                 listing.MetadataText.text = $"{memberCount}/{lobbyInfo.Value.MaxMembers} players" +
@@ -117,6 +132,8 @@ namespace UI
                                             $"Created by <b>{ownerNameAttribute.Value.Data.Value.Value.AsUtf8}</b>";
                 listing.JoinButton.onClick.AddListener(() => EosLobby.JoinLobby(lobbyDetails));
             }
+            
+            _refreshNotice.transform.SetAsLastSibling();
         }
 
         private void FindLobbiesFailed(string error)
