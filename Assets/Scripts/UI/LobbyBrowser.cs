@@ -107,8 +107,6 @@ namespace UI
         {
             foreach (var listing in _lobbyListContainer.GetComponentsInChildren<LobbyListing>()) Destroy(listing.gameObject);
             
-            _emptyListNotice.SetActive(lobbies.Count == 0);
-            
             foreach (var lobbyDetails in lobbies)
             {
                 var listing = Instantiate(_lobbyListingPrefab, _lobbyListContainer);
@@ -133,6 +131,7 @@ namespace UI
                 listing.JoinButton.onClick.AddListener(() => EosLobby.JoinLobby(lobbyDetails));
             }
             
+            _emptyListNotice.SetActive(lobbies.Count == 0);
             _refreshNotice.transform.SetAsLastSibling();
         }
 
