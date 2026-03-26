@@ -70,6 +70,7 @@ namespace UI
                 DontDestroyOnLoad(_kcpTransport);
             }
 
+            _lobbyBrowser.gameObject.SetActive(false);
             _lobbyBrowser.EosLobby = _eosTransport.GetComponent<EOSLobby>();
 
             _settingsMenu.LoadFromDisk();
