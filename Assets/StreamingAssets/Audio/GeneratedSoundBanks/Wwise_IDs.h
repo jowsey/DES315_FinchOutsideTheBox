@@ -19,13 +19,16 @@ namespace AK
         static const AkUniqueID CATLAND = 3906859072U;
         static const AkUniqueID CATPING = 3173738935U;
         static const AkUniqueID CHECKPOINTDRUMS = 2509294038U;
+        static const AkUniqueID DOORSMOVING = 758278606U;
         static const AkUniqueID FOOTSTEPS = 2385628198U;
         static const AkUniqueID GLASSINVEHILCE = 2158283652U;
         static const AkUniqueID GLASSPICKUP = 1188386847U;
         static const AkUniqueID GLASSSHATTER = 206611762U;
         static const AkUniqueID HOVERTICK = 2670946266U;
+        static const AkUniqueID LEVERSOUND = 512917032U;
         static const AkUniqueID MUSIC = 3991942870U;
-        static const AkUniqueID PLATFORMMOVING = 4208999138U;
+        static const AkUniqueID PLATFORNMOVING = 1522771841U;
+        static const AkUniqueID SPINNERMOVING = 3496537566U;
         static const AkUniqueID TESTSOUJD1 = 1035878255U;
     } // namespace EVENTS
 
@@ -83,6 +86,7 @@ namespace AK
     namespace GAME_PARAMETERS
     {
         static const AkUniqueID CAROVERSTONE = 588369366U;
+        static const AkUniqueID DOORSSPEED = 1853166429U;
         static const AkUniqueID GLASSAMOUNT = 1090606811U;
         static const AkUniqueID ISESCPRESSED = 651854690U;
         static const AkUniqueID MUSICVOLUME = 2346531308U;
