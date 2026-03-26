@@ -46,13 +46,14 @@ namespace UI
         private void Update()
         {
             transform.SetAsLastSibling(); // force ensure we're absolutely on top always
-            if (Tween.GetTweensCount(_frameImage.transform) > 0 || Tween.GetTweensCount(_canvasGroup) > 0) return;
 
             if (_skipAction.action.WasPressedThisFrame())
             {
                 Destroy(gameObject);
                 return;
             }
+            
+            if (Tween.GetTweensCount(_frameImage.transform) > 0 || Tween.GetTweensCount(_canvasGroup) > 0) return;
 
             if (_nextFrameAction.action.WasPressedThisFrame())
             {
