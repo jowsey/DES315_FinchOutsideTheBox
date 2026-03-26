@@ -135,11 +135,11 @@ MonoBehaviour:
   syncInterval: 0
   _movementSpeed: 12
   Smashable: 0
+  _smashedFlask: {fileID: 8121012120109722422, guid: 05ec8daeb1916d64cb76ff281b17a95c, type: 3}
   flaskSmash:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: d4d41d3b09f327b4b8b3466dc22fe8a0, type: 2}
-  _smashedFlask: {fileID: 8121012120109722422, guid: 05ec8daeb1916d64cb76ff281b17a95c, type: 3}
 --- !u!114 &-4395463060295971911
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -263,11 +263,15 @@ PrefabInstance:
       value: Flask
       objectReference: {fileID: 0}
     - target: {fileID: 775119181275051162, guid: b5ea9efc5e464924b817fdcc4c75c863, type: 3}
-      propertyPath: m_Materials.Array.data[0]
+      propertyPath: m_RenderingLayerMask
+      value: 512
+      objectReference: {fileID: 0}
+    - target: {fileID: 775119181275051162, guid: b5ea9efc5e464924b817fdcc4c75c863, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: fb1ecb58a6a246543ab2211b4a249e08, type: 2}
     - target: {fileID: 775119181275051162, guid: b5ea9efc5e464924b817fdcc4c75c863, type: 3}
-      propertyPath: m_Materials.Array.data[1]
+      propertyPath: 'm_Materials.Array.data[1]'
       value: 
       objectReference: {fileID: 2100000, guid: 129f094e18874ac4abd213242b5d7789, type: 2}
     - target: {fileID: 919132149155446097, guid: b5ea9efc5e464924b817fdcc4c75c863, type: 3}
