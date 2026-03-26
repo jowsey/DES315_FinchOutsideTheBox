@@ -66,7 +66,10 @@ namespace UI
 
         [SerializeField] [Required] private RTPC _musicVolumeRtpc;
         [SerializeField] [Required] private RTPC _sfxVolumeRtpc;
-
+        
+        // Gets the player's name, generating a random one if none is set
+        public static string GetSafeName() => string.IsNullOrWhiteSpace(ActiveSettings.PlayerName) ? GetRandomName() : ActiveSettings.PlayerName;
+        
         private void OnEnable()
         {
             LoadFromDisk();
