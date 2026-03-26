@@ -75,7 +75,7 @@ namespace UI
                 new()
                 {
                     Key = OwnerNameKey,
-                    Value = SettingsManager.ActiveSettings.PlayerName
+                    Value = SettingsManager.GetSafeName()
                 }
             });
         }

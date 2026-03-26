@@ -52,13 +52,9 @@ namespace Networking
         {
             if (!NetworkClient.ready) NetworkClient.Ready();
 
-            var chosenName = string.IsNullOrWhiteSpace(SettingsManager.ActiveSettings.PlayerName)
-                ? SettingsManager.GetRandomName()
-                : SettingsManager.ActiveSettings.PlayerName;
-
             NetworkClient.Send(new ClientInfoMessage
             {
-                PlayerName = chosenName,
+                PlayerName = SettingsManager.GetSafeName(),
                 PlayerUID = SettingsManager.ActiveSettings.UserID
             });
         }
