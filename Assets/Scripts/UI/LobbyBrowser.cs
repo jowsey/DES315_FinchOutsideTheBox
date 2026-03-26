@@ -24,6 +24,7 @@ namespace UI
 
         private const string LobbyNameKey = "lobbyName";
         private const string OwnerNameKey = "ownerName";
+        private const string GameVersionKey = "gameVersion";
 
         private void OnEnable()
         {
@@ -78,19 +79,29 @@ namespace UI
                 return;
             }
 
-            EosLobby.CreateLobby((uint)NetworkManager.singleton.maxConnections, LobbyPermissionLevel.Publicadvertised, false, new AttributeData[]
-            {
-                new()
+            EosLobby.CreateLobby(
+                (uint)NetworkManager.singleton.maxConnections,
+                LobbyPermissionLevel.Publicadvertised,
+                false,
+                new AttributeData[]
                 {
-                    Key = LobbyNameKey,
-                    Value = _lobbyNameField.text
-                },
-                new()
-                {
-                    Key = OwnerNameKey,
-                    Value = SettingsManager.GetSafeName()
+                    new()
+                    {
+                        Key = LobbyNameKey,
+                        Value = _lobbyNameField.text
+                    },
+                    new()
+                    {
+                        Key = OwnerNameKey,
+                        Value = SettingsManager.GetSafeName()
+                    },
+                    new()
+                    {
+                        Key = GameVersionKey,
+                        Value = Application.version
+                    }
                 }
-            });
+            );
         }
 
         private void CreateLobbySucceeded(List<Attribute> attributes)
@@ -106,31 +117,47 @@ namespace UI
         private void FindLobbiesSucceeded(List<LobbyDetails> lobbies)
         {
             foreach (var listing in _lobbyListContainer.GetComponentsInChildren<LobbyListing>()) Destroy(listing.gameObject);
-            
+
             foreach (var lobbyDetails in lobbies)
             {
                 var listing = Instantiate(_lobbyListingPrefab, _lobbyListContainer);
 
                 var ownerNameOptions = new LobbyDetailsCopyAttributeByKeyOptions { AttrKey = OwnerNameKey };
                 lobbyDetails.CopyAttributeByKey(ref ownerNameOptions, out var ownerNameAttribute);
+                var ownerName = ownerNameAttribute.HasValue
+                    ? ownerNameAttribute.Value.Data?.Value.AsUtf8.ToString()
+                    : "???";
 
                 var lobbyNameOptions = new LobbyDetailsCopyAttributeByKeyOptions { AttrKey = LobbyNameKey };
                 lobbyDetails.CopyAttributeByKey(ref lobbyNameOptions, out var lobbyNameAttribute);
+                var lobbyName = lobbyNameAttribute.HasValue
+                    ? lobbyNameAttribute.Value.Data?.Value.AsUtf8.ToString()
+                    : "Unnamed Lobby";
+
+                var gameVersionOptions = new LobbyDetailsCopyAttributeByKeyOptions { AttrKey = GameVersionKey };
+                lobbyDetails.CopyAttributeByKey(ref gameVersionOptions, out var gameVersionAttribute);
+                var lobbyGameVersion = gameVersionAttribute.HasValue
+                    ? gameVersionAttribute.Value.Data?.Value.AsUtf8.ToString()
+                    : "???";
+
+                var matchingGameVersion = lobbyGameVersion == Application.version;
 
                 var memberCountOptions = new LobbyDetailsGetMemberCountOptions();
                 var memberCount = lobbyDetails.GetMemberCount(ref memberCountOptions);
 
                 var copyInfoOptions = new LobbyDetailsCopyInfoOptions();
                 lobbyDetails.CopyInfo(ref copyInfoOptions, out var lobbyInfo);
-                
+
                 // value.data.value.value you cannot be serious bro
-                listing.LobbyNameText.text = lobbyNameAttribute.Value.Data.Value.Value.AsUtf8;
+                listing.LobbyNameText.text = ownerName;
                 listing.MetadataText.text = $"{memberCount}/{lobbyInfo.Value.MaxMembers} players" +
                                             $" <color=#999>–</color> " +
-                                            $"Created by <b>{ownerNameAttribute.Value.Data.Value.Value.AsUtf8}</b>";
+                                            $"Created by <b>{ownerName}</b>" +
+                                            $" <color=#999>–</color> " +
+                                            $"<color={(matchingGameVersion ? "white" : "red")}>v{lobbyGameVersion}</color>";
                 listing.JoinButton.onClick.AddListener(() => EosLobby.JoinLobby(lobbyDetails));
             }
-            
+
             _emptyListNotice.SetActive(lobbies.Count == 0);
             _refreshNotice.transform.SetAsLastSibling();
         }
