@@ -1,4 +1,5 @@
 ﻿using Mirror;
+using UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -6,7 +7,7 @@ using UnityEngine.InputSystem;
 public class PositionalPing : NetworkBehaviour
 {
     [SerializeField] private InputActionReference _pingAction;
-    [SerializeField] private GameObject _pingPrefab;
+    [SerializeField] private PingObject _pingPrefab;
 
     private Camera _camera;
 
@@ -31,15 +32,22 @@ public class PositionalPing : NetworkBehaviour
     }
 
     [Command(requiresAuthority = false)]
-    private void CmdPingPosition(Vector3 position, Vector3 normal)
+    private void CmdPingPosition(Vector3 position, Vector3 direction)
     {
-        RpcPingPosition(position, normal);
+        RpcPingPosition(position, direction);
     }
 
     [ClientRpc]
-    private void RpcPingPosition(Vector3 position, Vector3 normal)
+    private void RpcPingPosition(Vector3 position, Vector3 direction)
     {
-        Instantiate(_pingPrefab, position, Quaternion.LookRotation(normal));
+        var ping = Instantiate(_pingPrefab, position, Quaternion.LookRotation(direction));
+        
+        // Attach to parent
+        if (Physics.Raycast(position, direction, out var hit, 1f, ~0, QueryTriggerInteraction.Ignore))
+        {
+            ping.transform.SetParent(hit.transform, true);
+        }
+
         catMeow.Post(gameObject);
     }
 }
