@@ -388,7 +388,8 @@ public class PlayerController : NetworkBehaviour
         CleanupFixedUpdate();
     }
 
-    public void ReturnToCart()
+    [Command]
+    public void CmdReturnToCart()
     {
         if (Seat) return;
 
@@ -419,6 +420,7 @@ public class PlayerController : NetworkBehaviour
         }
 
         var newRotation = Quaternion.LookRotation(cart.transform.position - newPosition, Vector3.up);
+        newRotation = Quaternion.Euler(0, newRotation.eulerAngles.y, 0); // flatten angle
         GetComponent<NetworkTransformBase>().CmdTeleport(newPosition, newRotation);
     }
 
