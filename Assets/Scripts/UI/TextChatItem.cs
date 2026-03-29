@@ -23,7 +23,7 @@ namespace UI
         
         public void Build(PlayerController player, string message)
         {
-            _catFaceIcon.Sprite = PlayerController.SkinIcons[player.PlayerSkinIndex];
+            _catFaceIcon.Sprite = PlayerController.LoadedSkins[player.PlayerSkinIndex].Icon;
             _playerNameText.text = player.PlayerName;
             
             var myName = SettingsManager.ActiveSettings.PlayerName; // embolden @mentions idk

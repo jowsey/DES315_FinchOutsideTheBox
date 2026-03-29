@@ -25,7 +25,7 @@ namespace UI
             _player = player;
 
             _playerNameText.text = player.PlayerName;
-            _skinIcon.Sprite = PlayerController.SkinIcons[player.PlayerSkinIndex];
+            _skinIcon.Sprite = PlayerController.LoadedSkins[player.PlayerSkinIndex].Icon;
 
             _voiceVolumeSlider.onValueChanged.AddListener(OnVoiceVolumeChanged);
             _voiceVolumeSlider.value = SettingsManager.ActiveSettings.PlayerVoiceVolumePercents.GetValueOrDefault(player.PlayerUID, 100f);

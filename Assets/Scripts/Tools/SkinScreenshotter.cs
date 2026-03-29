@@ -1,61 +1,77 @@
 ﻿using System.Collections;
-using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using Util;
 
 namespace Tools
 {
     public class SkinScreenshotter : MonoBehaviour
     {
 #if UNITY_EDITOR
-        [SerializeField] private Renderer[] _renderers;
-        private int _currentSkinIndex;
+        private static readonly int MainTex = Shader.PropertyToID("_MainTex");
 
-        [Button("Use next skin")]
-        private void UseNextSkin() => IterateSkinMaterial();
+        [SerializeField] private Renderer[] _skinnedRenderers;
+        [SerializeField] private bool _overwriteImages = true;
+        [SerializeField] private Vector2 _accentSampleUV = new(0.552f, 0.945f);
 
-        private void IterateSkinMaterial(int? forceIndex = null)
-        {
-            PlayerController.SkinMaterials ??= Resources.LoadAll<Material>("PlayerSkins/Materials");
+        private Color GetLatestSkinColour() => PlayerController.LoadedSkins?.Length >= _finishedSkinCount && _finishedSkinCount > 0
+            ? PlayerController.LoadedSkins[_finishedSkinCount - 1].AccentColor
+            : Color.white;
 
-            _currentSkinIndex = PlayerController.SkinMaterials.ToList().IndexOf(_renderers[0].sharedMaterial);
-            var newIndex = forceIndex ?? (_currentSkinIndex + 1) % PlayerController.SkinMaterials.Length;
+        private int _numSkins;
 
-            foreach (var ren in _renderers)
-            {
-                ren.sharedMaterial = PlayerController.SkinMaterials[newIndex];
-            }
-
-            _currentSkinIndex = newIndex;
-        }
-
-        [Button("Take screenshot")]
-        private void TakeScreenshot() => StartCoroutine(TakeScreenshotRoutine());
-
-        private IEnumerator TakeScreenshotRoutine()
-        {
-            var path = $"Assets/Resources/PlayerSkins/Icons/Skin_{_currentSkinIndex + 1}.png";
-            ScreenCapture.CaptureScreenshot(path);
-            yield return new WaitForEndOfFrame();
-            UnityEditor.AssetDatabase.ImportAsset(path);
-        }
+        [ShowInInspector, HideLabel, HideIf("_numSkins", 0)]
+        [ProgressBar(0, "_numSkins", ColorGetter = nameof(GetLatestSkinColour), Segmented = true)]
+        private int _finishedSkinCount;
 
         [Button("Full send it")]
-        private void CaptureAllSkins() => StartCoroutine(CaptureAllSkinsRoutine());
+        private void GenerateSkinData() => StartCoroutine(GenerateSkinDataRoutine());
 
-        private IEnumerator CaptureAllSkinsRoutine()
+        private IEnumerator GenerateSkinDataRoutine()
         {
-            PlayerController.SkinMaterials ??= Resources.LoadAll<Material>("PlayerSkins/Materials");
+            var materials = Resources.LoadAll<Material>("PlayerSkins/Materials");
 
-            for (var i = 0; i < PlayerController.SkinMaterials.Length; i++)
+            _numSkins = materials.Length;
+            _finishedSkinCount = 0;
+
+            PlayerController.LoadedSkins = new SkinData[materials.Length];
+
+            for (var i = 0; i < materials.Length; i++)
             {
-                Debug.Log(PlayerController.SkinMaterials[i].name);
-                
-                IterateSkinMaterial(i);
+                var material = materials[i];
+                foreach (var ren in _skinnedRenderers)
+                {
+                    ren.sharedMaterial = material;
+                }
+
+                UnityEditorInternal.InternalEditorUtility.RepaintAllViews();
                 yield return new WaitForEndOfFrame();
-                TakeScreenshot();
-                yield return new WaitForEndOfFrame();
+
+                var path = $"Assets/Resources/PlayerSkins/Icons/Skin_{i + 1}.png";
+                if (_overwriteImages || !System.IO.File.Exists(path))
+                {
+                    ScreenCapture.CaptureScreenshot(path);
+
+                    UnityEditorInternal.InternalEditorUtility.RepaintAllViews();
+                    yield return new WaitForEndOfFrame();
+                }
+
+                UnityEditor.AssetDatabase.ImportAsset(path);
+
+                yield return null;
+
+                var skinData = ScriptableObject.CreateInstance<SkinData>();
+                skinData.Material = material;
+                skinData.Icon = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>(path);
+                skinData.AccentColor = ((Texture2D)material.GetTexture(MainTex)).GetPixelBilinear(_accentSampleUV.x, _accentSampleUV.y);
+                UnityEditor.AssetDatabase.CreateAsset(skinData, $"Assets/Resources/PlayerSkins/Skin_{i + 1}.asset");
+                UnityEditor.EditorUtility.SetDirty(skinData);
+
+                PlayerController.LoadedSkins[i] = skinData;
+                _finishedSkinCount = i + 1;
             }
+
+            UnityEditor.AssetDatabase.SaveAssets();
         }
 #endif
     }

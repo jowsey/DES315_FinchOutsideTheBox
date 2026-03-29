@@ -90,7 +90,7 @@ namespace Networking
             var player = Instantiate(playerPrefab, startPos.position, startPos.rotation).GetComponent<PlayerController>();
             player.PlayerIndex = _nextPlayerIndex++;
             player.PlayerName = msg.PlayerName;
-            player.PlayerSkinIndex = player.PlayerIndex % PlayerController.SkinMaterials.Length; // round-robin
+            player.PlayerSkinIndex = player.PlayerIndex % PlayerController.LoadedSkins.Length; // round-robin
             player.PlayerUID = msg.PlayerUID;
 
             NetworkServer.AddPlayerForConnection(conn, player.gameObject);
