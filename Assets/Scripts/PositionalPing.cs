@@ -32,15 +32,16 @@ public class PositionalPing : NetworkBehaviour
     }
 
     [Command(requiresAuthority = false)]
-    private void CmdPingPosition(Vector3 position, Vector3 direction)
+    private void CmdPingPosition(Vector3 position, Vector3 direction, NetworkConnectionToClient sender = null)
     {
-        RpcPingPosition(position, direction);
+        RpcPingPosition(position, direction, sender?.identity);
     }
 
     [ClientRpc]
-    private void RpcPingPosition(Vector3 position, Vector3 direction)
+    private void RpcPingPosition(Vector3 position, Vector3 direction, NetworkIdentity sender)
     {
         var ping = Instantiate(_pingPrefab, position, Quaternion.LookRotation(direction));
+        ping.Build(sender.GetComponent<PlayerController>());
         
         // Attach to parent
         if (Physics.Raycast(position, direction, out var hit, 1f, ~0, QueryTriggerInteraction.Ignore))

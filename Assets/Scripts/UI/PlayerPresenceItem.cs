@@ -19,7 +19,7 @@ namespace UI
 
         public void Build(PlayerController player, PlayerPresenceFeed.PresenceType presenceType)
         {
-            _catFaceIcon.Sprite = PlayerController.SkinIcons[player.PlayerSkinIndex];
+            _catFaceIcon.Sprite = PlayerController.LoadedSkins[player.PlayerSkinIndex].Icon;
             _backgroundImage.color = presenceType == PlayerPresenceFeed.PresenceType.Join ? _joinBackground : _leaveBackground;
             _label.text = _template
                 .Replace("[[name]]", player.PlayerName)

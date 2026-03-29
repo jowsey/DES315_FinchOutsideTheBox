@@ -6,6 +6,7 @@ using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using Util;
 using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -17,8 +18,7 @@ public class PlayerController : NetworkBehaviour
     private static readonly int FallState = Animator.StringToHash("Fall");
     private static readonly int GlideState = Animator.StringToHash("Glide");
 
-    public static Material[] SkinMaterials;
-    public static Sprite[] SkinIcons;
+    public static SkinData[] LoadedSkins;
 
     [Header("Network")]
     [SyncVar] [ReadOnly] public int PlayerIndex;
@@ -121,8 +121,7 @@ public class PlayerController : NetworkBehaviour
 
     private void Awake()
     {
-        SkinMaterials ??= Resources.LoadAll<Material>("PlayerSkins/Materials");
-        SkinIcons ??= Resources.LoadAll<Sprite>("PlayerSkins/Icons");
+        LoadedSkins ??= Resources.LoadAll<SkinData>("PlayerSkins");
 
         Rb = GetComponent<Rigidbody>();
         _networkAnimator = GetComponent<NetworkAnimator>();
@@ -134,7 +133,7 @@ public class PlayerController : NetworkBehaviour
     {
         foreach (Renderer renderer in _skinnedRenderers)
         {
-            renderer.sharedMaterial = SkinMaterials[PlayerSkinIndex];
+            renderer.sharedMaterial = LoadedSkins[PlayerSkinIndex].Material;
         }
 
         _camera = FindAnyObjectByType<CinemachineCamera>(FindObjectsInactive.Include);
