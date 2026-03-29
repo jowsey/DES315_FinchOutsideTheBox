@@ -8,6 +8,8 @@ using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using Util;
 using Random = UnityEngine.Random;
+using ShowInInspectorAttribute = Sirenix.OdinInspector.ShowInInspectorAttribute;
+using ReadOnlyAttribute = Sirenix.OdinInspector.ReadOnlyAttribute;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : NetworkBehaviour
@@ -76,11 +78,11 @@ public class PlayerController : NetworkBehaviour
 
     [ReadOnly] public Flask HeldFlask;
 
+    [field: SyncVar] [field: ShowInInspector] [field: ReadOnly] public Vector3 WorldSpaceMoveDir { get; private set; }
+    [field: SyncVar] [field: ShowInInspector] [field: ReadOnly] public float AnalogueMoveScale { get; private set; }
+    
     [Header("Skin materials")]
     [SerializeField] private Renderer[] _skinnedRenderers;
-
-    [field: SyncVar] [field: SerializeField] [field: ReadOnly] public Vector3 WorldSpaceMoveDir { get; private set; }
-    [field: SyncVar] [field: ReadOnly] public float AnalogueMoveScale { get; private set; }
 
     private List<Vector3> _contactNormals = new();
 
