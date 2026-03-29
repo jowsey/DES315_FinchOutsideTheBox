@@ -394,15 +394,17 @@ public class PlayerController : NetworkBehaviour
 
         var cart = FindAnyObjectByType<Cart>(); // todo use linked cart
 
-        const float radius = 5.5f;
+        const float radius = 6f;
         Vector3 newPosition = default;
 
-        while (newPosition == default)
+        const int maxTries = 50;
+        var tries = 0;
+        while (newPosition == default && tries++ < maxTries)
         {
             var circularPos = Random.insideUnitCircle * radius;
-            var attemptedPosition = cart.transform.position + new Vector3(circularPos.x, 1, circularPos.y);
+            var attemptedPosition = cart.transform.position + new Vector3(circularPos.x, 0.5f, circularPos.y);
 
-            if (Physics.CheckSphere(attemptedPosition, 1f, ~0, QueryTriggerInteraction.Ignore))
+            if (Physics.CheckSphere(attemptedPosition, 0.45f, ~0, QueryTriggerInteraction.Ignore))
             {
                 continue;
             }
@@ -410,7 +412,13 @@ public class PlayerController : NetworkBehaviour
             newPosition = attemptedPosition;
         }
 
-        var newRotation = Quaternion.LookRotation(newPosition - transform.position, Vector3.up);
+        if (newPosition == default)
+        {
+            Debug.LogWarning($"Failed to find a caravan return position after {maxTries} tries. Somehow.");
+            return;
+        }
+
+        var newRotation = Quaternion.LookRotation(cart.transform.position - newPosition, Vector3.up);
         GetComponent<NetworkTransformBase>().CmdTeleport(newPosition, newRotation);
     }
 
