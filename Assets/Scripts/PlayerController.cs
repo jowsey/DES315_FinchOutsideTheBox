@@ -155,18 +155,15 @@ public class PlayerController : NetworkBehaviour
 
     private void OnRespawn(Checkpoint checkpoint)
     {
-        if (!authority) return;
+        if (!authority || Seat) return;
 
         Transform newTransform = checkpoint.playerRespawnLocalTransforms[PlayerIndex % checkpoint.playerRespawnLocalTransforms.Length];
 
         Rb.position = newTransform.position;
         Rb.rotation = newTransform.rotation;
-        if (!Rb.isKinematic)
-        {
-            Rb.linearVelocity = Vector3.zero;
-            Rb.angularVelocity = Vector3.zero;
-        }
-
+        Rb.linearVelocity = Vector3.zero;
+        Rb.angularVelocity = Vector3.zero;
+        
         _camera.PreviousStateIsValid = false;
     }
 
