@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Gilzoide.RoundedCorners;
 using Mirror;
 using PrimeTween;
@@ -34,7 +35,11 @@ namespace UI
             _messageText.text = message;
             foreach (var i in playerInfos)
             {
-                _messageText.text = _messageText.text.Replace($"@{i.PlayerName}", $"<color=#{ColorUtility.ToHtmlStringRGB(i.AccentColor)}><b>@{i.PlayerName}</b></color>");
+                _messageText.text = _messageText.text.Replace(
+                    $"@{i.PlayerName}",
+                    $"<color=#{ColorUtility.ToHtmlStringRGB(i.AccentColor)}><b>@{i.PlayerName}</b></color>",
+                    StringComparison.OrdinalIgnoreCase
+                );
             }
 
             var rt = (RectTransform)transform;
