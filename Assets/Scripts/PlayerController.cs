@@ -69,6 +69,8 @@ public class PlayerController : NetworkBehaviour
     [Tooltip("Radius of the sphere used for the sphere-raycast grounded check")]
     [SerializeField] private float _groundedSphereRadius;
 
+    private Collider[] _groundedCheckColliderBuffer = new Collider[32];
+
     [Header("State")]
     [ReadOnly] public WheelSeat Seat;
 
@@ -335,8 +337,18 @@ public class PlayerController : NetworkBehaviour
             CleanupFixedUpdate();
             return;
         }
-
-        bool grounded = Physics.CheckSphere(Rb.position, _groundedSphereRadius, ~(1 << gameObject.layer), QueryTriggerInteraction.Ignore);
+        
+        var groundedHits = Physics.OverlapSphereNonAlloc(Rb.position, _groundedSphereRadius, _groundedCheckColliderBuffer, ~0, QueryTriggerInteraction.Ignore);
+        bool grounded = false;
+        for (int i = 0; i < groundedHits; i++)
+        {
+            // ignore self but *do* find other players
+            // ideally this would just be a T[].AsSpan().Any() call but noOoOo
+            if (_groundedCheckColliderBuffer[i].transform.root == transform) continue;
+            grounded = true;
+            break;
+        }
+        
         bool groundedOnBumpy = Physics.CheckSphere(Rb.position, _groundedSphereRadius, LayerMask.GetMask("Bumpy"), QueryTriggerInteraction.Ignore);
         Rb.useGravity = !groundedOnBumpy;
         _networkAnimator.animator.SetBool(GroundedState, grounded || groundedOnBumpy);
