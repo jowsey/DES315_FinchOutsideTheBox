@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Epic.OnlineServices.Lobby;
 using Sirenix.OdinInspector;
 using TMPro;
@@ -25,6 +26,10 @@ namespace UI
         private const string LobbyNameKey = "lobbyName";
         private const string OwnerNameKey = "ownerName";
         private const string GameVersionKey = "gameVersion";
+
+        private const string DefaultLobbyName = "Unnamed Lobby";
+        private const string DefaultOwnerName = "???";
+        private const string DefaultGameVersion = "?.?.?";
 
         private void OnEnable()
         {
@@ -118,29 +123,28 @@ namespace UI
         {
             foreach (var listing in _lobbyListContainer.GetComponentsInChildren<LobbyListing>()) Destroy(listing.gameObject);
 
-            foreach (var lobbyDetails in lobbies)
+            var lobbiesNameSorted = lobbies.OrderBy(lobbyDetails =>
+            {
+                var lobbyNameOptions = new LobbyDetailsCopyAttributeByKeyOptions { AttrKey = LobbyNameKey };
+                lobbyDetails.CopyAttributeByKey(ref lobbyNameOptions, out var lobbyNameAttribute);
+                return lobbyNameAttribute.HasValue ? lobbyNameAttribute.Value.Data?.Value.AsUtf8.ToString() : DefaultLobbyName;
+            });
+
+            foreach (var lobbyDetails in lobbiesNameSorted)
             {
                 var listing = Instantiate(_lobbyListingPrefab, _lobbyListContainer);
 
-                var ownerNameOptions = new LobbyDetailsCopyAttributeByKeyOptions { AttrKey = OwnerNameKey };
-                lobbyDetails.CopyAttributeByKey(ref ownerNameOptions, out var ownerNameAttribute);
-                var ownerName = ownerNameAttribute.HasValue
-                    ? ownerNameAttribute.Value.Data?.Value.AsUtf8.ToString()
-                    : "???";
-
                 var lobbyNameOptions = new LobbyDetailsCopyAttributeByKeyOptions { AttrKey = LobbyNameKey };
                 lobbyDetails.CopyAttributeByKey(ref lobbyNameOptions, out var lobbyNameAttribute);
-                var lobbyName = lobbyNameAttribute.HasValue
-                    ? lobbyNameAttribute.Value.Data?.Value.AsUtf8.ToString()
-                    : "Unnamed Lobby";
+                var lobbyName = lobbyNameAttribute.HasValue ? lobbyNameAttribute.Value.Data?.Value.AsUtf8.ToString() : DefaultLobbyName;
+
+                var ownerNameOptions = new LobbyDetailsCopyAttributeByKeyOptions { AttrKey = OwnerNameKey };
+                lobbyDetails.CopyAttributeByKey(ref ownerNameOptions, out var ownerNameAttribute);
+                var ownerName = ownerNameAttribute.HasValue ? ownerNameAttribute.Value.Data?.Value.AsUtf8.ToString() : DefaultOwnerName;
 
                 var gameVersionOptions = new LobbyDetailsCopyAttributeByKeyOptions { AttrKey = GameVersionKey };
                 lobbyDetails.CopyAttributeByKey(ref gameVersionOptions, out var gameVersionAttribute);
-                var lobbyGameVersion = gameVersionAttribute.HasValue
-                    ? gameVersionAttribute.Value.Data?.Value.AsUtf8.ToString()
-                    : "???";
-
-                var matchingGameVersion = lobbyGameVersion == Application.version;
+                var lobbyGameVersion = gameVersionAttribute.HasValue ? gameVersionAttribute.Value.Data?.Value.AsUtf8.ToString() : DefaultGameVersion;
 
                 var memberCountOptions = new LobbyDetailsGetMemberCountOptions();
                 var memberCount = lobbyDetails.GetMemberCount(ref memberCountOptions);
@@ -153,7 +157,7 @@ namespace UI
                                             $" <color=#999>–</color> " +
                                             $"Created by <b>{ownerName}</b>" +
                                             $" <color=#999>–</color> " +
-                                            $"<color={(matchingGameVersion ? "white" : "red")}>v{lobbyGameVersion}</color>";
+                                            $"<color={(lobbyGameVersion == Application.version ? "white" : "red")}>v{lobbyGameVersion}</color>";
                 listing.JoinButton.onClick.AddListener(() => EosLobby.JoinLobby(lobbyDetails));
             }
 
