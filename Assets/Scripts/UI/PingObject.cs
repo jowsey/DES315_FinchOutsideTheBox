@@ -6,6 +6,9 @@ namespace UI
 {
     public class PingObject : MonoBehaviour
     {
+        private static readonly int BaseColor = Shader.PropertyToID("_BaseColor");
+        private static readonly int EmissiveColor = Shader.PropertyToID("_EmissiveColor");
+
         private Camera _camera;
 
         [SerializeField] private int _cycles = 4;
@@ -13,9 +16,20 @@ namespace UI
         [SerializeField] [SuffixLabel("meters")] private float _animateDistance = 0.5f;
         [SerializeField] private float _smoothingSpeed = 2f;
 
+        private MeshRenderer _renderer;
+
         private void Awake()
         {
             _camera = Camera.main;
+            _renderer = GetComponentInChildren<MeshRenderer>();
+        }
+
+        public void Build(PlayerController player)
+        {
+            var mpb = new MaterialPropertyBlock();
+            mpb.SetColor(BaseColor, PlayerController.LoadedSkins[player.PlayerSkinIndex].AccentColor);
+            mpb.SetColor(EmissiveColor, PlayerController.LoadedSkins[player.PlayerSkinIndex].AccentColor * 1.75f);
+            _renderer.SetPropertyBlock(mpb);
         }
 
         private void Start()
