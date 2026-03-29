@@ -1,4 +1,6 @@
-﻿using Gilzoide.RoundedCorners;
+﻿using System.Linq;
+using Gilzoide.RoundedCorners;
+using Mirror;
 using PrimeTween;
 using Sirenix.OdinInspector;
 using TMPro;
@@ -20,25 +22,31 @@ namespace UI
         {
             _canvasGroup.alpha = 0;
         }
-        
+
         public void Build(PlayerController player, string message)
         {
             _catFaceIcon.Sprite = PlayerController.LoadedSkins[player.PlayerSkinIndex].Icon;
             _playerNameText.text = player.PlayerName;
-            
-            var myName = SettingsManager.ActiveSettings.PlayerName; // embolden @mentions idk
-            _messageText.text = message.Replace($"@{myName}", $"<b>@{myName}</b>");
-            
+
+            var playerInfos = FindObjectsByType<PlayerController>(FindObjectsSortMode.None)
+                .Select(p => (p.PlayerName, PlayerController.LoadedSkins[p.PlayerSkinIndex].AccentColor));
+
+            _messageText.text = message;
+            foreach (var i in playerInfos)
+            {
+                _messageText.text = _messageText.text.Replace($"@{i.PlayerName}", $"<color=#{ColorUtility.ToHtmlStringRGB(i.AccentColor)}><b>@{i.PlayerName}</b></color>");
+            }
+
             var rt = (RectTransform)transform;
             LayoutRebuilder.ForceRebuildLayoutImmediate(rt);
-            
+
             _playerNameText.ForceMeshUpdate();
             _messageText.ForceMeshUpdate();
-            
+
             LayoutRebuilder.ForceRebuildLayoutImmediate(rt);
 
             const float animationDuration = 0.5f;
-            
+
             Sequence.Create()
                 .Group(Tween.Alpha(_canvasGroup, 1f, animationDuration, Ease.OutCubic))
                 .Group(Tween.Scale(rt, Vector3.zero, Vector3.one, animationDuration, Ease.OutBack))
