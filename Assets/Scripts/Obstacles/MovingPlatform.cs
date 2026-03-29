@@ -2,7 +2,6 @@ using Mirror;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Splines;
-using System.Linq;
 
 #if UNITY_EDITOR
     using Sirenix.Utilities.Editor;
