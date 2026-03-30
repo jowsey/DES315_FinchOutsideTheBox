@@ -16,7 +16,7 @@ namespace UI
         [SerializeField] [Required] private Transform _lobbyListContainer;
 
         [SerializeField] [Required] private TMP_InputField _lobbyNameField;
-        [SerializeField] [Required] private Button _createLobbyButton;
+        [SerializeField] [Required] private CreateLobbyButton _createLobbyButton;
 
         [SerializeField] [Required] private GameObject _emptyListNotice;
         [SerializeField] [Required] private GameObject _refreshNotice;
@@ -31,9 +31,11 @@ namespace UI
         private const string DefaultOwnerName = "???";
         private const string DefaultGameVersion = "?.?.?";
 
+        private LobbyListing _activeJoinAttempt;
+
         private void OnEnable()
         {
-            _createLobbyButton.onClick.AddListener(TryCreateLobby);
+            _createLobbyButton.Button.onClick.AddListener(TryCreateLobby);
 
             EosLobby.CreateLobbySucceeded += CreateLobbySucceeded;
             EosLobby.CreateLobbyFailed += CreateLobbyFailed;
@@ -54,14 +56,14 @@ namespace UI
         {
             while (this && enabled)
             {
-                EosLobby.FindLobbies();
-                yield return new WaitForSeconds(5f);
+                if (!_activeJoinAttempt) EosLobby.FindLobbies();
+                yield return new WaitForSeconds(3f); // SessionSearch rate limit is 30/min, so anything over 2s should be chill
             }
         }
 
         private void OnDisable()
         {
-            _createLobbyButton.onClick.RemoveListener(TryCreateLobby);
+            _createLobbyButton.Button.onClick.RemoveListener(TryCreateLobby);
 
             EosLobby.CreateLobbySucceeded -= CreateLobbySucceeded;
             EosLobby.CreateLobbyFailed -= CreateLobbyFailed;
@@ -74,6 +76,8 @@ namespace UI
 
             EosLobby.LeaveLobbySucceeded -= LeaveLobbySucceeded;
             EosLobby.LeaveLobbyFailed -= LeaveLobbyFailed;
+            
+            StopCoroutine(RefreshLobbyInterval());
         }
 
         private void TryCreateLobby()
@@ -107,16 +111,25 @@ namespace UI
                     }
                 }
             );
+
+            GloballyLockedButton.AddLockSource(this);
+            _createLobbyButton.LabelText.text = _createLobbyButton.LoadingText;
         }
 
         private void CreateLobbySucceeded(List<Attribute> attributes)
         {
             NetworkManager.singleton.StartHost();
+
+            GloballyLockedButton.RemoveLockSource(this); // paired with TryCreateLobby
+            _createLobbyButton.LabelText.text = _createLobbyButton.DefaultText;
         }
 
         private void CreateLobbyFailed(string error)
         {
             Debug.LogError($"Failed to create lobby: {error}");
+
+            GloballyLockedButton.RemoveLockSource(this); // paired with TryCreateLobby
+            _createLobbyButton.LabelText.text = _createLobbyButton.DefaultText;
         }
 
         private void FindLobbiesSucceeded(List<LobbyDetails> lobbies)
@@ -158,7 +171,15 @@ namespace UI
                                             $"Created by <b>{ownerName}</b>" +
                                             $" <color=#999>–</color> " +
                                             $"<color={(lobbyGameVersion == Application.version ? "white" : "red")}>v{lobbyGameVersion}</color>";
-                listing.JoinButton.onClick.AddListener(() => EosLobby.JoinLobby(lobbyDetails));
+
+                listing.JoinButton.onClick.AddListener(() =>
+                {
+                    _activeJoinAttempt = listing;
+                    listing.JoinButtonText.text = listing.JoiningText;
+                    GloballyLockedButton.AddLockSource(this);
+
+                    EosLobby.JoinLobby(lobbyDetails);
+                });
             }
 
             _emptyListNotice.SetActive(lobbies.Count == 0);
@@ -177,11 +198,21 @@ namespace UI
 
             NetworkManager.singleton.networkAddress = hostAddress;
             NetworkManager.singleton.StartClient();
+            
+            _activeJoinAttempt.JoinButtonText.text = _activeJoinAttempt.DefaultText;
+            _activeJoinAttempt = null;
+
+            GloballyLockedButton.RemoveLockSource(this); // paired with FindLobbiesSucceeded listing join button listener
         }
 
         private void JoinLobbyFailed(string error)
         {
             Debug.LogError($"Failed to join lobby: {error}");
+
+            _activeJoinAttempt.JoinButtonText.text = _activeJoinAttempt.DefaultText;
+            _activeJoinAttempt = null;
+
+            GloballyLockedButton.RemoveLockSource(this); // paired with FindLobbiesSucceeded listing join button listener
         }
 
         private void LeaveLobbySucceeded()
