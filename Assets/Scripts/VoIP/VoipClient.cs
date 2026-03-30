@@ -372,15 +372,16 @@ namespace VoIP
             float[] samples = ArrayPool<float>.Shared.Rent(samplesRequested);
             int samplesRead = _receiveBuffer.ReadInto(samples, samplesRequested);
 
+            float voiceVolLinear = SettingsManager.ActiveSettings.PlayerVoiceVolumePercents.GetValueOrDefault(_player.PlayerUID, 100f) / 100f;
+            float voiceVolQuadratic = voiceVolLinear * voiceVolLinear;
+
             //Copy samples into data, duplicating for each channel
             for (int s = 0; s < samplesRead; s++)
             {
                 for (int c = 0; c < channels; c++)
                 {
                     data[s * channels + c] = samples[s];
-
-                    float voiceVolLinear = SettingsManager.ActiveSettings.PlayerVoiceVolumePercents.GetValueOrDefault(_player.PlayerUID, 100f) / 100f;
-                    data[s * channels + c] *= (voiceVolLinear * voiceVolLinear); // apply quadratic gain
+                    data[s * channels + c] *= voiceVolQuadratic; // apply quadratic gain
                 }
             }
 
