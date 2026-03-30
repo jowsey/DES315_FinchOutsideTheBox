@@ -116,8 +116,9 @@ public class Cart : NetworkBehaviour
     private void FixedUpdate()
     {
         // Re-center rotation around local Z axis
-        var rot = Mathf.DeltaAngle(transform.eulerAngles.z, 0);
-        var rotExp = Mathf.Sign(rot) * Mathf.Pow(Mathf.Abs(rot), _tiltCorrectionScaling);
+        var localWorldUp = transform.InverseTransformDirection(Vector3.up);
+        var rollError = -Mathf.Atan2(localWorldUp.x, localWorldUp.y) * Mathf.Rad2Deg;
+        var rotExp = Mathf.Sign(rollError) * Mathf.Pow(Mathf.Abs(rollError), _tiltCorrectionScaling);
         _rb.AddTorque(_tiltCorrection * rotExp * transform.forward);
     }
 
