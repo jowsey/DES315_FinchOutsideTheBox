@@ -15,7 +15,7 @@ public class SpinningCylinder : MonoBehaviour
 
     void FixedUpdate()
     {
-        Quaternion turnOffset = Quaternion.Euler(0, _spinSpeed * Time.fixedDeltaTime, 0);
+        Quaternion turnOffset = Quaternion.Euler(0, 0, _spinSpeed * Time.fixedDeltaTime);
         rb.MoveRotation(rb.rotation * turnOffset);
     }
 }
