@@ -42,12 +42,16 @@ public class Highlight : MonoBehaviour
     public static void SetHighlightable(string tag, bool val)
     {
         _isTagHighlightable[tag] = val;
-        foreach (Highlight highlight in _lookupByTag[tag])
+
+        if (_lookupByTag.TryGetValue(tag, out var highlights))
         {
-            if (!_isTagHighlightable[tag] && highlight._highlighted)
+            foreach (Highlight highlight in highlights)
             {
-                //Object is highlighted but not highlightable, unhighlight it
-                highlight.Unhighlight();
+                if (!_isTagHighlightable[tag] && highlight._highlighted)
+                {
+                    //Object is highlighted but not highlightable, unhighlight it
+                    highlight.Unhighlight();
+                }
             }
         }
     }
