@@ -37,12 +37,14 @@ public class WheelSeat : NetworkBehaviour
     public Vector3 SeatedPosition => transform.position + Vector3.up * (_sphereCollider.radius * transform.lossyScale.y);
 
     [Command(requiresAuthority = false)]
-    public void CmdTrySitPlayer(NetworkIdentity playerIdentity)
+    public void CmdTrySitPlayer(NetworkConnectionToClient sender = null)
     {
         if (_seatedPlayer || Time.time < _lastUnsitTime + _sitCooldown) return;
-        if (playerIdentity.GetComponent<PlayerController>().HeldFlask) return; // dont allow sitting while holding a flask
         
-        _seatedPlayerIdentity = playerIdentity; //synced to all clients
+        var player = sender!.identity.GetComponent<PlayerController>();
+        if (player.HeldFlask) return; // dont allow sitting while holding a flask
+        
+        _seatedPlayerIdentity = player.netIdentity; //synced to all clients
     }
 
     [Command(requiresAuthority = false)]
