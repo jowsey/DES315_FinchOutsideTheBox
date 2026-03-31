@@ -1,6 +1,5 @@
 ﻿using Sirenix.OdinInspector;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class Highlight : MonoBehaviour
@@ -65,8 +64,7 @@ public class Highlight : MonoBehaviour
 
     private void Update()
     {
-        // todo profile
-        bool beingLookedAt = CrosshairDetection.TargetedTransform == transform || GetComponentsInChildren<Transform>().Contains(CrosshairDetection.TargetedTransform);
+        bool beingLookedAt = CrosshairDetection.TargetedTransform && CrosshairDetection.TargetedTransform.IsChildOf(transform);
 
         if (beingLookedAt && !_highlighted && _isTagHighlightable[tag])
         {
