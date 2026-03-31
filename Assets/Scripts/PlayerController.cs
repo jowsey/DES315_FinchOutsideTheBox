@@ -447,8 +447,7 @@ public class PlayerController : NetworkBehaviour
         WheelSeat newSeat = other.GetComponentInParent<WheelSeat>();
         if (newSeat && !Seat)
         {
-            NetworkIdentity identity = GetComponent<NetworkIdentity>();
-            newSeat.CmdTrySitPlayer(identity);
+            newSeat.CmdTrySitPlayer();
         }
     }
 
