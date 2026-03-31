@@ -22,6 +22,9 @@ public class PlayerController : NetworkBehaviour
 
     public static SkinData[] LoadedSkins;
 
+    private static readonly HashSet<int> _playerRbIds = new();
+    public static bool IsPlayerRb(int id) => _playerRbIds.Contains(id);
+
     [Header("Network")]
     [SyncVar] [ReadOnly] public int PlayerIndex;
 
@@ -223,6 +226,19 @@ public class PlayerController : NetworkBehaviour
     public override void OnStopLocalPlayer()
     {
         Cursor.lockState = CursorLockMode.None;
+    }
+
+    private void OnEnable()
+    {
+        foreach (Collider col in GetComponentsInChildren<Collider>())
+            col.hasModifiableContacts = true;
+
+        _playerRbIds.Add(Rb.GetInstanceID());
+    }
+
+    private void OnDisable()
+    {
+        _playerRbIds.Remove(Rb.GetInstanceID());
     }
 
     private void Update()
