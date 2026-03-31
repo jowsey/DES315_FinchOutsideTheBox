@@ -1,5 +1,4 @@
 using System;
-using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -58,29 +57,38 @@ namespace VoIP
         private uint _lastReceivedSequence;
         private uint _lastSentSequence;
 
-        //Buffer for accumulating audio ready for encoding, post-resampling if necessary
-        private readonly RingBuffer<float> _accumulationBuffer = new(SampleRate);
-
-        //Buffer for incoming decoded audio samples
-        private readonly RingBuffer<float> _receiveBuffer = new(ReceiveBufferSamples);
-
-        //Buffer for denoiser input/output
-        private readonly float[] _denoiseBuffer = new float[RnNoiseProcessor.FrameSize];
-
-        //Buffer for PCM frames to be encoded by Opus
+        //Stores PCM frames sent to/received from Opus. Used on both sides
         private readonly float[] _opusFrameBuffer = new float[OpusProcessor.FrameSize];
 
-        //Buffer for Opus-encoded packet data
-        private readonly byte[] _opusPacketBuffer = new byte[OpusProcessor.MaxPacketSize];
+        //Stores samples read from mic
+        private float[] _micSamplesBuffer;
 
-        //Buffer for storing resampled received audio if necessary
+        //Stores resampled mic samples if necessary
+        private float[] _sendResampleBuffer;
+
+        //Accumulates samples ready for encoding, post-resampling if necessary
+        private RingBuffer<float> _sendAccumulationBuffer;
+
+        //Stores denoiser input/output samples
+        private float[] _denoiseBuffer;
+
+        //Stores Opus-encoded packet data to be sent
+        private byte[] _opusPacketBuffer;
+
+        //Stores incoming decoded audio samples
+        private RingBuffer<float> _receivedSamplesBuffer;
+
+        //Stores resampled received samples if necessary
         private float[] _receiveResampleBuffer;
 
-        //Buffer for storing resampled PLC frames if necessary
+        //Stores resampled PLC samples if necessary
         private float[] _plcResampleBuffer;
 
-        //Buffer for storing samples to be played back
+        //Stores samples ready to be played back
         private float[] _playbackSamplesBuffer;
+
+        //Lock for encoding/decoding in main/audio threads
+        private readonly object _opusLock = new();
 
         protected override void OnValidate()
         {
@@ -92,6 +100,11 @@ namespace VoIP
             if (isLocalPlayer)
             {
                 _denoiser = new RnNoiseProcessor();
+
+                _sendAccumulationBuffer = new RingBuffer<float>(SampleRate);
+                _denoiseBuffer = new float[RnNoiseProcessor.FrameSize];
+                _opusPacketBuffer = new byte[OpusProcessor.MaxPacketSize];
+
                 if (SettingsManager.ActiveSettings.InputDevice != null)
                 {
                     SetMic(SettingsManager.ActiveSettings.InputDevice);
@@ -100,6 +113,11 @@ namespace VoIP
             }
             else
             {
+                _receivedSamplesBuffer = new RingBuffer<float>(ReceiveBufferSamples);
+
+                AudioSettings.GetDSPBufferSize(out var dspBufferSize, out _);
+                _playbackSamplesBuffer = new float[dspBufferSize];
+
                 int outputRate = AudioSettings.outputSampleRate;
                 if (outputRate != SampleRate)
                 {
@@ -110,9 +128,6 @@ namespace VoIP
                     _receiveResampleBuffer = new float[resampledSize];
                     _plcResampleBuffer = new float[resampledSize];
                 }
-
-                AudioSettings.GetDSPBufferSize(out var dspBufferSize, out _);
-                _playbackSamplesBuffer = new float[dspBufferSize];
 
                 //To initiate OnAudioFilterRead()
                 AudioClip clip = AudioClip.Create("VoIP Playback", outputRate, 1, outputRate, false);
@@ -161,6 +176,9 @@ namespace VoIP
             Microphone.GetDeviceCaps(_device, out _, out var maxFreq);
             _micSampleRate = maxFreq != 0 && maxFreq < SampleRate ? maxFreq : SampleRate;
 
+            _resampler?.Dispose();
+            _resampler = null;
+
             if (_micSampleRate != SampleRate)
             {
                 _resampler = new SpeexResampler((uint)maxFreq, SampleRate);
@@ -191,6 +209,14 @@ namespace VoIP
                 return;
             }
 
+            _micSamplesBuffer = new float[_micClip.samples];
+
+            if (_resampler != null)
+            {
+                var resampledSize = _resampler.GetResampledSize(_micClip.samples);
+                _sendResampleBuffer = new float[resampledSize];
+            }
+
             while (Microphone.GetPosition(_device) <= 0)
             {
                 //busy wait while microphone initialises
@@ -206,6 +232,17 @@ namespace VoIP
             _isRecording = false;
 
             Microphone.End(_device);
+
+            if (_micClip)
+            {
+                Destroy(_micClip);
+                _micClip = null;
+            }
+
+            _micReadPos = 0;
+            _sendAccumulationBuffer?.Clear();
+            _opus.ResetEncoderState();
+
             Debug.Log("Streaming stopped.");
         }
 
@@ -229,7 +266,7 @@ namespace VoIP
                 if (_pushToTalkAction.action.WasPressedThisFrame())
                 {
                     _micReadPos = micWritePos;
-                    _accumulationBuffer.Clear();
+                    _sendAccumulationBuffer.Clear();
                     _opus.ResetEncoderState();
                 }
             }
@@ -242,35 +279,30 @@ namespace VoIP
             if (numAvailableSamples <= 0) return;
 
             //Copy new samples into resampled buffer
-            float[] micSamples = ArrayPool<float>.Shared.Rent(numAvailableSamples);
-            _micClip.GetData(micSamples.AsSpan(0, numAvailableSamples), _micReadPos);
+            _micClip.GetData(_micSamplesBuffer.AsSpan(0, numAvailableSamples), _micReadPos);
             _micReadPos = (_micReadPos + numAvailableSamples) % _micClip.samples;
 
             if (_resampler != null)
             {
-                float[] resampled = ArrayPool<float>.Shared.Rent(_resampler.GetResampledSize(numAvailableSamples));
-                int newSampleCount = _resampler.Resample(micSamples, numAvailableSamples, resampled);
-                _accumulationBuffer.Write(resampled, newSampleCount);
-                ArrayPool<float>.Shared.Return(resampled);
+                int newSampleCount = _resampler.Resample(_micSamplesBuffer, numAvailableSamples, _sendResampleBuffer);
+                _sendAccumulationBuffer.Write(_sendResampleBuffer, newSampleCount);
             }
             else
             {
-                _accumulationBuffer.Write(micSamples, numAvailableSamples);
+                _sendAccumulationBuffer.Write(_micSamplesBuffer, numAvailableSamples);
             }
 
-            ArrayPool<float>.Shared.Return(micSamples);
-
-            while (_accumulationBuffer.Available >= OpusProcessor.FrameSize)
+            while (_sendAccumulationBuffer.Available >= OpusProcessor.FrameSize)
             {
                 if (SettingsManager.ActiveSettings.NoiseSuppression)
                 {
                     // 0-10ms
-                    _accumulationBuffer.ReadInto(_denoiseBuffer, RnNoiseProcessor.FrameSize);
+                    _sendAccumulationBuffer.ReadInto(_denoiseBuffer, RnNoiseProcessor.FrameSize);
                     var vad1 = _denoiser?.ProcessFrame(_denoiseBuffer, _denoiseBuffer);
                     Array.Copy(_denoiseBuffer, _opusFrameBuffer, RnNoiseProcessor.FrameSize);
 
                     // 10-20ms
-                    _accumulationBuffer.ReadInto(_denoiseBuffer, RnNoiseProcessor.FrameSize);
+                    _sendAccumulationBuffer.ReadInto(_denoiseBuffer, RnNoiseProcessor.FrameSize);
                     var vad2 = _denoiser?.ProcessFrame(_denoiseBuffer, _denoiseBuffer);
                     Array.Copy(_denoiseBuffer, 0, _opusFrameBuffer, RnNoiseProcessor.FrameSize, RnNoiseProcessor.FrameSize);
 
@@ -284,7 +316,7 @@ namespace VoIP
                 else
                 {
                     // Just passthrough accumulation buffer into opus frame buffer
-                    _accumulationBuffer.ReadInto(_opusFrameBuffer, OpusProcessor.FrameSize);
+                    _sendAccumulationBuffer.ReadInto(_opusFrameBuffer, OpusProcessor.FrameSize);
                 }
 
                 int packetSize = _opus.Encode(_opusFrameBuffer, _opusPacketBuffer);
@@ -306,23 +338,26 @@ namespace VoIP
             // UDP out-of-order check
             if (seq <= _lastReceivedSequence)
             {
-                Debug.Log($"Received VoIP seq {seq}, but latest is already {_lastReceivedSequence}");
+                // Debug.Log($"Received VoIP seq {seq}, but latest is already {_lastReceivedSequence}");
                 return;
             }
 
             _lastReceivedSequence = seq;
-            _plcFramesGenerated = 0;
 
-            _opus.Decode(opusPacket, _opusFrameBuffer);
+            lock (_opusLock)
+            {
+                _opus.Decode(opusPacket, _opusFrameBuffer);
+                _plcFramesGenerated = 0;
 
-            if (_resampler != null)
-            {
-                int newSampleCount = _resampler.Resample(_opusFrameBuffer, OpusProcessor.FrameSize, _receiveResampleBuffer);
-                _receiveBuffer.Write(_receiveResampleBuffer, newSampleCount);
-            }
-            else
-            {
-                _receiveBuffer.Write(_opusFrameBuffer, OpusProcessor.FrameSize);
+                if (_resampler != null)
+                {
+                    int newSampleCount = _resampler.Resample(_opusFrameBuffer, OpusProcessor.FrameSize, _receiveResampleBuffer);
+                    _receivedSamplesBuffer.Write(_receiveResampleBuffer, newSampleCount);
+                }
+                else
+                {
+                    _receivedSamplesBuffer.Write(_opusFrameBuffer, OpusProcessor.FrameSize);
+                }
             }
         }
 
@@ -334,14 +369,14 @@ namespace VoIP
             Array.Clear(data, 0, data.Length);
 
             //Skip excess if we're running behind
-            if (_receiveBuffer.Available > BacklogSkipTriggerSamples)
+            if (_receivedSamplesBuffer.Available > BacklogSkipTriggerSamples)
             {
                 // Debug.Log($"Receive buffer at {_receiveBuffer.Available / (float)OpusProcessor.FrameSize} frames, skipping ahead");
 
                 // we explicitly skip to the edge of the jitter buffer instead of the backlog max to avoid constant tiny skips
                 // the trigger is just an indicator of when the situation gets dire, not how many samples we'd *like* to have
-                var excess = _receiveBuffer.Available - JitterBufferSamples;
-                _receiveBuffer.Skip(excess);
+                var excess = _receivedSamplesBuffer.Available - JitterBufferSamples;
+                _receivedSamplesBuffer.Skip(excess);
             }
 
             int samplesRequested = data.Length / channels;
@@ -349,7 +384,7 @@ namespace VoIP
             //Start playback once we have a full jitter buffer
             if (!_playbackActive)
             {
-                if (_receiveBuffer.Available < JitterBufferSamples)
+                if (_receivedSamplesBuffer.Available < JitterBufferSamples)
                 {
                     return;
                 }
@@ -357,35 +392,37 @@ namespace VoIP
                 _playbackActive = true;
             }
 
-            //Generate PLC frames to fill in gaps if necessary
-            while (_receiveBuffer.Available < samplesRequested && _plcFramesGenerated < MaxPlcFrames)
+            lock (_opusLock)
             {
-                _opus.Decode(null, _opusFrameBuffer);
-                _plcFramesGenerated++;
-
-                // Debug.Log($"Generating PLC frame {_plcFramesGenerated}");
-
-                // todo make reusable "resample or write" method
-                if (_resampler != null)
+                //Generate PLC frames to fill in gaps if necessary
+                while (_receivedSamplesBuffer.Available < samplesRequested && _plcFramesGenerated < MaxPlcFrames)
                 {
-                    int newSampleCount = _resampler.Resample(_opusFrameBuffer, OpusProcessor.FrameSize, _plcResampleBuffer);
-                    _receiveBuffer.Write(_plcResampleBuffer, newSampleCount);
+                    lock (_opusLock) _opus.Decode(null, _opusFrameBuffer);
+                    _plcFramesGenerated++;
+
+                    // Debug.Log($"Generating PLC frame {_plcFramesGenerated}");
+
+                    if (_resampler != null)
+                    {
+                        int newSampleCount = _resampler.Resample(_opusFrameBuffer, OpusProcessor.FrameSize, _plcResampleBuffer);
+                        _receivedSamplesBuffer.Write(_plcResampleBuffer, newSampleCount);
+                    }
+                    else
+                    {
+                        _receivedSamplesBuffer.Write(_opusFrameBuffer, OpusProcessor.FrameSize);
+                    }
                 }
-                else
+
+                if (_receivedSamplesBuffer.Available == 0)
                 {
-                    _receiveBuffer.Write(_opusFrameBuffer, OpusProcessor.FrameSize);
+                    _playbackActive = false;
+                    _opus.ResetDecoderState();
+                    _plcFramesGenerated = 0;
+                    return;
                 }
             }
 
-            if (_receiveBuffer.Available == 0)
-            {
-                _playbackActive = false;
-                _opus.ResetDecoderState();
-                _plcFramesGenerated = 0;
-                return;
-            }
-
-            int samplesRead = _receiveBuffer.ReadInto(_playbackSamplesBuffer, samplesRequested);
+            int samplesRead = _receivedSamplesBuffer.ReadInto(_playbackSamplesBuffer, samplesRequested);
 
             float voiceVolLinear = SettingsManager.ActiveSettings.PlayerVoiceVolumePercents.GetValueOrDefault(_player.PlayerUID, 100f) / 100f;
             float voiceVolQuadratic = voiceVolLinear * voiceVolLinear;
@@ -393,10 +430,10 @@ namespace VoIP
             //Copy samples into data, duplicating for each channel
             for (int s = 0; s < samplesRead; s++)
             {
+                float multipliedSample = _playbackSamplesBuffer[s] * voiceVolQuadratic; // apply quadratic gain
                 for (int c = 0; c < channels; c++)
                 {
-                    data[s * channels + c] = _playbackSamplesBuffer[s];
-                    data[s * channels + c] *= voiceVolQuadratic; // apply quadratic gain
+                    data[s * channels + c] = multipliedSample;
                 }
             }
         }
