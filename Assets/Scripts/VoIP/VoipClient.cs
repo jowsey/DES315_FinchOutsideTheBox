@@ -44,18 +44,12 @@ namespace VoIP
         [SerializeField] private PlayerController _player;
 
         //Mic clip
-        private AudioClip _micClip; //clip the mic will record into (loops)
+        private AudioClip _micClip;
         private int _micReadPos;
         private int _micSampleRate;
 
         private bool _isRecording;
         private volatile bool _playbackActive;
-
-        //Buffer for accumulating audio ready for encoding, post-resampling if necessary
-        private readonly RingBuffer<float> _accumulationBuffer = new(SampleRate);
-
-        //Buffer for incoming decoded audio samples
-        private readonly RingBuffer<float> _receiveBuffer = new(ReceiveBufferSamples);
 
         //Number of PLC frames generated since last received audio
         private uint _plcFramesGenerated;
@@ -64,9 +58,29 @@ namespace VoIP
         private uint _lastReceivedSequence;
         private uint _lastSentSequence;
 
+        //Buffer for accumulating audio ready for encoding, post-resampling if necessary
+        private readonly RingBuffer<float> _accumulationBuffer = new(SampleRate);
+
+        //Buffer for incoming decoded audio samples
+        private readonly RingBuffer<float> _receiveBuffer = new(ReceiveBufferSamples);
+
+        //Buffer for denoiser input/output
         private readonly float[] _denoiseBuffer = new float[RnNoiseProcessor.FrameSize];
+
+        //Buffer for PCM frames to be encoded by Opus
         private readonly float[] _opusFrameBuffer = new float[OpusProcessor.FrameSize];
+
+        //Buffer for Opus-encoded packet data
         private readonly byte[] _opusPacketBuffer = new byte[OpusProcessor.MaxPacketSize];
+
+        //Buffer for storing resampled received audio if necessary
+        private float[] _receiveResampleBuffer;
+
+        //Buffer for storing resampled PLC frames if necessary
+        private float[] _plcResampleBuffer;
+
+        //Buffer for storing samples to be played back
+        private float[] _playbackSamplesBuffer;
 
         protected override void OnValidate()
         {
@@ -89,9 +103,16 @@ namespace VoIP
                 int outputRate = AudioSettings.outputSampleRate;
                 if (outputRate != SampleRate)
                 {
-                    _resampler = new SpeexResampler(SampleRate, (uint)outputRate);
                     Debug.Log($"Received audio will be resampled from {SampleRate / 1000f}kHz to {outputRate / 1000f}kHz.");
+                    _resampler = new SpeexResampler(SampleRate, (uint)outputRate);
+
+                    var resampledSize = _resampler.GetResampledSize(OpusProcessor.FrameSize);
+                    _receiveResampleBuffer = new float[resampledSize];
+                    _plcResampleBuffer = new float[resampledSize];
                 }
+
+                AudioSettings.GetDSPBufferSize(out var dspBufferSize, out _);
+                _playbackSamplesBuffer = new float[dspBufferSize];
 
                 //To initiate OnAudioFilterRead()
                 AudioClip clip = AudioClip.Create("VoIP Playback", outputRate, 1, outputRate, false);
@@ -296,10 +317,8 @@ namespace VoIP
 
             if (_resampler != null)
             {
-                float[] resampled = ArrayPool<float>.Shared.Rent(_resampler.GetResampledSize(OpusProcessor.FrameSize));
-                int newSampleCount = _resampler.Resample(_opusFrameBuffer, OpusProcessor.FrameSize, resampled);
-                _receiveBuffer.Write(resampled, newSampleCount);
-                ArrayPool<float>.Shared.Return(resampled);
+                int newSampleCount = _resampler.Resample(_opusFrameBuffer, OpusProcessor.FrameSize, _receiveResampleBuffer);
+                _receiveBuffer.Write(_receiveResampleBuffer, newSampleCount);
             }
             else
             {
@@ -349,10 +368,8 @@ namespace VoIP
                 // todo make reusable "resample or write" method
                 if (_resampler != null)
                 {
-                    float[] resampled = ArrayPool<float>.Shared.Rent(_resampler.GetResampledSize(OpusProcessor.FrameSize));
-                    int newSampleCount = _resampler.Resample(_opusFrameBuffer, OpusProcessor.FrameSize, resampled);
-                    _receiveBuffer.Write(resampled, newSampleCount);
-                    ArrayPool<float>.Shared.Return(resampled);
+                    int newSampleCount = _resampler.Resample(_opusFrameBuffer, OpusProcessor.FrameSize, _plcResampleBuffer);
+                    _receiveBuffer.Write(_plcResampleBuffer, newSampleCount);
                 }
                 else
                 {
@@ -368,9 +385,7 @@ namespace VoIP
                 return;
             }
 
-            // todo i think samplesNeeded is consistent per output device, could pre-allocate if/when device changes
-            float[] samples = ArrayPool<float>.Shared.Rent(samplesRequested);
-            int samplesRead = _receiveBuffer.ReadInto(samples, samplesRequested);
+            int samplesRead = _receiveBuffer.ReadInto(_playbackSamplesBuffer, samplesRequested);
 
             float voiceVolLinear = SettingsManager.ActiveSettings.PlayerVoiceVolumePercents.GetValueOrDefault(_player.PlayerUID, 100f) / 100f;
             float voiceVolQuadratic = voiceVolLinear * voiceVolLinear;
@@ -380,12 +395,10 @@ namespace VoIP
             {
                 for (int c = 0; c < channels; c++)
                 {
-                    data[s * channels + c] = samples[s];
+                    data[s * channels + c] = _playbackSamplesBuffer[s];
                     data[s * channels + c] *= voiceVolQuadratic; // apply quadratic gain
                 }
             }
-
-            ArrayPool<float>.Shared.Return(samples);
         }
     }
 }
