@@ -1,5 +1,6 @@
 using Mirror;
 using System.Collections.Generic;
+using PrimeTween;
 using TMPro;
 using UI;
 using Unity.Cinemachine;
@@ -83,7 +84,7 @@ public class PlayerController : NetworkBehaviour
 
     [field: SyncVar] [field: ShowInInspector] [field: ReadOnly] public Vector3 WorldSpaceMoveDir { get; private set; }
     [field: SyncVar] [field: ShowInInspector] [field: ReadOnly] public float AnalogueMoveScale { get; private set; }
-    
+
     [Header("Skin materials")]
     [SerializeField] private Renderer[] _skinnedRenderers;
 
@@ -103,7 +104,7 @@ public class PlayerController : NetworkBehaviour
     // While there are any control blockers, the player won't be able to be controlled
     private static readonly HashSet<Object> _controlBlockers = new();
     private static CinemachineInputAxisController _cinemachineInput;
-    
+
     public static bool ControlsEnabled => _controlBlockers.Count == 0;
 
     public static void AddControlBlocker(Object blocker)
@@ -170,7 +171,7 @@ public class PlayerController : NetworkBehaviour
         Rb.rotation = newTransform.rotation;
         Rb.linearVelocity = Vector3.zero;
         Rb.angularVelocity = Vector3.zero;
-        
+
         _camera.PreviousStateIsValid = false;
     }
 
@@ -244,6 +245,17 @@ public class PlayerController : NetworkBehaviour
     private void Update()
     {
         if (!authority) return;
+        
+        if (Mouse.current.rightButton.wasPressedThisFrame)
+        {
+            var cam = FindAnyObjectByType<CinemachineCamera>();
+            Tween.Custom(60, 40, 0.2f, val => cam.Lens.FieldOfView = val, Ease.OutCubic);
+        }
+        else if (Mouse.current.rightButton.wasReleasedThisFrame)
+        {
+            var cam = FindAnyObjectByType<CinemachineCamera>();
+            Tween.Custom(40, 60, 0.2f, val => cam.Lens.FieldOfView = val, Ease.OutCubic);
+        }
 
         _contactNormals.Clear();
 
@@ -288,6 +300,15 @@ public class PlayerController : NetworkBehaviour
         if (_camera && !isLocalPlayer)
         {
             _nameplateCanvas.transform.rotation = Quaternion.LookRotation(_nameplateCanvas.transform.position - _camera.transform.position);
+        }
+        
+        var isAiming = Mouse.current.rightButton.isPressed;
+        if (isAiming)
+        {
+            transform.forward = _camera.State.GetFinalOrientation() * Vector3.forward;
+            var orbit = _camera.GetComponent<CinemachineOrbitalFollow>();
+            orbit.TargetOffset = new Vector3(0.5f, 1f, 0f);
+            _camera.GetComponent<CinemachineRotationComposer>().TargetOffset = new Vector3(0.5f, 1f, 0f);
         }
     }
 
@@ -355,7 +376,7 @@ public class PlayerController : NetworkBehaviour
             CleanupFixedUpdate();
             return;
         }
-        
+
         var groundedHits = Physics.OverlapSphereNonAlloc(Rb.position, _groundedSphereRadius, _groundedCheckColliderBuffer, ~0, QueryTriggerInteraction.Ignore);
         bool grounded = false;
         for (int i = 0; i < groundedHits; i++)
@@ -366,7 +387,7 @@ public class PlayerController : NetworkBehaviour
             grounded = true;
             break;
         }
-        
+
         bool groundedOnBumpy = Physics.CheckSphere(Rb.position, _groundedSphereRadius, LayerMask.GetMask("Bumpy"), QueryTriggerInteraction.Ignore);
         Rb.useGravity = !groundedOnBumpy;
         _networkAnimator.animator.SetBool(GroundedState, grounded || groundedOnBumpy);
