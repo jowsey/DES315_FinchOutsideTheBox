@@ -12,6 +12,8 @@ namespace VoIP
 
         private readonly IOpusEncoder _opusEncoder;
         private readonly IOpusDecoder _opusDecoder;
+        private readonly short[] _encodeShortBuffer = new short[FrameSize];
+        private readonly short[] _decodeShortBuffer = new short[FrameSize];
 
         public OpusProcessor()
         {
@@ -28,7 +30,10 @@ namespace VoIP
          */
         public int Encode(Span<float> pcmFrame, byte[] outputBuffer)
         {
-            return _opusEncoder.Encode(pcmFrame, FrameSize, outputBuffer, MaxPacketSize);
+            for (int i = 0; i < FrameSize; i++)
+                _encodeShortBuffer[i] = (short)(pcmFrame[i] * 32768f);
+
+            return _opusEncoder.Encode(_encodeShortBuffer, FrameSize, outputBuffer, MaxPacketSize);
         }
 
         /**
@@ -38,7 +43,12 @@ namespace VoIP
          */
         public int Decode(ReadOnlySpan<byte> opusPacket, float[] outputBuffer)
         {
-            return _opusDecoder.Decode(opusPacket, outputBuffer, FrameSize);
+            int numSamples = _opusDecoder.Decode(opusPacket, _decodeShortBuffer, FrameSize);
+
+            for (int i = 0; i < numSamples; i++)
+                outputBuffer[i] = _decodeShortBuffer[i] / 32768f;
+
+            return numSamples;
         }
 
         /**
