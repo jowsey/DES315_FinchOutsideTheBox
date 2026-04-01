@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6377609555898634782}
   - component: {fileID: 914443000260241668}
   - component: {fileID: 2105762534556702653}
-  - component: {fileID: 8642433343610179843}
+  - component: {fileID: 3830238705203453799}
   m_Layer: 0
   m_Name: Mesh
   m_TagString: Untagged
@@ -91,28 +91,41 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &8642433343610179843
-MeshCollider:
+--- !u!114 &3830238705203453799
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3325308316341996498}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0921f9e6d5955b04e8be53a1c3f70933, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: info.flandre.coacd::CoACD
+  target: {fileID: 914443000260241668}
+  isTrigger: 0
+  hideColliders: 1
+  physicMaterial: {fileID: 0}
+  parameters:
+    threshold: 0.05
+    preprocessMode: 0
+    preprocessResolution: 50
+    sampleResolution: 2000
+    mctsNodes: 20
+    mctsIteration: 150
+    mctsMaxDepth: 3
+    pca: 0
+    merge: 1
+    maxConvexHull: -1
+    decimate: 0
+    maxChVertex: 256
+    extrude: 0
+    extrudeMargin: 0.01
+    approximateMode: 0
+    seed: 0
+  _colliderData: {fileID: 0}
+  _colliders: []
 --- !u!1001 &2439161872409296323
 PrefabInstance:
   m_ObjectHideFlags: 0
