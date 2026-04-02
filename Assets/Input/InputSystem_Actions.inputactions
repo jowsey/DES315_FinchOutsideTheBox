@@ -124,6 +124,15 @@
                     "initialStateCheck": true
                 },
                 {
+                    "name": "CameraChangePerspective",
+                    "type": "Button",
+                    "id": "654e6ff9-39cf-490f-8f5c-bb9e495ac571",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Ping",
                     "type": "Button",
                     "id": "fd2bef8e-c94a-456f-847c-9ae7ed4667a1",
@@ -611,6 +620,28 @@
                     "processors": "Scale(factor=4)",
                     "groups": ";Gamepad",
                     "action": "CameraZoom",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "996380da-4243-450a-aedb-2183dfe9d825",
+                    "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "Scale(factor=4)",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "CameraChangePerspective",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "65d07547-b7c7-448e-b320-cd215eed26cb",
+                    "path": "<Gamepad>/rightStickPress",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "CameraChangePerspective",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
