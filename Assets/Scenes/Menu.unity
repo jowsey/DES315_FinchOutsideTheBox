@@ -831,6 +831,7 @@ GameObject:
   - component: {fileID: 112278042}
   - component: {fileID: 112278041}
   - component: {fileID: 112278040}
+  - component: {fileID: 112278043}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -881,7 +882,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventSystem
-  m_FirstSelected: {fileID: 0}
+  m_FirstSelected: {fileID: 1650724035}
   m_sendNavigationEvents: 1
   m_DragThreshold: 10
 --- !u!4 &112278042
@@ -899,6 +900,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &112278043
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 112278039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25be7eb0d3b9c544b9158f8f34214f06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
 --- !u!1001 &130249401
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3469,6 +3482,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53c667d0c95c293418f3b401d82fde85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.MainMenuButton
+--- !u!114 &923440238 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8646296107593699131, guid: 1e96c141f3463634a8a8226224cfd577, type: 3}
+  m_PrefabInstance: {fileID: 2109635957}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!1001 &968314309
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5474,6 +5498,18 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 8043335167832432655, guid: 44fb9c68e1dce49e592a25bde59a33c5, type: 2}
     - target: {fileID: 8646296107593699131, guid: 1e96c141f3463634a8a8226224cfd577, type: 3}
+      propertyPath: m_Navigation.m_Mode
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8646296107593699131, guid: 1e96c141f3463634a8a8226224cfd577, type: 3}
+      propertyPath: m_Navigation.m_SelectOnUp
+      value: 
+      objectReference: {fileID: 923440238}
+    - target: {fileID: 8646296107593699131, guid: 1e96c141f3463634a8a8226224cfd577, type: 3}
+      propertyPath: m_Navigation.m_SelectOnDown
+      value: 
+      objectReference: {fileID: 3364961066339884517}
+    - target: {fileID: 8646296107593699131, guid: 1e96c141f3463634a8a8226224cfd577, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 1
       objectReference: {fileID: 0}
@@ -5511,6 +5547,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 3309170474158523146, guid: 1e96c141f3463634a8a8226224cfd577, type: 3}
   m_PrefabInstance: {fileID: 1402912045}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1402912050 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8646296107593699131, guid: 1e96c141f3463634a8a8226224cfd577, type: 3}
+  m_PrefabInstance: {fileID: 1402912045}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!1001 &1418208602
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6293,6 +6340,22 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 123377547585072098, guid: 9940fef59d2f8a047a17b5195be1c90f, type: 3}
   m_PrefabInstance: {fileID: 1630842128}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1650724035 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 570275044137596205, guid: 1e96c141f3463634a8a8226224cfd577, type: 3}
+  m_PrefabInstance: {fileID: 90730539}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1650724039 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8646296107593699131, guid: 1e96c141f3463634a8a8226224cfd577, type: 3}
+  m_PrefabInstance: {fileID: 90730539}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1650724035}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!1001 &1651368419
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8153,6 +8216,18 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8646296107593699131, guid: 1e96c141f3463634a8a8226224cfd577, type: 3}
+      propertyPath: m_Navigation.m_Mode
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8646296107593699131, guid: 1e96c141f3463634a8a8226224cfd577, type: 3}
+      propertyPath: m_Navigation.m_SelectOnUp
+      value: 
+      objectReference: {fileID: 1402912050}
+    - target: {fileID: 8646296107593699131, guid: 1e96c141f3463634a8a8226224cfd577, type: 3}
+      propertyPath: m_Navigation.m_SelectOnDown
+      value: 
+      objectReference: {fileID: 1650724039}
+    - target: {fileID: 8646296107593699131, guid: 1e96c141f3463634a8a8226224cfd577, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 1
       objectReference: {fileID: 0}
@@ -8189,6 +8264,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1e96c141f3463634a8a8226224cfd577, type: 3}
+--- !u!114 &3364961066339884517 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8646296107593699131, guid: 1e96c141f3463634a8a8226224cfd577, type: 3}
+  m_PrefabInstance: {fileID: 3364961066339884513}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!1001 &6670676468263442496
 PrefabInstance:
   m_ObjectHideFlags: 0
