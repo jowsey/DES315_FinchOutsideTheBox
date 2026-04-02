@@ -10,7 +10,7 @@ public class Cart : NetworkBehaviour
 {
     private struct FlaskSnapshot
     {
-        public Vector3 Position;
+        public Vector3 LocalPosition;
         public Quaternion Rotation;
     }
 
@@ -32,37 +32,54 @@ public class Cart : NetworkBehaviour
     [Tooltip("Exponent for how much the amount of tilt-correction increases in response to tilting. 1 means consistent, higher makes it kick in far more when tilting more.")]
     [SerializeField] private float _tiltCorrectionScaling = 2f;
 
+    [SerializeField] private int _lowFlasksThreshold = 3;
+
     // UI
     private Transform _uiCanvas;
 
     // Flask carrying
     [SerializeField] [Required] private Collider _flaskBounds;
+
+    // Populated on server, unnecessary on clients
     private Dictionary<Flask, FlaskSnapshot>[] _flasksAtCheckpoint;
-    public HashSet<Flask> CarriedFlasks = new();
+    private readonly HashSet<Flask> _carriedFlasks = new();
+
+    [field: SyncVar(hook = nameof(OnNumCarriedFlasksChanged))] public int NumCarriedFlasks { get; private set; }
+    public readonly SyncList<int> CheckpointFlaskCounts = new();
+
+    // The number of flasks we'll respawn with
+    public int FlasksOnRespawn => CheckpointFlaskCounts[Mathf.Clamp(CurrentCheckpointIndex, 0, CheckpointFlaskCounts.Count - 1)];
 
     //Sound effects
-    [SerializeField] private AK.Wwise.Event _carSound;
-    [SerializeField] private AK.Wwise.Event _carOnSurface;
-    [SerializeField] private AK.Wwise.Event _glassInVehicle;
-    [SerializeField] private AK.Wwise.RTPC _cartSpeedRTPC;
-    [SerializeField] private AK.Wwise.RTPC _numCarriedFlasksRTPC;
+    [SerializeField] [Required] private AK.Wwise.Event _carSound;
+    [SerializeField] [Required] private AK.Wwise.Event _carOnSurface;
+    [SerializeField] [Required] private AK.Wwise.Event _glassInVehicle;
+    [SerializeField] [Required] private AK.Wwise.RTPC _cartSpeedRTPC;
+    [SerializeField] [Required] private AK.Wwise.RTPC _numCarriedFlasksRTPC;
+
+    [SerializeField] [Required] private WorldFollowUI _lowFlaskWarningPrefab;
+    private WorldFollowUI _lowFlaskWarningUI;
 
     //Velocity doesn't exist on non-authed client, so we use this to calculate our own rough speed
     private Vector3 _positionLastFrame;
-
-    // The number of flasks we'll respawn with
-    public int FlasksOnRespawn => _flasksAtCheckpoint[Mathf.Clamp(CurrentCheckpointIndex, 0, _flasksAtCheckpoint.Length - 1)].Count;
 
     private void Awake()
     {
         _rb = GetComponent<Rigidbody>();
         _uiCanvas = GameObject.FindGameObjectWithTag("UICanvas").transform;
+    }
+
+    public override void OnStartServer()
+    {
+        Checkpoint.RespawnEvent.AddListener(OnRespawn);
 
         _flasksAtCheckpoint = new Dictionary<Flask, FlaskSnapshot>[Checkpoints.Count];
         for (int i = 0; i < _flasksAtCheckpoint.Length; ++i)
         {
             _flasksAtCheckpoint[i] = new Dictionary<Flask, FlaskSnapshot>();
         }
+
+        CheckpointFlaskCounts.AddRange(new int[Checkpoints.Count]);
 
         // First checkpoint runs on Frame 0 before flasks run OnTriggerEnter so we need to manually init
         // - Bounds check isn't perfectly accurate, but we can reasonably assume
@@ -73,14 +90,9 @@ public class Cart : NetworkBehaviour
         {
             if (_flaskBounds.bounds.Contains(flask.transform.position))
             {
-                CarriedFlasks.Add(flask);
+                AddCarriedFlask(flask);
             }
         }
-    }
-
-    public override void OnStartServer()
-    {
-        Checkpoint.RespawnEvent.AddListener(OnRespawn);
     }
 
     public override void OnStartClient()
@@ -89,7 +101,7 @@ public class Cart : NetworkBehaviour
         _carOnSurface.Post(gameObject);
         _glassInVehicle.Post(gameObject);
 
-        _positionLastFrame = _rb.position;
+        _positionLastFrame = transform.position;
     }
 
     private void OnDestroy()
@@ -108,12 +120,11 @@ public class Cart : NetworkBehaviour
             CmdInvokeRespawnEvent(CurrentCheckpointIndex + 1);
         }
 
-        // Update RTPCs based on state
+        // manually calculate velocity since we don't have the luxury of knowing it on all clients
         var linearVelocity = (transform.position - _positionLastFrame) / Time.fixedDeltaTime;
-        _cartSpeedRTPC.SetGlobalValue(linearVelocity.magnitude * 20);
-        _numCarriedFlasksRTPC.SetGlobalValue(CarriedFlasks.Count);
-        
         _positionLastFrame = transform.position;
+
+        _cartSpeedRTPC.SetGlobalValue(linearVelocity.magnitude * 20);
     }
 
     private void FixedUpdate()
@@ -128,19 +139,19 @@ public class Cart : NetworkBehaviour
     // Records the local positions of all CarriedFlasks and writes them to the current checkpoint's snapshot
     private void CaptureCheckpointFlasksSnapshot()
     {
-        Debug.Log($"Capturing snapshot: {CarriedFlasks.Count} flasks carried, existing list has {_flasksAtCheckpoint[CurrentCheckpointIndex].Count} entries");
-
-        _flasksAtCheckpoint[CurrentCheckpointIndex].Clear();
+        Debug.Log($"Capturing snapshot: {NumCarriedFlasks} flasks carried at checkpoint {CurrentCheckpointIndex}");
 
         Physics.SyncTransforms();
-        foreach (Flask flask in CarriedFlasks)
+        foreach (Flask flask in _carriedFlasks)
         {
             _flasksAtCheckpoint[CurrentCheckpointIndex][flask] = new FlaskSnapshot
             {
-                Position = transform.InverseTransformPoint(flask.transform.position),
+                LocalPosition = transform.InverseTransformPoint(flask.transform.position),
                 Rotation = flask.transform.rotation
             };
         }
+
+        CheckpointFlaskCounts[CurrentCheckpointIndex] = NumCarriedFlasks;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -159,7 +170,10 @@ public class Cart : NetworkBehaviour
                 checkpointBanner.Checkpoint = checkpoint;
                 checkpointBanner.IsFirst = newIndex == 0;
 
-                CaptureCheckpointFlasksSnapshot();
+                if (isServer)
+                {
+                    CaptureCheckpointFlasksSnapshot();
+                }
             }
         }
     }
@@ -200,12 +214,42 @@ public class Cart : NetworkBehaviour
 
         foreach (KeyValuePair<Flask, FlaskSnapshot> flaskState in _flasksAtCheckpoint[CurrentCheckpointIndex])
         {
-            flaskState.Key.transform.position = transform.TransformPoint(flaskState.Value.Position);
+            flaskState.Key.transform.position = transform.TransformPoint(flaskState.Value.LocalPosition);
             flaskState.Key.transform.rotation = flaskState.Value.Rotation;
             Physics.SyncTransforms();
 
             flaskState.Key.RpcUnsmash();
         }
+    }
+
+    public void AddCarriedFlask(Flask flask)
+    {
+        _carriedFlasks.Add(flask);
+        NumCarriedFlasks = _carriedFlasks.Count;
+    }
+
+    public void RemoveCarriedFlask(Flask flask)
+    {
+        _carriedFlasks.Remove(flask);
+        NumCarriedFlasks = _carriedFlasks.Count;
+    }
+
+    private void OnNumCarriedFlasksChanged(int oldValue, int newValue)
+    {
+        if (newValue <= _lowFlasksThreshold && !_lowFlaskWarningUI)
+        {
+            _lowFlaskWarningUI = Instantiate(_lowFlaskWarningPrefab, _uiCanvas);
+            _lowFlaskWarningUI.TrackingTarget = transform;
+            _lowFlaskWarningUI.TrackingOffset = new Vector3(0, 4.25f, 0);
+            _lowFlaskWarningUI.ApplyOffsetLocally = true;
+        }
+        else if (newValue > _lowFlasksThreshold && _lowFlaskWarningUI)
+        {
+            Destroy(_lowFlaskWarningUI.gameObject);
+            _lowFlaskWarningUI = null;
+        }
+
+        _numCarriedFlasksRTPC.SetGlobalValue(newValue);
     }
 
     [Command(requiresAuthority = false)]
@@ -225,8 +269,8 @@ public class Cart : NetworkBehaviour
 
         CurrentCheckpointIndex = newCheckpointIndex;
 
-        // should only proc when using dev keys, otherwise will naturally be populated
-        if (_flasksAtCheckpoint[CurrentCheckpointIndex].Count == 0)
+        // should only fire when using dev hotkeys, otherwise will naturally be populated
+        if (isServer && CheckpointFlaskCounts[CurrentCheckpointIndex] == 0)
         {
             CaptureCheckpointFlasksSnapshot();
         }

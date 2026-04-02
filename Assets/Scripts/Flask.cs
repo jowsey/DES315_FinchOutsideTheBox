@@ -229,7 +229,7 @@ public class Flask : NetworkBehaviour
         if (other.CompareTag("FlaskCarrier"))
         {
             Cart cart = other.GetComponentInParent<Cart>();
-            cart.CarriedFlasks.Add(this);
+            cart.AddCarriedFlask(this);
             Smashable = true;
         }
     }
@@ -239,7 +239,7 @@ public class Flask : NetworkBehaviour
         if (other.CompareTag("FlaskCarrier"))
         {
             Cart cart = other.GetComponentInParent<Cart>();
-            cart.CarriedFlasks.Remove(this);
+            cart.RemoveCarriedFlask(this);
         }
     }
 }

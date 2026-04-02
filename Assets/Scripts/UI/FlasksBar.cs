@@ -24,7 +24,7 @@ namespace UI
             //_fillImage.fillAmount = _linkedCart.FlasksRemainingRatio;
             //_countText.text = $"{_linkedCart.CarriedFlasks} / {_linkedCart.MaxFlasks}";
             _fillImage.fillAmount = 1.0f;
-            _countText.text = $"{_linkedCart.CarriedFlasks.Count}";
+            _countText.text = $"{_linkedCart.NumCarriedFlasks}";
         }
     }
 }
