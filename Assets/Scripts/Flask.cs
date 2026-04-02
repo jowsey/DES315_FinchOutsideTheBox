@@ -97,6 +97,15 @@ public class Flask : NetworkBehaviour
         _moveTarget = target.transform;
         State = FlaskState.PuttingDown;
         Smashable = true;
+
+        RpcStartPutdown();
+    }
+
+    [ClientRpc]
+    private void RpcStartPutdown()
+    {
+        transform.SetParent(null);
+        GetComponent<NetworkTransformBase>().enabled = true;
     }
 
     [ClientRpc]
@@ -115,8 +124,6 @@ public class Flask : NetworkBehaviour
 
         _holder.HeldFlask = null;
         _holder = null;
-        transform.SetParent(null);
-        GetComponent<NetworkTransformBase>().enabled = false;
     }
 
     private void Smash()
