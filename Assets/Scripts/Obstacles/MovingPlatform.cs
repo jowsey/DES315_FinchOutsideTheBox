@@ -110,7 +110,6 @@ public class MovingPlatform : NetworkBehaviour
             _currentT = _displacementCurve.Evaluate(absoluteT);
             //Evaluate spline
             Vector3 localPos = _container.Splines[0].EvaluatePosition(_currentT);
-            Debug.Log(_currentT);
             Vector3 worldPos = _container.transform.TransformPoint(localPos);
             _rb.MovePosition(worldPos);
         }
