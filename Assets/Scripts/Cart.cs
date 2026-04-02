@@ -198,6 +198,8 @@ public class Cart : NetworkBehaviour
         transform.position = newTransform.position;
         transform.rotation = newTransform.rotation;
 
+        Physics.SyncTransforms();
+
         foreach (var rb in wasNonKinematic)
         {
             rb.isKinematic = false;
