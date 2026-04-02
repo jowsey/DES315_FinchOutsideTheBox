@@ -6,19 +6,12 @@ public class MenuMusicInitScript : MonoBehaviour
 
     private static bool _hasStartedMusic;
 
-
-    void Start()
+    private void Start()
     {
         if (!_hasStartedMusic)
         {
             menuMusicInit.Post(gameObject);
-           _hasStartedMusic = true;
+            _hasStartedMusic = true;
         }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 }
