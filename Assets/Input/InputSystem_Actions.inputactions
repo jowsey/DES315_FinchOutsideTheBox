@@ -61,15 +61,6 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Pickup",
-                    "type": "Button",
-                    "id": "f9ff2531-2f8d-4133-83c8-3590ad0a1337",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "Hold",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Dev_CheckpointBack",
                     "type": "Button",
                     "id": "b2f6b05c-2bb1-49f9-a58e-b030688a03a0",
@@ -505,7 +496,7 @@
                 {
                     "name": "",
                     "id": "b3f66d0b-7751-423f-908b-a11c5bd95930",
-                    "path": "<Gamepad>/buttonNorth",
+                    "path": "<Gamepad>/buttonWest",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
@@ -532,28 +523,6 @@
                     "processors": "",
                     "groups": "Gamepad",
                     "action": "Respawn",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "9b8fecf0-bac4-4bd8-ad8c-7c71b848d6e3",
-                    "path": "<Keyboard>/e",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "Pickup",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "a9555270-8efd-4b1a-84d3-87a45b1098c4",
-                    "path": "<Gamepad>/buttonEast",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Gamepad",
-                    "action": "Pickup",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -692,7 +661,7 @@
                 {
                     "name": "",
                     "id": "395494d1-f29c-4990-ac46-324d9d870a3c",
-                    "path": "<Gamepad>/buttonSouth",
+                    "path": "<Gamepad>/{Submit}",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Gamepad",
@@ -741,7 +710,7 @@
                     "name": "Submit",
                     "type": "Button",
                     "id": "7607c7b6-cd76-4816-beef-bd0341cfe950",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false

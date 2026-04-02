@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace UI
 {
     [RequireComponent(typeof(Button), typeof(TextMeshProUGUI))]
-    public class MainMenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+    public class MainMenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ISelectHandler, IDeselectHandler
     {
         public AK.Wwise.Event buttonSfx;
 
@@ -50,28 +50,46 @@ namespace UI
             }
         }
 
-        public void OnPointerEnter(PointerEventData eventData)
+        private void Highlight()
         {
-            if (!Button.interactable) return;
-
-            Cursor.SetCursor(_highlightCursor, new Vector2(_highlightCursor.width / 2f, _highlightCursor.height / 2f), CursorMode.Auto);
+            if (!Button.interactable) { return; }
             if (!Active)
             {
                 _text.color = _highlightColor;
                 _text.fontStyle |= FontStyles.Bold;
-
                 buttonSfx.Post(gameObject);
             }
         }
-
-        public void OnPointerExit(PointerEventData eventData)
+        private void Unhighlight()
         {
-            Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
             if (!Active)
             {
                 _text.color = _originalColor;
                 _text.fontStyle &= ~FontStyles.Bold;
             }
+        }
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            EventSystem.current.SetSelectedGameObject(gameObject);
+            Cursor.SetCursor(_highlightCursor, new Vector2(_highlightCursor.width / 2f, _highlightCursor.height / 2f), CursorMode.Auto);
+            Highlight();
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+            Unhighlight();
+        }
+
+        public void OnSelect(BaseEventData eventData)
+        {
+            Highlight();
+        }
+
+        public void OnDeselect(BaseEventData eventData)
+        {
+            Unhighlight();
         }
     }
 }
