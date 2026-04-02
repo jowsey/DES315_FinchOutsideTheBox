@@ -240,7 +240,7 @@ public class Cart : NetworkBehaviour
         {
             _lowFlaskWarningUI = Instantiate(_lowFlaskWarningPrefab, _uiCanvas);
             _lowFlaskWarningUI.TrackingTarget = transform;
-            _lowFlaskWarningUI.TrackingOffset = new Vector3(0, 4.25f, 0);
+            _lowFlaskWarningUI.TrackingOffset = new Vector3(0, 4.5f, 0);
             _lowFlaskWarningUI.ApplyOffsetLocally = true;
         }
         else if (newValue > _lowFlasksThreshold && _lowFlaskWarningUI)
@@ -255,6 +255,8 @@ public class Cart : NetworkBehaviour
     [Command(requiresAuthority = false)]
     public void CmdInvokeRespawnEvent(int newCheckpointIndex)
     {
+        // todo we can definitely simplify this a bunch, we've got clients subscribing to OnRespawn just to do isServer checks and such
+        // also we should make respawn require authority and have the debug hotkeys be separate unauthed paths removed in prod builds
         RpcInvokeRespawnEvent(newCheckpointIndex);
     }
 
