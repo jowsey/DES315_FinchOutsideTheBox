@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 7799447581473435484}
   - component: {fileID: 6521320286991680151}
   - component: {fileID: 1624682344869754495}
-  - component: {fileID: 4328611406986470432}
   - component: {fileID: 3557071885313689952}
   - component: {fileID: 1771654825761771943}
   m_Layer: 7
@@ -224,30 +223,6 @@ MonoBehaviour:
   rotationSensitivity: 0.01
   positionPrecision: 0.01
   scalePrecision: 0.01
---- !u!114 &4328611406986470432
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2234672341356039100}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: baba1731ae1e0b948994819c2bbdb2b7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: AK.Wwise.Unity.MonoBehaviour::AkSwitch
-  triggerList: d1bbb3b5
-  useOtherObject: 1
-  data:
-    idInternal: 0
-    valueGuidInternal: 
-    groupIdInternal: 0
-    groupGuidInternal: 
-    WwiseObjectReference: {fileID: 11400000, guid: ac535510c117e5a4f9ffa24ac9bdb119, type: 2}
-  valueIdInternal: 0
-  groupIdInternal: 0
-  valueGuidInternal: 
-  groupGuidInternal: 
 --- !u!114 &3557071885313689952
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -283,7 +258,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5773140618336062753}
   - component: {fileID: 145870451912825770}
-  - component: {fileID: 560672048808739203}
   m_Layer: 7
   m_Name: SitTrigger
   m_TagString: Untagged
@@ -327,30 +301,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.75, y: 0.5, z: 0.75}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &560672048808739203
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3213205800609717158}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: baba1731ae1e0b948994819c2bbdb2b7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: AK.Wwise.Unity.MonoBehaviour::AkSwitch
-  triggerList: d1bbb3b5
-  useOtherObject: 1
-  data:
-    idInternal: 0
-    valueGuidInternal: 
-    groupIdInternal: 0
-    groupGuidInternal: 
-    WwiseObjectReference: {fileID: 11400000, guid: ac535510c117e5a4f9ffa24ac9bdb119, type: 2}
-  valueIdInternal: 0
-  groupIdInternal: 0
-  valueGuidInternal: 
-  groupGuidInternal: 
 --- !u!1 &3260413456745295566
 GameObject:
   m_ObjectHideFlags: 0
@@ -364,7 +314,6 @@ GameObject:
   - component: {fileID: 2934175773372239080}
   - component: {fileID: 581364601676529307}
   - component: {fileID: 1201822933279046488}
-  - component: {fileID: 2351435481122297397}
   - component: {fileID: 822409010293383377}
   - component: {fileID: 5316740113642991518}
   m_Layer: 7
@@ -575,30 +524,6 @@ MonoBehaviour:
   rotationSensitivity: 0.01
   positionPrecision: 0.01
   scalePrecision: 0.01
---- !u!114 &2351435481122297397
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3260413456745295566}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: baba1731ae1e0b948994819c2bbdb2b7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: AK.Wwise.Unity.MonoBehaviour::AkSwitch
-  triggerList: d1bbb3b5
-  useOtherObject: 1
-  data:
-    idInternal: 0
-    valueGuidInternal: 
-    groupIdInternal: 0
-    groupGuidInternal: 
-    WwiseObjectReference: {fileID: 11400000, guid: ac535510c117e5a4f9ffa24ac9bdb119, type: 2}
-  valueIdInternal: 0
-  groupIdInternal: 0
-  valueGuidInternal: 
-  groupGuidInternal: 
 --- !u!114 &822409010293383377
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -637,7 +562,6 @@ GameObject:
   - component: {fileID: 4472236861815727159}
   - component: {fileID: 6249258237167811541}
   - component: {fileID: 7218388891731409169}
-  - component: {fileID: 1902630114370404671}
   - component: {fileID: 6050807644054048839}
   - component: {fileID: 6629580345876214643}
   m_Layer: 7
@@ -717,23 +641,23 @@ MonoBehaviour:
   _tiltCorrection: 7.6
   _tiltCorrectionScaling: 2
   _flaskBounds: {fileID: 3914605637317101704}
-  CarSound:
+  _carSound:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: 8b29107a16812e44e922d30dc2b4f295, type: 2}
-  RTPCSpeed:
+  _carOnSurface:
     idInternal: 0
     valueGuidInternal: 
-    WwiseObjectReference: {fileID: 11400000, guid: eacf6a35b6f67b140a656833c6c47da0, type: 2}
-  CarOnSurface:
-    idInternal: 0
-    valueGuidInternal: 
-    WwiseObjectReference: {fileID: 0}
-  glassInVehicle:
+    WwiseObjectReference: {fileID: 11400000, guid: 422f254df6fef4f46a4076210b1432f2, type: 2}
+  _glassInVehicle:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: 5289f51a9a8c7a1409fcfe116738439a, type: 2}
-  glassInDaVehicle:
+  _cartSpeedRTPC:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: eacf6a35b6f67b140a656833c6c47da0, type: 2}
+  _numCarriedFlasksRTPC:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: 859ca60ecf171434d96ae9f11f3fd870, type: 2}
@@ -789,30 +713,6 @@ MonoBehaviour:
   rotationSensitivity: 0.01
   positionPrecision: 0.01
   scalePrecision: 0.01
---- !u!114 &1902630114370404671
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3913858289453775590}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: baba1731ae1e0b948994819c2bbdb2b7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: AK.Wwise.Unity.MonoBehaviour::AkSwitch
-  triggerList: d1bbb3b5
-  useOtherObject: 1
-  data:
-    idInternal: 0
-    valueGuidInternal: 
-    groupIdInternal: 0
-    groupGuidInternal: 
-    WwiseObjectReference: {fileID: 0}
-  valueIdInternal: 0
-  groupIdInternal: 0
-  valueGuidInternal: 
-  groupGuidInternal: 
 --- !u!114 &6050807644054048839
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -906,7 +806,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4964687183665510962}
   - component: {fileID: 5020068864741877438}
-  - component: {fileID: 182298257073741188}
   m_Layer: 7
   m_Name: SitTrigger
   m_TagString: Untagged
@@ -950,30 +849,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.75, y: 0.5, z: 0.75}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &182298257073741188
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5634286368640321818}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: baba1731ae1e0b948994819c2bbdb2b7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: AK.Wwise.Unity.MonoBehaviour::AkSwitch
-  triggerList: d1bbb3b5
-  useOtherObject: 1
-  data:
-    idInternal: 0
-    valueGuidInternal: 
-    groupIdInternal: 0
-    groupGuidInternal: 
-    WwiseObjectReference: {fileID: 11400000, guid: ac535510c117e5a4f9ffa24ac9bdb119, type: 2}
-  valueIdInternal: 0
-  groupIdInternal: 0
-  valueGuidInternal: 
-  groupGuidInternal: 
 --- !u!1 &5636680629954494916
 GameObject:
   m_ObjectHideFlags: 0

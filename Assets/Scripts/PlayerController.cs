@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using Util;
+using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 using ShowInInspectorAttribute = Sirenix.OdinInspector.ShowInInspectorAttribute;
 using ReadOnlyAttribute = Sirenix.OdinInspector.ReadOnlyAttribute;
@@ -52,7 +53,7 @@ public class PlayerController : NetworkBehaviour
 
     private bool _jumpPressed;
 
-    private WwiseAnimationEvents _wwiseAnimationEvents;
+    public WwiseAnimationEvents WwiseAnimationEvents { get; private set; }
 
     public AK.Wwise.Event FlaskPickupFX;
 
@@ -129,7 +130,7 @@ public class PlayerController : NetworkBehaviour
 
         Rb = GetComponent<Rigidbody>();
         _networkAnimator = GetComponent<NetworkAnimator>();
-        _wwiseAnimationEvents = GetComponent<WwiseAnimationEvents>();
+        WwiseAnimationEvents = GetComponent<WwiseAnimationEvents>();
 
         Checkpoint.RespawnEvent.AddListener(OnRespawn);
     }
@@ -272,9 +273,6 @@ public class PlayerController : NetworkBehaviour
         {
             transform.position = Seat.SeatedPosition;
             Physics.SyncTransforms();
-
-            //Swap to no sound when sat on wheels
-            AkUnitySoundEngine.SetSwitch("Footsteps", "WheelSeat", gameObject);
         }
 
         if (_camera && !isLocalPlayer)
@@ -294,7 +292,7 @@ public class PlayerController : NetworkBehaviour
     private void FixedUpdate()
     {
         // Audio state for all clients
-        if (Physics.Raycast(Rb.position, Vector3.down, out var hit, 0.1f, ~(1 << gameObject.layer), QueryTriggerInteraction.Ignore))
+        if (!Seat && Physics.Raycast(Rb.position, Vector3.down, out var hit, 0.1f, ~(1 << gameObject.layer), QueryTriggerInteraction.Ignore))
         {
             Renderer hitRenderer = hit.transform.GetComponentInChildren<Renderer>();
             if (hitRenderer)
@@ -314,9 +312,9 @@ public class PlayerController : NetworkBehaviour
             }
         }
 
-        if (_wwiseAnimationEvents.GlideTriggered && !_networkAnimator.animator.GetBool(GlideState))
+        if (WwiseAnimationEvents.GlideTriggered && !_networkAnimator.animator.GetBool(GlideState))
         {
-            _wwiseAnimationEvents.ResetGlideTrigger();
+            WwiseAnimationEvents.ResetGlideTrigger();
         }
 
         if (!authority) return;

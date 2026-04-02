@@ -58,26 +58,16 @@ public class WheelSeat : NetworkBehaviour
     {
         PlayerController oldPlayer = _seatedPlayer;
         _seatedPlayer = newValue ? newValue.GetComponent<PlayerController>() : null;
-        
-        if (_seatedPlayer != null)
-        {
-            //Player is getting on
-            _seatedPlayer.Rb.isKinematic = true;
-            _seatedPlayer.Rb.excludeLayers |= 1 << gameObject.layer;
-            _seatedPlayer.Seat = this;
 
-            if (_seatedPlayer.isLocalPlayer)
-            {
-                Highlight.SetHighlightable("Flask", false);
-            }
-        }
-        else if (oldPlayer != null)
+        if (oldPlayer)
         {
             //Player is getting off
             oldPlayer.Rb.isKinematic = false;
             oldPlayer.Rb.angularVelocity = Vector3.zero;
             oldPlayer.Rb.excludeLayers &= ~(1 << gameObject.layer);
             oldPlayer.Seat = null;
+
+            oldPlayer.WwiseAnimationEvents.DisableFootsteps = false;
 
             _lastUnsitTime = Time.time;
 
@@ -86,8 +76,22 @@ public class WheelSeat : NetworkBehaviour
                 Highlight.SetHighlightable("Flask", true);
             }
         }
-    }
 
+        if (_seatedPlayer)
+        {
+            //Player is getting on
+            _seatedPlayer.Rb.isKinematic = true;
+            _seatedPlayer.Rb.excludeLayers |= 1 << gameObject.layer;
+            _seatedPlayer.Seat = this;
+
+            _seatedPlayer.WwiseAnimationEvents.DisableFootsteps = true;
+
+            if (_seatedPlayer.isLocalPlayer)
+            {
+                Highlight.SetHighlightable("Flask", false);
+            }
+        }
+    }
 
     protected override void OnValidate()
     {

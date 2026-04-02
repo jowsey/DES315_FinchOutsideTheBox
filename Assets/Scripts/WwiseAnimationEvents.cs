@@ -9,6 +9,7 @@ public class WwiseAnimationEvents : MonoBehaviour
     [Required] public AK.Wwise.Event Glide;
 
     [ReadOnly] public bool GlideTriggered;
+    [ReadOnly] public bool DisableFootsteps;
 
     public void ResetGlideTrigger()
     {
@@ -18,6 +19,7 @@ public class WwiseAnimationEvents : MonoBehaviour
     [UsedImplicitly]
     public void PlayFootstepSound()
     {
+        if (DisableFootsteps) return;
         Footstep.Post(gameObject);
     }
 

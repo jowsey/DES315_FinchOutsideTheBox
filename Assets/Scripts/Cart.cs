@@ -40,16 +40,15 @@ public class Cart : NetworkBehaviour
     private Dictionary<Flask, FlaskSnapshot>[] _flasksAtCheckpoint;
     public HashSet<Flask> CarriedFlasks = new();
 
-    //sound for the cart
-    public AK.Wwise.Event CarSound = new();
-    public AK.Wwise.RTPC RTPCSpeed;
+    //Sound effects
+    [SerializeField] private AK.Wwise.Event _carSound;
+    [SerializeField] private AK.Wwise.Event _carOnSurface;
+    [SerializeField] private AK.Wwise.Event _glassInVehicle;
+    [SerializeField] private AK.Wwise.RTPC _cartSpeedRTPC;
+    [SerializeField] private AK.Wwise.RTPC _numCarriedFlasksRTPC;
 
-    //cart for when on surface
-    public AK.Wwise.Event CarOnSurface = new();
-
-    //sound for the flasks
-    public AK.Wwise.Event glassInVehicle = new();
-    public AK.Wwise.RTPC glassInDaVehicle = new();
+    //Velocity doesn't exist on non-authed client, so we use this to calculate our own rough speed
+    private Vector3 _positionLastFrame;
 
     // The number of flasks we'll respawn with
     public int FlasksOnRespawn => _flasksAtCheckpoint[Mathf.Clamp(CurrentCheckpointIndex, 0, _flasksAtCheckpoint.Length - 1)].Count;
@@ -86,9 +85,11 @@ public class Cart : NetworkBehaviour
 
     public override void OnStartClient()
     {
-        CarSound.Post(gameObject);
-        glassInVehicle.Post(gameObject);
-        CarOnSurface.Post(gameObject);
+        _carSound.Post(gameObject);
+        _carOnSurface.Post(gameObject);
+        _glassInVehicle.Post(gameObject);
+
+        _positionLastFrame = _rb.position;
     }
 
     private void OnDestroy()
@@ -107,10 +108,12 @@ public class Cart : NetworkBehaviour
             CmdInvokeRespawnEvent(CurrentCheckpointIndex + 1);
         }
 
-        //Car speed
-        RTPCSpeed.SetGlobalValue(_rb.linearVelocity.magnitude*20);
-        glassInDaVehicle.SetGlobalValue(CarriedFlasks.Count);
+        // Update RTPCs based on state
+        var linearVelocity = (transform.position - _positionLastFrame) / Time.fixedDeltaTime;
+        _cartSpeedRTPC.SetGlobalValue(linearVelocity.magnitude * 20);
+        _numCarriedFlasksRTPC.SetGlobalValue(CarriedFlasks.Count);
         
+        _positionLastFrame = transform.position;
     }
 
     private void FixedUpdate()
@@ -200,7 +203,7 @@ public class Cart : NetworkBehaviour
             flaskState.Key.transform.position = transform.TransformPoint(flaskState.Value.Position);
             flaskState.Key.transform.rotation = flaskState.Value.Rotation;
             Physics.SyncTransforms();
-            
+
             flaskState.Key.RpcUnsmash();
         }
     }
