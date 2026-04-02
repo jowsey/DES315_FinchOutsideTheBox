@@ -37,6 +37,14 @@ public class Flask : NetworkBehaviour
         _renderers = GetComponentsInChildren<Renderer>();
     }
 
+    public override void OnStartClient()
+    {
+        if (State == FlaskState.Smashed)
+        {
+            Smash();
+        }
+    }
+
     [Command(requiresAuthority = false)]
     public void CmdTryPickup(NetworkConnectionToClient sender = null)
     {
@@ -104,8 +112,7 @@ public class Flask : NetworkBehaviour
         _holder = null;
     }
 
-    [ClientRpc]
-    public void RpcSmash()
+    private void Smash()
     {
         foreach (Collider col in _colliders)
         {
@@ -117,6 +124,12 @@ public class Flask : NetworkBehaviour
             rend.enabled = false;
         }
 
+        Instantiate(_smashedFlask, transform.position, transform.rotation);
+    }
+
+    [ClientRpc]
+    public void RpcSmash()
+    {
         if (isServer)
         {
             Rb.isKinematic = true;
@@ -124,7 +137,7 @@ public class Flask : NetworkBehaviour
             flaskSmash.Post(gameObject);
         }
 
-        Instantiate(_smashedFlask, transform.position, transform.rotation);
+        Smash();
     }
 
     [ClientRpc]
