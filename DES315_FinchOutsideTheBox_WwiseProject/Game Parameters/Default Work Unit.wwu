@@ -13,22 +13,10 @@
 						<Property Name="InitialValue" Type="Real64" Value="0"/>
 					</PropertyList>
 				</GameParameter>
-				<GameParameter Name="MusicVolume" ID="{2C00F143-0CFC-4664-8B6A-E0DF59F14DBF}">
-					<PropertyList>
-						<Property Name="InitialValue" Type="Real64" Value="15"/>
-						<Property Name="Max" Type="Real64" Value="30"/>
-					</PropertyList>
-				</GameParameter>
 				<GameParameter Name="IsESCPressed" ID="{76E42415-CC28-481A-BFEC-8F62AF4243C8}">
 					<PropertyList>
 						<Property Name="InitialValue" Type="Real64" Value="0"/>
 						<Property Name="Max" Type="Real64" Value="1"/>
-					</PropertyList>
-				</GameParameter>
-				<GameParameter Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}">
-					<PropertyList>
-						<Property Name="InitialValue" Type="Real64" Value="15"/>
-						<Property Name="Max" Type="Real64" Value="30"/>
 					</PropertyList>
 				</GameParameter>
 				<GameParameter Name="GlassAmount" ID="{1BCC60E6-39B7-488E-A532-430D03891736}">
@@ -49,6 +37,28 @@
 						<Property Name="Max" Type="Real64" Value="10"/>
 					</PropertyList>
 				</GameParameter>
+				<Folder Name="SettingsVolume" ID="{BB07AE06-3E89-485A-A681-5F1EB9BB905F}" ShortID="794715592">
+					<ChildrenList>
+						<GameParameter Name="MasterVolume" ID="{4AE86AE8-FE56-440A-BE4C-DD5C2CBDDC4E}">
+							<PropertyList>
+								<Property Name="InitialValue" Type="Real64" Value="15"/>
+								<Property Name="Max" Type="Real64" Value="30"/>
+							</PropertyList>
+						</GameParameter>
+						<GameParameter Name="MusicVolume" ID="{2C00F143-0CFC-4664-8B6A-E0DF59F14DBF}">
+							<PropertyList>
+								<Property Name="InitialValue" Type="Real64" Value="15"/>
+								<Property Name="Max" Type="Real64" Value="30"/>
+							</PropertyList>
+						</GameParameter>
+						<GameParameter Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}">
+							<PropertyList>
+								<Property Name="InitialValue" Type="Real64" Value="15"/>
+								<Property Name="Max" Type="Real64" Value="30"/>
+							</PropertyList>
+						</GameParameter>
+					</ChildrenList>
+				</Folder>
 			</ChildrenList>
 		</WorkUnit>
 	</GameParameters>
