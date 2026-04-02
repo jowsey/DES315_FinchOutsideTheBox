@@ -63,7 +63,14 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private float rotationSmoothingSpeed;
 
     [Header("Camera")]
-    [SerializeField] [ReadOnly] private CinemachineCamera _camera;
+    [SerializeField] [ReadOnly] private CinemachineCamera _cinemachineCamera;
+    [SerializeField] [ReadOnly] private Camera _camera;
+    [SerializeField] [ReadOnly] private CameraZoomController _zoomController;
+    [SerializeField] private Transform _firstPersonCameraViewPosition;
+    [SerializeField] private float _firstPersonSensitivity;
+    private InputActionReference _firstPersonLookAction;
+    private float _pitch;
+
 
     [Header("Movement")]
     [Tooltip("Amount of upwards force applied when jumping")]
@@ -142,7 +149,7 @@ public class PlayerController : NetworkBehaviour
             renderer.sharedMaterial = LoadedSkins[PlayerSkinIndex].Material;
         }
 
-        _camera = FindAnyObjectByType<CinemachineCamera>(FindObjectsInactive.Include);
+        _cinemachineCamera = FindAnyObjectByType<CinemachineCamera>(FindObjectsInactive.Include);
         _playerNameText.text = PlayerName;
 
         OnPlayerReady.Invoke(this);
@@ -157,18 +164,22 @@ public class PlayerController : NetworkBehaviour
     public override void OnStartLocalPlayer()
     {
         // Initialise statics
-        if (!_cinemachineInput) _cinemachineInput = FindAnyObjectByType<CinemachineInputAxisController>(FindObjectsInactive.Include);
+        if (!_cinemachineInput) { _cinemachineInput = FindAnyObjectByType<CinemachineInputAxisController>(FindObjectsInactive.Include); }
+        if (!_zoomController) { _zoomController = FindAnyObjectByType<CameraZoomController>(FindObjectsInactive.Include); }
+        if (!_camera) { _camera = Camera.main; }
+        _pitch = 0.0f;
+        _firstPersonLookAction = _cinemachineInput.Controllers[0].Input.InputAction;
 
         Cursor.lockState = CursorLockMode.Locked;
 
         // Set camera follow target
-        if (!_camera.Follow || !_camera.LookAt)
+        if (!_cinemachineCamera.Follow || !_cinemachineCamera.LookAt)
         {
-            _camera.gameObject.SetActive(true);
-            _camera.Follow = transform;
-            _camera.LookAt = transform;
+            _cinemachineCamera.gameObject.SetActive(true);
+            _cinemachineCamera.Follow = transform;
+            _cinemachineCamera.LookAt = transform;
 
-            var orbitalFollow = _camera.GetComponent<CinemachineOrbitalFollow>();
+            var orbitalFollow = _cinemachineCamera.GetComponent<CinemachineOrbitalFollow>();
             orbitalFollow.HorizontalAxis.Value = transform.eulerAngles.y;
         }
 
@@ -217,7 +228,7 @@ public class PlayerController : NetworkBehaviour
         Rb.linearVelocity = Vector3.zero;
         Rb.angularVelocity = Vector3.zero;
 
-        _camera.PreviousStateIsValid = false;
+        _cinemachineCamera.PreviousStateIsValid = false;
     }
 
     private void OnEnable()
@@ -236,6 +247,22 @@ public class PlayerController : NetworkBehaviour
     private void Update()
     {
         if (!authority) return;
+
+        //First-person Camera
+        if (_zoomController.FirstPerson)
+        {
+            if (ControlsEnabled)
+            {
+                Vector2 mouseDelta = _firstPersonLookAction.action.ReadValue<Vector2>() * _firstPersonSensitivity;
+                Rb.MoveRotation(Rb.rotation * Quaternion.Euler(0.0f, mouseDelta.x, 0.0f));
+                _pitch -= mouseDelta.y;
+                _pitch = Mathf.Clamp(_pitch, -89.0f, 89.0f);
+            }
+
+            _camera.transform.position = _firstPersonCameraViewPosition.position;
+            Quaternion zStrippedRot = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, 0.0f);
+            _camera.transform.rotation = transform.rotation * Quaternion.Euler(_pitch, 0f, 0f);
+        }
 
         _contactNormals.Clear();
 
@@ -271,13 +298,13 @@ public class PlayerController : NetworkBehaviour
     {
         if (Seat)
         {
+            Rb.position = Seat.SeatedPosition;
             transform.position = Seat.SeatedPosition;
-            Physics.SyncTransforms();
         }
 
-        if (_camera && !isLocalPlayer)
+        if (_cinemachineCamera && !isLocalPlayer)
         {
-            _nameplateCanvas.transform.rotation = Quaternion.LookRotation(_nameplateCanvas.transform.position - _camera.transform.position);
+            _nameplateCanvas.transform.rotation = Quaternion.LookRotation(_nameplateCanvas.transform.position - _cinemachineCamera.transform.position);
         }
     }
 
@@ -320,19 +347,27 @@ public class PlayerController : NetworkBehaviour
         if (!authority) return;
 
         //Movement input
-        Quaternion cameraOrientation = _camera ? _camera.State.GetFinalOrientation() : Quaternion.identity;
-        Vector3 cameraForward = Vector3.Scale(cameraOrientation * Vector3.forward, new Vector3(1, 0, 1)).normalized;
-        Vector3 cameraRight = cameraOrientation * Vector3.right;
         Vector2 inputDirection = ControlsEnabled ? MoveAction.action.ReadValue<Vector2>() : Vector2.zero; //no input when controls are blocked
-
-        WorldSpaceMoveDir = (cameraForward * inputDirection.y + cameraRight * inputDirection.x).normalized;
         AnalogueMoveScale = inputDirection.magnitude; //input system has a normalise processor on the move input action
-
-        _networkAnimator.animator.SetBool(RunningState, WorldSpaceMoveDir.sqrMagnitude > 0);
-        if (WorldSpaceMoveDir.sqrMagnitude > 0)
+        if (_zoomController.FirstPerson)
         {
-            Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, Quaternion.LookRotation(WorldSpaceMoveDir, Vector3.up), Time.fixedDeltaTime * rotationSmoothingSpeed));
+            Vector3 forward = Vector3.Scale(transform.forward, new Vector3(1, 0, 1)).normalized;
+            Vector3 right = transform.right;
+            WorldSpaceMoveDir = (forward * inputDirection.y + right * inputDirection.x).normalized;
         }
+        else
+        {
+            Quaternion cameraOrientation = _cinemachineCamera ? _cinemachineCamera.State.GetFinalOrientation() : Quaternion.identity;
+            Vector3 cameraForward = Vector3.Scale(cameraOrientation * Vector3.forward, new Vector3(1, 0, 1)).normalized;
+            Vector3 cameraRight = cameraOrientation * Vector3.right;
+
+            WorldSpaceMoveDir = (cameraForward * inputDirection.y + cameraRight * inputDirection.x).normalized;
+            if (WorldSpaceMoveDir.sqrMagnitude > 0)
+            {
+                Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, Quaternion.LookRotation(WorldSpaceMoveDir, Vector3.up), Time.fixedDeltaTime * rotationSmoothingSpeed));
+            }
+        }
+        _networkAnimator.animator.SetBool(RunningState, WorldSpaceMoveDir.sqrMagnitude > 0);
 
         //Unsitting
         if (Seat && ControlsEnabled && _jumpPressed)
