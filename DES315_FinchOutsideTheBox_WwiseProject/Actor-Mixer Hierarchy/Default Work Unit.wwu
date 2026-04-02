@@ -60,32 +60,44 @@
 					<ChildrenList>
 						<Folder Name="VehicleOnTerrain" ID="{42D5B7E6-8075-4DF8-9EA7-7E1BFE892900}" ShortID="314614091">
 							<ChildrenList>
-								<BlendContainer Name="CarOverStone" ID="{97166926-E005-4AAD-85B3-2FB68D6B01F2}" ShortID="546568859">
-									<PropertyList>
-										<Property Name="Volume" Type="Real64">
-											<ValueList>
-												<Value>6</Value>
-											</ValueList>
-										</Property>
-									</PropertyList>
+								<SwitchContainer Name="CarOverTerrain" ID="{47DD396B-1E2A-4D25-AD2E-6B3B440C3D2F}" ShortID="447831172">
 									<ReferenceList>
-										<Reference Name="Attenuation">
-											<ObjectRef Name="PlayerMovement" ID="{33DB25AC-7678-4F1D-986E-590F2A38BB75}" WorkUnitID="{0D537A1A-A097-4DE3-A5EA-9723A41B16C7}"/>
-										</Reference>
 										<Reference Name="Conversion">
 											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
 										</Reference>
 										<Reference Name="OutputBus">
 											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
 										</Reference>
+										<Reference Name="SwitchGroupOrStateGroup">
+											<ObjectRef Name="CarSounds" ID="{12B84A19-6267-47D2-8999-9AF56A125485}" WorkUnitID="{98F4E5C6-A07B-4B1C-B584-33D06F43089A}"/>
+										</Reference>
 									</ReferenceList>
 									<ChildrenList>
-										<Sound Name="CarOverStone - Heavy" ID="{C12C1A74-5BDC-492D-A0E4-3DE1EBBAA174}" ShortID="1007904019">
+										<Sound Name="Car moving through wood loop" ID="{BBABEA13-3B77-4185-86C4-10B05E46A9CA}" ShortID="622853913">
 											<PropertyList>
 												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+												<Property Name="Lowpass" Type="int16">
+													<ValueList>
+														<Value>30</Value>
+													</ValueList>
+												</Property>
+												<Property Name="Pitch" Type="int32">
+													<ValueList>
+														<Value>250</Value>
+													</ValueList>
+													<ModifierList>
+														<ModifierInfo>
+															<Modifier Name="" ID="{74CC37F4-7005-43FD-9C77-942EE00F3BF3}">
+																<PropertyList>
+																	<Property Name="Enabled" Type="bool" Value="True"/>
+																</PropertyList>
+															</Modifier>
+														</ModifierInfo>
+													</ModifierList>
+												</Property>
 												<Property Name="Volume" Type="Real64">
 													<ValueList>
-														<Value>-11</Value>
+														<Value>-19</Value>
 													</ValueList>
 												</Property>
 											</PropertyList>
@@ -98,21 +110,26 @@
 												</Reference>
 											</ReferenceList>
 											<ChildrenList>
-												<AudioFileSource Name="CarOverStone - Heavy" ID="{AC3831B5-73B9-43AE-9A35-1F6C2A3975F4}">
+												<AudioFileSource Name="Car moving through wood loop" ID="{B0BBBDCF-250F-421E-90FB-848DD8C01BF8}">
 													<Language>SFX</Language>
-													<AudioFile>CarOverStone - Heavy.wav</AudioFile>
+													<AudioFile>Car moving through wood loop  .wav</AudioFile>
 													<MediaIDList>
-														<MediaID ID="864515579"/>
+														<MediaID ID="25942129"/>
 													</MediaIDList>
 												</AudioFileSource>
 											</ChildrenList>
 											<ActiveSourceList>
-												<ActiveSource Name="CarOverStone - Heavy" ID="{AC3831B5-73B9-43AE-9A35-1F6C2A3975F4}" Platform="Linked"/>
+												<ActiveSource Name="Car moving through wood loop" ID="{B0BBBDCF-250F-421E-90FB-848DD8C01BF8}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
-										<Sound Name="CarOverStone - Light" ID="{D95F3E07-04BC-48F9-AD3A-B36DE62EC3FF}" ShortID="367095917">
+										<Sound Name="Car moving through sand loop" ID="{04027817-331E-4E16-88E0-A074BF0232F2}" ShortID="1069695841">
 											<PropertyList>
 												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-5</Value>
+													</ValueList>
+												</Property>
 											</PropertyList>
 											<ReferenceList>
 												<Reference Name="Conversion">
@@ -123,199 +140,304 @@
 												</Reference>
 											</ReferenceList>
 											<ChildrenList>
-												<AudioFileSource Name="CarOverStone - Light" ID="{43BADCEE-6096-49D6-9CFD-2BCA83294CB6}">
+												<AudioFileSource Name="Car moving through sand loop" ID="{2B03940A-29D5-41A3-ABBC-21C54F44B453}">
+													<PropertyList>
+														<Property Name="FadeInDuration" Type="Real64" Value="0.0138024023209495"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+													</PropertyList>
 													<Language>SFX</Language>
-													<AudioFile>CarOverStone - Light.wav</AudioFile>
+													<AudioFile>Car moving through sand loop  .wav</AudioFile>
 													<MediaIDList>
-														<MediaID ID="31898552"/>
+														<MediaID ID="862243822"/>
 													</MediaIDList>
 												</AudioFileSource>
 											</ChildrenList>
 											<ActiveSourceList>
-												<ActiveSource Name="CarOverStone - Light" ID="{43BADCEE-6096-49D6-9CFD-2BCA83294CB6}" Platform="Linked"/>
+												<ActiveSource Name="Car moving through sand loop" ID="{2B03940A-29D5-41A3-ABBC-21C54F44B453}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
-									</ChildrenList>
-									<ObjectLists>
-										<ObjectList Name="Effects">
-											<Reference>
-												<Local>
-													<EffectSlot Name="" ID="{2DA34324-8296-4822-8B00-CFD3A1FDDB94}" ShortID="696552360">
-														<ReferenceList>
-															<Reference Name="Effect" PluginName="Wwise Parametric EQ" CompanyID="0" PluginID="105" PluginType="3">
-																<ObjectRef Name="New_Parametric_EQ" ID="{3ABAFE3E-AE23-4434-A688-C915E3621DE7}" WorkUnitID="{9B700CA5-7BEA-4900-A170-C56D65C7C0BF}"/>
-															</Reference>
-														</ReferenceList>
-													</EffectSlot>
-												</Local>
-											</Reference>
-										</ObjectList>
-									</ObjectLists>
-									<BlendTrackList>
-										<BlendTrack Name="New Blend Track" ID="{51971819-423E-4969-985E-BEF0F9EC0567}" ShortID="206415503">
+										<BlendContainer Name="CarOverStone" ID="{97166926-E005-4AAD-85B3-2FB68D6B01F2}" ShortID="546568859">
 											<PropertyList>
-												<Property Name="EnableCrossFading" Type="bool" Value="True"/>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-28</Value>
+													</ValueList>
+												</Property>
 											</PropertyList>
 											<ReferenceList>
-												<Reference Name="LayerCrossFadeControlInput">
-													<ObjectRef Name="CarOverStone" ID="{32E54A42-8D27-45A1-903D-094D115060C1}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="PlayerMovement" ID="{33DB25AC-7678-4F1D-986E-590F2A38BB75}" WorkUnitID="{0D537A1A-A097-4DE3-A5EA-9723A41B16C7}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
 												</Reference>
 											</ReferenceList>
+											<ChildrenList>
+												<Sound Name="CarOverStone - Heavy" ID="{C12C1A74-5BDC-492D-A0E4-3DE1EBBAA174}" ShortID="1007904019">
+													<PropertyList>
+														<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+														<Property Name="Volume" Type="Real64">
+															<ValueList>
+																<Value>-11</Value>
+															</ValueList>
+														</Property>
+													</PropertyList>
+													<ReferenceList>
+														<Reference Name="Conversion">
+															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+														</Reference>
+														<Reference Name="OutputBus">
+															<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+														</Reference>
+													</ReferenceList>
+													<ChildrenList>
+														<AudioFileSource Name="CarOverStone - Heavy" ID="{AC3831B5-73B9-43AE-9A35-1F6C2A3975F4}">
+															<Language>SFX</Language>
+															<AudioFile>CarOverStone - Heavy.wav</AudioFile>
+															<MediaIDList>
+																<MediaID ID="864515579"/>
+															</MediaIDList>
+														</AudioFileSource>
+													</ChildrenList>
+													<ActiveSourceList>
+														<ActiveSource Name="CarOverStone - Heavy" ID="{AC3831B5-73B9-43AE-9A35-1F6C2A3975F4}" Platform="Linked"/>
+													</ActiveSourceList>
+												</Sound>
+												<Sound Name="CarOverStone - Light" ID="{D95F3E07-04BC-48F9-AD3A-B36DE62EC3FF}" ShortID="367095917">
+													<PropertyList>
+														<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+													</PropertyList>
+													<ReferenceList>
+														<Reference Name="Conversion">
+															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+														</Reference>
+														<Reference Name="OutputBus">
+															<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+														</Reference>
+													</ReferenceList>
+													<ChildrenList>
+														<AudioFileSource Name="CarOverStone - Light" ID="{43BADCEE-6096-49D6-9CFD-2BCA83294CB6}">
+															<Language>SFX</Language>
+															<AudioFile>CarOverStone - Light.wav</AudioFile>
+															<MediaIDList>
+																<MediaID ID="31898552"/>
+															</MediaIDList>
+														</AudioFileSource>
+													</ChildrenList>
+													<ActiveSourceList>
+														<ActiveSource Name="CarOverStone - Light" ID="{43BADCEE-6096-49D6-9CFD-2BCA83294CB6}" Platform="Linked"/>
+													</ActiveSourceList>
+												</Sound>
+											</ChildrenList>
 											<ObjectLists>
-												<ObjectList Name="RTPC">
+												<ObjectList Name="Effects">
 													<Reference>
 														<Local>
-															<RTPC Name="" ID="{F2ED681A-A2F3-48F8-BDE2-43FAA6B20969}" ShortID="561380392">
-																<PropertyList>
-																	<Property Name="PropertyName" Type="string" Value="MakeUpGain"/>
-																</PropertyList>
+															<EffectSlot Name="" ID="{2DA34324-8296-4822-8B00-CFD3A1FDDB94}" ShortID="696552360">
 																<ReferenceList>
-																	<Reference Name="ControlInput">
-																		<ObjectRef Name="WheelsMoving" ID="{BFB55191-504D-499C-86D7-AC07C3A38E15}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
-																	</Reference>
-																	<Reference Name="Curve">
-																		<Custom>
-																			<Curve Name="" ID="{9B59D92D-4461-4B3D-B111-DD5A68195959}">
-																				<PropertyList>
-																					<Property Name="Flags" Type="int32" Value="3"/>
-																				</PropertyList>
-																				<PointList>
-																					<Point>
-																						<XPos>0</XPos>
-																						<YPos>-399.99999</YPos>
-																						<Flags>5</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>18.70804</XPos>
-																						<YPos>-24.18557</YPos>
-																						<Flags>0</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>83.93642</XPos>
-																						<YPos>-23.16182</YPos>
-																						<Flags>0</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>100</XPos>
-																						<YPos>-27.60417</YPos>
-																						<Flags>37</Flags>
-																					</Point>
-																				</PointList>
-																			</Curve>
-																		</Custom>
+																	<Reference Name="Effect" PluginName="Wwise Parametric EQ" CompanyID="0" PluginID="105" PluginType="3">
+																		<ObjectRef Name="New_Parametric_EQ" ID="{3ABAFE3E-AE23-4434-A688-C915E3621DE7}" WorkUnitID="{9B700CA5-7BEA-4900-A170-C56D65C7C0BF}"/>
 																	</Reference>
 																</ReferenceList>
-															</RTPC>
+															</EffectSlot>
 														</Local>
 													</Reference>
 												</ObjectList>
 											</ObjectLists>
-											<BlendTrackAssocList>
-												<BlendTrackAssoc>
-													<ItemRef Name="CarOverStone - Light" ID="{D95F3E07-04BC-48F9-AD3A-B36DE62EC3FF}"/>
-													<CrossfadingInfo>
-														<LeftEdgePos>0</LeftEdgePos>
-														<LeftFadingMode>Automatic</LeftFadingMode>
-														<RightEdgePos>26.4350453172205</RightEdgePos>
-														<RightFadingMode>Automatic</RightFadingMode>
-													</CrossfadingInfo>
-												</BlendTrackAssoc>
-												<BlendTrackAssoc>
-													<ItemRef Name="CarOverStone - Heavy" ID="{C12C1A74-5BDC-492D-A0E4-3DE1EBBAA174}"/>
-													<CrossfadingInfo>
-														<LeftEdgePos>21.4501510574018</LeftEdgePos>
-														<LeftFadingMode>Automatic</LeftFadingMode>
-														<RightEdgePos>100</RightEdgePos>
-														<RightFadingMode>Automatic</RightFadingMode>
-													</CrossfadingInfo>
-												</BlendTrackAssoc>
-											</BlendTrackAssocList>
-										</BlendTrack>
-									</BlendTrackList>
-								</BlendContainer>
-								<Sound Name="Car moving through sand loop" ID="{04027817-331E-4E16-88E0-A074BF0232F2}" ShortID="1069695841">
-									<PropertyList>
-										<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
-										<Property Name="Volume" Type="Real64">
-											<ValueList>
-												<Value>-15</Value>
-											</ValueList>
-										</Property>
-									</PropertyList>
-									<ReferenceList>
-										<Reference Name="Conversion">
-											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
-										</Reference>
-										<Reference Name="OutputBus">
-											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
-										</Reference>
-									</ReferenceList>
-									<ChildrenList>
-										<AudioFileSource Name="Car moving through sand loop" ID="{2B03940A-29D5-41A3-ABBC-21C54F44B453}">
-											<PropertyList>
-												<Property Name="FadeInDuration" Type="Real64" Value="0.0138024023209495"/>
-												<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
-											</PropertyList>
-											<Language>SFX</Language>
-											<AudioFile>Car moving through sand loop  .wav</AudioFile>
-											<MediaIDList>
-												<MediaID ID="862243822"/>
-											</MediaIDList>
-										</AudioFileSource>
+											<BlendTrackList>
+												<BlendTrack Name="New Blend Track" ID="{51971819-423E-4969-985E-BEF0F9EC0567}" ShortID="206415503">
+													<PropertyList>
+														<Property Name="EnableCrossFading" Type="bool" Value="True"/>
+													</PropertyList>
+													<ReferenceList>
+														<Reference Name="LayerCrossFadeControlInput">
+															<ObjectRef Name="WheelsMoving" ID="{BFB55191-504D-499C-86D7-AC07C3A38E15}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+														</Reference>
+													</ReferenceList>
+													<ObjectLists>
+														<ObjectList Name="RTPC">
+															<Reference>
+																<Local>
+																	<RTPC Name="" ID="{F2ED681A-A2F3-48F8-BDE2-43FAA6B20969}" ShortID="561380392">
+																		<PropertyList>
+																			<Property Name="PropertyName" Type="string" Value="Volume"/>
+																		</PropertyList>
+																		<ReferenceList>
+																			<Reference Name="ControlInput">
+																				<ObjectRef Name="WheelsMoving" ID="{BFB55191-504D-499C-86D7-AC07C3A38E15}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																			</Reference>
+																			<Reference Name="Curve">
+																				<Custom>
+																					<Curve Name="" ID="{9B59D92D-4461-4B3D-B111-DD5A68195959}">
+																						<PropertyList>
+																							<Property Name="Flags" Type="int32" Value="3"/>
+																						</PropertyList>
+																						<PointList>
+																							<Point>
+																								<XPos>0</XPos>
+																								<YPos>-199.999995</YPos>
+																								<Flags>5</Flags>
+																							</Point>
+																							<Point>
+																								<XPos>16.58038</XPos>
+																								<YPos>-1.81937</YPos>
+																								<Flags>0</Flags>
+																							</Point>
+																							<Point>
+																								<XPos>70.69765</XPos>
+																								<YPos>-0.24722</YPos>
+																								<Flags>0</Flags>
+																							</Point>
+																							<Point>
+																								<XPos>100</XPos>
+																								<YPos>-0.03663</YPos>
+																								<Flags>37</Flags>
+																							</Point>
+																						</PointList>
+																					</Curve>
+																				</Custom>
+																			</Reference>
+																		</ReferenceList>
+																	</RTPC>
+																</Local>
+															</Reference>
+														</ObjectList>
+													</ObjectLists>
+													<BlendTrackAssocList>
+														<BlendTrackAssoc>
+															<ItemRef Name="CarOverStone - Light" ID="{D95F3E07-04BC-48F9-AD3A-B36DE62EC3FF}"/>
+															<CrossfadingInfo>
+																<LeftEdgePos>0</LeftEdgePos>
+																<LeftFadingMode>Automatic</LeftFadingMode>
+																<RightEdgePos>26.4350453172205</RightEdgePos>
+																<RightFadingMode>Automatic</RightFadingMode>
+															</CrossfadingInfo>
+														</BlendTrackAssoc>
+														<BlendTrackAssoc>
+															<ItemRef Name="CarOverStone - Heavy" ID="{C12C1A74-5BDC-492D-A0E4-3DE1EBBAA174}"/>
+															<CrossfadingInfo>
+																<LeftEdgePos>21.4501510574018</LeftEdgePos>
+																<LeftFadingMode>Automatic</LeftFadingMode>
+																<RightEdgePos>100</RightEdgePos>
+																<RightFadingMode>Automatic</RightFadingMode>
+															</CrossfadingInfo>
+														</BlendTrackAssoc>
+													</BlendTrackAssocList>
+												</BlendTrack>
+											</BlendTrackList>
+										</BlendContainer>
 									</ChildrenList>
-									<ActiveSourceList>
-										<ActiveSource Name="Car moving through sand loop" ID="{2B03940A-29D5-41A3-ABBC-21C54F44B453}" Platform="Linked"/>
-									</ActiveSourceList>
-								</Sound>
-								<Sound Name="Car moving through wood loop" ID="{BBABEA13-3B77-4185-86C4-10B05E46A9CA}" ShortID="622853913">
-									<PropertyList>
-										<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
-										<Property Name="Lowpass" Type="int16">
-											<ValueList>
-												<Value>30</Value>
-											</ValueList>
-										</Property>
-										<Property Name="Pitch" Type="int32">
-											<ValueList>
-												<Value>250</Value>
-											</ValueList>
-											<ModifierList>
-												<ModifierInfo>
-													<Modifier Name="" ID="{74CC37F4-7005-43FD-9C77-942EE00F3BF3}">
+									<ObjectLists>
+										<ObjectList Name="RTPC">
+											<Reference>
+												<Local>
+													<RTPC Name="" ID="{40F24B3B-B37F-4ADA-9E71-31D535AF0E3C}" ShortID="974579387">
 														<PropertyList>
-															<Property Name="Enabled" Type="bool" Value="True"/>
+															<Property Name="PropertyName" Type="string" Value="Volume"/>
 														</PropertyList>
-													</Modifier>
-												</ModifierInfo>
-											</ModifierList>
-										</Property>
-										<Property Name="Volume" Type="Real64">
-											<ValueList>
-												<Value>-19</Value>
-											</ValueList>
-										</Property>
-									</PropertyList>
-									<ReferenceList>
-										<Reference Name="Conversion">
-											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
-										</Reference>
-										<Reference Name="OutputBus">
-											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
-										</Reference>
-									</ReferenceList>
-									<ChildrenList>
-										<AudioFileSource Name="Car moving through wood loop" ID="{B0BBBDCF-250F-421E-90FB-848DD8C01BF8}">
-											<Language>SFX</Language>
-											<AudioFile>Car moving through wood loop  .wav</AudioFile>
-											<MediaIDList>
-												<MediaID ID="25942129"/>
-											</MediaIDList>
-										</AudioFileSource>
-									</ChildrenList>
-									<ActiveSourceList>
-										<ActiveSource Name="Car moving through wood loop" ID="{B0BBBDCF-250F-421E-90FB-848DD8C01BF8}" Platform="Linked"/>
-									</ActiveSourceList>
-								</Sound>
+														<ReferenceList>
+															<Reference Name="ControlInput">
+																<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+															</Reference>
+															<Reference Name="Curve">
+																<Custom>
+																	<Curve Name="" ID="{C44440A7-02DF-4591-8E96-B3F012F90CBF}">
+																		<PropertyList>
+																			<Property Name="Flags" Type="int32" Value="3"/>
+																		</PropertyList>
+																		<PointList>
+																			<Point>
+																				<XPos>0</XPos>
+																				<YPos>-200</YPos>
+																				<Flags>5</Flags>
+																			</Point>
+																			<Point>
+																				<XPos>30</XPos>
+																				<YPos>5.9277</YPos>
+																				<Flags>37</Flags>
+																			</Point>
+																		</PointList>
+																	</Curve>
+																</Custom>
+															</Reference>
+														</ReferenceList>
+													</RTPC>
+												</Local>
+											</Reference>
+											<Reference>
+												<Local>
+													<RTPC Name="" ID="{0340CFDD-805F-4BB5-B905-FDF89813F03B}" ShortID="681028154">
+														<PropertyList>
+															<Property Name="PropertyName" Type="string" Value="Volume"/>
+														</PropertyList>
+														<ReferenceList>
+															<Reference Name="ControlInput">
+																<ObjectRef Name="WheelsMoving" ID="{BFB55191-504D-499C-86D7-AC07C3A38E15}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+															</Reference>
+															<Reference Name="Curve">
+																<Custom>
+																	<Curve Name="" ID="{97633C90-F410-4E0D-B40E-E193B3D86D2A}">
+																		<PropertyList>
+																			<Property Name="Flags" Type="int32" Value="3"/>
+																		</PropertyList>
+																		<PointList>
+																			<Point>
+																				<XPos>0</XPos>
+																				<YPos>-200</YPos>
+																				<Flags>5</Flags>
+																			</Point>
+																			<Point>
+																				<XPos>100</XPos>
+																				<YPos>0</YPos>
+																				<Flags>37</Flags>
+																			</Point>
+																		</PointList>
+																	</Curve>
+																</Custom>
+															</Reference>
+														</ReferenceList>
+													</RTPC>
+												</Local>
+											</Reference>
+										</ObjectList>
+									</ObjectLists>
+									<GroupingInfo>
+										<GroupingBehaviorList>
+											<GroupingBehavior>
+												<ItemRef Name="Car moving through wood loop" ID="{BBABEA13-3B77-4185-86C4-10B05E46A9CA}"/>
+											</GroupingBehavior>
+											<GroupingBehavior>
+												<ItemRef Name="Car moving through sand loop" ID="{04027817-331E-4E16-88E0-A074BF0232F2}"/>
+											</GroupingBehavior>
+											<GroupingBehavior>
+												<ItemRef Name="CarOverStone" ID="{97166926-E005-4AAD-85B3-2FB68D6B01F2}"/>
+											</GroupingBehavior>
+										</GroupingBehaviorList>
+										<GroupingList>
+											<Grouping>
+												<SwitchRef Name="Sand" ID="{668B7801-AE79-481C-A618-D38E01A26D7F}"/>
+												<ItemList>
+													<ItemRef Name="Car moving through sand loop" ID="{04027817-331E-4E16-88E0-A074BF0232F2}"/>
+												</ItemList>
+											</Grouping>
+											<Grouping>
+												<SwitchRef Name="Stone" ID="{BE0F1021-7ECB-41B6-88F0-7C8EB4F6637F}"/>
+												<ItemList>
+													<ItemRef Name="CarOverStone" ID="{97166926-E005-4AAD-85B3-2FB68D6B01F2}"/>
+												</ItemList>
+											</Grouping>
+											<Grouping>
+												<SwitchRef Name="Wood" ID="{94FAA742-36DA-4EA4-B4A7-5C54A673299D}"/>
+												<ItemList>
+													<ItemRef Name="Car moving through wood loop" ID="{BBABEA13-3B77-4185-86C4-10B05E46A9CA}"/>
+												</ItemList>
+											</Grouping>
+										</GroupingList>
+									</GroupingInfo>
+								</SwitchContainer>
 							</ChildrenList>
 						</Folder>
 						<BlendContainer Name="WheelsSound" ID="{20394078-F0EF-4AE1-B002-C51857A66803}" ShortID="577204576">
@@ -594,6 +716,45 @@
 									</ActiveSourceList>
 								</Sound>
 							</ChildrenList>
+							<ObjectLists>
+								<ObjectList Name="RTPC">
+									<Reference>
+										<Local>
+											<RTPC Name="" ID="{166BBD2B-B0AC-43C4-B4FF-1669632A1929}" ShortID="786782312">
+												<PropertyList>
+													<Property Name="PropertyName" Type="string" Value="Volume"/>
+												</PropertyList>
+												<ReferenceList>
+													<Reference Name="ControlInput">
+														<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+													</Reference>
+													<Reference Name="Curve">
+														<Custom>
+															<Curve Name="" ID="{D4C3C0F0-439F-49AE-B908-4C2357717480}">
+																<PropertyList>
+																	<Property Name="Flags" Type="int32" Value="3"/>
+																</PropertyList>
+																<PointList>
+																	<Point>
+																		<XPos>0</XPos>
+																		<YPos>-200</YPos>
+																		<Flags>5</Flags>
+																	</Point>
+																	<Point>
+																		<XPos>30</XPos>
+																		<YPos>5.9277</YPos>
+																		<Flags>37</Flags>
+																	</Point>
+																</PointList>
+															</Curve>
+														</Custom>
+													</Reference>
+												</ReferenceList>
+											</RTPC>
+										</Local>
+									</Reference>
+								</ObjectList>
+							</ObjectLists>
 							<BlendTrackList>
 								<BlendTrack Name="New Blend Track" ID="{C73DB365-BED7-4B5F-8F12-A6522B2B8559}" ShortID="1071756932">
 									<PropertyList>
@@ -3152,7 +3313,7 @@
 								</Property>
 								<Property Name="Volume" Type="Real64">
 									<ValueList>
-										<Value>-10</Value>
+										<Value>-17</Value>
 									</ValueList>
 								</Property>
 							</PropertyList>
@@ -3631,7 +3792,7 @@
 																	</Point>
 																	<Point>
 																		<XPos>30</XPos>
-																		<YPos>0</YPos>
+																		<YPos>5.80536</YPos>
 																		<Flags>37</Flags>
 																	</Point>
 																</PointList>
@@ -3646,6 +3807,13 @@
 							</ObjectLists>
 						</RandomSequenceContainer>
 						<Sound Name="LeverPressDown" ID="{FDF71895-DAB3-4763-B2FD-53F68FEABDA6}" ShortID="637631866">
+							<PropertyList>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>-15</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
 							<ReferenceList>
 								<Reference Name="Conversion">
 									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
@@ -3663,11 +3831,57 @@
 									</MediaIDList>
 								</AudioFileSource>
 							</ChildrenList>
+							<ObjectLists>
+								<ObjectList Name="RTPC">
+									<Reference>
+										<Local>
+											<RTPC Name="" ID="{F39DA1F6-8F73-4E41-B9DC-061B3FC124F6}" ShortID="68557876">
+												<PropertyList>
+													<Property Name="PropertyName" Type="string" Value="Volume"/>
+												</PropertyList>
+												<ReferenceList>
+													<Reference Name="ControlInput">
+														<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+													</Reference>
+													<Reference Name="Curve">
+														<Custom>
+															<Curve Name="" ID="{756C3879-D26B-4591-95A3-6AAE06D793A2}">
+																<PropertyList>
+																	<Property Name="Flags" Type="int32" Value="3"/>
+																</PropertyList>
+																<PointList>
+																	<Point>
+																		<XPos>0</XPos>
+																		<YPos>-200</YPos>
+																		<Flags>5</Flags>
+																	</Point>
+																	<Point>
+																		<XPos>30</XPos>
+																		<YPos>5.9277</YPos>
+																		<Flags>37</Flags>
+																	</Point>
+																</PointList>
+															</Curve>
+														</Custom>
+													</Reference>
+												</ReferenceList>
+											</RTPC>
+										</Local>
+									</Reference>
+								</ObjectList>
+							</ObjectLists>
 							<ActiveSourceList>
 								<ActiveSource Name="LeverPressDown" ID="{D44E3138-546A-4911-8EA7-F1F94E6BBB4D}" Platform="Linked"/>
 							</ActiveSourceList>
 						</Sound>
 						<Sound Name="LeverPressUp (reuse of platformmoving)" ID="{05C5AC94-4C2D-4111-B096-4EB9DCEFA322}" ShortID="331747303">
+							<PropertyList>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>-10</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
 							<ReferenceList>
 								<Reference Name="Conversion">
 									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
@@ -3688,6 +3902,45 @@
 									</MediaIDList>
 								</AudioFileSource>
 							</ChildrenList>
+							<ObjectLists>
+								<ObjectList Name="RTPC">
+									<Reference>
+										<Local>
+											<RTPC Name="" ID="{884FC9BF-4746-48F0-8173-93B442EB59D6}" ShortID="598869447">
+												<PropertyList>
+													<Property Name="PropertyName" Type="string" Value="Volume"/>
+												</PropertyList>
+												<ReferenceList>
+													<Reference Name="ControlInput">
+														<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+													</Reference>
+													<Reference Name="Curve">
+														<Custom>
+															<Curve Name="" ID="{50A8461E-2B83-4963-A85D-8814A0916BE1}">
+																<PropertyList>
+																	<Property Name="Flags" Type="int32" Value="3"/>
+																</PropertyList>
+																<PointList>
+																	<Point>
+																		<XPos>0</XPos>
+																		<YPos>-200</YPos>
+																		<Flags>5</Flags>
+																	</Point>
+																	<Point>
+																		<XPos>30</XPos>
+																		<YPos>6.05179</YPos>
+																		<Flags>37</Flags>
+																	</Point>
+																</PointList>
+															</Curve>
+														</Custom>
+													</Reference>
+												</ReferenceList>
+											</RTPC>
+										</Local>
+									</Reference>
+								</ObjectList>
+							</ObjectLists>
 							<ActiveSourceList>
 								<ActiveSource Name="LeverPressUp (reuse of platformmoving)" ID="{7472599F-7DD5-47C5-B1AB-8D427DF029EC}" Platform="Linked"/>
 							</ActiveSourceList>
@@ -3895,6 +4148,41 @@
 													</RTPC>
 												</Local>
 											</Reference>
+											<Reference>
+												<Local>
+													<RTPC Name="" ID="{5F1CC3C8-3B1E-49A7-B49F-845AEB020071}" ShortID="539629043">
+														<PropertyList>
+															<Property Name="PropertyName" Type="string" Value="Volume"/>
+														</PropertyList>
+														<ReferenceList>
+															<Reference Name="ControlInput">
+																<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+															</Reference>
+															<Reference Name="Curve">
+																<Custom>
+																	<Curve Name="" ID="{1F3C4BEB-DD20-4E59-BCA5-16B3722A56C9}">
+																		<PropertyList>
+																			<Property Name="Flags" Type="int32" Value="3"/>
+																		</PropertyList>
+																		<PointList>
+																			<Point>
+																				<XPos>0</XPos>
+																				<YPos>-200</YPos>
+																				<Flags>5</Flags>
+																			</Point>
+																			<Point>
+																				<XPos>30</XPos>
+																				<YPos>6.05179</YPos>
+																				<Flags>37</Flags>
+																			</Point>
+																		</PointList>
+																	</Curve>
+																</Custom>
+															</Reference>
+														</ReferenceList>
+													</RTPC>
+												</Local>
+											</Reference>
 										</ObjectList>
 									</ObjectLists>
 									<ActiveSourceList>
@@ -4055,6 +4343,45 @@
 											</MediaIDList>
 										</AudioFileSource>
 									</ChildrenList>
+									<ObjectLists>
+										<ObjectList Name="RTPC">
+											<Reference>
+												<Local>
+													<RTPC Name="" ID="{9DCC3D39-C928-4643-BBFA-BE12F7EC6AC3}" ShortID="627248232">
+														<PropertyList>
+															<Property Name="PropertyName" Type="string" Value="Volume"/>
+														</PropertyList>
+														<ReferenceList>
+															<Reference Name="ControlInput">
+																<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+															</Reference>
+															<Reference Name="Curve">
+																<Custom>
+																	<Curve Name="" ID="{303F9CFA-B4DF-4A5A-B601-8FAF85D36A88}">
+																		<PropertyList>
+																			<Property Name="Flags" Type="int32" Value="3"/>
+																		</PropertyList>
+																		<PointList>
+																			<Point>
+																				<XPos>0</XPos>
+																				<YPos>-200</YPos>
+																				<Flags>5</Flags>
+																			</Point>
+																			<Point>
+																				<XPos>30</XPos>
+																				<YPos>5.80536</YPos>
+																				<Flags>37</Flags>
+																			</Point>
+																		</PointList>
+																	</Curve>
+																</Custom>
+															</Reference>
+														</ReferenceList>
+													</RTPC>
+												</Local>
+											</Reference>
+										</ObjectList>
+									</ObjectLists>
 									<ActiveSourceList>
 										<ActiveSource Name="PlatformMoving" ID="{C8FA898D-58C4-40DD-8122-AF1516489261}" Platform="Linked"/>
 									</ActiveSourceList>
@@ -4260,10 +4587,458 @@
 													</RTPC>
 												</Local>
 											</Reference>
+											<Reference>
+												<Local>
+													<RTPC Name="" ID="{4C6014E4-673A-4BA0-9331-40ED9306651A}" ShortID="882899285">
+														<PropertyList>
+															<Property Name="PropertyName" Type="string" Value="Volume"/>
+														</PropertyList>
+														<ReferenceList>
+															<Reference Name="ControlInput">
+																<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+															</Reference>
+															<Reference Name="Curve">
+																<Custom>
+																	<Curve Name="" ID="{C497B1C3-3199-480F-B978-1F4305110B8B}">
+																		<PropertyList>
+																			<Property Name="Flags" Type="int32" Value="3"/>
+																		</PropertyList>
+																		<PointList>
+																			<Point>
+																				<XPos>0</XPos>
+																				<YPos>-200</YPos>
+																				<Flags>5</Flags>
+																			</Point>
+																			<Point>
+																				<XPos>30</XPos>
+																				<YPos>6.05179</YPos>
+																				<Flags>37</Flags>
+																			</Point>
+																		</PointList>
+																	</Curve>
+																</Custom>
+															</Reference>
+														</ReferenceList>
+													</RTPC>
+												</Local>
+											</Reference>
 										</ObjectList>
 									</ObjectLists>
 									<ActiveSourceList>
 										<ActiveSource Name="PlatformMoving" ID="{211A0F86-C5C2-4CA6-BCE6-026FAE2A55B0}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+							</ChildrenList>
+						</Folder>
+						<Sound Name="Tapestry SFX" ID="{47D503EC-F742-466A-959D-DF9E1FB3739A}" ShortID="1017922290">
+							<PropertyList>
+								<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>-16</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="cloth flap in wind" ID="{F729BAE1-FDE7-4666-82EF-F41B72B8538E}">
+									<Language>SFX</Language>
+									<AudioFile>cloth flap in wind.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="922961190"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ObjectLists>
+								<ObjectList Name="RTPC">
+									<Reference>
+										<Local>
+											<RTPC Name="" ID="{17BB066B-DB2D-4384-AF62-E7114533517B}" ShortID="651333289">
+												<PropertyList>
+													<Property Name="PropertyName" Type="string" Value="Volume"/>
+												</PropertyList>
+												<ReferenceList>
+													<Reference Name="ControlInput">
+														<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+													</Reference>
+													<Reference Name="Curve">
+														<Custom>
+															<Curve Name="" ID="{0A37400F-7EA1-4A5F-A912-5C07CEF45673}">
+																<PropertyList>
+																	<Property Name="Flags" Type="int32" Value="3"/>
+																</PropertyList>
+																<PointList>
+																	<Point>
+																		<XPos>0</XPos>
+																		<YPos>-200</YPos>
+																		<Flags>5</Flags>
+																	</Point>
+																	<Point>
+																		<XPos>30</XPos>
+																		<YPos>5.80536</YPos>
+																		<Flags>37</Flags>
+																	</Point>
+																</PointList>
+															</Curve>
+														</Custom>
+													</Reference>
+												</ReferenceList>
+											</RTPC>
+										</Local>
+									</Reference>
+								</ObjectList>
+							</ObjectLists>
+							<ActiveSourceList>
+								<ActiveSource Name="cloth flap in wind" ID="{F729BAE1-FDE7-4666-82EF-F41B72B8538E}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="RespawnPing" ID="{42B44FD3-33FB-4F63-91C7-A0747A36B541}" ShortID="454727804">
+							<PropertyList>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>-15</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="respawn ping" ID="{D99853D7-0348-4C36-B55B-F370CE45458E}">
+									<Language>SFX</Language>
+									<AudioFile>respawn ping .wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="218073691"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ObjectLists>
+								<ObjectList Name="RTPC">
+									<Reference>
+										<Local>
+											<RTPC Name="" ID="{50056B5C-70D9-4575-9951-9EAD6BEBCAA6}" ShortID="153773107">
+												<PropertyList>
+													<Property Name="PropertyName" Type="string" Value="Volume"/>
+												</PropertyList>
+												<ReferenceList>
+													<Reference Name="ControlInput">
+														<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+													</Reference>
+													<Reference Name="Curve">
+														<Custom>
+															<Curve Name="" ID="{1415E2FF-D2F2-4759-8C07-BE758A1408C8}">
+																<PropertyList>
+																	<Property Name="Flags" Type="int32" Value="3"/>
+																</PropertyList>
+																<PointList>
+																	<Point>
+																		<XPos>0</XPos>
+																		<YPos>-200</YPos>
+																		<Flags>5</Flags>
+																	</Point>
+																	<Point>
+																		<XPos>30</XPos>
+																		<YPos>5.9277</YPos>
+																		<Flags>37</Flags>
+																	</Point>
+																</PointList>
+															</Curve>
+														</Custom>
+													</Reference>
+												</ReferenceList>
+											</RTPC>
+										</Local>
+									</Reference>
+								</ObjectList>
+							</ObjectLists>
+							<ActiveSourceList>
+								<ActiveSource Name="respawn ping" ID="{D99853D7-0348-4C36-B55B-F370CE45458E}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Folder Name="PillarSequence" ID="{BADECFA8-1EFF-43F2-A0E0-D846FDC302B9}" ShortID="163223350">
+							<ChildrenList>
+								<Sound Name="pillar fall hit ground" ID="{9ABEF493-C1D2-4734-9707-A5C8E1E19C65}" ShortID="428700809">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-19</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="pillar fall hit ground" ID="{6FFB50C8-A742-479F-97E8-3C8F4E427793}">
+											<Language>SFX</Language>
+											<AudioFile>pillar fall hit ground.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="551501828"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists>
+										<ObjectList Name="RTPC">
+											<Reference>
+												<Local>
+													<RTPC Name="" ID="{F67A7C3A-F781-43C6-A77F-F1B64FFDA8B8}" ShortID="495006702">
+														<PropertyList>
+															<Property Name="PropertyName" Type="string" Value="Volume"/>
+														</PropertyList>
+														<ReferenceList>
+															<Reference Name="ControlInput">
+																<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+															</Reference>
+															<Reference Name="Curve">
+																<Custom>
+																	<Curve Name="" ID="{EE8D9E3B-74B6-49D6-B84B-49932FF05344}">
+																		<PropertyList>
+																			<Property Name="Flags" Type="int32" Value="3"/>
+																		</PropertyList>
+																		<PointList>
+																			<Point>
+																				<XPos>0</XPos>
+																				<YPos>-200</YPos>
+																				<Flags>5</Flags>
+																			</Point>
+																			<Point>
+																				<XPos>30</XPos>
+																				<YPos>5.9277</YPos>
+																				<Flags>37</Flags>
+																			</Point>
+																		</PointList>
+																	</Curve>
+																</Custom>
+															</Reference>
+														</ReferenceList>
+													</RTPC>
+												</Local>
+											</Reference>
+										</ObjectList>
+									</ObjectLists>
+									<ActiveSourceList>
+										<ActiveSource Name="pillar fall hit ground" ID="{6FFB50C8-A742-479F-97E8-3C8F4E427793}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="pillar fall rumble" ID="{8E26AAC8-4516-42E9-83C6-1542679F786F}" ShortID="698843449">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-20</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="pillar fall rumble" ID="{E267F2FE-8CAA-4AEA-95E3-19A2927A4507}">
+											<Language>SFX</Language>
+											<AudioFile>pillar fall rumble.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="921749888"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists>
+										<ObjectList Name="RTPC">
+											<Reference>
+												<Local>
+													<RTPC Name="" ID="{2909B7A7-7CF1-46FD-86B4-3ADEBD8E0960}" ShortID="1051883953">
+														<PropertyList>
+															<Property Name="PropertyName" Type="string" Value="Volume"/>
+														</PropertyList>
+														<ReferenceList>
+															<Reference Name="ControlInput">
+																<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+															</Reference>
+															<Reference Name="Curve">
+																<Custom>
+																	<Curve Name="" ID="{A8A9DD4D-EC28-4AA0-BBD2-84A283DBB0E6}">
+																		<PropertyList>
+																			<Property Name="Flags" Type="int32" Value="3"/>
+																		</PropertyList>
+																		<PointList>
+																			<Point>
+																				<XPos>0</XPos>
+																				<YPos>-200</YPos>
+																				<Flags>5</Flags>
+																			</Point>
+																			<Point>
+																				<XPos>30</XPos>
+																				<YPos>6.05179</YPos>
+																				<Flags>37</Flags>
+																			</Point>
+																		</PointList>
+																	</Curve>
+																</Custom>
+															</Reference>
+														</ReferenceList>
+													</RTPC>
+												</Local>
+											</Reference>
+										</ObjectList>
+									</ObjectLists>
+									<ActiveSourceList>
+										<ActiveSource Name="pillar fall rumble" ID="{E267F2FE-8CAA-4AEA-95E3-19A2927A4507}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="pillar fall snap-001" ID="{C89BBB18-E3AF-477E-AB14-C42E77F6C72A}" ShortID="461448863">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-13</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="pillar fall snap-001" ID="{2C2F3E50-25E2-4C5B-A016-8E8D6AD32E23}">
+											<Language>SFX</Language>
+											<AudioFile>pillar fall snap-001.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="610998176"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists>
+										<ObjectList Name="RTPC">
+											<Reference>
+												<Local>
+													<RTPC Name="" ID="{161F5171-8DA9-4D10-BC9B-5AD724D5A9A7}" ShortID="1072565446">
+														<PropertyList>
+															<Property Name="PropertyName" Type="string" Value="Volume"/>
+														</PropertyList>
+														<ReferenceList>
+															<Reference Name="ControlInput">
+																<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+															</Reference>
+															<Reference Name="Curve">
+																<Custom>
+																	<Curve Name="" ID="{08DABF27-3216-47EE-AE51-241FD3B2CC43}">
+																		<PropertyList>
+																			<Property Name="Flags" Type="int32" Value="3"/>
+																		</PropertyList>
+																		<PointList>
+																			<Point>
+																				<XPos>0</XPos>
+																				<YPos>-200</YPos>
+																				<Flags>5</Flags>
+																			</Point>
+																			<Point>
+																				<XPos>30</XPos>
+																				<YPos>5.9277</YPos>
+																				<Flags>37</Flags>
+																			</Point>
+																		</PointList>
+																	</Curve>
+																</Custom>
+															</Reference>
+														</ReferenceList>
+													</RTPC>
+												</Local>
+											</Reference>
+										</ObjectList>
+									</ObjectLists>
+									<ActiveSourceList>
+										<ActiveSource Name="pillar fall snap-001" ID="{2C2F3E50-25E2-4C5B-A016-8E8D6AD32E23}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="pillar fall snap-002" ID="{ED8046FA-5143-48A0-BE91-2C48B7632B73}" ShortID="501487851">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-14</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="pillar fall snap-002" ID="{578190C0-A857-44C3-8DBC-B5B14A3AA331}">
+											<Language>SFX</Language>
+											<AudioFile>pillar fall snap-002.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="216898037"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists>
+										<ObjectList Name="RTPC">
+											<Reference>
+												<Local>
+													<RTPC Name="" ID="{D5427F86-8BCD-443D-8D77-B0D46B379EBE}" ShortID="566858375">
+														<PropertyList>
+															<Property Name="PropertyName" Type="string" Value="Volume"/>
+														</PropertyList>
+														<ReferenceList>
+															<Reference Name="ControlInput">
+																<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+															</Reference>
+															<Reference Name="Curve">
+																<Custom>
+																	<Curve Name="" ID="{C2A94F4D-0FE9-4C4E-9B8F-FE074C642A5D}">
+																		<PropertyList>
+																			<Property Name="Flags" Type="int32" Value="3"/>
+																		</PropertyList>
+																		<PointList>
+																			<Point>
+																				<XPos>0</XPos>
+																				<YPos>-200</YPos>
+																				<Flags>5</Flags>
+																			</Point>
+																			<Point>
+																				<XPos>30</XPos>
+																				<YPos>6.17767</YPos>
+																				<Flags>37</Flags>
+																			</Point>
+																		</PointList>
+																	</Curve>
+																</Custom>
+															</Reference>
+														</ReferenceList>
+													</RTPC>
+												</Local>
+											</Reference>
+										</ObjectList>
+									</ObjectLists>
+									<ActiveSourceList>
+										<ActiveSource Name="pillar fall snap-002" ID="{578190C0-A857-44C3-8DBC-B5B14A3AA331}" Platform="Linked"/>
 									</ActiveSourceList>
 								</Sound>
 							</ChildrenList>
