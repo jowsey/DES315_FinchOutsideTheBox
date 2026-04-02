@@ -111,6 +111,8 @@ public class PlayerController : NetworkBehaviour
 
     public static bool ControlsEnabled => _controlBlockers.Count == 0;
 
+    [SerializeField] private Transform _cameraObstructionDithererRayEndPosition;
+
     public static void AddControlBlocker(Object blocker)
     {
         _controlBlockers.Add(blocker);
@@ -205,6 +207,8 @@ public class PlayerController : NetworkBehaviour
 
         // Only local player gets a Wwise audio listener
         gameObject.AddComponent<AkAudioListener>();
+
+        ObstructionDitherer.PlayerTransform = _cameraObstructionDithererRayEndPosition;
     }
 
     public override void OnStopLocalPlayer()
