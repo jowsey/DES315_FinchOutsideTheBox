@@ -79,6 +79,11 @@ public class Flask : NetworkBehaviour
             Highlight.SetHighlightable("FlaskCarrier", true);
             _holder.FlaskPickupFX.Post(gameObject);
         }
+
+        GetComponent<NetworkTransformBase>().enabled = false;
+        transform.SetParent(_holder.FlaskPickupTarget);
+        transform.localPosition = Vector3.zero;
+        transform.localRotation = Quaternion.identity;
     }
 
     [Command(requiresAuthority = false)]
@@ -110,6 +115,8 @@ public class Flask : NetworkBehaviour
 
         _holder.HeldFlask = null;
         _holder = null;
+        transform.SetParent(null);
+        GetComponent<NetworkTransformBase>().enabled = false;
     }
 
     private void Smash()
@@ -169,7 +176,6 @@ public class Flask : NetworkBehaviour
 
         if (State == FlaskState.Held)
         {
-            Rb.MovePosition(_holder.FlaskPickupTarget.position);
             return;
         }
 
@@ -197,15 +203,6 @@ public class Flask : NetworkBehaviour
                     RpcEndPutdown();
                 }
             }
-        }
-    }
-
-    private void LateUpdate()
-    {
-        // Clients simulate separately to mask latency
-        if (!isServer && State == FlaskState.Held)
-        {
-            transform.position = _holder.FlaskPickupTarget.position;
         }
     }
 
