@@ -20,7 +20,6 @@ GameObject:
   - component: {fileID: 3228443039865629975}
   - component: {fileID: 7476746918021713509}
   - component: {fileID: -7403833992570093263}
-  - component: {fileID: -2700454122061659998}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -99,7 +98,6 @@ MonoBehaviour:
   MoveAction: {fileID: -1680190386980627800, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
   JumpAction: {fileID: -2099379676528639254, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
   InteractAction: {fileID: 1781555164194001046, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
-  postWwiseFootstep: {fileID: 0}
   FlaskPickupFX:
     idInternal: 0
     valueGuidInternal: 
@@ -120,12 +118,6 @@ MonoBehaviour:
   - {fileID: 5210508226090316216}
   _actionCurveLinePrefab: {fileID: 7011724201460765554, guid: 8110da47f80f14b1e92c4f0876b3ad30, type: 3}
   <FlaskPickupTarget>k__BackingField: {fileID: 6669740496216783317}
-  footsteps:
-    idInternal: 0
-    valueGuidInternal: 
-    groupIdInternal: 0
-    groupGuidInternal: 
-    WwiseObjectReference: {fileID: 11400000, guid: ac535510c117e5a4f9ffa24ac9bdb119, type: 2}
 --- !u!114 &2406511369735062858
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -371,11 +363,11 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: 9e7828510aacb8e4085227a844bc3a1b, type: 2}
-  Fall:
+  Glide:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: 7e924f0dca54eb94d9aabb3a0ae047d3, type: 2}
-  fallCount: 0
+  GlideTriggered: 0
 --- !u!114 &-7403833992570093263
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -400,22 +392,6 @@ MonoBehaviour:
   scalingFactor: 1
   m_posOffsetData: {fileID: 0}
   listenerMask: 1
---- !u!114 &-2700454122061659998
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 123377547585072098}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8e0173a5d5e43b4180fc4037058bfee, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: AK.Wwise.Unity.MonoBehaviour::AkAudioListener
-  isDefaultListener: 1
-  bOverrideScalingFactor: 0
-  scalingFactor: -1
-  listenerId: 0
 --- !u!1 &172664933246562798
 GameObject:
   m_ObjectHideFlags: 0

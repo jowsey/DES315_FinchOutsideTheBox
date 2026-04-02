@@ -52,7 +52,7 @@ public class PlayerController : NetworkBehaviour
 
     private bool _jumpPressed;
 
-    public PostWwiseFootstep postWwiseFootstep;
+    private WwiseAnimationEvents _wwiseAnimationEvents;
 
     public AK.Wwise.Event FlaskPickupFX;
 
@@ -83,7 +83,7 @@ public class PlayerController : NetworkBehaviour
 
     [field: SyncVar] [field: ShowInInspector] [field: ReadOnly] public Vector3 WorldSpaceMoveDir { get; private set; }
     [field: SyncVar] [field: ShowInInspector] [field: ReadOnly] public float AnalogueMoveScale { get; private set; }
-    
+
     [Header("Skin materials")]
     [SerializeField] private Renderer[] _skinnedRenderers;
 
@@ -93,17 +93,14 @@ public class PlayerController : NetworkBehaviour
 
     [field: SerializeField] public Transform FlaskPickupTarget { get; private set; }
 
-    //Swap to "WheelSeat" (aka dont make a sound when on wheels) 
-    public AK.Wwise.Switch footsteps;
-
     // Called when a player object is done being initially setup
     // Does NOT imply the player has just joined
-    public static UnityEvent<PlayerController> OnPlayerReady = new();
+    public static readonly UnityEvent<PlayerController> OnPlayerReady = new();
 
     // While there are any control blockers, the player won't be able to be controlled
     private static readonly HashSet<Object> _controlBlockers = new();
     private static CinemachineInputAxisController _cinemachineInput;
-    
+
     public static bool ControlsEnabled => _controlBlockers.Count == 0;
 
     public static void AddControlBlocker(Object blocker)
@@ -132,6 +129,7 @@ public class PlayerController : NetworkBehaviour
 
         Rb = GetComponent<Rigidbody>();
         _networkAnimator = GetComponent<NetworkAnimator>();
+        _wwiseAnimationEvents = GetComponent<WwiseAnimationEvents>();
 
         Checkpoint.RespawnEvent.AddListener(OnRespawn);
     }
@@ -153,25 +151,6 @@ public class PlayerController : NetworkBehaviour
     {
         if (isLocalPlayer) return;
         PlayerPresenceFeed.OnPlayerLeave.Invoke(this);
-    }
-
-    private void OnDestroy()
-    {
-        Checkpoint.RespawnEvent.RemoveListener(OnRespawn);
-    }
-
-    private void OnRespawn(Checkpoint checkpoint)
-    {
-        if (!authority || Seat) return;
-
-        Transform newTransform = checkpoint.playerRespawnLocalTransforms[PlayerIndex % checkpoint.playerRespawnLocalTransforms.Length];
-
-        Rb.position = newTransform.position;
-        Rb.rotation = newTransform.rotation;
-        Rb.linearVelocity = Vector3.zero;
-        Rb.angularVelocity = Vector3.zero;
-        
-        _camera.PreviousStateIsValid = false;
     }
 
     public override void OnStartLocalPlayer()
@@ -201,31 +180,43 @@ public class PlayerController : NetworkBehaviour
 
         // todo this sucks
         // eventually we should just link carts to 2 players so we can have an arbitrary number of carts/players
-        var wheels = FindObjectsByType<WheelSeat>(FindObjectsSortMode.None);
-        var closestWheel = wheels[0];
-        var closestDist = float.MaxValue;
-        foreach (var wheel in wheels)
-        {
-            var dist = Vector3.Distance(transform.position, wheel.transform.position);
-            if (dist >= closestDist) continue;
-            closestWheel = wheel;
-            closestDist = dist;
-        }
+        var wheels = FindObjectsByType<WheelSeat>(FindObjectsSortMode.InstanceID);
+        var assignedWheel = wheels[PlayerIndex % wheels.Length];
 
         var onboardingJumpLine = Instantiate(_actionCurveLinePrefab, null);
         onboardingJumpLine.StartFollowTarget = transform;
         onboardingJumpLine.StartTrackingOffset = Vector3.up * 0.5f;
-        onboardingJumpLine.EndFollowTarget = closestWheel.transform;
-        onboardingJumpLine.EndTrackingOffset = closestWheel.transform.InverseTransformPoint(closestWheel.SeatedPosition);
+        onboardingJumpLine.EndFollowTarget = assignedWheel.transform;
+        onboardingJumpLine.EndTrackingOffset = assignedWheel.transform.InverseTransformPoint(assignedWheel.SeatedPosition);
         onboardingJumpLine.PromptLabel = "Hop on with <b>[Space]</b>!";
         onboardingJumpLine.ShouldDestroy = () => Seat; // if we're sat, job's done
 
-        postWwiseFootstep = GetComponent<PostWwiseFootstep>();
+        // Only local player gets a Wwise audio listener
+        gameObject.AddComponent<AkAudioListener>();
     }
 
     public override void OnStopLocalPlayer()
     {
         Cursor.lockState = CursorLockMode.None;
+    }
+
+    private void OnDestroy()
+    {
+        Checkpoint.RespawnEvent.RemoveListener(OnRespawn);
+    }
+
+    private void OnRespawn(Checkpoint checkpoint)
+    {
+        if (!authority || Seat) return;
+
+        Transform newTransform = checkpoint.playerRespawnLocalTransforms[PlayerIndex % checkpoint.playerRespawnLocalTransforms.Length];
+
+        Rb.position = newTransform.position;
+        Rb.rotation = newTransform.rotation;
+        Rb.linearVelocity = Vector3.zero;
+        Rb.angularVelocity = Vector3.zero;
+
+        _camera.PreviousStateIsValid = false;
     }
 
     private void OnEnable()
@@ -281,6 +272,7 @@ public class PlayerController : NetworkBehaviour
         {
             transform.position = Seat.SeatedPosition;
             Physics.SyncTransforms();
+
             //Swap to no sound when sat on wheels
             AkUnitySoundEngine.SetSwitch("Footsteps", "WheelSeat", gameObject);
         }
@@ -301,49 +293,46 @@ public class PlayerController : NetworkBehaviour
 
     private void FixedUpdate()
     {
-        RaycastHit hit;
-        if (Physics.Raycast(Rb.position, Vector3.down, out hit, 0.1f, ~(1 << gameObject.layer), QueryTriggerInteraction.Ignore))
+        // Audio state for all clients
+        if (Physics.Raycast(Rb.position, Vector3.down, out var hit, 0.1f, ~(1 << gameObject.layer), QueryTriggerInteraction.Ignore))
         {
-            Renderer renderer = hit.transform.GetComponentInChildren<Renderer>();
-            if (renderer != null)
+            Renderer hitRenderer = hit.transform.GetComponentInChildren<Renderer>();
+            if (hitRenderer)
             {
-                if (renderer.sharedMaterial.name == "Sand_SD" || renderer.sharedMaterial.name == "Sand_Background")
+                switch (hitRenderer.sharedMaterial.name)
                 {
-                    AkUnitySoundEngine.SetSwitch("Footsteps", "Sand", gameObject);
-                }
-                else if (renderer.sharedMaterial.name == "Stone Floor Light" || renderer.sharedMaterial.name == "Stone Floor Dark")
-                {
-                    AkUnitySoundEngine.SetSwitch("Footsteps", "Stone", gameObject);
-                }
-                else if (renderer.sharedMaterial.name == "Bricks_SD")
-                {
-                    AkUnitySoundEngine.SetSwitch("Footsteps", "Wood", gameObject);
-                }
-                else if (renderer.sharedMaterial.name == "Prototype_512x512_White")
-                {
-                    AkUnitySoundEngine.SetSwitch("Footsteps", "Stone", gameObject);
+                    case "Sand_SD" or "Sand_Background":
+                        AkUnitySoundEngine.SetSwitch("Footsteps", "Sand", gameObject);
+                        break;
+                    case "Stone Floor Light" or "Stone Floor Dark" or "Prototype_512x512_White":
+                        AkUnitySoundEngine.SetSwitch("Footsteps", "Stone", gameObject);
+                        break;
+                    case "Bricks_SD":
+                        AkUnitySoundEngine.SetSwitch("Footsteps", "Wood", gameObject);
+                        break;
                 }
             }
         }
 
+        if (_wwiseAnimationEvents.GlideTriggered && !_networkAnimator.animator.GetBool(GlideState))
+        {
+            _wwiseAnimationEvents.ResetGlideTrigger();
+        }
+
         if (!authority) return;
 
-        _networkAnimator.animator.SetBool(RunningState, false);
-        _networkAnimator.animator.SetBool(FallState, false);
-        _networkAnimator.animator.SetBool(GlideState, false);
-        _networkAnimator.animator.SetBool(GroundedState, false);
-
-        //Movement
+        //Movement input
         Quaternion cameraOrientation = _camera ? _camera.State.GetFinalOrientation() : Quaternion.identity;
         Vector3 cameraForward = Vector3.Scale(cameraOrientation * Vector3.forward, new Vector3(1, 0, 1)).normalized;
         Vector3 cameraRight = cameraOrientation * Vector3.right;
         Vector2 inputDirection = ControlsEnabled ? MoveAction.action.ReadValue<Vector2>() : Vector2.zero; //no input when controls are blocked
+
         WorldSpaceMoveDir = (cameraForward * inputDirection.y + cameraRight * inputDirection.x).normalized;
         AnalogueMoveScale = inputDirection.magnitude; //input system has a normalise processor on the move input action
 
+        _networkAnimator.animator.SetBool(RunningState, WorldSpaceMoveDir.sqrMagnitude > 0);
         if (WorldSpaceMoveDir.sqrMagnitude > 0)
         {
-            _networkAnimator.animator.SetBool(RunningState, true);
             Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, Quaternion.LookRotation(WorldSpaceMoveDir, Vector3.up), Time.fixedDeltaTime * rotationSmoothingSpeed));
         }
 
@@ -355,27 +344,24 @@ public class PlayerController : NetworkBehaviour
             CleanupFixedUpdate();
             return;
         }
-        
+
+        //Grounded
         var groundedHits = Physics.OverlapSphereNonAlloc(Rb.position, _groundedSphereRadius, _groundedCheckColliderBuffer, ~0, QueryTriggerInteraction.Ignore);
         bool grounded = false;
         for (int i = 0; i < groundedHits; i++)
         {
             // ignore self but *do* find other players
-            // ideally this would just be a T[].AsSpan().Any() call but noOoOo
+            // in a just world this would just be a T[].AsSpan().Any() call but noOoOo Mono doesn't have the technology
             if (_groundedCheckColliderBuffer[i].transform.root == transform) continue;
             grounded = true;
             break;
         }
-        
+
         bool groundedOnBumpy = Physics.CheckSphere(Rb.position, _groundedSphereRadius, LayerMask.GetMask("Bumpy"), QueryTriggerInteraction.Ignore);
         Rb.useGravity = !groundedOnBumpy;
         _networkAnimator.animator.SetBool(GroundedState, grounded || groundedOnBumpy);
 
-        if (grounded == true)
-        {
-            postWwiseFootstep.fallCount = 0;
-        }
-
+        //Movement
         if (!Seat)
         {
             Vector3 delta = new Vector3(WorldSpaceMoveDir.x, 0.0f, WorldSpaceMoveDir.z) * (Time.fixedDeltaTime * _moveForce * AnalogueMoveScale);
@@ -390,26 +376,36 @@ public class PlayerController : NetworkBehaviour
             Rb.MovePosition(Rb.position + delta);
         }
 
+        bool isFalling = Rb.linearVelocity.y < _fallAnimationMinDownardsVelocity;
+
+        //Player is falling - are they gliding?
+        if (ControlsEnabled && isFalling && JumpAction.action.IsPressed())
+        {
+            //Player is gliding
+            float gravityNegationPercentage01 = gravityNegationPercentage / 100.0f;
+            Rb.AddForce(-Physics.gravity * gravityNegationPercentage01, ForceMode.Acceleration);
+
+            _networkAnimator.animator.SetBool(FallState, false);
+            _networkAnimator.animator.SetBool(GlideState, true);
+        }
+        else if (isFalling)
+        {
+            //Player is not gliding, they are just falling
+            _networkAnimator.animator.SetBool(FallState, true);
+            _networkAnimator.animator.SetBool(GlideState, false);
+        }
+        else
+        {
+            //Player is not falling at all
+            _networkAnimator.animator.SetBool(FallState, false);
+            _networkAnimator.animator.SetBool(GlideState, false);
+        }
+
+        //Jumping
         if (ControlsEnabled && _jumpPressed && (grounded || groundedOnBumpy))
         {
             _networkAnimator.SetTrigger(JumpTrigger);
             Rb.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
-        }
-        else if (Rb.linearVelocity.y < _fallAnimationMinDownardsVelocity)
-        {
-            //Player is falling - are they gliding?
-            if (ControlsEnabled && JumpAction.action.IsPressed())
-            {
-                //Player is gliding
-                _networkAnimator.animator.SetBool(GlideState, true);
-                float gravityNegationPercentage01 = gravityNegationPercentage / 100.0f;
-                Rb.AddForce(-Physics.gravity * gravityNegationPercentage01, ForceMode.Acceleration);
-            }
-            else
-            {
-                //Player is not gliding, they are just falling
-                _networkAnimator.animator.SetBool(FallState, true);
-            }
         }
 
         CleanupFixedUpdate();
