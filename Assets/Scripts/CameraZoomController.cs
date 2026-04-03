@@ -19,7 +19,7 @@ public class CameraZoomController : MonoBehaviour
     [SerializeField] private CinemachineBrain _cinemachineBrain;
     [SerializeField] private Camera _camera;
     
-    public bool FirstPerson { get; private set; }
+    public static bool FirstPerson { get; private set; }
     [SerializeField] private float _minFirstPersonFOV;
     [SerializeField] private float _maxFirstPersonFOV;
     [SerializeField][PropertyRange("_minFirstPersonFOV", "_maxFirstPersonFOV")] private float _defaultFOV;
@@ -51,6 +51,11 @@ public class CameraZoomController : MonoBehaviour
             foreach (Renderer r in NetworkClient.localPlayer.GetComponentsInChildren<Renderer>())
             {
                 r.enabled = !FirstPerson;
+            }
+
+            if (FirstPerson)
+            {
+                GetComponent<ObstructionDitherer>().RemoveAllActiveDithers();
             }
         }
 

@@ -65,7 +65,6 @@ public class PlayerController : NetworkBehaviour
     [Header("Camera")]
     [SerializeField] [ReadOnly] private CinemachineCamera _cinemachineCamera;
     [SerializeField] [ReadOnly] private Camera _camera;
-    [SerializeField] [ReadOnly] private CameraZoomController _zoomController;
     [SerializeField] private Transform _firstPersonCameraViewPosition;
     [SerializeField] private float _firstPersonSensitivity;
     private InputActionReference _firstPersonLookAction;
@@ -167,7 +166,6 @@ public class PlayerController : NetworkBehaviour
     {
         // Initialise statics
         if (!_cinemachineInput) { _cinemachineInput = FindAnyObjectByType<CinemachineInputAxisController>(FindObjectsInactive.Include); }
-        if (!_zoomController) { _zoomController = FindAnyObjectByType<CameraZoomController>(FindObjectsInactive.Include); }
         if (!_camera) { _camera = Camera.main; }
         _pitch = 0.0f;
         _firstPersonLookAction = _cinemachineInput.Controllers[0].Input.InputAction;
@@ -253,7 +251,7 @@ public class PlayerController : NetworkBehaviour
         if (!authority) return;
 
         //First-person Camera
-        if (_zoomController.FirstPerson)
+        if (CameraZoomController.FirstPerson)
         {
             if (ControlsEnabled)
             {
@@ -353,7 +351,7 @@ public class PlayerController : NetworkBehaviour
         //Movement input
         Vector2 inputDirection = ControlsEnabled ? MoveAction.action.ReadValue<Vector2>() : Vector2.zero; //no input when controls are blocked
         AnalogueMoveScale = inputDirection.magnitude; //input system has a normalise processor on the move input action
-        if (_zoomController.FirstPerson)
+        if (CameraZoomController.FirstPerson)
         {
             Vector3 forward = Vector3.Scale(transform.forward, new Vector3(1, 0, 1)).normalized;
             Vector3 right = transform.right;
