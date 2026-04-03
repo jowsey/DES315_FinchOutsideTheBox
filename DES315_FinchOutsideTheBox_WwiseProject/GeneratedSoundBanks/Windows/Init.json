@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}",
     "Language": "SFX",
-    "Hash": "{3B5C8140-A865-4289-F6CC-9B0A7D0F4B20}",
+    "Hash": "{91B34726-2849-6987-D1FC-C2F4BA37BA37}",
     "ObjectPath": "Init",
     "ShortName": "Init",
     "Path": "Init.bnk",
@@ -58,7 +58,7 @@
      {
       "Id": "988953028",
       "Name": "SFXVolume",
-      "ObjectPath": "\\Game Parameters\\Default Work Unit\\SFXVolume",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\SettingsVolume\\SFXVolume",
       "GUID": "{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}"
      },
      {
@@ -72,6 +72,12 @@
       "Name": "GlassAmount",
       "ObjectPath": "\\Game Parameters\\Default Work Unit\\GlassAmount",
       "GUID": "{1BCC60E6-39B7-488E-A532-430D03891736}"
+     },
+     {
+      "Id": "1579925973",
+      "Name": "PlatformSpeed_01",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\PlatformSpeed_01",
+      "GUID": "{A631323E-63C0-478B-ACEC-B73136DF9CA4}"
      },
      {
       "Id": "1853166429",
@@ -88,8 +94,14 @@
      {
       "Id": "2346531308",
       "Name": "MusicVolume",
-      "ObjectPath": "\\Game Parameters\\Default Work Unit\\MusicVolume",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\SettingsVolume\\MusicVolume",
       "GUID": "{2C00F143-0CFC-4664-8B6A-E0DF59F14DBF}"
+     },
+     {
+      "Id": "2918011349",
+      "Name": "MasterVolume",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\SettingsVolume\\MasterVolume",
+      "GUID": "{4AE86AE8-FE56-440A-BE4C-DD5C2CBDDC4E}"
      }
     ],
     "StateGroups": [
@@ -184,6 +196,32 @@
     ],
     "SwitchGroups": [
      {
+      "Id": "209616013",
+      "Name": "CarSounds",
+      "ObjectPath": "\\Switches\\Default Work Unit\\CarSounds",
+      "GUID": "{12B84A19-6267-47D2-8999-9AF56A125485}",
+      "Switches": [
+       {
+        "Id": "803837735",
+        "Name": "Sand",
+        "ObjectPath": "\\Switches\\Default Work Unit\\CarSounds\\Sand",
+        "GUID": "{668B7801-AE79-481C-A618-D38E01A26D7F}"
+       },
+       {
+        "Id": "1216965916",
+        "Name": "Stone",
+        "ObjectPath": "\\Switches\\Default Work Unit\\CarSounds\\Stone",
+        "GUID": "{BE0F1021-7ECB-41B6-88F0-7C8EB4F6637F}"
+       },
+       {
+        "Id": "2058049674",
+        "Name": "Wood",
+        "ObjectPath": "\\Switches\\Default Work Unit\\CarSounds\\Wood",
+        "GUID": "{94FAA742-36DA-4EA4-B4A7-5C54A673299D}"
+       }
+      ]
+     },
+     {
       "Id": "2385628198",
       "Name": "Footsteps",
       "ObjectPath": "\\Switches\\Default Work Unit\\Footsteps",
@@ -218,6 +256,6 @@
     ]
    }
   ],
-  "FileHash": "{62C56FFD-E938-4D2B-42E8-DB1E24EFE022}"
+  "FileHash": "{8D71F549-F277-66AD-E2B2-2F19919DAAEA}"
  }
 }

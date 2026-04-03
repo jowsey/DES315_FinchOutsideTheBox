@@ -49,10 +49,10 @@
 				</Event>
 				<Event Name="CarMovementTerrain" ID="{17780900-EB99-4F4D-8E1A-EA3562BF16FD}">
 					<ChildrenList>
-						<Action Name="" ID="{6D9E878F-A869-43AE-8E70-57EDDD73695A}" ShortID="842101599">
+						<Action Name="" ID="{A0A0AE8E-5D00-49E0-AF06-E7566994CA10}" ShortID="495966321">
 							<ReferenceList>
 								<Reference Name="Target">
-									<ObjectRef Name="CarOverStone" ID="{97166926-E005-4AAD-85B3-2FB68D6B01F2}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+									<ObjectRef Name="CarOverTerrain" ID="{47DD396B-1E2A-4D25-AD2E-6B3B440C3D2F}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
 								</Reference>
 							</ReferenceList>
 						</Action>
@@ -185,6 +185,94 @@
 							<ReferenceList>
 								<Reference Name="Target">
 									<ObjectRef Name="PlatformMoving" ID="{B4B1A32D-12D7-4D4E-BC5E-2A93004927B5}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Pillar1" ID="{947EDF9D-C2D5-4911-8D32-02CFEB719C86}">
+					<ChildrenList>
+						<Action Name="" ID="{A5CE1636-30D1-41D2-B098-B91F7DA4F39B}" ShortID="665110054">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="pillar fall snap-001" ID="{C89BBB18-E3AF-477E-AB14-C42E77F6C72A}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Pillar2" ID="{82557BE2-4724-4499-A371-8488D9CB862E}">
+					<ChildrenList>
+						<Action Name="" ID="{03AA5F6B-CCBC-43F2-95F4-C8784986D9C4}" ShortID="975091346">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="pillar fall snap-002" ID="{ED8046FA-5143-48A0-BE91-2C48B7632B73}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="PillarCrash" ID="{EDEFBD29-BF4B-4854-A9F2-3D8A60D5F904}">
+					<ChildrenList>
+						<Action Name="" ID="{1D729645-FD4E-4A4F-893A-52DDC97BA071}" ShortID="305771817">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="pillar fall hit ground" ID="{9ABEF493-C1D2-4734-9707-A5C8E1E19C65}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="PillarRumbe" ID="{414DADAC-1B09-4410-83F3-3BA2EAC9765A}">
+					<ChildrenList>
+						<Action Name="" ID="{431DD81C-26D7-4160-B622-C81488E0DC4E}" ShortID="837211336">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="pillar fall rumble" ID="{8E26AAC8-4516-42E9-83C6-1542679F786F}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="TapestrySFx" ID="{56606F6B-A9DB-40FA-8F09-6F1D5DC712BE}">
+					<ChildrenList>
+						<Action Name="" ID="{886E1A13-0F81-4D28-93F2-FDCD86DBD625}" ShortID="263420552">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Tapestry SFX" ID="{47D503EC-F742-466A-959D-DF9E1FB3739A}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Respawnping" ID="{B0EB33D0-C849-42CD-8810-7A3D7413E86A}">
+					<ChildrenList>
+						<Action Name="" ID="{6BB3A47F-5395-4198-B5C9-7280CBD14195}" ShortID="196997400">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="RespawnPing" ID="{42B44FD3-33FB-4F63-91C7-A0747A36B541}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="PlatfornMoving_01" ID="{2761CBE6-E951-48D9-AD79-BDAD0766EFD0}">
+					<ChildrenList>
+						<Action Name="" ID="{8373E580-567E-4D9F-92AB-F7CC61043108}" ShortID="177156038">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="PlatformMoving_01" ID="{18C580EC-7220-4509-9F22-8BE984115811}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="leverUp" ID="{30AB49C8-BCA0-4CEC-B071-F965D7368A0B}">
+					<ChildrenList>
+						<Action Name="" ID="{FEED926A-21A1-4488-B1F2-503933BFE60F}" ShortID="679090207">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="LeverPressUp (reuse of platformmoving)" ID="{05C5AC94-4C2D-4111-B096-4EB9DCEFA322}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
 								</Reference>
 							</ReferenceList>
 						</Action>

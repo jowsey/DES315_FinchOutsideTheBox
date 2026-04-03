@@ -15,6 +15,7 @@ public class MovingPlatform : NetworkBehaviour
 
     public AK.Wwise.Event PlatformSound = new();
     public AK.Wwise.RTPC RTPCPlatform;
+    public float rtpcPlatformFloat = 0f;
 
     [SerializeField] private float _duration;
     [SerializeField] private AnimationCurve _displacementCurve;
@@ -46,20 +47,22 @@ public class MovingPlatform : NetworkBehaviour
         _tLastTick = (float)_timeElapsed;
         _currentT = _startT;
 
+        RTPCPlatform.SetGlobalValue(rtpcPlatformFloat);
+        PlatformSound.Post(_rb.gameObject);
 
 
     }
 
     public void StartMoving()
     {
-        //Play platform sound perma but its default rtpc is 0
-        PlatformSound.Post(gameObject);
+
         _isMoving = true;
         _useTargetT = false;
     }
 
     public void StopMoving()
     {
+        
         _isMoving = false;
         _useTargetT = false;
     }
@@ -85,6 +88,7 @@ public class MovingPlatform : NetworkBehaviour
                 {
                     //t has wrapped around from 1 to 0 and so has hit the target t
                     _isMoving = false;
+                    
                 }
             }
 
@@ -92,6 +96,7 @@ public class MovingPlatform : NetworkBehaviour
             if (!_isMoving)
             {
                 _currentT = _targetT;
+                rtpcPlatformFloat = 0;
             }
         }
 
@@ -111,18 +116,14 @@ public class MovingPlatform : NetworkBehaviour
             Vector3 localPos = _container.Splines[0].EvaluatePosition(_currentT);
             Vector3 worldPos = _container.transform.TransformPoint(localPos);
             _rb.MovePosition(worldPos);
+
+            rtpcPlatformFloat = 10;
         }
 
-        RpcSetRTPCGlobalValue(_rb.linearVelocity.magnitude);
+        //Sets RTPC value
+        RTPCPlatform.SetGlobalValue(rtpcPlatformFloat);
+        Debug.Log(rtpcPlatformFloat);
     }
-
-
-    [ClientRpc(includeOwner = true)]
-    void RpcSetRTPCGlobalValue(float val)
-    {
-        RTPCPlatform.SetGlobalValue(val * 2);
-    }
-
 
     #if UNITY_EDITOR
         [OnInspectorGUI]

@@ -5,7 +5,7 @@ using UnityEngine.Events;
 public class LeverMovement : NetworkBehaviour
 {
     private Animator _animator;
-    bool _forward; //True when going forward, false when going backwards
+    public bool Forward; //True when going forward, false when going backwards
 
     private bool _triggerColliding;
     private bool _triggerCollidingLastTick;
@@ -19,12 +19,13 @@ public class LeverMovement : NetworkBehaviour
     [Tooltip("Invoked when the lever has reached fully up (not triggered on first tick)")]
     [SerializeField] private UnityEvent _onLeverDefaultPos;
 
+    public AK.Wwise.Event LeverDown;
 
     private void Start()
     {
         _animator = GetComponentInParent<Animator>();
         _animator.SetFloat("AnimSpeed", 0.0f);
-        _forward = true;
+        Forward = true;
         _triggerColliding = false;
         _triggerCollidingLastTick = false;
     }
@@ -42,8 +43,8 @@ public class LeverMovement : NetworkBehaviour
         if (authority)
         {
             AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(0);
-            // Debug.Log(_forward + " " + stateInfo.normalizedTime);
-            if ((stateInfo.normalizedTime >= 0.99f) && _forward)
+            // Debug.Log(Forward + " " + stateInfo.normalizedTime);
+            if ((stateInfo.normalizedTime >= 0.99f) && Forward)
             {
                 _onLeverTargetPos.Invoke();
 
@@ -51,7 +52,7 @@ public class LeverMovement : NetworkBehaviour
                 _animator.Play(stateInfo.fullPathHash, 0, 1.0f);
                 _animator.SetFloat("AnimSpeed", 0.0f);
             }
-            else if ((stateInfo.normalizedTime <= 0.01f) && !_forward)
+            else if ((stateInfo.normalizedTime <= 0.01f) && !Forward)
             {
                 _onLeverDefaultPos.Invoke();
 
@@ -66,19 +67,26 @@ public class LeverMovement : NetworkBehaviour
                 //Trigger is now active
                 _onLeverActivate.Invoke();
                 _animator.SetFloat("AnimSpeed", 1.0f);
-                _forward = true;
+                Forward = true;
+
+
             }
             else if (_triggerCollidingLastTick && !_triggerColliding)
             {
                 //Trigger is no longer active
                 _onLeverDeactivate.Invoke();
                 _animator.SetFloat("AnimSpeed", -1.0f);
-                _forward = false;
+                Forward = false;
             }
 
             //Reset
             _triggerCollidingLastTick = _triggerColliding;
             _triggerColliding = false;
+
+            //if (lever goign down)
+            //{
+            //  play sound
+            //}
         }
     }
 }

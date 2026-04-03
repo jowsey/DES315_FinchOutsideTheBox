@@ -18,6 +18,11 @@ public class Pusher : Mirror.NetworkBehaviour
     private float _tLastTick;
     private float _currentT;
 
+    //Wwise Stuff
+    public AK.Wwise.Event PlatformSound = new();
+
+ 
+
 #if UNITY_EDITOR
     //Used to detect changes in _duration for calling ScaleEditorAnimationCurve
     private float _oldDuration = -1.0f;
@@ -42,6 +47,10 @@ public class Pusher : Mirror.NetworkBehaviour
         _useTargetT = false;
         _tLastTick = (float)_timeElapsed;
         _currentT = _startT;
+
+
+
+        
     }
 
     private void Start()
@@ -52,8 +61,11 @@ public class Pusher : Mirror.NetworkBehaviour
 
     public void StartMoving()
     {
+
         _isMoving = true;
         _useTargetT = false;
+
+        PlatformSound.Post(gameObject);
     }
 
     public void StopMoving()
@@ -91,6 +103,8 @@ public class Pusher : Mirror.NetworkBehaviour
             if (!_isMoving)
             {
                 _currentT = _targetT;
+
+
             }
         }
 
@@ -101,7 +115,10 @@ public class Pusher : Mirror.NetworkBehaviour
             _currentT = (float)(_timeElapsed % _duration); //range [0, _duration]
             _currentScale = _scaleCurve.Evaluate(_currentT);
             transform.localScale = new Vector3(_currentScale, transform.localScale.y, transform.localScale.z);
+
+  
         }
+
     }
 
 

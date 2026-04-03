@@ -26,9 +26,17 @@ namespace AK
         static const AkUniqueID GLASSSHATTER = 206611762U;
         static const AkUniqueID HOVERTICK = 2670946266U;
         static const AkUniqueID LEVERSOUND = 512917032U;
+        static const AkUniqueID LEVERUP = 1662764780U;
         static const AkUniqueID MUSIC = 3991942870U;
+        static const AkUniqueID PILLAR1 = 2931961686U;
+        static const AkUniqueID PILLAR2 = 2931961685U;
+        static const AkUniqueID PILLARCRASH = 3766090878U;
+        static const AkUniqueID PILLARRUMBE = 3612782852U;
         static const AkUniqueID PLATFORNMOVING = 1522771841U;
+        static const AkUniqueID PLATFORNMOVING_01 = 2279894477U;
+        static const AkUniqueID RESPAWNPING = 814740291U;
         static const AkUniqueID SPINNERMOVING = 3496537566U;
+        static const AkUniqueID TAPESTRYSFX = 3446999052U;
         static const AkUniqueID TESTSOUJD1 = 1035878255U;
     } // namespace EVENTS
 
@@ -68,6 +76,18 @@ namespace AK
 
     namespace SWITCHES
     {
+        namespace CARSOUNDS
+        {
+            static const AkUniqueID GROUP = 209616013U;
+
+            namespace SWITCH
+            {
+                static const AkUniqueID SAND = 803837735U;
+                static const AkUniqueID STONE = 1216965916U;
+                static const AkUniqueID WOOD = 2058049674U;
+            } // namespace SWITCH
+        } // namespace CARSOUNDS
+
         namespace FOOTSTEPS
         {
             static const AkUniqueID GROUP = 2385628198U;
@@ -89,8 +109,10 @@ namespace AK
         static const AkUniqueID DOORSSPEED = 1853166429U;
         static const AkUniqueID GLASSAMOUNT = 1090606811U;
         static const AkUniqueID ISESCPRESSED = 651854690U;
+        static const AkUniqueID MASTERVOLUME = 2918011349U;
         static const AkUniqueID MUSICVOLUME = 2346531308U;
         static const AkUniqueID PLATFORMSPEED = 1907997609U;
+        static const AkUniqueID PLATFORMSPEED_01 = 1579925973U;
         static const AkUniqueID SFXVOLUME = 988953028U;
         static const AkUniqueID WHEELSMOVING = 1023454587U;
     } // namespace GAME_PARAMETERS
