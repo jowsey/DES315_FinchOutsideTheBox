@@ -12,6 +12,7 @@ public class CameraZoomController : MonoBehaviour
     [SerializeField] private Camera _camera;
     [SerializeField] private CinemachineBrain _cinemachineBrain;
     [SerializeField] private CinemachineOrbitalFollow _orbitalFollow;
+    [SerializeField] private ObstructionDitherer _obstructionDitherer;
 
     // Third-person
     [SerializeField] private float _minThirdPersonRadius;
@@ -31,6 +32,8 @@ public class CameraZoomController : MonoBehaviour
 
     public static bool FirstPerson { get; private set; }
 
+    private Transform _targetTransform => _orbitalFollow.FollowTarget;
+
     private void OnValidate()
     {
         _defaultZoom = Mathf.Clamp(_defaultZoom, _minThirdPersonRadius, _maxThirdPersonRadius);
@@ -43,7 +46,7 @@ public class CameraZoomController : MonoBehaviour
         _orbitalFollow.Radius = _targetRadius;
 
         _targetFOV = _defaultFOV;
-        _camera.fieldOfView = _defaultFOV;
+        _camera.fieldOfView = _targetFOV;
     }
 
     private void Update()
@@ -53,14 +56,25 @@ public class CameraZoomController : MonoBehaviour
             FirstPerson = !FirstPerson;
             _cinemachineBrain.enabled = !FirstPerson;
 
-            foreach (Renderer r in NetworkClient.localPlayer.GetComponentsInChildren<Renderer>())
+            foreach (Renderer r in _targetTransform.GetComponentsInChildren<Renderer>())
             {
                 r.enabled = !FirstPerson;
             }
 
             if (FirstPerson)
             {
-                GetComponent<ObstructionDitherer>().RemoveAllActiveDithers();
+                _camera.fieldOfView = _targetFOV;
+                _targetTransform.rotation = Quaternion.Euler(0, _camera.transform.eulerAngles.y, 0);
+                // todo set _pitch, todo-todo: consolidate camera stuff under one roof (i.e. Here)
+
+                _obstructionDitherer.RemoveAllActiveDithers();
+            }
+            else
+            {
+                _orbitalFollow.Radius = _targetRadius;
+                _orbitalFollow.HorizontalAxis.Value = _camera.transform.eulerAngles.y;
+                // _orbitalFollow.VerticalAxis.Value = // todo, doesn't match up if you pull from camera
+                _orbitalFollow.VirtualCamera.PreviousStateIsValid = false;
             }
         }
 
