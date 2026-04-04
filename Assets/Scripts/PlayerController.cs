@@ -63,14 +63,13 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private float rotationSmoothingSpeed;
 
     [Header("Camera")]
-    [SerializeField] [ReadOnly] private CinemachineCamera _cinemachineCamera;
+    private Camera _camera;
+    private CinemachineCamera _cinemachineCamera;
 
-    [SerializeField] [ReadOnly] private Camera _camera;
     [SerializeField] private Transform _firstPersonCameraViewPosition;
     [SerializeField] private float _firstPersonSensitivity;
     private InputActionReference _firstPersonLookAction;
     private float _pitch;
-
 
     [Header("Movement")]
     [Tooltip("Amount of upwards force applied when jumping")]
@@ -146,6 +145,12 @@ public class PlayerController : NetworkBehaviour
         Checkpoint.RespawnEvent.AddListener(OnRespawn);
     }
 
+    private void Start()
+    {
+        // doesn't work in Awake on non-host. "huh?" don't worry about it
+        _camera = Camera.main;
+    }
+
     public override void OnStartClient()
     {
         foreach (Renderer renderer in _skinnedRenderers)
@@ -170,11 +175,6 @@ public class PlayerController : NetworkBehaviour
         if (!_cinemachineInput)
         {
             _cinemachineInput = FindAnyObjectByType<CinemachineInputAxisController>(FindObjectsInactive.Include);
-        }
-
-        if (!_camera)
-        {
-            _camera = Camera.main;
         }
 
         _pitch = 0.0f;
@@ -309,7 +309,7 @@ public class PlayerController : NetworkBehaviour
 
         if (!isLocalPlayer)
         {
-            _nameplateCanvas.transform.rotation = Quaternion.LookRotation(_nameplateCanvas.transform.position - _cinemachineCamera.transform.position);
+            _nameplateCanvas.transform.rotation = Quaternion.LookRotation(_nameplateCanvas.transform.position - _camera.transform.position);
         }
 
         if (isLocalPlayer && CameraZoomController.FirstPerson)
