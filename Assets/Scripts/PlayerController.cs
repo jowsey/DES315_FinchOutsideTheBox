@@ -281,7 +281,7 @@ public class PlayerController : NetworkBehaviour
                 Flask newFlask = CrosshairDetection.TargetedTransform.GetComponentInParent<Flask>();
                 if (newFlask.State != Flask.FlaskState.Idle) return;
 
-                if (InteractAction.action.IsPressed())
+                if (InteractAction.action.WasPressedThisFrame())
                 {
                     newFlask.CmdTryPickup();
                 }
@@ -289,7 +289,7 @@ public class PlayerController : NetworkBehaviour
             else if (HeldFlask.State == Flask.FlaskState.Held && CrosshairDetection.TargetedTransform.CompareTag("FlaskCarrier"))
             {
                 FlaskPutdownTarget carrierTarget = CrosshairDetection.TargetedTransform.GetComponentInChildren<FlaskPutdownTarget>();
-                if (InteractAction.action.IsPressed())
+                if (InteractAction.action.WasPressedThisFrame())
                 {
                     HeldFlask.CmdTryPutdown(carrierTarget);
                     FlaskPickupFX.Post(gameObject);

@@ -7,7 +7,6 @@ public class Flask : NetworkBehaviour
     public enum FlaskState
     {
         Idle,
-        PickingUp,
         Held,
         PuttingDown,
         Smashed
@@ -28,7 +27,7 @@ public class Flask : NetworkBehaviour
 
     [SerializeField] private GameObject _smashedFlask;
 
-    public AK.Wwise.Event flaskSmash; 
+    public AK.Wwise.Event flaskSmash;
 
     private void Awake()
     {
@@ -58,7 +57,7 @@ public class Flask : NetworkBehaviour
 
         Rb.isKinematic = true;
 
-        State = FlaskState.PickingUp;
+        State = FlaskState.Held;
         RpcPickup(sender.identity);
     }
 
@@ -79,11 +78,6 @@ public class Flask : NetworkBehaviour
             Highlight.SetHighlightable("FlaskCarrier", true);
             _holder.FlaskPickupFX.Post(gameObject);
         }
-
-        GetComponent<NetworkTransformBase>().enabled = false;
-        transform.SetParent(_holder.FlaskPickupTarget);
-        transform.localPosition = Vector3.zero;
-        transform.localRotation = Quaternion.identity;
     }
 
     [Command(requiresAuthority = false)]
@@ -97,15 +91,6 @@ public class Flask : NetworkBehaviour
         _moveTarget = target.transform;
         State = FlaskState.PuttingDown;
         Smashable = true;
-
-        RpcStartPutdown();
-    }
-
-    [ClientRpc]
-    private void RpcStartPutdown()
-    {
-        transform.SetParent(null);
-        GetComponent<NetworkTransformBase>().enabled = true;
     }
 
     [ClientRpc]
@@ -186,7 +171,7 @@ public class Flask : NetworkBehaviour
             return;
         }
 
-        if (State == FlaskState.PickingUp || State == FlaskState.PuttingDown)
+        if (State == FlaskState.PuttingDown)
         {
             Vector3 targetVec = _moveTarget.position - transform.position;
             Vector3 delta = targetVec.normalized * (Time.fixedDeltaTime * _movementSpeed);
@@ -194,22 +179,24 @@ public class Flask : NetworkBehaviour
 
             if (targetVec.sqrMagnitude < 0.01f)
             {
-                if (State == FlaskState.PickingUp)
-                {
-                    State = FlaskState.Held;
-                }
-                else if (State == FlaskState.PuttingDown)
-                {
-                    Rb.isKinematic = false;
-                    Rb.linearVelocity = Vector3.zero;
-                    Rb.angularVelocity = Vector3.zero;
+                Rb.isKinematic = false;
+                Rb.linearVelocity = Vector3.zero;
+                Rb.angularVelocity = Vector3.zero;
 
-                    _moveTarget = null;
-                    State = FlaskState.Idle;
+                _moveTarget = null;
+                State = FlaskState.Idle;
 
-                    RpcEndPutdown();
-                }
+                RpcEndPutdown();
             }
+        }
+    }
+
+    private void LateUpdate()
+    {
+        if (State == FlaskState.Held)
+        {
+            transform.position = _holder.FlaskPickupTarget.position;
+            transform.rotation = _holder.FlaskPickupTarget.rotation;
         }
     }
 
