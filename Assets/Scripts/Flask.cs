@@ -49,7 +49,11 @@ public class Flask : NetworkBehaviour
 
     private void OnHolderIdentityChanged(NetworkIdentity _, NetworkIdentity newHolder)
     {
-        _holder = newHolder ? newHolder.GetComponent<PlayerController>() : null;
+        // Only assign new holders, we handle removing the old holder ourselves
+        if (newHolder)
+        {
+            _holder = newHolder.GetComponent<PlayerController>();
+        }
     }
 
     private void OnStateChanged(FlaskState _, FlaskState newState)
@@ -85,6 +89,7 @@ public class Flask : NetworkBehaviour
                     }
 
                     _holder.HeldFlask = null;
+                    _holder = null;
                 }
 
                 break;
