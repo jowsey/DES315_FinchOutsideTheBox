@@ -59,18 +59,6 @@ namespace Networking
             });
         }
 
-        public override void OnServerDisconnect(NetworkConnectionToClient conn)
-        {
-            // Make player drop flask if they had one
-            var player = conn.identity.GetComponent<PlayerController>();
-            if (player.HeldFlask)
-            {
-                player.HeldFlask.State = Flask.FlaskState.Idle;
-            }
-            
-            base.OnServerDisconnect(conn);
-        }
-
         public override Transform GetStartPosition()
         {
             // todo eventually this should first assign the player to a cart, and then get *that* cart's checkpoints

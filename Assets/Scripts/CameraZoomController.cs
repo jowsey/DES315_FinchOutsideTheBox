@@ -6,15 +6,8 @@ using UnityEngine.InputSystem;
 
 public class CameraZoomController : MonoBehaviour
 {
-    [SerializeField] private InputActionReference _changePerspectiveAction;
     [SerializeField] private InputActionReference _zoomAction;
-
-    [SerializeField] private Camera _camera;
-    [SerializeField] private CinemachineBrain _cinemachineBrain;
     [SerializeField] private CinemachineOrbitalFollow _orbitalFollow;
-    [SerializeField] private ObstructionDitherer _obstructionDitherer;
-
-    // Third-person
     [SerializeField] private float _minThirdPersonRadius;
     [SerializeField] private float _maxThirdPersonRadius;
     [SerializeField] [PropertyRange("_minThirdPersonRadius", "_maxThirdPersonRadius")] private float _defaultZoom;
@@ -22,17 +15,17 @@ public class CameraZoomController : MonoBehaviour
     [SerializeField] private float _smoothSpeed = 10f;
     private float _targetRadius;
 
-    // First-person
+    [SerializeField] private InputActionReference _changePerspectiveAction;
+    [SerializeField] private CinemachineBrain _cinemachineBrain;
+    [SerializeField] private Camera _camera;
+    
+    public static bool FirstPerson { get; private set; }
     [SerializeField] private float _minFirstPersonFOV;
     [SerializeField] private float _maxFirstPersonFOV;
-    [SerializeField] [PropertyRange("_minFirstPersonFOV", "_maxFirstPersonFOV")] private float _defaultFOV;
+    [SerializeField][PropertyRange("_minFirstPersonFOV", "_maxFirstPersonFOV")] private float _defaultFOV;
     [SerializeField] private float _fovZoomSpeed = 4f;
     [SerializeField] private float _fovSmoothSpeed = 10f;
     private float _targetFOV;
-
-    public static bool FirstPerson { get; private set; }
-
-    private Transform _targetTransform => _orbitalFollow.FollowTarget;
 
     private void OnValidate()
     {
@@ -44,9 +37,8 @@ public class CameraZoomController : MonoBehaviour
         FirstPerson = false;
         _targetRadius = _defaultZoom;
         _orbitalFollow.Radius = _targetRadius;
-
         _targetFOV = _defaultFOV;
-        _camera.fieldOfView = _targetFOV;
+        _camera.fieldOfView = _defaultFOV;
     }
 
     private void Update()
@@ -56,25 +48,14 @@ public class CameraZoomController : MonoBehaviour
             FirstPerson = !FirstPerson;
             _cinemachineBrain.enabled = !FirstPerson;
 
-            foreach (Renderer r in _targetTransform.GetComponentsInChildren<Renderer>())
+            foreach (Renderer r in NetworkClient.localPlayer.GetComponentsInChildren<Renderer>())
             {
                 r.enabled = !FirstPerson;
             }
 
             if (FirstPerson)
             {
-                _camera.fieldOfView = _targetFOV;
-                _targetTransform.rotation = Quaternion.Euler(0, _camera.transform.eulerAngles.y, 0);
-                // todo set _pitch, todo-todo: consolidate camera stuff under one roof (i.e. Here)
-
-                _obstructionDitherer.RemoveAllActiveDithers();
-            }
-            else
-            {
-                _orbitalFollow.Radius = _targetRadius;
-                _orbitalFollow.HorizontalAxis.Value = _camera.transform.eulerAngles.y;
-                // _orbitalFollow.VerticalAxis.Value = // todo, doesn't match up if you pull from camera
-                _orbitalFollow.VirtualCamera.PreviousStateIsValid = false;
+                GetComponent<ObstructionDitherer>().RemoveAllActiveDithers();
             }
         }
 
