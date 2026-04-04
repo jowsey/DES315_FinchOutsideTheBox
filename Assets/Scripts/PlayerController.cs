@@ -63,13 +63,13 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private float rotationSmoothingSpeed;
 
     [Header("Camera")]
-    private Camera _camera;
-    private CinemachineCamera _cinemachineCamera;
-
+    [SerializeField] [ReadOnly] private CinemachineCamera _cinemachineCamera;
+    [SerializeField] [ReadOnly] private Camera _camera;
     [SerializeField] private Transform _firstPersonCameraViewPosition;
     [SerializeField] private float _firstPersonSensitivity;
     private InputActionReference _firstPersonLookAction;
     private float _pitch;
+
 
     [Header("Movement")]
     [Tooltip("Amount of upwards force applied when jumping")]
@@ -136,19 +136,11 @@ public class PlayerController : NetworkBehaviour
     {
         LoadedSkins ??= Resources.LoadAll<SkinData>("PlayerSkins");
 
-        _cinemachineCamera = FindAnyObjectByType<CinemachineCamera>(FindObjectsInactive.Include);
-
         Rb = GetComponent<Rigidbody>();
         _networkAnimator = GetComponent<NetworkAnimator>();
         WwiseAnimationEvents = GetComponent<WwiseAnimationEvents>();
 
         Checkpoint.RespawnEvent.AddListener(OnRespawn);
-    }
-
-    private void Start()
-    {
-        // doesn't work in Awake on non-host. "huh?" don't worry about it
-        _camera = Camera.main;
     }
 
     public override void OnStartClient()
@@ -158,6 +150,7 @@ public class PlayerController : NetworkBehaviour
             renderer.sharedMaterial = LoadedSkins[PlayerSkinIndex].Material;
         }
 
+        _cinemachineCamera = FindAnyObjectByType<CinemachineCamera>(FindObjectsInactive.Include);
         _playerNameText.text = PlayerName;
 
         OnPlayerReady.Invoke(this);
@@ -172,11 +165,8 @@ public class PlayerController : NetworkBehaviour
     public override void OnStartLocalPlayer()
     {
         // Initialise statics
-        if (!_cinemachineInput)
-        {
-            _cinemachineInput = FindAnyObjectByType<CinemachineInputAxisController>(FindObjectsInactive.Include);
-        }
-
+        if (!_cinemachineInput) { _cinemachineInput = FindAnyObjectByType<CinemachineInputAxisController>(FindObjectsInactive.Include); }
+        if (!_camera) { _camera = Camera.main; }
         _pitch = 0.0f;
         _firstPersonLookAction = _cinemachineInput.Controllers[0].Input.InputAction;
 
@@ -260,13 +250,20 @@ public class PlayerController : NetworkBehaviour
     {
         if (!authority) return;
 
-        //First-person controls
-        if (CameraZoomController.FirstPerson && ControlsEnabled)
+        //First-person Camera
+        if (CameraZoomController.FirstPerson)
         {
-            Vector2 scaledMouseDelta = _firstPersonLookAction.action.ReadValue<Vector2>() * _firstPersonSensitivity;
-            _pitch = Mathf.Clamp(_pitch - scaledMouseDelta.y, -89.0f, 89.0f);
+            if (ControlsEnabled)
+            {
+                Vector2 mouseDelta = _firstPersonLookAction.action.ReadValue<Vector2>() * _firstPersonSensitivity;
+                Rb.MoveRotation(Rb.rotation * Quaternion.Euler(0.0f, mouseDelta.x, 0.0f));
+                _pitch -= mouseDelta.y;
+                _pitch = Mathf.Clamp(_pitch, -89.0f, 89.0f);
+            }
 
-            transform.rotation *= Quaternion.Euler(0f, scaledMouseDelta.x, 0f);
+            _camera.transform.position = _firstPersonCameraViewPosition.position;
+            Quaternion zStrippedRot = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, 0.0f);
+            _camera.transform.rotation = transform.rotation * Quaternion.Euler(_pitch, 0f, 0f);
         }
 
         _contactNormals.Clear();
@@ -282,7 +279,7 @@ public class PlayerController : NetworkBehaviour
                 Flask newFlask = CrosshairDetection.TargetedTransform.GetComponentInParent<Flask>();
                 if (newFlask.State != Flask.FlaskState.Idle) return;
 
-                if (InteractAction.action.WasPressedThisFrame())
+                if (InteractAction.action.IsPressed())
                 {
                     newFlask.CmdTryPickup();
                 }
@@ -290,7 +287,7 @@ public class PlayerController : NetworkBehaviour
             else if (HeldFlask.State == Flask.FlaskState.Held && CrosshairDetection.TargetedTransform.CompareTag("FlaskCarrier"))
             {
                 FlaskPutdownTarget carrierTarget = CrosshairDetection.TargetedTransform.GetComponentInChildren<FlaskPutdownTarget>();
-                if (InteractAction.action.WasPressedThisFrame())
+                if (InteractAction.action.IsPressed())
                 {
                     HeldFlask.CmdTryPutdown(carrierTarget);
                     FlaskPickupFX.Post(gameObject);
@@ -307,15 +304,9 @@ public class PlayerController : NetworkBehaviour
             transform.position = Seat.SeatedPosition;
         }
 
-        if (!isLocalPlayer)
+        if (_cinemachineCamera && !isLocalPlayer)
         {
-            _nameplateCanvas.transform.rotation = Quaternion.LookRotation(_nameplateCanvas.transform.position - _camera.transform.position);
-        }
-
-        if (isLocalPlayer && CameraZoomController.FirstPerson)
-        {
-            _camera.transform.position = _firstPersonCameraViewPosition.position;
-            _camera.transform.rotation = transform.rotation * Quaternion.Euler(_pitch, 0f, 0f);
+            _nameplateCanvas.transform.rotation = Quaternion.LookRotation(_nameplateCanvas.transform.position - _cinemachineCamera.transform.position);
         }
     }
 
@@ -378,7 +369,6 @@ public class PlayerController : NetworkBehaviour
                 Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, Quaternion.LookRotation(WorldSpaceMoveDir, Vector3.up), Time.fixedDeltaTime * rotationSmoothingSpeed));
             }
         }
-
         _networkAnimator.animator.SetBool(RunningState, WorldSpaceMoveDir.sqrMagnitude > 0);
 
         //Unsitting

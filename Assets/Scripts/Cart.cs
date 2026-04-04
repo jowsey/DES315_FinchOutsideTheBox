@@ -220,7 +220,7 @@ public class Cart : NetworkBehaviour
             flaskState.Key.transform.rotation = flaskState.Value.Rotation;
             Physics.SyncTransforms();
 
-            flaskState.Key.State = Flask.FlaskState.Idle;
+            flaskState.Key.RpcUnsmash();
         }
     }
 
