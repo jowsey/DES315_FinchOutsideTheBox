@@ -137,6 +137,8 @@ public class PlayerController : NetworkBehaviour
     {
         LoadedSkins ??= Resources.LoadAll<SkinData>("PlayerSkins");
 
+        _cinemachineCamera = FindAnyObjectByType<CinemachineCamera>(FindObjectsInactive.Include);
+
         Rb = GetComponent<Rigidbody>();
         _networkAnimator = GetComponent<NetworkAnimator>();
         WwiseAnimationEvents = GetComponent<WwiseAnimationEvents>();
@@ -151,7 +153,6 @@ public class PlayerController : NetworkBehaviour
             renderer.sharedMaterial = LoadedSkins[PlayerSkinIndex].Material;
         }
 
-        _cinemachineCamera = FindAnyObjectByType<CinemachineCamera>(FindObjectsInactive.Include);
         _playerNameText.text = PlayerName;
 
         OnPlayerReady.Invoke(this);
