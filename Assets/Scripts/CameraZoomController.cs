@@ -6,8 +6,14 @@ using UnityEngine.InputSystem;
 
 public class CameraZoomController : MonoBehaviour
 {
+    [SerializeField] private InputActionReference _changePerspectiveAction;
     [SerializeField] private InputActionReference _zoomAction;
+
+    [SerializeField] private Camera _camera;
+    [SerializeField] private CinemachineBrain _cinemachineBrain;
     [SerializeField] private CinemachineOrbitalFollow _orbitalFollow;
+
+    // Third-person
     [SerializeField] private float _minThirdPersonRadius;
     [SerializeField] private float _maxThirdPersonRadius;
     [SerializeField] [PropertyRange("_minThirdPersonRadius", "_maxThirdPersonRadius")] private float _defaultZoom;
@@ -15,17 +21,15 @@ public class CameraZoomController : MonoBehaviour
     [SerializeField] private float _smoothSpeed = 10f;
     private float _targetRadius;
 
-    [SerializeField] private InputActionReference _changePerspectiveAction;
-    [SerializeField] private CinemachineBrain _cinemachineBrain;
-    [SerializeField] private Camera _camera;
-    
-    public static bool FirstPerson { get; private set; }
+    // First-person
     [SerializeField] private float _minFirstPersonFOV;
     [SerializeField] private float _maxFirstPersonFOV;
-    [SerializeField][PropertyRange("_minFirstPersonFOV", "_maxFirstPersonFOV")] private float _defaultFOV;
+    [SerializeField] [PropertyRange("_minFirstPersonFOV", "_maxFirstPersonFOV")] private float _defaultFOV;
     [SerializeField] private float _fovZoomSpeed = 4f;
     [SerializeField] private float _fovSmoothSpeed = 10f;
     private float _targetFOV;
+
+    public static bool FirstPerson { get; private set; }
 
     private void OnValidate()
     {
@@ -37,6 +41,7 @@ public class CameraZoomController : MonoBehaviour
         FirstPerson = false;
         _targetRadius = _defaultZoom;
         _orbitalFollow.Radius = _targetRadius;
+
         _targetFOV = _defaultFOV;
         _camera.fieldOfView = _defaultFOV;
     }
