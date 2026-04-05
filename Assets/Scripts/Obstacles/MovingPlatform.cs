@@ -75,6 +75,16 @@ public class MovingPlatform : NetworkBehaviour
 
     private void FixedUpdate()
     {
+        //Used Later in here
+        if (rtpcPlatformFloat > 10)
+        {
+            rtpcPlatformFloat = 10;
+        }
+        if (rtpcPlatformFloat < 0)
+        {
+            rtpcPlatformFloat = 0;
+        }
+
         // band-aid fix for network syncing. todo needs proper re-think
         if (!authority) return;
         
@@ -96,7 +106,7 @@ public class MovingPlatform : NetworkBehaviour
             if (!_isMoving)
             {
                 _currentT = _targetT;
-                rtpcPlatformFloat = 0;
+                
             }
         }
 
@@ -117,12 +127,21 @@ public class MovingPlatform : NetworkBehaviour
             Vector3 worldPos = _container.transform.TransformPoint(localPos);
             _rb.MovePosition(worldPos);
 
-            rtpcPlatformFloat = 10;
+            rtpcPlatformFloat += 1;
+        }
+        else
+        {
+            rtpcPlatformFloat += -0.5f;
         }
 
-        //Sets RTPC value
-        RTPCPlatform.SetGlobalValue(rtpcPlatformFloat);
-        Debug.Log(rtpcPlatformFloat);
+        if (_currentT == 0 || _currentT == 0.5 || _currentT == 1)
+        {
+            rtpcPlatformFloat = 0;
+        }
+
+            //Sets RTPC value
+            RTPCPlatform.SetGlobalValue(rtpcPlatformFloat);
+        
     }
 
     #if UNITY_EDITOR

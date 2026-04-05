@@ -25,18 +25,6 @@
 						<Property Name="Max" Type="Real64" Value="10"/>
 					</PropertyList>
 				</GameParameter>
-				<GameParameter Name="PlatformSpeed" ID="{67AF4BD6-3CC9-47FF-BDF7-451BFB6D2032}">
-					<PropertyList>
-						<Property Name="InitialValue" Type="Real64" Value="0"/>
-						<Property Name="Max" Type="Real64" Value="10"/>
-					</PropertyList>
-				</GameParameter>
-				<GameParameter Name="DoorsSpeed" ID="{F9F92E43-800C-46DC-A564-C4226723CD38}">
-					<PropertyList>
-						<Property Name="InitialValue" Type="Real64" Value="0"/>
-						<Property Name="Max" Type="Real64" Value="10"/>
-					</PropertyList>
-				</GameParameter>
 				<Folder Name="SettingsVolume" ID="{BB07AE06-3E89-485A-A681-5F1EB9BB905F}" ShortID="794715592">
 					<ChildrenList>
 						<GameParameter Name="MasterVolume" ID="{4AE86AE8-FE56-440A-BE4C-DD5C2CBDDC4E}">
@@ -59,12 +47,196 @@
 						</GameParameter>
 					</ChildrenList>
 				</Folder>
-				<GameParameter Name="PlatformSpeed_01" ID="{A631323E-63C0-478B-ACEC-B73136DF9CA4}">
-					<PropertyList>
-						<Property Name="InitialValue" Type="Real64" Value="0"/>
-						<Property Name="Max" Type="Real64" Value="10"/>
-					</PropertyList>
-				</GameParameter>
+				<Folder Name="Obstacles" ID="{B24A2691-EAFA-4807-B1F8-F997D7016EAA}" ShortID="570882719">
+					<ChildrenList>
+						<GameParameter Name="PlatformSpeed_01" ID="{A631323E-63C0-478B-ACEC-B73136DF9CA4}">
+							<PropertyList>
+								<Property Name="InitialValue" Type="Real64" Value="0"/>
+								<Property Name="Max" Type="Real64" Value="10"/>
+							</PropertyList>
+						</GameParameter>
+						<GameParameter Name="VertSpinnyOnOFf" ID="{8844F047-2CFD-4621-8BA9-B6142F7F4FE7}">
+							<PropertyList>
+								<Property Name="InitialValue" Type="Real64" Value="0"/>
+								<Property Name="Max" Type="Real64" Value="10"/>
+							</PropertyList>
+						</GameParameter>
+						<GameParameter Name="DoorsSpeed" ID="{F9F92E43-800C-46DC-A564-C4226723CD38}">
+							<PropertyList>
+								<Property Name="InitialValue" Type="Real64" Value="0"/>
+								<Property Name="Max" Type="Real64" Value="10"/>
+							</PropertyList>
+						</GameParameter>
+						<GameParameter Name="PlatformSpeed" ID="{67AF4BD6-3CC9-47FF-BDF7-451BFB6D2032}">
+							<PropertyList>
+								<Property Name="InitialValue" Type="Real64" Value="0"/>
+								<Property Name="Max" Type="Real64" Value="10"/>
+							</PropertyList>
+						</GameParameter>
+						<GameParameter Name="Boulder" ID="{6DAC578F-7844-435A-A828-400A10756657}">
+							<PropertyList>
+								<Property Name="InitialValue" Type="Real64" Value="0"/>
+							</PropertyList>
+						</GameParameter>
+						<GameParameter Name="Boudler2" ID="{EB955EED-C700-4CA6-8C49-E87962A61F47}">
+							<PropertyList>
+								<Property Name="InitialValue" Type="Real64" Value="0"/>
+							</PropertyList>
+						</GameParameter>
+						<Folder Name="Pusher" ID="{DA2B4407-7D05-4800-B16D-1A11AAF1764C}" ShortID="510522515">
+							<ChildrenList>
+								<GameParameter Name="PusherMoving2s" ID="{3E9472E8-5A47-4FCC-8C71-B12A60D49103}">
+									<PropertyList>
+										<Property Name="InitialValue" Type="Real64" Value="0"/>
+										<Property Name="Max" Type="Real64" Value="10"/>
+									</PropertyList>
+								</GameParameter>
+								<GameParameter Name="PusherMoving5s" ID="{AA581EF7-D6A8-41DE-AF6A-406233D89A0F}">
+									<PropertyList>
+										<Property Name="InitialValue" Type="Real64" Value="0"/>
+										<Property Name="Max" Type="Real64" Value="6.153"/>
+									</PropertyList>
+								</GameParameter>
+								<GameParameter Name="PusherMoving6a" ID="{6B13AFD6-6221-4EA5-9E30-BFDBE334DE3E}">
+									<PropertyList>
+										<Property Name="InitialValue" Type="Real64" Value="0"/>
+										<Property Name="Max" Type="Real64" Value="6.153"/>
+									</PropertyList>
+								</GameParameter>
+								<GameParameter Name="PusherMoving7s" ID="{6405334A-F455-49D5-A2BC-D1D0E3631642}">
+									<PropertyList>
+										<Property Name="InitialValue" Type="Real64" Value="0"/>
+										<Property Name="Max" Type="Real64" Value="6.153"/>
+									</PropertyList>
+								</GameParameter>
+								<GameParameter Name="PusherMoving8s" ID="{4B1E97BE-6D1A-4285-A6D9-C08A02FCFE3C}">
+									<PropertyList>
+										<Property Name="InitialValue" Type="Real64" Value="0"/>
+										<Property Name="Max" Type="Real64" Value="6.153"/>
+									</PropertyList>
+								</GameParameter>
+								<GameParameter Name="PusherMoving9s" ID="{E6F0B13A-AD6E-4AC3-A064-824DD0B86841}">
+									<PropertyList>
+										<Property Name="InitialValue" Type="Real64" Value="0"/>
+										<Property Name="Max" Type="Real64" Value="6.153"/>
+									</PropertyList>
+								</GameParameter>
+								<GameParameter Name="PusherMoving10s" ID="{F92FD13E-A742-413D-83E2-B562DE089D54}">
+									<PropertyList>
+										<Property Name="InitialValue" Type="Real64" Value="0"/>
+										<Property Name="Max" Type="Real64" Value="6.153"/>
+									</PropertyList>
+								</GameParameter>
+								<GameParameter Name="PusherMoving12s" ID="{1FA967B8-EC1F-4A91-BCF5-33B09A7B7665}">
+									<PropertyList>
+										<Property Name="InitialValue" Type="Real64" Value="0"/>
+										<Property Name="Max" Type="Real64" Value="6.153"/>
+									</PropertyList>
+								</GameParameter>
+								<GameParameter Name="PusherMoving14s" ID="{5AFF9EF7-1874-46CC-9959-E42EBA38296A}">
+									<PropertyList>
+										<Property Name="InitialValue" Type="Real64" Value="0"/>
+										<Property Name="Max" Type="Real64" Value="6.153"/>
+									</PropertyList>
+								</GameParameter>
+								<GameParameter Name="PusherMoving16s" ID="{173572C0-B011-4852-A32B-C6C34C42BAAA}">
+									<PropertyList>
+										<Property Name="InitialValue" Type="Real64" Value="0"/>
+										<Property Name="Max" Type="Real64" Value="6.153"/>
+									</PropertyList>
+								</GameParameter>
+								<GameParameter Name="PusherMoving10s_01" ID="{C842B0A2-3379-4CDB-BD6C-D8694BCB8A72}">
+									<PropertyList>
+										<Property Name="InitialValue" Type="Real64" Value="0"/>
+										<Property Name="Max" Type="Real64" Value="11"/>
+									</PropertyList>
+								</GameParameter>
+							</ChildrenList>
+						</Folder>
+						<GameParameter Name="SideSweeper" ID="{9031839F-58B4-4795-963F-EE559328F3FC}">
+							<PropertyList>
+								<Property Name="InitialValue" Type="Real64" Value="0"/>
+								<Property Name="Max" Type="Real64" Value="10"/>
+							</PropertyList>
+						</GameParameter>
+						<Folder Name="Zipper" ID="{F1E2DEC1-74DD-4CA0-BBDA-D7E3C6D088BC}" ShortID="1036845095">
+							<ChildrenList>
+								<GameParameter Name="Zipper" ID="{BA643473-C61D-4731-AE64-D4A9B606F533}">
+									<PropertyList>
+										<Property Name="InitialValue" Type="Real64" Value="0"/>
+										<Property Name="Max" Type="Real64" Value="10"/>
+									</PropertyList>
+								</GameParameter>
+								<GameParameter Name="Zipper_01" ID="{D9267520-52F0-49BC-8872-0F84ED9DB7EE}">
+									<PropertyList>
+										<Property Name="InitialValue" Type="Real64" Value="0"/>
+										<Property Name="Max" Type="Real64" Value="10"/>
+									</PropertyList>
+								</GameParameter>
+								<GameParameter Name="Zipper_02" ID="{E038DF75-E408-4A36-83C3-F303854E2CF7}">
+									<PropertyList>
+										<Property Name="InitialValue" Type="Real64" Value="0"/>
+										<Property Name="Max" Type="Real64" Value="10"/>
+									</PropertyList>
+								</GameParameter>
+								<GameParameter Name="Zipper_03" ID="{23ACC4CB-C472-4B21-A9F8-1724788AB03D}">
+									<PropertyList>
+										<Property Name="InitialValue" Type="Real64" Value="0"/>
+										<Property Name="Max" Type="Real64" Value="10"/>
+									</PropertyList>
+								</GameParameter>
+								<GameParameter Name="Zipper_04" ID="{53422F83-5A48-4470-94C2-C18430DB57FE}">
+									<PropertyList>
+										<Property Name="InitialValue" Type="Real64" Value="0"/>
+										<Property Name="Max" Type="Real64" Value="10"/>
+									</PropertyList>
+								</GameParameter>
+								<GameParameter Name="Zipper_05" ID="{1A4CB34E-1365-4717-AA65-7AA679729917}">
+									<PropertyList>
+										<Property Name="InitialValue" Type="Real64" Value="0"/>
+										<Property Name="Max" Type="Real64" Value="10"/>
+									</PropertyList>
+								</GameParameter>
+								<GameParameter Name="Zipper_06" ID="{1E8ED5C1-5EE6-4953-AB20-E98F6AB6AEBA}">
+									<PropertyList>
+										<Property Name="InitialValue" Type="Real64" Value="0"/>
+										<Property Name="Max" Type="Real64" Value="10"/>
+									</PropertyList>
+								</GameParameter>
+								<GameParameter Name="Zipper_07" ID="{C9F7DFB3-C8CF-4EC5-9011-FFBBDD8D0794}">
+									<PropertyList>
+										<Property Name="InitialValue" Type="Real64" Value="0"/>
+										<Property Name="Max" Type="Real64" Value="10"/>
+									</PropertyList>
+								</GameParameter>
+								<GameParameter Name="Zipper_08" ID="{D8263961-2FC0-4B67-8B6A-2F1415861109}">
+									<PropertyList>
+										<Property Name="InitialValue" Type="Real64" Value="0"/>
+										<Property Name="Max" Type="Real64" Value="10"/>
+									</PropertyList>
+								</GameParameter>
+								<GameParameter Name="Zipper_09" ID="{1D7EF310-B33F-4FAC-BC09-3E3D516405D3}">
+									<PropertyList>
+										<Property Name="InitialValue" Type="Real64" Value="0"/>
+										<Property Name="Max" Type="Real64" Value="10"/>
+									</PropertyList>
+								</GameParameter>
+								<GameParameter Name="Zipper_10" ID="{DDEBEE58-D2A7-4713-B5B7-BEA3F5281352}">
+									<PropertyList>
+										<Property Name="InitialValue" Type="Real64" Value="0"/>
+										<Property Name="Max" Type="Real64" Value="10"/>
+									</PropertyList>
+								</GameParameter>
+								<GameParameter Name="Zipper_11" ID="{CD3CD55C-F68A-4D27-BB09-F3C59137A49F}">
+									<PropertyList>
+										<Property Name="InitialValue" Type="Real64" Value="0"/>
+										<Property Name="Max" Type="Real64" Value="10"/>
+									</PropertyList>
+								</GameParameter>
+							</ChildrenList>
+						</Folder>
+					</ChildrenList>
+				</Folder>
 			</ChildrenList>
 		</WorkUnit>
 	</GameParameters>

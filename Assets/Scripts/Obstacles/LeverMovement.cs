@@ -83,10 +83,6 @@ public class LeverMovement : NetworkBehaviour
             _triggerCollidingLastTick = _triggerColliding;
             _triggerColliding = false;
 
-            //if (lever goign down)
-            //{
-            //  play sound
-            //}
         }
     }
 }

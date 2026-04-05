@@ -344,7 +344,7 @@ public class PlayerController : NetworkBehaviour
                         AkUnitySoundEngine.SetSwitch("Footsteps", "Stone", gameObject);
                         break;
                     case "Bricks_SD":
-                        AkUnitySoundEngine.SetSwitch("Footsteps", "Wood", gameObject);
+                        AkUnitySoundEngine.SetSwitch("Footsteps", "Stone", gameObject);
                         break;
                 }
             }

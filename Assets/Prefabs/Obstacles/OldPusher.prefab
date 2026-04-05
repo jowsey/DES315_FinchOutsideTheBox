@@ -124,7 +124,6 @@ GameObject:
   - component: {fileID: 8144364942880173476}
   - component: {fileID: 3691409626655176689}
   - component: {fileID: 331457031553935373}
-  - component: {fileID: -7766692625339557014}
   m_Layer: 0
   m_Name: OldPusher
   m_TagString: Untagged
@@ -198,6 +197,12 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  _moveByDefault: 0
+  _startT: 0
+  PlatformSound:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 70f1060d0ff96eb4bb572bacc62fa278, type: 2}
 --- !u!114 &3691409626655176689
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -250,27 +255,3 @@ MonoBehaviour:
   positionSensitivity: 0.01
   rotationSensitivity: 0.01
   scaleSensitivity: 0.01
---- !u!114 &-7766692625339557014
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5380054285416584578}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: baba1731ae1e0b948994819c2bbdb2b7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: AK.Wwise.Unity.MonoBehaviour::AkSwitch
-  triggerList: d1bbb3b5
-  useOtherObject: 1
-  data:
-    idInternal: 0
-    valueGuidInternal: 
-    groupIdInternal: 0
-    groupGuidInternal: 
-    WwiseObjectReference: {fileID: 11400000, guid: 7e6754f0a42a31a4390e239d0e45d4f8, type: 2}
-  valueIdInternal: 0
-  groupIdInternal: 0
-  valueGuidInternal: 
-  groupGuidInternal: 
