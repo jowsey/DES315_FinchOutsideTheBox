@@ -49,20 +49,16 @@ public class MovingPlatform : NetworkBehaviour
 
         RTPCPlatform.SetGlobalValue(rtpcPlatformFloat);
         PlatformSound.Post(_rb.gameObject);
-
-
     }
 
     public void StartMoving()
     {
-
         _isMoving = true;
         _useTargetT = false;
     }
 
     public void StopMoving()
     {
-        
         _isMoving = false;
         _useTargetT = false;
     }
@@ -76,14 +72,7 @@ public class MovingPlatform : NetworkBehaviour
     private void FixedUpdate()
     {
         //Used Later in here
-        if (rtpcPlatformFloat > 10)
-        {
-            rtpcPlatformFloat = 10;
-        }
-        if (rtpcPlatformFloat < 0)
-        {
-            rtpcPlatformFloat = 0;
-        }
+        rtpcPlatformFloat = Mathf.Clamp(rtpcPlatformFloat, 0, 10);
 
         // band-aid fix for network syncing. todo needs proper re-think
         if (!authority) return;
@@ -98,7 +87,6 @@ public class MovingPlatform : NetworkBehaviour
                 {
                     //t has wrapped around from 1 to 0 and so has hit the target t
                     _isMoving = false;
-                    
                 }
             }
 
@@ -106,7 +94,6 @@ public class MovingPlatform : NetworkBehaviour
             if (!_isMoving)
             {
                 _currentT = _targetT;
-                
             }
         }
 
@@ -131,17 +118,16 @@ public class MovingPlatform : NetworkBehaviour
         }
         else
         {
-            rtpcPlatformFloat += -0.5f;
+            rtpcPlatformFloat -= 0.5f;
         }
 
-        if (_currentT == 0 || _currentT == 0.5 || _currentT == 1)
+        if (_currentT <= 0 || Mathf.Approximately(_currentT, 0.5f) || _currentT >= 1)
         {
             rtpcPlatformFloat = 0;
         }
 
-            //Sets RTPC value
-            RTPCPlatform.SetGlobalValue(rtpcPlatformFloat);
-        
+        //Sets RTPC value
+        RTPCPlatform.SetGlobalValue(rtpcPlatformFloat);
     }
 
     #if UNITY_EDITOR
