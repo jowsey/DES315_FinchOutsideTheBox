@@ -3,22 +3,26 @@ using UnityEngine;
 public class postLeverScript : MonoBehaviour
 {
     public AK.Wwise.Event leverSound;
+    public AK.Wwise.Event leverUp;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     public void PlayLeverSound()
     {
-        leverSound.Post(gameObject);
+        if (GetComponentInChildren<LeverMovement>().Forward)
+        {
+            leverSound.Post(gameObject);
+            leverUp.Post(gameObject);
+        }
+    }
+
+    public void PlayLeverUp()
+    {
+        if (GetComponentInChildren<LeverMovement>().Forward==false)
+        {
+            leverUp.Post(gameObject);
+        }
     }
 
 }

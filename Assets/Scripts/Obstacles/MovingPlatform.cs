@@ -15,6 +15,7 @@ public class MovingPlatform : NetworkBehaviour
 
     public AK.Wwise.Event PlatformSound = new();
     public AK.Wwise.RTPC RTPCPlatform;
+    public float rtpcPlatformFloat = 0f;
 
     [SerializeField] private float _duration;
     [SerializeField] private AnimationCurve _displacementCurve;
@@ -45,15 +46,16 @@ public class MovingPlatform : NetworkBehaviour
         _useTargetT = false;
         _tLastTick = (float)_timeElapsed;
         _currentT = _startT;
+    }
 
-
-
+    private void Start()
+    {
+        RTPCPlatform.SetGlobalValue(rtpcPlatformFloat);
+        PlatformSound.Post(_rb.gameObject);
     }
 
     public void StartMoving()
     {
-        //Play platform sound perma but its default rtpc is 0
-        PlatformSound.Post(gameObject);
         _isMoving = true;
         _useTargetT = false;
     }
@@ -72,6 +74,9 @@ public class MovingPlatform : NetworkBehaviour
 
     private void FixedUpdate()
     {
+        //Used Later in here
+        rtpcPlatformFloat = Mathf.Clamp(rtpcPlatformFloat, 0, 10);
+
         // band-aid fix for network syncing. todo needs proper re-think
         if (!authority) return;
         
@@ -111,18 +116,22 @@ public class MovingPlatform : NetworkBehaviour
             Vector3 localPos = _container.Splines[0].EvaluatePosition(_currentT);
             Vector3 worldPos = _container.transform.TransformPoint(localPos);
             _rb.MovePosition(worldPos);
+
+            rtpcPlatformFloat += 1;
+        }
+        else
+        {
+            rtpcPlatformFloat -= 0.5f;
         }
 
-        RpcSetRTPCGlobalValue(_rb.linearVelocity.magnitude);
+        if (_currentT <= 0 || Mathf.Approximately(_currentT, 0.5f) || _currentT >= 1)
+        {
+            rtpcPlatformFloat = 0;
+        }
+
+        //Sets RTPC value
+        RTPCPlatform.SetGlobalValue(rtpcPlatformFloat);
     }
-
-
-    [ClientRpc(includeOwner = true)]
-    void RpcSetRTPCGlobalValue(float val)
-    {
-        RTPCPlatform.SetGlobalValue(val * 2);
-    }
-
 
     #if UNITY_EDITOR
         [OnInspectorGUI]

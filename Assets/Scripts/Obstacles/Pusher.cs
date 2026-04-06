@@ -18,6 +18,11 @@ public class Pusher : Mirror.NetworkBehaviour
     private float _tLastTick;
     private float _currentT;
 
+    //Wwise Stuff
+    public AK.Wwise.Event PlatformSound = new();
+    public AK.Wwise.RTPC RTPCPlatform;
+    public float rtpcPlatformFloat = 0f;
+
 #if UNITY_EDITOR
     //Used to detect changes in _duration for calling ScaleEditorAnimationCurve
     private float _oldDuration = -1.0f;
@@ -48,6 +53,9 @@ public class Pusher : Mirror.NetworkBehaviour
     {
         _currentScale = _scaleCurve.Evaluate(_currentT);
         transform.localScale = new Vector3(_currentScale, transform.localScale.y, transform.localScale.z);
+        
+        RTPCPlatform.SetGlobalValue(rtpcPlatformFloat);
+        PlatformSound.Post(gameObject);
     }
 
     public void StartMoving()
@@ -101,6 +109,9 @@ public class Pusher : Mirror.NetworkBehaviour
             _currentT = (float)(_timeElapsed % _duration); //range [0, _duration]
             _currentScale = _scaleCurve.Evaluate(_currentT);
             transform.localScale = new Vector3(_currentScale, transform.localScale.y, transform.localScale.z);
+
+            RTPCPlatform.SetGlobalValue(_currentScale);
+            rtpcPlatformFloat = _currentScale;
         }
     }
 

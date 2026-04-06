@@ -21,6 +21,7 @@ namespace UI
         }
 
         [SerializeField] private InputActionReference _respawnAction;
+        [SerializeField] private AK.Wwise.Event _respawnPing;
 
         [SerializeField] private CanvasGroup _canvasGroup;
         [SerializeField] private TextMeshProUGUI _countText;
@@ -74,7 +75,7 @@ namespace UI
             var rt = (RectTransform)transform;
             _openPosition = rt.anchoredPosition;
             rt.anchoredPosition = _hiddenPosition;
-
+            
             Checkpoint.RespawnEvent.AddListener(OnRespawn);
         }
 
@@ -156,6 +157,7 @@ namespace UI
                     if (Time.time - _lastActivityTime < _activityCloseCooldown)
                     {
                         _state = ShowState.Opening;
+                        _respawnPing.Post(gameObject);
 
                         Sequence.Create()
                             .Group(Tween.UIAnchoredPositionY((RectTransform)transform, _openPosition.y, 0.75f, Ease.OutBack))

@@ -111,6 +111,10 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: 9e10a6993c0a5de41bbd342721bb943c, type: 2}
+  leverUp:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: c7f24737fc0ccf346ba9ceaa6cc92866, type: 2}
 --- !u!1 &4700166864520735857
 GameObject:
   m_ObjectHideFlags: 0
@@ -226,6 +230,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  Forward: 0
   _onLeverActivate:
     m_PersistentCalls:
       m_Calls:
@@ -262,6 +267,10 @@ MonoBehaviour:
   _onLeverDefaultPos:
     m_PersistentCalls:
       m_Calls: []
+  LeverDown:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
 --- !u!65 &5247645680433414712
 BoxCollider:
   m_ObjectHideFlags: 0
