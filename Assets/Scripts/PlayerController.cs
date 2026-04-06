@@ -23,6 +23,8 @@ public class PlayerController : NetworkBehaviour
 
     public static SkinData[] LoadedSkins;
 
+    public static PlayerController LocalPlayer { get; private set; }
+
     private static readonly HashSet<int> _playerRbIds = new();
     public static bool IsPlayerRb(int id) => _playerRbIds.Contains(id);
 
@@ -64,6 +66,7 @@ public class PlayerController : NetworkBehaviour
 
     [Header("Camera")]
     private Camera _camera;
+
     private CinemachineCamera _cinemachineCamera;
 
     [SerializeField] private Transform _firstPersonCameraViewPosition;
@@ -172,10 +175,8 @@ public class PlayerController : NetworkBehaviour
     public override void OnStartLocalPlayer()
     {
         // Initialise statics
-        if (!_cinemachineInput)
-        {
-            _cinemachineInput = FindAnyObjectByType<CinemachineInputAxisController>(FindObjectsInactive.Include);
-        }
+        if (!_cinemachineInput) _cinemachineInput = FindAnyObjectByType<CinemachineInputAxisController>(FindObjectsInactive.Include);
+        LocalPlayer = this;
 
         _pitch = 0.0f;
         _firstPersonLookAction = _cinemachineInput.Controllers[0].Input.InputAction;
