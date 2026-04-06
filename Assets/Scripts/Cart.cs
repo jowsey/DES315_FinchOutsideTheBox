@@ -243,7 +243,7 @@ public class Cart : NetworkBehaviour
             _lowFlaskWarningUI = Instantiate(_lowFlaskWarningPrefab, _uiCanvas);
             _lowFlaskWarningUI.TrackingTarget = transform;
             _lowFlaskWarningUI.TrackingOffset = new Vector3(0, 5.5f, 0);
-            _lowFlaskWarningUI.ApplyOffsetLocally = true;
+            _lowFlaskWarningUI.ApplyTrackingOffsetLocally = true;
             
             _lowFlaskWarningUI.transform.SetAsFirstSibling(); // send to back layer
         }

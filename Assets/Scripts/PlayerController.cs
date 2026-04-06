@@ -115,6 +115,9 @@ public class PlayerController : NetworkBehaviour
 
     [SerializeField] private Transform _cameraObstructionDithererRayEndPosition;
 
+    public bool FlaskPickupAllowed => ControlsEnabled && !Seat && !HeldFlask;
+    public bool FlaskPutdownAllowed => ControlsEnabled && !Seat && HeldFlask && HeldFlask.State == Flask.FlaskState.Held;
+
     public static void AddControlBlocker(Object blocker)
     {
         _controlBlockers.Add(blocker);
@@ -276,9 +279,9 @@ public class PlayerController : NetworkBehaviour
 
         if (CrosshairDetection.TargetedTransform)
         {
-            if (!HeldFlask)
+            if (FlaskPickupAllowed)
             {
-                if (Seat || !CrosshairDetection.TargetedTransform.CompareTag("Flask")) return;
+                if (!CrosshairDetection.TargetedTransform.CompareTag("Flask")) return;
 
                 Flask newFlask = CrosshairDetection.TargetedTransform.GetComponentInParent<Flask>();
                 if (newFlask.State != Flask.FlaskState.Idle) return;
@@ -288,8 +291,10 @@ public class PlayerController : NetworkBehaviour
                     newFlask.CmdTryPickup();
                 }
             }
-            else if (HeldFlask.State == Flask.FlaskState.Held && CrosshairDetection.TargetedTransform.CompareTag("FlaskCarrier"))
+            else if (FlaskPutdownAllowed)
             {
+                if (!CrosshairDetection.TargetedTransform.CompareTag("FlaskCarrier")) return;
+
                 FlaskPutdownTarget carrierTarget = CrosshairDetection.TargetedTransform.GetComponentInChildren<FlaskPutdownTarget>();
                 if (InteractAction.action.WasPressedThisFrame())
                 {
