@@ -47,15 +47,15 @@ public class Pusher : Mirror.NetworkBehaviour
         _useTargetT = false;
         _tLastTick = (float)_timeElapsed;
         _currentT = _startT;
-
-        RTPCPlatform.SetGlobalValue(rtpcPlatformFloat);
-        PlatformSound.Post(gameObject);
     }
 
     private void Start()
     {
         _currentScale = _scaleCurve.Evaluate(_currentT);
         transform.localScale = new Vector3(_currentScale, transform.localScale.y, transform.localScale.z);
+        
+        RTPCPlatform.SetGlobalValue(rtpcPlatformFloat);
+        PlatformSound.Post(gameObject);
     }
 
     public void StartMoving()

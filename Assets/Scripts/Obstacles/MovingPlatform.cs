@@ -46,7 +46,10 @@ public class MovingPlatform : NetworkBehaviour
         _useTargetT = false;
         _tLastTick = (float)_timeElapsed;
         _currentT = _startT;
+    }
 
+    private void Start()
+    {
         RTPCPlatform.SetGlobalValue(rtpcPlatformFloat);
         PlatformSound.Post(_rb.gameObject);
     }

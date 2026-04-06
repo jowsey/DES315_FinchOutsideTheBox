@@ -5,7 +5,7 @@ public class Door : NetworkBehaviour
 {
     [SerializeField] private NetworkAnimator _animator;
 
-    public AK.Wwise.Event DoorSound;
+    [SerializeField] private AK.Wwise.Event _doorSound;
 
     public void Open()
     {
@@ -17,6 +17,6 @@ public class Door : NetworkBehaviour
 
     public void PostDoorSound()
     {
-        DoorSound.Post(gameObject);
+        _doorSound.Post(gameObject);
     }
 }
