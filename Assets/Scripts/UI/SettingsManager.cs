@@ -20,6 +20,7 @@ namespace UI
         public string PlayerName;
 
         // Audio
+        public float MasterVolumePercent = 100.0f;
         public float MusicVolumePercent = 75.0f;
         public float SfxVolumePercent = 75.0f;
         public bool PushToTalk = true;
@@ -35,8 +36,7 @@ namespace UI
     public class SettingsManager : MonoBehaviour
     {
         // Wwise Authoring values. 10 is -6db, 20 is +0dB, 30 is +6db.
-        public const float MaxMusicVolume = 30;
-        public const float MaxSfxVolume = 30;
+        public const float MaxRtpcVolume = 30f;
 
         public static readonly string[] DefaultPlayerNames =
         {
@@ -56,6 +56,7 @@ namespace UI
         [SerializeField] [Required] private TMP_InputField _playerNameText;
 
         // Audio
+        [SerializeField] [Required] private Slider _masterVolumeSlider;
         [SerializeField] [Required] private Slider _musicVolumeSlider;
         [SerializeField] [Required] private Slider _sfxVolumeSlider;
         [SerializeField] [Required] private Toggle _pttToggle;
@@ -64,6 +65,7 @@ namespace UI
 
         private string[] _oldInputDevices; //checked against Microphone.devices every frame for changes in the list
 
+        [SerializeField] [Required] private RTPC _masterVolumeRtpc;
         [SerializeField] [Required] private RTPC _musicVolumeRtpc;
         [SerializeField] [Required] private RTPC _sfxVolumeRtpc;
 
@@ -88,6 +90,7 @@ namespace UI
             _playerNameText.onValueChanged.AddListener(OnPlayerNameChanged);
 
             // Audio
+            _masterVolumeSlider.onValueChanged.AddListener(OnMasterVolumeChanged);
             _musicVolumeSlider.onValueChanged.AddListener(OnMusicVolumeChanged);
             _sfxVolumeSlider.onValueChanged.AddListener(OnSfxVolumeChanged);
 
@@ -102,6 +105,7 @@ namespace UI
             _playerNameText.onValueChanged.RemoveListener(OnPlayerNameChanged);
 
             // Audio
+            _masterVolumeSlider.onValueChanged.RemoveListener(OnMasterVolumeChanged);
             _musicVolumeSlider.onValueChanged.RemoveListener(OnMusicVolumeChanged);
             _sfxVolumeSlider.onValueChanged.RemoveListener(OnSfxVolumeChanged);
 
@@ -147,12 +151,20 @@ namespace UI
             SaveToDisk();
         }
 
+        private void OnMasterVolumeChanged(float val)
+        {
+            ActiveSettings.MasterVolumePercent = val;
+            SaveToDisk();
+
+            _masterVolumeRtpc.SetGlobalValue((val / 100) * MaxRtpcVolume);
+        }
+
         private void OnMusicVolumeChanged(float val)
         {
             ActiveSettings.MusicVolumePercent = val;
             SaveToDisk();
 
-            _musicVolumeRtpc.SetGlobalValue((val / 100) * MaxMusicVolume);
+            _musicVolumeRtpc.SetGlobalValue((val / 100) * MaxRtpcVolume);
         }
 
         private void OnSfxVolumeChanged(float val)
@@ -160,7 +172,7 @@ namespace UI
             ActiveSettings.SfxVolumePercent = val;
             SaveToDisk();
 
-            _sfxVolumeRtpc.SetGlobalValue((val / 100) * MaxSfxVolume);
+            _sfxVolumeRtpc.SetGlobalValue((val / 100) * MaxRtpcVolume);
         }
 
         private void OnPttToggleChanged(bool val)
@@ -229,8 +241,9 @@ namespace UI
             _inputDeviceDropdown.AddOptions(Microphone.devices.ToList());
             _inputDeviceDropdown.value = (Microphone.devices.Length == 0) ? 0 : Microphone.devices.ToList().IndexOf(ActiveSettings.InputDevice) + 1;
 
-            _musicVolumeRtpc.SetGlobalValue((ActiveSettings.MusicVolumePercent / 100) * MaxMusicVolume);
-            _sfxVolumeRtpc.SetGlobalValue((ActiveSettings.SfxVolumePercent / 100) * MaxSfxVolume);
+            _masterVolumeRtpc.SetGlobalValue((ActiveSettings.MasterVolumePercent / 100) * MaxRtpcVolume);
+            _musicVolumeRtpc.SetGlobalValue((ActiveSettings.MusicVolumePercent / 100) * MaxRtpcVolume);
+            _sfxVolumeRtpc.SetGlobalValue((ActiveSettings.SfxVolumePercent / 100) * MaxRtpcVolume);
         }
     }
 }
