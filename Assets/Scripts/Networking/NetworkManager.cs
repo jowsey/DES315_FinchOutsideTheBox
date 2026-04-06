@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Epic.OnlineServices.Lobby;
 using Mirror;
 using UI;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Networking
 {
@@ -19,7 +21,14 @@ namespace Networking
 
     public class NetworkManager : Mirror.NetworkManager
     {
+        public new static NetworkManager singleton => (NetworkManager)Mirror.NetworkManager.singleton;
+
+        public static readonly UnityEvent OnJoinGame = new();
+        public static readonly UnityEvent OnLeaveGame = new();
+
         private int _nextPlayerIndex;
+
+        public EOSLobby EosLobby { get; private set; }
 
         // this is, of course, terribly insecure, given it's trusting the client to
         // be honest about its hardware ID, but I imagine 99% of people won't bother to
@@ -30,6 +39,13 @@ namespace Networking
         {
             _bannedPlayerUids.Add(player.PlayerUID);
             player.connectionToClient.Disconnect();
+        }
+
+        public override void Start()
+        {
+            base.Start();
+
+            EosLobby = FindAnyObjectByType<EOSLobby>();
         }
 
         public override void OnStartServer()
@@ -57,6 +73,13 @@ namespace Networking
                 PlayerName = SettingsManager.GetSafeName(),
                 PlayerUID = SettingsManager.ActiveSettings.UserID
             });
+
+            OnJoinGame.Invoke();
+        }
+
+        public override void OnClientDisconnect()
+        {
+            OnLeaveGame.Invoke();
         }
 
         public override void OnServerDisconnect(NetworkConnectionToClient conn)
@@ -67,7 +90,7 @@ namespace Networking
             {
                 player.HeldFlask.State = Flask.FlaskState.Idle;
             }
-            
+
             base.OnServerDisconnect(conn);
         }
 
@@ -76,7 +99,7 @@ namespace Networking
             // todo eventually this should first assign the player to a cart, and then get *that* cart's checkpoints
             // todo also it should cache this on reaching checkpoint instead of re-running on every join
             var cart = FindAnyObjectByType<Cart>();
-            var activeCheckpoint = cart.Checkpoints[Mathf.Clamp(cart.CurrentCheckpointIndex, 0, cart.Checkpoints.Count - 1)]; // clamp because it starts at -1
+            var activeCheckpoint = cart.Checkpoints[cart.CurrentCheckpointIndex];
             startPositions = activeCheckpoint.playerRespawnLocalTransforms.ToList();
 
             return base.GetStartPosition();
@@ -120,6 +143,19 @@ namespace Networking
 
             var player = NetworkClient.spawned[msg.PlayerNetId].GetComponent<PlayerController>();
             PlayerPresenceFeed.OnPlayerJoin.Invoke(player);
+        }
+
+        public uint GetLobbyPlayerCount()
+        {
+            var options = new LobbyDetailsGetMemberCountOptions();
+            return EosLobby.ConnectedLobbyDetails.GetMemberCount(ref options);
+        }
+
+        public uint GetLobbyMaxPlayerCount()
+        {
+            var options = new LobbyDetailsCopyInfoOptions();
+            EosLobby.ConnectedLobbyDetails.CopyInfo(ref options, out var lobbyInfo);
+            return lobbyInfo?.MaxMembers ?? 0;
         }
     }
 }

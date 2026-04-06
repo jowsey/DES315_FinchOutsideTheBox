@@ -2,11 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Epic.OnlineServices.Lobby;
+using Networking;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
-using NetworkManager = Mirror.NetworkManager;
 
 namespace UI
 {
@@ -76,7 +75,7 @@ namespace UI
 
             EosLobby.LeaveLobbySucceeded -= LeaveLobbySucceeded;
             EosLobby.LeaveLobbyFailed -= LeaveLobbyFailed;
-            
+
             StopCoroutine(RefreshLobbyInterval());
         }
 
@@ -194,11 +193,11 @@ namespace UI
         private void JoinLobbySucceeded(List<Attribute> attributes)
         {
             var hostAttribute = attributes.Find(a => a.Data.HasValue && a.Data.Value.Key == EOSLobby.hostAddressKey);
-            var hostAddress = hostAttribute.Data.Value.Value.AsUtf8;
+            var hostAddress = hostAttribute.Data?.Value.AsUtf8;
 
             NetworkManager.singleton.networkAddress = hostAddress;
             NetworkManager.singleton.StartClient();
-            
+
             _activeJoinAttempt.JoinButtonText.text = _activeJoinAttempt.DefaultText;
             _activeJoinAttempt = null;
 

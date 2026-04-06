@@ -226,7 +226,7 @@ namespace UI
 
             _chargeImage.fillAmount = _voteCharge;
             _countText.text = $"<b>{_votesActive}</b>/{_votesRequired}";
-            _flaskCountOnRespawnText.text = $"You will respawn with <b>{_linkedCart.FlasksOnRespawn}</b> flasks.";
+            _flaskCountOnRespawnText.text = $"You will respawn with <b>{_linkedCart.CheckpointFlaskCounts[_linkedCart.CurrentCheckpointIndex]}</b> flasks.";
         }
 
         [Command(requiresAuthority = false)]

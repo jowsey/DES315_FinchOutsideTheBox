@@ -3,7 +3,9 @@ using Mirror;
 using Sirenix.OdinInspector;
 using UI;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using ShowInInspector = Sirenix.OdinInspector.ShowInInspectorAttribute;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Cart : NetworkBehaviour
@@ -19,7 +21,7 @@ public class Cart : NetworkBehaviour
     [ValidateInput("@gameObject.scene.isLoaded ? $value.Count > 0 : true", "Cart doesn't have any checkpoints linked.", InfoMessageType.Warning)]
     [field: SerializeField] public List<Checkpoint> Checkpoints { get; private set; }
 
-    [field: SerializeField] public int CurrentCheckpointIndex { get; private set; } = -1;
+    [field: ShowInInspector] public int CurrentCheckpointIndex { get; private set; }
 
     [SerializeField] [Required] private CheckpointBanner _checkpointBannerPrefab;
 
@@ -47,9 +49,6 @@ public class Cart : NetworkBehaviour
     [field: SyncVar(hook = nameof(OnNumCarriedFlasksChanged))] public int NumCarriedFlasks { get; private set; }
     public readonly SyncList<int> CheckpointFlaskCounts = new();
 
-    // The number of flasks we'll respawn with
-    public int FlasksOnRespawn => CheckpointFlaskCounts[Mathf.Clamp(CurrentCheckpointIndex, 0, CheckpointFlaskCounts.Count - 1)];
-
     //Sound effects
     [SerializeField] [Required] private AK.Wwise.Event _carSound;
     [SerializeField] [Required] private AK.Wwise.Event _carOnSurface;
@@ -62,6 +61,9 @@ public class Cart : NetworkBehaviour
 
     //Velocity doesn't exist on non-authed client, so we use this to calculate our own rough speed
     private Vector3 _positionLastFrame;
+
+    // todo make non-static and check specific carts
+    public static UnityEvent<Checkpoint> OnReachCheckpoint = new();
 
     private void Awake()
     {
@@ -93,6 +95,8 @@ public class Cart : NetworkBehaviour
                 AddCarriedFlask(flask);
             }
         }
+
+        CaptureCheckpointFlasksSnapshot();
     }
 
     public override void OnStartClient()
@@ -170,6 +174,8 @@ public class Cart : NetworkBehaviour
                 checkpointBanner.Checkpoint = checkpoint;
                 checkpointBanner.IsFirst = newIndex == 0;
 
+                OnReachCheckpoint.Invoke(checkpoint);
+
                 if (isServer)
                 {
                     CaptureCheckpointFlasksSnapshot();
@@ -244,7 +250,7 @@ public class Cart : NetworkBehaviour
             _lowFlaskWarningUI.TrackingTarget = transform;
             _lowFlaskWarningUI.TrackingOffset = new Vector3(0, 5.5f, 0);
             _lowFlaskWarningUI.ApplyTrackingOffsetLocally = true;
-            
+
             _lowFlaskWarningUI.transform.SetAsFirstSibling(); // send to back layer
         }
         else if (newValue > _lowFlasksThreshold && _lowFlaskWarningUI)
@@ -273,9 +279,15 @@ public class Cart : NetworkBehaviour
             return;
         }
 
+        // Respawning at a different checkpoint, almost certainly from dev hotkeys
+        if (CurrentCheckpointIndex != newCheckpointIndex)
+        {
+            OnReachCheckpoint.Invoke(Checkpoints[CurrentCheckpointIndex]);
+        }
+
         CurrentCheckpointIndex = newCheckpointIndex;
 
-        // should only fire when using dev hotkeys, otherwise will naturally be populated
+        // fallback for dev hotkeys, otherwise will naturally be populated
         if (isServer && CheckpointFlaskCounts[CurrentCheckpointIndex] == 0)
         {
             CaptureCheckpointFlasksSnapshot();
