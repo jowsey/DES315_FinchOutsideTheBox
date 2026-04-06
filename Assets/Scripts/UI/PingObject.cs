@@ -18,28 +18,42 @@ namespace UI
 
         private MeshRenderer _renderer;
 
+        private Transform _attachTarget;
+        private Vector3 _attachLocalPosition;
+        private Quaternion _attachLocalRotation;
+
+        private Vector3 _animationOffset;
+
         private void Awake()
         {
             _camera = Camera.main;
             _renderer = GetComponentInChildren<MeshRenderer>();
         }
 
-        public void Build(PlayerController player)
+        public void Build(PlayerController player, Transform attachTarget)
         {
+            var accentColor = PlayerController.LoadedSkins[player.PlayerSkinIndex].AccentColor;
+
             var mpb = new MaterialPropertyBlock();
-            mpb.SetColor(BaseColor, PlayerController.LoadedSkins[player.PlayerSkinIndex].AccentColor);
-            mpb.SetColor(EmissiveColor, PlayerController.LoadedSkins[player.PlayerSkinIndex].AccentColor * 1.75f);
+            mpb.SetColor(BaseColor, accentColor);
+            mpb.SetColor(EmissiveColor, accentColor * 1.75f);
             _renderer.SetPropertyBlock(mpb);
+
+            attachTarget ??= transform;
+            _attachTarget = attachTarget;
+            _attachLocalPosition = attachTarget.InverseTransformPoint(transform.position);
+            _attachLocalRotation = Quaternion.Inverse(attachTarget.rotation) * transform.rotation;
         }
 
         private void Start()
         {
             Sequence.Create()
-                .Group(Tween.LocalPosition(
-                    transform,
-                    transform.localPosition,
-                    transform.localPosition - transform.forward * _animateDistance,
+                .Group(Tween.Custom(
+                    this,
+                    Vector3.zero,
+                    new Vector3(0, 0, -_animateDistance),
                     _cycleLength,
+                    (obj, val) => obj._animationOffset = val,
                     Ease.InOutSine,
                     _cycles,
                     CycleMode.Yoyo
@@ -50,9 +64,13 @@ namespace UI
 
         private void LateUpdate()
         {
-            var cameraDir = transform.position - _camera.transform.position;
-            var idealRotation = Quaternion.LookRotation(transform.forward, cameraDir);
+            var localPosition = _attachTarget.TransformPoint(_attachLocalPosition);
+            var localRotation = _attachTarget.rotation * _attachLocalRotation;
+            transform.position = localPosition + (localRotation * _animationOffset);
 
+            var cameraDir = transform.position - _camera.transform.position;
+            var targetForward = localRotation * Vector3.forward;
+            var idealRotation = Quaternion.LookRotation(targetForward, cameraDir);
             transform.rotation = Quaternion.Slerp(transform.rotation, idealRotation, Time.deltaTime * _smoothingSpeed);
         }
     }
