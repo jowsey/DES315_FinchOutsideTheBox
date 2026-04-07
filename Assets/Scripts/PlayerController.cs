@@ -497,7 +497,6 @@ public class PlayerController : NetworkBehaviour
     private void CleanupFixedUpdate()
     {
         _jumpPressed = false;
-        Rb.angularVelocity = Vector3.zero;
         _accumulatedYaw = 0.0f;
     }
 
