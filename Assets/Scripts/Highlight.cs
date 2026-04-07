@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class Highlight : MonoBehaviour
 {
-    private static readonly int BaseColor = Shader.PropertyToID("_BaseColor");
-
     //Mapping from tag to whether or not that tag can be highlighted
     private static readonly Dictionary<string, bool> _isTagHighlightable = new();
 
@@ -75,8 +73,16 @@ public class Highlight : MonoBehaviour
             //Object is being looked at and is highlightable, but is not highlighted, highlight it
             foreach (Renderer rend in _renderers)
             {
-                var mpb = new MaterialPropertyBlock();
-                mpb.SetColor(BaseColor, _highlightedColour);
+                MaterialPropertyBlock mpb = new MaterialPropertyBlock();
+                //is it worth it to maintain british loyalty? yes
+                if (rend.sharedMaterial.shader.name == "Shader Graphs/Dithered" || rend.sharedMaterial.shader.name == "Shader Graphs/DitheredPBR")
+                {
+                    mpb.SetColor("_BaseColour", _highlightedColour);
+                }
+                else
+                {
+                    mpb.SetColor("_BaseColor", _highlightedColour);
+                }
                 rend.SetPropertyBlock(mpb);
             }
 
