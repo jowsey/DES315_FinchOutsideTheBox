@@ -4,15 +4,18 @@ using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+[RequireComponent(typeof(Camera))]
+[RequireComponent(typeof(CinemachineBrain))]
+[RequireComponent(typeof(ObstructionDitherer))]
 public class CameraZoomController : MonoBehaviour
 {
     [SerializeField] private InputActionReference _changePerspectiveAction;
     [SerializeField] private InputActionReference _zoomAction;
-
-    [SerializeField] private Camera _camera;
-    [SerializeField] private CinemachineBrain _cinemachineBrain;
     [SerializeField] private CinemachineOrbitalFollow _orbitalFollow;
-    [SerializeField] private ObstructionDitherer _obstructionDitherer;
+
+    private Camera _camera;
+    private CinemachineBrain _cinemachineBrain;
+    private ObstructionDitherer _obstructionDitherer;
 
     // Third-person
     [SerializeField] private float _minThirdPersonRadius;
@@ -37,6 +40,13 @@ public class CameraZoomController : MonoBehaviour
     private void OnValidate()
     {
         _defaultZoom = Mathf.Clamp(_defaultZoom, _minThirdPersonRadius, _maxThirdPersonRadius);
+    }
+
+    private void Awake()
+    {
+        _camera = GetComponent<Camera>();
+        _cinemachineBrain = GetComponent<CinemachineBrain>();
+        _obstructionDitherer = GetComponent<ObstructionDitherer>();
     }
 
     private void Start()
