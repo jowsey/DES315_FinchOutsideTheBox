@@ -1,4 +1,6 @@
-﻿using Discord.Sdk;
+﻿using System.Collections;
+using Cysharp.Threading.Tasks;
+using Discord.Sdk;
 using Networking;
 using Sirenix.OdinInspector;
 using UI;
@@ -114,8 +116,10 @@ namespace Util
             _client.UpdateRichPresence(activity, result => Debug.Log($"Discord: Updated presence ({result.Type()})"));
         }
 
-        private void OnJoinGame()
+        private async void OnJoinGame()
         {
+            await UniTask.WaitUntil(() => PlayerController.LocalPlayer);
+
             _presenceMode = PresenceMode.InGame;
             _joinGameEpoch = (ulong)System.DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 

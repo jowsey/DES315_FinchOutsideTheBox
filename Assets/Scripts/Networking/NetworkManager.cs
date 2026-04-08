@@ -85,8 +85,8 @@ namespace Networking
         public override void OnServerDisconnect(NetworkConnectionToClient conn)
         {
             // Make player drop flask if they had one
-            var player = conn.identity.GetComponent<PlayerController>();
-            if (player.HeldFlask)
+            var player = conn.identity?.GetComponent<PlayerController>();
+            if (player && player.HeldFlask)
             {
                 player.HeldFlask.State = Flask.FlaskState.Idle;
             }
