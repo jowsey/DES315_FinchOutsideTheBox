@@ -11,6 +11,7 @@ using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 using ShowInInspectorAttribute = Sirenix.OdinInspector.ShowInInspectorAttribute;
 using ReadOnlyAttribute = Sirenix.OdinInspector.ReadOnlyAttribute;
+using Unity.VisualScripting;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : NetworkBehaviour
@@ -344,10 +345,10 @@ public class PlayerController : NetworkBehaviour
             {
                 switch (hitRenderer.sharedMaterial.name)
                 {
-                    case "Sand_SD" or "Sand_Background":
+                    case "Sand_Brown" or "Sand_Background" or "Sand_DarkBrown" or "Sand_LightYellow" or "Sand_Red" or "Sand_White" or "Sand_Yellow":
                         AkUnitySoundEngine.SetSwitch("Footsteps", "Sand", gameObject);
                         break;
-                    case "Stone Floor Light" or "Stone Floor Dark" or "Prototype_512x512_White":
+                    case "Stone_Burgandy" or "Stone_DarkBrown" or "Stone_DarkRed" or "Stone_Green" or "Stone_LightGreen" or "Stone_LightYellow" or "Stone_Purple" or "Stone_Red" or "Stone_White" or "Stone_Yellow" or "Prototype_512x512_White":
                         AkUnitySoundEngine.SetSwitch("Footsteps", "Stone", gameObject);
                         break;
                     case "Bricks_SD":
