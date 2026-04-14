@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Sirenix.OdinInspector;
 using Unity.Collections;
 using UnityEngine;
@@ -13,13 +14,12 @@ namespace Util
         private static bool _contactListenerActive;
 
         private Rigidbody _rb;
+        private Collider[] _colliders;
 
         private void OnEnable()
         {
             _rb = GetComponent<Rigidbody>();
-
-            foreach (var col in GetComponentsInChildren<Collider>())
-                col.hasModifiableContacts = true;
+            _colliders = GetComponentsInChildren<Collider>().Where(c => c.attachedRigidbody == _rb).ToArray();
 
             _immovableIds[_rb.GetInstanceID()] = this;
 
@@ -40,6 +40,12 @@ namespace Util
             }
         }
 
+        private void FixedUpdate()
+        {
+            // Don't use contacts if body is kinematic
+            foreach (var col in _colliders)
+                col.hasModifiableContacts = !_rb.isKinematic;
+        }
 
         private static void OnModifyContacts(PhysicsScene scene, NativeArray<ModifiableContactPair> pairs)
         {
