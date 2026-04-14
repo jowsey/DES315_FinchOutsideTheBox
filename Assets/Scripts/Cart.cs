@@ -242,12 +242,12 @@ public class Cart : NetworkBehaviour
     {
         if (newValue <= _lowFlasksThreshold && !_lowFlaskWarningUI)
         {
-            _lowFlaskWarningUI = Instantiate(_lowFlaskWarningPrefab, _uiCanvas);
-            _lowFlaskWarningUI.TrackingTarget = transform;
-            _lowFlaskWarningUI.TrackingOffset = new Vector3(0, 5.5f, 0);
-            _lowFlaskWarningUI.ApplyOffsetLocally = true;
+            //_lowFlaskWarningUI = Instantiate(_lowFlaskWarningPrefab, _uiCanvas);
+            //_lowFlaskWarningUI.TrackingTarget = transform;
+            //_lowFlaskWarningUI.TrackingOffset = new Vector3(0, 5.5f, 0);
+            //_lowFlaskWarningUI.ApplyOffsetLocally = true;
             
-            _lowFlaskWarningUI.transform.SetAsFirstSibling(); // send to back layer
+            //_lowFlaskWarningUI.transform.SetAsFirstSibling(); // send to back layer
         }
         else if (newValue > _lowFlasksThreshold && _lowFlaskWarningUI)
         {
