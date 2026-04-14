@@ -36,6 +36,15 @@ public class WheelSeat : NetworkBehaviour
 
     public Vector3 SeatedPosition => transform.position + Vector3.up * (_sphereCollider.radius * transform.lossyScale.y);
 
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
+        if (!isServer)
+        {
+            _wheelJoint.connectedBody = null; // don't use joints on client
+        }
+    }
+
     [Command(requiresAuthority = false)]
     public void CmdTrySitPlayer(NetworkConnectionToClient sender = null)
     {
@@ -128,6 +137,7 @@ public class WheelSeat : NetworkBehaviour
 
     private void FixedUpdate()
     {
+        if (!isServer) return;
         if (!_seatedPlayer) return;
         
         var torqueAxis = Vector3.Cross(Vector3.up, _seatedPlayer.WorldSpaceMoveDir);

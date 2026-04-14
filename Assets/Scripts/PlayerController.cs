@@ -73,6 +73,7 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private float _firstPersonSensitivity;
     private InputActionReference _firstPersonLookAction;
     private float _pitch;
+    private float _accumulatedYaw; //Accumulate in Update() from input, apply in FixedUpdate(), restore in CleanupFixedUpdate()
 
     [Header("Movement")]
     [Tooltip("Amount of upwards force applied when jumping")]
@@ -182,6 +183,7 @@ public class PlayerController : NetworkBehaviour
         LocalPlayer = this;
 
         _pitch = 0.0f;
+        _accumulatedYaw = 0.0f;
         _firstPersonLookAction = _cinemachineInput.Controllers[0].Input.InputAction;
 
         Cursor.lockState = CursorLockMode.Locked;
@@ -269,8 +271,7 @@ public class PlayerController : NetworkBehaviour
         {
             Vector2 scaledMouseDelta = _firstPersonLookAction.action.ReadValue<Vector2>() * _firstPersonSensitivity;
             _pitch = Mathf.Clamp(_pitch - scaledMouseDelta.y, -89.0f, 89.0f);
-
-            transform.rotation *= Quaternion.Euler(0f, scaledMouseDelta.x, 0f);
+            _accumulatedYaw += scaledMouseDelta.x;
         }
 
         _contactNormals.Clear();
@@ -321,7 +322,7 @@ public class PlayerController : NetworkBehaviour
         if (isLocalPlayer && CameraZoomController.FirstPerson)
         {
             _camera.transform.position = _firstPersonCameraViewPosition.position;
-            _camera.transform.rotation = transform.rotation * Quaternion.Euler(_pitch, 0f, 0f);
+            _camera.transform.rotation = transform.rotation * Quaternion.Euler(_pitch, _accumulatedYaw, 0f);
         }
     }
 
@@ -371,6 +372,7 @@ public class PlayerController : NetworkBehaviour
             Vector3 forward = Vector3.Scale(transform.forward, new Vector3(1, 0, 1)).normalized;
             Vector3 right = transform.right;
             WorldSpaceMoveDir = (forward * inputDirection.y + right * inputDirection.x).normalized;
+            Rb.MoveRotation(Rb.rotation * Quaternion.Euler(0f, _accumulatedYaw, 0f));
         }
         else
         {
@@ -501,6 +503,7 @@ public class PlayerController : NetworkBehaviour
     private void CleanupFixedUpdate()
     {
         _jumpPressed = false;
+        _accumulatedYaw = 0.0f;
     }
 
     private void OnTriggerEnter(Collider other)

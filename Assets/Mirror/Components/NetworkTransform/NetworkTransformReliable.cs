@@ -76,7 +76,7 @@ namespace Mirror
             }
         }
 
-        void LateUpdate()
+        protected void LateUpdate()
         {
             if (updateMethod == UpdateMethod.LateUpdate)
                 DoUpdate();

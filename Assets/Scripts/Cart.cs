@@ -115,6 +115,7 @@ public class Cart : NetworkBehaviour
 
     private void Update()
     {
+
         if (_devCheckpointBackAction.action.WasPressedThisFrame() && CurrentCheckpointIndex != 0)
         {
             CmdInvokeRespawnEvent(CurrentCheckpointIndex - 1);
@@ -133,6 +134,7 @@ public class Cart : NetworkBehaviour
 
     private void FixedUpdate()
     {
+        if (!isServer) return;
         // Re-center rotation around local Z axis
         var localWorldUp = transform.InverseTransformDirection(Vector3.up);
         var rollError = -Mathf.Atan2(localWorldUp.x, localWorldUp.y) * Mathf.Rad2Deg;
@@ -246,12 +248,12 @@ public class Cart : NetworkBehaviour
     {
         if (newValue <= _lowFlasksThreshold && !_lowFlaskWarningUI)
         {
-            _lowFlaskWarningUI = Instantiate(_lowFlaskWarningPrefab, _uiCanvas);
-            _lowFlaskWarningUI.TrackingTarget = transform;
-            _lowFlaskWarningUI.TrackingOffset = new Vector3(0, 5.5f, 0);
-            _lowFlaskWarningUI.ApplyTrackingOffsetLocally = true;
-
-            _lowFlaskWarningUI.transform.SetAsFirstSibling(); // send to back layer
+            //_lowFlaskWarningUI = Instantiate(_lowFlaskWarningPrefab, _uiCanvas);
+            //_lowFlaskWarningUI.TrackingTarget = transform;
+            //_lowFlaskWarningUI.TrackingOffset = new Vector3(0, 5.5f, 0);
+            //_lowFlaskWarningUI.ApplyOffsetLocally = true;
+            
+            //_lowFlaskWarningUI.transform.SetAsFirstSibling(); // send to back layer
         }
         else if (newValue > _lowFlasksThreshold && _lowFlaskWarningUI)
         {
