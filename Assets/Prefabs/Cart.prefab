@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 6521320286991680151}
   - component: {fileID: 1624682344869754495}
   - component: {fileID: 3557071885313689952}
+  - component: {fileID: 68289235771724175}
   m_Layer: 7
   m_Name: SpinningBall
   m_TagString: Untagged
@@ -235,6 +236,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Interactable
   <InteractedTransform>k__BackingField: {fileID: 1638512784392855103}
+--- !u!114 &68289235771724175
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2234672341356039100}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d708f620ddc74412bd1cd32665a8d74e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Util.PlayerImmovable
 --- !u!1 &3213205800609717158
 GameObject:
   m_ObjectHideFlags: 0
@@ -302,6 +315,7 @@ GameObject:
   - component: {fileID: 581364601676529307}
   - component: {fileID: 1201822933279046488}
   - component: {fileID: 822409010293383377}
+  - component: {fileID: 4248026749609250909}
   m_Layer: 7
   m_Name: SpinningBall
   m_TagString: Untagged
@@ -523,6 +537,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Interactable
   <InteractedTransform>k__BackingField: {fileID: 1638512784392855103}
+--- !u!114 &4248026749609250909
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3260413456745295566}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d708f620ddc74412bd1cd32665a8d74e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Util.PlayerImmovable
 --- !u!1 &3913858289453775590
 GameObject:
   m_ObjectHideFlags: 0
@@ -764,6 +790,7 @@ GameObject:
   - component: {fileID: 3221991324360129971}
   - component: {fileID: 4662376833319468003}
   - component: {fileID: 1560730996314304049}
+  - component: {fileID: 4868051417619069835}
   m_Layer: 7
   m_Name: Cart
   m_TagString: Untagged
@@ -6173,6 +6200,18 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -4073293987203213047, guid: bf7d447a4d9e21644961bbd7cdb9cb47, type: 2}
+--- !u!114 &4868051417619069835
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3913858289453775590}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d708f620ddc74412bd1cd32665a8d74e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Util.PlayerImmovable
 --- !u!1 &4321114025990273547
 GameObject:
   m_ObjectHideFlags: 0
