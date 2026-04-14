@@ -12,7 +12,7 @@ namespace Util
 
         private void OnTriggerEnter(Collider other)
         {
-            if (NetworkClient.localPlayer.gameObject != other.attachedRigidbody.gameObject) return;
+            if (NetworkClient.localPlayer?.gameObject != other.attachedRigidbody.gameObject) return;
             _state.SetValue();
         }
     }

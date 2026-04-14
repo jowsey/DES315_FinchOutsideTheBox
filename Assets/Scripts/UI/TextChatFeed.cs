@@ -12,8 +12,8 @@ namespace UI
     {
         [SerializeField] [Required] private TextChatItem _textChatItemPrefab;
 
-        [SerializeField] [Required] private TMP_InputField _inputField;
-        [SerializeField] [Required] private CanvasGroup _inputFieldCanvasGroup;
+        [SerializeField] [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)] private TMP_InputField _inputField;
+        [SerializeField] [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)] private CanvasGroup _inputFieldCanvasGroup;
 
         [SerializeField] [Required] private InputActionReference _activateInputAction;
         [SerializeField] [Required] private InputActionReference _closeInputAction;

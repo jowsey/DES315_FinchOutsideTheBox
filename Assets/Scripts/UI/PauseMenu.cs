@@ -75,8 +75,7 @@ namespace UI
 
         public void ReturnToCart()
         {
-            var player = NetworkClient.localPlayer.GetComponent<PlayerController>();
-            player.CmdReturnToCart();
+            PlayerController.LocalPlayer.CmdReturnToCart();
         }
 
         public void QuitToMenu()
