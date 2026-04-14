@@ -41,13 +41,16 @@ public class PositionalPing : NetworkBehaviour
     private void RpcPingPosition(Vector3 position, Vector3 direction, NetworkIdentity sender)
     {
         var ping = Instantiate(_pingPrefab, position, Quaternion.LookRotation(direction));
-        ping.Build(sender.GetComponent<PlayerController>());
+
+        Transform attachTarget = null;
         
-        // Attach to parent
+        // Attach to pointed-at object
         if (Physics.Raycast(position, direction, out var hit, 1f, ~0, QueryTriggerInteraction.Ignore))
         {
-            ping.transform.SetParent(hit.transform, true);
+            attachTarget = hit.transform;
         }
+        
+        ping.Build(sender.GetComponent<PlayerController>(), attachTarget);
 
         catMeow.Post(gameObject);
     }

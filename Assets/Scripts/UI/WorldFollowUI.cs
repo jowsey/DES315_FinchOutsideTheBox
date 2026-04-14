@@ -6,7 +6,9 @@ namespace UI
     {
         public Transform TrackingTarget;
         public Vector3 TrackingOffset;
-        public bool ApplyOffsetLocally = false;
+        public bool ApplyTrackingOffsetLocally = false;
+
+        public Vector2 UIPositionOffset;
 
         private Camera _camera;
 
@@ -15,14 +17,26 @@ namespace UI
             _camera = Camera.main;
         }
 
-        private void LateUpdate()
+        private void Start()
         {
-            var trackingPosition = ApplyOffsetLocally
+            UpdatePosition();
+        }
+
+        private void UpdatePosition()
+        {
+            if (!TrackingTarget) return;
+
+            var trackingPosition = ApplyTrackingOffsetLocally
                 ? TrackingTarget.TransformPoint(TrackingOffset)
                 : TrackingTarget.position + TrackingOffset;
 
-            transform.position = _camera.WorldToScreenPoint(trackingPosition);
+            transform.position = _camera.WorldToScreenPoint(trackingPosition) + (Vector3)UIPositionOffset;
             transform.localScale = transform.position.z >= 0 ? Vector3.one : Vector3.zero;
+        }
+
+        private void LateUpdate()
+        {
+            UpdatePosition();
         }
     }
 }
