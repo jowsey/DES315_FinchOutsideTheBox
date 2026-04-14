@@ -480,7 +480,7 @@ public class PlayerController : NetworkBehaviour
         while (newPosition == default && tries++ < maxTries)
         {
             var circularPos = Random.insideUnitCircle * radius;
-            var attemptedPosition = cart.transform.position + new Vector3(circularPos.x, 0.5f, circularPos.y);
+            var attemptedPosition = cart.transform.TransformPoint(new Vector3(circularPos.x, 0.5f, circularPos.y));
 
             if (Physics.CheckSphere(attemptedPosition, 0.45f, ~0, QueryTriggerInteraction.Ignore))
             {
