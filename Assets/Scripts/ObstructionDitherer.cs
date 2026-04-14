@@ -39,7 +39,7 @@ public class ObstructionDitherer : MonoBehaviour
             Renderer r = _hitBuffer[i].collider.GetComponent<Renderer>();
             if (!r) { r = _hitBuffer[i].collider.GetComponentInChildren<Renderer>(); }
             if (!r) { continue; }
-            if (r.sharedMaterial.shader.name != "Shader Graphs/Dithered" && r.sharedMaterial.shader.name != "Shader Graphs/DitheredPBR") { continue; }
+            if (r.sharedMaterial.shader.name != "Shader Graphs/Dithered" && r.sharedMaterial.shader.name != "Shader Graphs/DitheredPBR" && r.sharedMaterial.shader.name != "Shader Graphs/DitheredPBRTriplanar") { continue; }
 
             _hitsThisFrame.Add(r);
 
