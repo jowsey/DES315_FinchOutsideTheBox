@@ -54,6 +54,12 @@ public class MovingPlatform : NetworkBehaviour
         PlatformSound.Post(_rb.gameObject);
     }
 
+    private void OnDestroy()
+    {
+        //Stops playing sounds when out of use to not overload the game
+        PlatformSound.Stop(_rb.gameObject);
+    }
+
     public void StartMoving()
     {
         _isMoving = true;

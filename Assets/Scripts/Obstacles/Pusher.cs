@@ -180,5 +180,11 @@ public class Pusher : Mirror.NetworkBehaviour
                 if (val > _maxScale) { _maxScale = val; }
             }
         }
+
+    public void OnDestroy()
+    {
+        //Stops playing sounds when out of use to not overload the game
+        PlatformSound.Stop(gameObject);
+    }
 #endif
 }

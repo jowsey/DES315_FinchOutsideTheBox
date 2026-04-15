@@ -74,10 +74,7 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d49267a1bdd7ebd4c8b3e1c9a54440fe, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 5730310938104472784}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d49267a1bdd7ebd4c8b3e1c9a54440fe, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: -757111376341936909}
+      addedObject: {fileID: 551414111302751328}
     - targetCorrespondingSourceObject: {fileID: 210982583278756489, guid: d49267a1bdd7ebd4c8b3e1c9a54440fe, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3524584487780619170}
@@ -114,7 +111,7 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: d49267a1bdd7ebd4c8b3e1c9a54440fe, type: 3}
   m_PrefabInstance: {fileID: 7099838643068107118}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &5730310938104472784
+--- !u!114 &551414111302751328
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -123,52 +120,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 7946276572362130495}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a90d7b99174e89648b3326be8087467a, type: 3}
+  m_Script: {fileID: 11500000, guid: 11339cfc115d89744b6f66f1295de280, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: AK.Wwise.Unity.MonoBehaviour::AkGameObj
-  m_listeners:
-    initialListenerList: []
-    useDefaultListeners: 1
-  isEnvironmentAware: 1
-  isStaticObject: 0
-  usePositionOffsetData: 0
-  m_positionOffsetData:
-    KeepMe: 0
-    positionOffset: {x: 0, y: 0, z: 0}
-  scalingFactor: 1
-  m_posOffsetData: {fileID: 0}
-  listenerMask: 1
---- !u!114 &-757111376341936909
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7946276572362130495}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b7aa2c59df1df349a9e8f551ceb830e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: AK.Wwise.Unity.MonoBehaviour::AkAmbient
-  triggerList: f7e1664c
-  useOtherObject: 0
-  actionOnEventType: 0
-  curveInterpolation: 4
-  enableActionOnEvent: 0
-  data:
+  m_EditorClassIdentifier: Assembly-CSharp::BannerSounds
+  BannerSfx:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: 084e3e688dfa1c8479aad846afdfc3bb, type: 2}
-  useCallbacks: 0
-  stopSoundOnDestroy: 1
-  Callbacks: []
-  soundEmitterObject: {fileID: 0}
-  transitionDuration: 0
-  eventIdInternal: 0
-  valueGuidInternal: 
-  m_callbackDataInternal: {fileID: 0}
-  MultiPositionType: 1
-  multiPositionTypeLabel: 0
-  attenuationSphereColor: {r: 1, g: 0, b: 0, a: 0.1}
-  LargeModePositions: []
-  multiPositionArray: []

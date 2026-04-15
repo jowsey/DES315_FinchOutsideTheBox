@@ -21,4 +21,10 @@ public class BoulderSounds : MonoBehaviour
 
         BoulderRTPC.SetGlobalValue(linearVelocity.magnitude * 20);
     }
+
+    private void OnDestroy()
+    {
+        //Stops playing sounds when out of use to not overload the game
+        BoulderSFX.Stop(gameObject);    
+    }
 }

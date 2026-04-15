@@ -111,6 +111,11 @@ public class Cart : NetworkBehaviour
     private void OnDestroy()
     {
         if (isServer) Checkpoint.RespawnEvent.RemoveListener(OnRespawn);
+
+        //Stops playing sounds when out of use to not overload the game
+        _carSound.Stop(gameObject);
+        _carOnSurface.Stop(gameObject);
+        _glassInVehicle.Stop(gameObject);
     }
 
     private void Update()
