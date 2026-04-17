@@ -113,13 +113,25 @@ public class Flask : NetworkBehaviour
                 {
                     Highlight.SetHighlightable("Flask", false);
                     Highlight.SetHighlightable("FlaskCarrier", true);
+                }
+
+                if (_hasInitialised)
+                {
                     _holder.FlaskPickupFX.Post(gameObject);
                 }
 
                 break;
             }
             case FlaskState.PuttingDown:
+            {
+                if (isServer)
+                {
+                    Rb.position = transform.position;
+                    Rb.rotation = transform.rotation;
+                }
+
                 break;
+            }
             case FlaskState.Smashed:
             {
                 if (isServer)
@@ -166,7 +178,7 @@ public class Flask : NetworkBehaviour
         if (State != FlaskState.Held) return;
 
         var player = sender!.identity.GetComponent<PlayerController>();
-        if (_holder != player) return;
+        if (player != _holder) return;
 
         _moveTarget = target.transform;
         Smashable = true;
