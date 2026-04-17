@@ -51,7 +51,7 @@ public class WheelSeat : NetworkBehaviour
         if (_seatedPlayer || Time.time < _lastUnsitTime + _sitCooldown) return;
         
         var player = sender!.identity.GetComponent<PlayerController>();
-        if (player.HeldFlask) return; // dont allow sitting while holding a flask
+        if (player.HeldFlask?.State == Flask.FlaskState.Held) return; // dont allow sitting while holding a flask
         
         _seatedPlayerIdentity = player.netIdentity; //synced to all clients
     }
