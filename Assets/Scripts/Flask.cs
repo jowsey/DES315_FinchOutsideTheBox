@@ -193,7 +193,7 @@ public class Flask : NetworkBehaviour
 
         if (State == FlaskState.PuttingDown)
         {
-            Vector3 targetVec = _moveTarget.position - transform.position;
+            Vector3 targetVec = _moveTarget.position - Rb.position;
             Vector3 delta = targetVec.normalized * (Time.fixedDeltaTime * _movementSpeed);
             Rb.MovePosition(Rb.position + delta);
 
