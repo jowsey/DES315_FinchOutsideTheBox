@@ -80,16 +80,26 @@ namespace UI
 
         private void Toggle(bool active)
         {
+            Tween.CompleteAll(_inputFieldCanvasGroup);
+
             if (active)
             {
-                Tween.Alpha(_inputFieldCanvasGroup, 1f, 0.1f, Ease.OutCubic);
+                if (_inputFieldCanvasGroup.alpha < 1)
+                {
+                    Tween.Alpha(_inputFieldCanvasGroup, 1f, 0.1f, Ease.OutCubic);
+                }
+
                 _inputField.ActivateInputField();
 
                 PlayerController.AddControlBlocker(this);
             }
             else
             {
-                Tween.Alpha(_inputFieldCanvasGroup, 0f, 0.1f, Ease.InCubic);
+                if (_inputFieldCanvasGroup.alpha > 0)
+                {
+                    Tween.Alpha(_inputFieldCanvasGroup, 0f, 0.1f, Ease.InCubic);
+                }
+
                 _inputField.DeactivateInputField();
 
                 PlayerController.RemoveControlBlocker(this);
