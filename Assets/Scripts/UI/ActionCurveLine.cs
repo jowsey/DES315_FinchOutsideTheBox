@@ -42,6 +42,7 @@ namespace UI
 
                 _promptLabel.SetParent(_uiCanvas.transform, false);
                 _promptLabel.GetComponentInChildren<TextMeshProUGUI>().text = PromptLabel;
+                _promptLabel.SetAsFirstSibling();
             }
         }
 

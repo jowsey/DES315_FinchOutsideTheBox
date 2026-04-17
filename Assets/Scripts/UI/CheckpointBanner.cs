@@ -16,15 +16,8 @@ namespace UI
 
         public AK.Wwise.Event CheckpointJingle;
 
-        public bool IsFirst;
-
         private void Start()
         {
-            if (IsFirst)
-            {
-                _taglineText.text = "YOUR JOURNEY BEGINS";
-            }
-
             _areaNameText.text = Checkpoint.AreaName;
 
             _mainGroup.alpha = 0;
