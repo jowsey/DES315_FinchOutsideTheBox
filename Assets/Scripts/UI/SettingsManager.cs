@@ -4,6 +4,7 @@ using System.Linq;
 using AK.Wwise;
 using Mirror;
 using Newtonsoft.Json;
+using PrimeTween;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
@@ -18,6 +19,8 @@ namespace UI
     {
         // Game
         public string PlayerName;
+        public float FirstPersonFov = 80f;
+        public float FirstPersonSensPercent = 25f;
 
         // Audio
         public float MasterVolumePercent = 100.0f;
@@ -52,8 +55,12 @@ namespace UI
 
         public static UserSettings ActiveSettings { get; private set; }
 
+        [SerializeField] [Required] private Button _resetButton;
+
         // Game
         [SerializeField] [Required] private TMP_InputField _playerNameText;
+        [SerializeField] [Required] private Slider _firstPersonFovSlider;
+        [SerializeField] [Required] private Slider _firstPersonSensitivitySlider;
 
         // Audio
         [SerializeField] [Required] private Slider _masterVolumeSlider;
@@ -86,8 +93,12 @@ namespace UI
         {
             LoadFromDisk();
 
+            _resetButton.onClick.AddListener(ResetSettings);
+
             // Game
             _playerNameText.onValueChanged.AddListener(OnPlayerNameChanged);
+            _firstPersonFovSlider.onValueChanged.AddListener(OnFirstPersonFovChanged);
+            _firstPersonSensitivitySlider.onValueChanged.AddListener(OnFirstPersonSensitivityChanged);
 
             // Audio
             _masterVolumeSlider.onValueChanged.AddListener(OnMasterVolumeChanged);
@@ -101,8 +112,12 @@ namespace UI
 
         private void OnDisable()
         {
+            _resetButton.onClick.RemoveListener(ResetSettings);
+
             // Game
             _playerNameText.onValueChanged.RemoveListener(OnPlayerNameChanged);
+            _firstPersonFovSlider.onValueChanged.RemoveListener(OnFirstPersonFovChanged);
+            _firstPersonSensitivitySlider.onValueChanged.RemoveListener(OnFirstPersonSensitivityChanged);
 
             // Audio
             _masterVolumeSlider.onValueChanged.RemoveListener(OnMasterVolumeChanged);
@@ -151,6 +166,23 @@ namespace UI
             SaveToDisk();
         }
 
+        private void OnFirstPersonFovChanged(float val)
+        {
+            ActiveSettings.FirstPersonFov = val;
+            SaveToDisk();
+
+            if (CameraZoomController.FirstPerson && Camera.main)
+            {
+                Camera.main.fieldOfView = val;
+            }
+        }
+
+        private void OnFirstPersonSensitivityChanged(float val)
+        {
+            ActiveSettings.FirstPersonSensPercent = val;
+            SaveToDisk();
+        }
+
         private void OnMasterVolumeChanged(float val)
         {
             ActiveSettings.MasterVolumePercent = val;
@@ -194,6 +226,18 @@ namespace UI
             SaveToDisk();
         }
 
+        private void ResetSettings()
+        {
+            Tween.Scale(_resetButton.transform, Vector3.one * 0.95f, 0.1f, Ease.OutCubic, 2, CycleMode.Yoyo);
+
+            if (System.IO.File.Exists(SettingsFilePath))
+            {
+                System.IO.File.Delete(SettingsFilePath);
+            }
+
+            LoadFromDisk();
+        }
+
         public static void SaveToDisk()
         {
             var json = JsonConvert.SerializeObject(ActiveSettings, Formatting.Indented);
@@ -228,6 +272,13 @@ namespace UI
         {
             // Game
             _playerNameText.text = ActiveSettings.PlayerName;
+            _firstPersonFovSlider.value = ActiveSettings.FirstPersonFov;
+            _firstPersonSensitivitySlider.value = ActiveSettings.FirstPersonSensPercent;
+
+            if (CameraZoomController.FirstPerson && Camera.main)
+            {
+                Camera.main.fieldOfView = ActiveSettings.FirstPersonFov;
+            }
 
             // Audio
             _musicVolumeSlider.value = ActiveSettings.MusicVolumePercent;

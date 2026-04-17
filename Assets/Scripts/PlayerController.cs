@@ -1,5 +1,6 @@
 using Mirror;
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using TMPro;
 using UI;
 using Unity.Cinemachine;
@@ -11,7 +12,6 @@ using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 using ShowInInspectorAttribute = Sirenix.OdinInspector.ShowInInspectorAttribute;
 using ReadOnlyAttribute = Sirenix.OdinInspector.ReadOnlyAttribute;
-using Unity.VisualScripting;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : NetworkBehaviour
@@ -71,10 +71,9 @@ public class PlayerController : NetworkBehaviour
     private CinemachineCamera _cinemachineCamera;
 
     [SerializeField] private Transform _firstPersonCameraViewPosition;
-    [SerializeField] private float _firstPersonSensitivity;
-    private InputActionReference _firstPersonLookAction;
-    private float _pitch;
-    private float _accumulatedYaw; //Accumulate in Update() from input, apply in FixedUpdate(), restore in CleanupFixedUpdate()
+    [SerializeField] [Required] private InputActionReference _firstPersonLookAction;
+    private float _cameraPitch;
+    private float _cameraYawAccumulator; //Accumulate in Update() from input, apply in FixedUpdate(), restore in CleanupFixedUpdate()
 
     [Header("Movement")]
     [Tooltip("Amount of upwards force applied when jumping")]
@@ -183,10 +182,6 @@ public class PlayerController : NetworkBehaviour
         if (!_cinemachineInput) _cinemachineInput = FindAnyObjectByType<CinemachineInputAxisController>(FindObjectsInactive.Include);
         LocalPlayer = this;
 
-        _pitch = 0.0f;
-        _accumulatedYaw = 0.0f;
-        _firstPersonLookAction = _cinemachineInput.Controllers[0].Input.InputAction;
-
         Cursor.lockState = CursorLockMode.Locked;
 
         // Set camera follow target
@@ -270,9 +265,9 @@ public class PlayerController : NetworkBehaviour
         //First-person controls
         if (CameraZoomController.FirstPerson && ControlsEnabled)
         {
-            Vector2 scaledMouseDelta = _firstPersonLookAction.action.ReadValue<Vector2>() * _firstPersonSensitivity;
-            _pitch = Mathf.Clamp(_pitch - scaledMouseDelta.y, -89.0f, 89.0f);
-            _accumulatedYaw += scaledMouseDelta.x;
+            Vector2 scaledMouseDelta = _firstPersonLookAction.action.ReadValue<Vector2>() * (SettingsManager.ActiveSettings.FirstPersonSensPercent * 0.01f);
+            _cameraPitch = Mathf.Clamp(_cameraPitch - scaledMouseDelta.y, -89.0f, 89.0f);
+            _cameraYawAccumulator += scaledMouseDelta.x;
         }
 
         _contactNormals.Clear();
@@ -323,7 +318,7 @@ public class PlayerController : NetworkBehaviour
         if (isLocalPlayer && CameraZoomController.FirstPerson)
         {
             _camera.transform.position = _firstPersonCameraViewPosition.position;
-            _camera.transform.rotation = transform.rotation * Quaternion.Euler(_pitch, _accumulatedYaw, 0f);
+            _camera.transform.rotation = transform.rotation * Quaternion.Euler(_cameraPitch, _cameraYawAccumulator, 0f);
         }
     }
 
@@ -373,7 +368,7 @@ public class PlayerController : NetworkBehaviour
             Vector3 forward = Vector3.Scale(transform.forward, new Vector3(1, 0, 1)).normalized;
             Vector3 right = transform.right;
             WorldSpaceMoveDir = (forward * inputDirection.y + right * inputDirection.x).normalized;
-            Rb.MoveRotation(Rb.rotation * Quaternion.Euler(0f, _accumulatedYaw, 0f));
+            Rb.MoveRotation(Rb.rotation * Quaternion.Euler(0f, _cameraYawAccumulator, 0f));
         }
         else
         {
@@ -504,7 +499,7 @@ public class PlayerController : NetworkBehaviour
     private void CleanupFixedUpdate()
     {
         _jumpPressed = false;
-        _accumulatedYaw = 0.0f;
+        _cameraYawAccumulator = 0.0f;
     }
 
     private void OnTriggerEnter(Collider other)

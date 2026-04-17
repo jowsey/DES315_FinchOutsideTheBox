@@ -1,5 +1,5 @@
-﻿using Mirror;
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
+using UI;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -25,14 +25,6 @@ public class CameraZoomController : MonoBehaviour
     [SerializeField] private float _smoothSpeed = 10f;
     private float _targetRadius;
 
-    // First-person
-    [SerializeField] private float _minFirstPersonFOV;
-    [SerializeField] private float _maxFirstPersonFOV;
-    [SerializeField] [PropertyRange("_minFirstPersonFOV", "_maxFirstPersonFOV")] private float _defaultFOV;
-    [SerializeField] private float _fovZoomSpeed = 4f;
-    [SerializeField] private float _fovSmoothSpeed = 10f;
-    private float _targetFOV;
-
     public static bool FirstPerson { get; private set; }
 
     private Transform _targetTransform => _orbitalFollow.FollowTarget;
@@ -54,9 +46,6 @@ public class CameraZoomController : MonoBehaviour
         FirstPerson = false;
         _targetRadius = _defaultZoom;
         _orbitalFollow.Radius = _targetRadius;
-
-        _targetFOV = _defaultFOV;
-        _camera.fieldOfView = _targetFOV;
     }
 
     private void Update()
@@ -73,7 +62,7 @@ public class CameraZoomController : MonoBehaviour
 
             if (FirstPerson)
             {
-                _camera.fieldOfView = _targetFOV;
+                _camera.fieldOfView = SettingsManager.ActiveSettings.FirstPersonFov;
                 _targetTransform.rotation = Quaternion.Euler(0, _camera.transform.eulerAngles.y, 0);
                 // todo set _pitch, todo-todo: consolidate camera stuff under one roof (i.e. Here)
 
@@ -94,15 +83,7 @@ public class CameraZoomController : MonoBehaviour
             // mouse scroll isn't continuous so it shouldn't be deltaTime'd
             var isDeviceMouse = _zoomAction.action.activeControl?.device is Mouse;
 
-            if (FirstPerson)
-            {
-                _targetFOV = Mathf.Clamp(
-                    _targetFOV - zoom * _fovZoomSpeed * (isDeviceMouse ? 1 : Time.deltaTime),
-                    _minFirstPersonFOV,
-                    _maxFirstPersonFOV
-                );
-            }
-            else
+            if (!FirstPerson)
             {
                 _targetRadius = Mathf.Clamp(
                     _targetRadius - zoom * _zoomSpeed * (isDeviceMouse ? 1 : Time.deltaTime),
@@ -112,11 +93,7 @@ public class CameraZoomController : MonoBehaviour
             }
         }
 
-        if (FirstPerson)
-        {
-            _camera.fieldOfView = Mathf.Lerp(_camera.fieldOfView, _targetFOV, _fovSmoothSpeed * Time.deltaTime);
-        }
-        else
+        if (!FirstPerson)
         {
             _orbitalFollow.Radius = Mathf.Lerp(_orbitalFollow.Radius, _targetRadius, _smoothSpeed * Time.deltaTime);
         }
