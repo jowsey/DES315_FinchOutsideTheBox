@@ -472,17 +472,25 @@ public class PlayerController : NetworkBehaviour
 
         const int maxTries = 50;
         var tries = 0;
-        while (newPosition == default && tries++ < maxTries)
+        while (tries++ < maxTries)
         {
             var circularPos = Random.insideUnitCircle * radius;
             var attemptedPosition = cart.transform.TransformPoint(new Vector3(circularPos.x, 0.5f, circularPos.y));
 
+            // collision check
             if (Physics.CheckSphere(attemptedPosition, 0.45f, ~0, QueryTriggerInteraction.Ignore))
             {
                 continue;
             }
 
+            // grounded check
+            if (!Physics.Raycast(attemptedPosition, Vector3.down, out _, 1f, ~0, QueryTriggerInteraction.Ignore))
+            {
+                continue;
+            }
+
             newPosition = attemptedPosition;
+            break;
         }
 
         if (newPosition == default)
