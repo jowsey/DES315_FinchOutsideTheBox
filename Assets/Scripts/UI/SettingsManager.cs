@@ -43,7 +43,7 @@ namespace UI
 
         public static readonly string[] DefaultPlayerNames =
         {
-            "Buttons", "Jupiter", "Misha",
+            "Buttons", "Jupiter", "Misha", "Squid",
             "Avocado", "Kato",
             "Marley", "Mittens", "Chez", "Batman", "Juno",
             "Felix", "Mollie", "Luna", "Kylo", "Padmé", "Clyde", "Julita",
