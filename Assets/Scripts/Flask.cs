@@ -128,7 +128,7 @@ public class Flask : NetworkBehaviour
                 {
                     Rb.position = _holder.FlaskPickupTarget.position;
                     Rb.rotation = _holder.FlaskPickupTarget.rotation;
-                    Physics.SyncTransforms();
+                    Physics.SyncTransforms(); // todo we probably dont need both of these (SyncTransforms seems to be the core fix) but they can't hurt
                 }
 
                 break;
