@@ -128,6 +128,7 @@ public class Flask : NetworkBehaviour
                 {
                     Rb.position = _holder.FlaskPickupTarget.position;
                     Rb.rotation = _holder.FlaskPickupTarget.rotation;
+                    Physics.SyncTransforms();
                 }
 
                 break;
