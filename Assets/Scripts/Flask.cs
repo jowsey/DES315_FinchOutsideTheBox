@@ -128,7 +128,6 @@ public class Flask : NetworkBehaviour
                 {
                     Rb.position = _holder.FlaskPickupTarget.position;
                     Rb.rotation = _holder.FlaskPickupTarget.rotation;
-                    Physics.SyncTransforms(); // todo we probably dont need both of these (SyncTransforms seems to be the core fix) but they can't hurt
                 }
 
                 break;
@@ -211,6 +210,7 @@ public class Flask : NetworkBehaviour
         if (State == FlaskState.Held)
         {
             transform.position = _holder.FlaskPickupTarget.position;
+            // todo this follows body which is updated in physics, not camera which is updated every frame - if on local player and first-person, it jitters on rotate specifically 
             transform.rotation = _holder.FlaskPickupTarget.rotation;
         }
     }
