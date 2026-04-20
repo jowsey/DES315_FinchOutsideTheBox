@@ -29,15 +29,21 @@ namespace UI
             RpcReceiveMessage(sender!.identity, message);
         }
 
-        [ClientRpc]
-        private void RpcReceiveMessage(NetworkIdentity sender, string message)
+        public void DisplayLocalMessage(PlayerController player, string message)
         {
-            var player = sender.GetComponent<PlayerController>();
+            if (player == null) return;
             var item = Instantiate(_textChatItemPrefab, transform);
             item.Build(player, message);
 
             var rt = (RectTransform)transform;
             LayoutRebuilder.ForceRebuildLayoutImmediate(rt);
+        }
+
+        [ClientRpc]
+        private void RpcReceiveMessage(NetworkIdentity sender, string message)
+        {
+            var player = sender.GetComponent<PlayerController>();
+            DisplayLocalMessage(player, message);
         }
 
         private void OnEnable()
