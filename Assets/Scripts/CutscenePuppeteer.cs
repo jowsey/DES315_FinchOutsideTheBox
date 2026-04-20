@@ -16,7 +16,6 @@ public class CutscenePuppeteer : MonoBehaviour
         foreach (PlayerController p in _players)
         {
             p.IsPuppet = true;
-            p.GetComponent<Animator>().enabled = false;
         }
     }
 
@@ -24,8 +23,13 @@ public class CutscenePuppeteer : MonoBehaviour
     {
         foreach (PlayerController p in _players)
         {
-            p.IsPuppet = false;
+            p.Rb.position = p.transform.position;
+            p.Rb.rotation = p.transform.rotation;
+            p.Rb.linearVelocity = Vector3.zero;
+            p.Rb.angularVelocity = Vector3.zero;
+
             p.GetComponent<Animator>().enabled = true;
+            p.IsPuppet = false;
         }
     }
 
@@ -41,6 +45,11 @@ public class CutscenePuppeteer : MonoBehaviour
     {
         foreach (PlayerController p in _players)
         {
+            p.Rb.position = p.transform.position;
+            p.Rb.rotation = p.transform.rotation;
+            p.Rb.linearVelocity = Vector3.zero;
+            p.Rb.angularVelocity = Vector3.zero;
+
             p.GetComponent<Animator>().enabled = false;
         }
     }

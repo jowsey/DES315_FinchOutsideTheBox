@@ -11,7 +11,6 @@ using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 using ShowInInspectorAttribute = Sirenix.OdinInspector.ShowInInspectorAttribute;
 using ReadOnlyAttribute = Sirenix.OdinInspector.ReadOnlyAttribute;
-using Unity.VisualScripting;
 using VoIP;
 
 [RequireComponent(typeof(Rigidbody))]
