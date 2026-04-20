@@ -48,6 +48,7 @@ namespace UI
             EosLobby.LeaveLobbySucceeded += LeaveLobbySucceeded;
             EosLobby.LeaveLobbyFailed += LeaveLobbyFailed;
 
+            ClearLobbyListings();
             StartCoroutine(RefreshLobbyInterval());
         }
 
@@ -62,6 +63,8 @@ namespace UI
 
         private void OnDisable()
         {
+            StopCoroutine(RefreshLobbyInterval());
+
             _createLobbyButton.Button.onClick.RemoveListener(TryCreateLobby);
 
             EosLobby.CreateLobbySucceeded -= CreateLobbySucceeded;
@@ -75,8 +78,6 @@ namespace UI
 
             EosLobby.LeaveLobbySucceeded -= LeaveLobbySucceeded;
             EosLobby.LeaveLobbyFailed -= LeaveLobbyFailed;
-
-            StopCoroutine(RefreshLobbyInterval());
         }
 
         private void TryCreateLobby()
@@ -115,6 +116,14 @@ namespace UI
             _createLobbyButton.LabelText.text = _createLobbyButton.LoadingText;
         }
 
+        private void ClearLobbyListings()
+        {
+            foreach (var listing in _lobbyListContainer.GetComponentsInChildren<LobbyListing>())
+                Destroy(listing.gameObject);
+
+            _emptyListNotice.SetActive(true);
+        }
+
         private void CreateLobbySucceeded(List<Attribute> attributes)
         {
             NetworkManager.singleton.StartHost();
@@ -133,7 +142,7 @@ namespace UI
 
         private void FindLobbiesSucceeded(List<LobbyDetails> lobbies)
         {
-            foreach (var listing in _lobbyListContainer.GetComponentsInChildren<LobbyListing>()) Destroy(listing.gameObject);
+            ClearLobbyListings();
 
             var lobbiesNameSorted = lobbies.OrderBy(lobbyDetails =>
             {

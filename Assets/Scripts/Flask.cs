@@ -113,13 +113,26 @@ public class Flask : NetworkBehaviour
                 {
                     Highlight.SetHighlightable("Flask", false);
                     Highlight.SetHighlightable("FlaskCarrier", true);
+                }
+
+                if (_hasInitialised)
+                {
                     _holder.FlaskPickupFX.Post(gameObject);
                 }
 
                 break;
             }
             case FlaskState.PuttingDown:
+            {
+                if (isServer)
+                {
+                    Rb.position = _holder.FlaskPickupTarget.position;
+                    Rb.rotation = _holder.FlaskPickupTarget.rotation;
+                    Physics.SyncTransforms(); // todo we probably dont need both of these (SyncTransforms seems to be the core fix) but they can't hurt
+                }
+
                 break;
+            }
             case FlaskState.Smashed:
             {
                 if (isServer)
@@ -166,7 +179,7 @@ public class Flask : NetworkBehaviour
         if (State != FlaskState.Held) return;
 
         var player = sender!.identity.GetComponent<PlayerController>();
-        if (_holder != player) return;
+        if (player != _holder) return;
 
         _moveTarget = target.transform;
         Smashable = true;
@@ -181,11 +194,11 @@ public class Flask : NetworkBehaviour
 
         if (State == FlaskState.PuttingDown)
         {
-            Vector3 targetVec = _moveTarget.position - transform.position;
+            Vector3 targetVec = _moveTarget.position - Rb.position;
             Vector3 delta = targetVec.normalized * (Time.fixedDeltaTime * _movementSpeed);
             Rb.MovePosition(Rb.position + delta);
 
-            if (targetVec.sqrMagnitude < 0.01f)
+            if (targetVec.sqrMagnitude < 0.025f)
             {
                 State = FlaskState.Idle;
                 _holderIdentity = null;

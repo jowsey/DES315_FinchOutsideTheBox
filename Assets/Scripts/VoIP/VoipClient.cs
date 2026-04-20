@@ -344,6 +344,12 @@ namespace VoIP
 
             _lastReceivedSequence = seq;
 
+            if (_receivedSamplesBuffer == null)
+            {
+                // we're either not meant to be a receiver or we're not done setting up, so drop
+                return;
+            }
+
             lock (_opusLock)
             {
                 _opus.Decode(opusPacket, _opusFrameBuffer);

@@ -1,9 +1,10 @@
-using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class ObstructionDitherer : MonoBehaviour
 {
+    private static readonly int BaseColour = Shader.PropertyToID("_BaseColour");
+    
     [SerializeField] private float _fadeStartTime;
     [SerializeField] private float _fadeEndTime;
     [SerializeField] private float _fadeStartValue;
@@ -34,12 +35,21 @@ public class ObstructionDitherer : MonoBehaviour
         int hits = Physics.SphereCastNonAlloc(_camera.transform.position, 0.25f, dir.normalized, _hitBuffer, dist, _obstructionMask, QueryTriggerInteraction.Ignore);
         for (int i = 0; i < hits; ++i)
         {
+            //prevent over-extending slightly past player from sphere-cast radius
+            float hitDist = Vector3.Dot(_hitBuffer[i].point - _camera.transform.position, dir.normalized);
+            if (hitDist >= dist) { continue; }
+            
             if (_hitBuffer[i].transform.IsChildOf(PlayerTransform)) { continue; }
 
-            Renderer r = _hitBuffer[i].collider.GetComponent<Renderer>();
-            if (!r) { r = _hitBuffer[i].collider.GetComponentInChildren<Renderer>(); }
+            Renderer r = _hitBuffer[i].collider.GetComponentInChildren<Renderer>();
             if (!r) { continue; }
-            if (r.sharedMaterial.shader.name != "Shader Graphs/Dithered" && r.sharedMaterial.shader.name != "Shader Graphs/DitheredPBR" && r.sharedMaterial.shader.name != "Shader Graphs/DitheredPBRTriplanar") { continue; }
+
+            if (r.sharedMaterial.shader.name != "Shader Graphs/Dithered" &&
+                r.sharedMaterial.shader.name != "Shader Graphs/DitheredPBR" &&
+                r.sharedMaterial.shader.name != "Shader Graphs/DitheredPBRTriplanar")
+            {
+                continue;
+            }
 
             _hitsThisFrame.Add(r);
 
@@ -100,9 +110,9 @@ public class ObstructionDitherer : MonoBehaviour
             float t = Mathf.Clamp01(Mathf.InverseLerp(_fadeStartTime, _fadeEndTime, _activeRenderers[r.Key]));
             float dither = Mathf.Lerp(_fadeStartValue, _fadeEndValue, t);
 
-            Color colour = r.Key.material.GetColor("_BaseColour");
+            Color colour = r.Key.material.GetColor(BaseColour);
             colour.a = dither;
-            _materialInstances[r.Key].SetColor("_BaseColour", colour);
+            _materialInstances[r.Key].SetColor(BaseColour, colour);
         }
     }
 
@@ -111,9 +121,9 @@ public class ObstructionDitherer : MonoBehaviour
     {
         foreach (KeyValuePair<Renderer, Material> r in _materialInstances)
         {
-            Color colour = r.Key.material.GetColor("_BaseColour");
+            Color colour = r.Key.material.GetColor(BaseColour);
             colour.a = 1.0f;
-            r.Value.SetColor("_BaseColour", colour);
+            r.Value.SetColor(BaseColour, colour);
         }
         _materialInstances.Clear();
         _activeRenderers.Clear();

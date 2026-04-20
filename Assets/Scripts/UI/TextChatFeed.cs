@@ -43,6 +43,7 @@ namespace UI
         private void OnEnable()
         {
             _inputField.onSubmit.AddListener(OnSubmit);
+            _inputField.onDeselect.AddListener(OnDeselect);
             _inputFieldCanvasGroup.alpha = 0;
 
             Toggle(false);
@@ -51,6 +52,7 @@ namespace UI
         private void OnDisable()
         {
             _inputField.onSubmit.RemoveListener(OnSubmit);
+            _inputField.onDeselect.RemoveListener(OnDeselect);
         }
 
         private void OnSubmit(string message)
@@ -62,6 +64,12 @@ namespace UI
             CmdSendMessage(message);
 
             _inputField.text = "";
+        }
+
+        private void OnDeselect(string _)
+        {
+            if (!_inputFieldActive) return;
+            Toggle(false);
         }
 
         private void Update()
@@ -80,24 +88,33 @@ namespace UI
 
         private void Toggle(bool active)
         {
+            Tween.CompleteAll(_inputFieldCanvasGroup);
+
+            _inputFieldCanvasGroup.interactable = active;
+            _inputFieldCanvasGroup.blocksRaycasts = active;
+
+            _inputFieldActive = active;
+
             if (active)
             {
-                Tween.Alpha(_inputFieldCanvasGroup, 1f, 0.1f, Ease.OutCubic);
-                _inputField.ActivateInputField();
+                if (_inputFieldCanvasGroup.alpha < 1)
+                    Tween.Alpha(_inputFieldCanvasGroup, 1f, 0.1f, Ease.OutCubic);
 
+                _inputField.ActivateInputField();
                 PlayerController.AddControlBlocker(this);
+                Cursor.lockState = CursorLockMode.None;
             }
             else
             {
-                Tween.Alpha(_inputFieldCanvasGroup, 0f, 0.1f, Ease.InCubic);
-                _inputField.DeactivateInputField();
+                if (_inputFieldCanvasGroup.alpha > 0)
+                    Tween.Alpha(_inputFieldCanvasGroup, 0f, 0.1f, Ease.InCubic);
 
+                _inputField.DeactivateInputField();
                 PlayerController.RemoveControlBlocker(this);
+                Cursor.lockState = CursorLockMode.Locked;
 
                 _closedThisFrame = true;
             }
-
-            _inputFieldActive = active;
         }
     }
 }

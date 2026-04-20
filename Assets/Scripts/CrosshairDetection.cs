@@ -32,11 +32,18 @@ public class CrosshairDetection : MonoBehaviour
     //LateUpdate so that it's after Cinemachine updates the camera
     private void LateUpdate()
     {
+        if (!PlayerController.LocalPlayer) return;
+
+        // todo it would be nice if players could pick stuff up through (dithered) walls
+        // presumably this means doing a RaycastAll, filtering out non-interactable stuff, and
+        // then doing a line-of-sight raycast from the player to the final interactable target?
         Ray ray = _camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
-        var didHit = Physics.Raycast(ray, out RaycastHit hit, _maxDistance, ~LayerMask.GetMask("Player"), QueryTriggerInteraction.Ignore);
+        var didHit = Physics.Raycast(ray, out RaycastHit hit, 1000f, ~LayerMask.GetMask("Player"), QueryTriggerInteraction.Ignore);
+
+        var hitWithinDistance = didHit && Vector3.Distance(PlayerController.LocalPlayer.transform.position, hit.point) <= _maxDistance;
 
         // If no hit, cleanup old target
-        if (!didHit || !hit.transform.TryGetComponent(out Interactable interactable))
+        if (!hitWithinDistance || !hit.transform.TryGetComponent(out Interactable interactable))
         {
             TargetedTransform = null;
 

@@ -97,10 +97,11 @@ namespace Mirror
             }
         }
 
-        private void LateUpdate()
+        private new void LateUpdate()
         {
             base.LateUpdate();
-            if (rb != null && rb.isKinematic)
+
+            if (rb && rb.isKinematic)
             {
                 rb.position = target.position;
                 rb.rotation = target.rotation;
