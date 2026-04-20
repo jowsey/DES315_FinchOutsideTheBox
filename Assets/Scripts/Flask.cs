@@ -126,8 +126,8 @@ public class Flask : NetworkBehaviour
             {
                 if (isServer)
                 {
-                    Rb.position = transform.position;
-                    Rb.rotation = transform.rotation;
+                    Rb.position = _holder.FlaskPickupTarget.position;
+                    Rb.rotation = _holder.FlaskPickupTarget.rotation;
                 }
 
                 break;
@@ -197,7 +197,7 @@ public class Flask : NetworkBehaviour
             Vector3 delta = targetVec.normalized * (Time.fixedDeltaTime * _movementSpeed);
             Rb.MovePosition(Rb.position + delta);
 
-            if (targetVec.sqrMagnitude < 0.01f)
+            if (targetVec.sqrMagnitude < 0.025f)
             {
                 State = FlaskState.Idle;
                 _holderIdentity = null;
