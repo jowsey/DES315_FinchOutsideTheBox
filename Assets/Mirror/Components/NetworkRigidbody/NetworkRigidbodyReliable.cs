@@ -101,7 +101,7 @@ namespace Mirror
         {
             base.LateUpdate();
 
-            if (rb && rb.isKinematic)
+            if (rb && rb.isKinematic && !authority)
             {
                 rb.position = target.position;
                 rb.rotation = target.rotation;
