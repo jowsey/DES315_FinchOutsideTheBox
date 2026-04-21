@@ -8,6 +8,7 @@ public class MenuMusicInitScript : MonoBehaviour
 
     private void Start()
     {
+        DontDestroyOnLoad(this);
         if (!_hasStartedMusic)
         {
             menuMusicInit.Post(gameObject);

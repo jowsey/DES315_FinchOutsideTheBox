@@ -123,6 +123,8 @@ public class PlayerController : NetworkBehaviour
     //Cutscene puppeting
     [HideInInspector] public Vector3 PuppetWorldSpaceMoveDir;
     [HideInInspector] public bool PuppetRequestJump;
+    [HideInInspector] public float PuppetGravityMultiplier;
+    [HideInInspector] public float PuppetJumpForceMultiplier;
     private bool _isPuppet;
     [HideInInspector] public bool IsPuppet
     {
@@ -181,6 +183,8 @@ public class PlayerController : NetworkBehaviour
 
         Checkpoint.RespawnEvent.AddListener(OnRespawn);
 
+        PuppetGravityMultiplier = 1.0f;
+        PuppetJumpForceMultiplier = 1.0f;
         IsPuppet = false;
         PuppetWorldSpaceMoveDir = Vector3.zero;
         PuppetRequestJump = false;
@@ -463,6 +467,10 @@ public class PlayerController : NetworkBehaviour
         bool groundedOnBumpy = Physics.CheckSphere(Rb.position, _groundedSphereRadius, LayerMask.GetMask("Bumpy"), QueryTriggerInteraction.Ignore);
         Rb.useGravity = !groundedOnBumpy;
         _networkAnimator.animator.SetBool(GroundedState, grounded || groundedOnBumpy);
+        if (IsPuppet && !grounded && !groundedOnBumpy && PuppetGravityMultiplier > 1f)
+        {
+            Rb.AddForce(Physics.gravity * (PuppetGravityMultiplier - 1f), ForceMode.Acceleration);
+        }
 
         //Movement
         if (!Seat)
@@ -508,7 +516,8 @@ public class PlayerController : NetworkBehaviour
         if ((ControlsEnabled || IsPuppet) && (_jumpPressed || PuppetRequestJump) && (grounded || groundedOnBumpy))
         {
             _networkAnimator.animator.SetTrigger(JumpTrigger);
-            Rb.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
+            float jumpMultiplier = IsPuppet ? PuppetJumpForceMultiplier : 1f;
+            Rb.AddForce(Vector3.up * (_jumpForce * jumpMultiplier), ForceMode.Impulse);
         }
 
         CleanupFixedUpdate();

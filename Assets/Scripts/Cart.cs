@@ -16,7 +16,7 @@ public class Cart : NetworkBehaviour
         public Quaternion Rotation;
     }
 
-    private Rigidbody _rb;
+    public Rigidbody Rb;
 
     [ValidateInput("@gameObject.scene.isLoaded ? $value.Count > 0 : true", "Cart doesn't have any checkpoints linked.", InfoMessageType.Warning)]
     [field: SerializeField] public List<Checkpoint> Checkpoints { get; private set; }
@@ -65,10 +65,13 @@ public class Cart : NetworkBehaviour
     // todo make non-static and check specific carts
     public static UnityEvent<Checkpoint> OnReachCheckpoint = new();
 
+    public bool IsPuppet;
+
     private void Awake()
     {
-        _rb = GetComponent<Rigidbody>();
+        Rb = GetComponent<Rigidbody>();
         _uiCanvas = GameObject.FindGameObjectWithTag("UICanvas").transform;
+        IsPuppet = false;
     }
 
     public override void OnStartServer()
@@ -134,12 +137,12 @@ public class Cart : NetworkBehaviour
 
     private void FixedUpdate()
     {
-        if (!isServer) return;
+        if (!isServer && !IsPuppet) return;
         // Re-center rotation around local Z axis
         var localWorldUp = transform.InverseTransformDirection(Vector3.up);
         var rollError = -Mathf.Atan2(localWorldUp.x, localWorldUp.y) * Mathf.Rad2Deg;
         var rotExp = Mathf.Sign(rollError) * Mathf.Pow(Mathf.Abs(rollError), _tiltCorrectionScaling);
-        _rb.AddTorque(_tiltCorrection * rotExp * transform.forward);
+        Rb.AddTorque(_tiltCorrection * rotExp * transform.forward);
     }
 
     // Records the local positions of all CarriedFlasks and writes them to the current checkpoint's snapshot

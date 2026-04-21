@@ -6,9 +6,18 @@ public class CutscenePuppeteer : MonoBehaviour
 {
     //todo: make not serialise field, pull at runtime
     [SerializeField] private List<PlayerController> _players = new();
+    [SerializeField] private Cart _cart;
 
     [SerializeField] [Range(0, 1)] private float _maxSpeed;
     [SerializeField] private float _timeToMaxSpeed;
+
+    [SerializeField] private Transform _cartNudgeDirection;
+    [SerializeField] private float _cartNudgeDuration;
+    [SerializeField] private float _cartNudgeScale;
+
+    [SerializeField] private float _rapidJumpSpeedMultiplier;
+
+    [SerializeField] private Transform[] _playerRunTargets;
 
 
     public void MakePuppets()
@@ -17,6 +26,7 @@ public class CutscenePuppeteer : MonoBehaviour
         {
             p.IsPuppet = true;
         }
+        _cart.IsPuppet = true;
     }
 
     public void MakeNonPuppets()
@@ -31,9 +41,17 @@ public class CutscenePuppeteer : MonoBehaviour
             p.GetComponent<Animator>().enabled = true;
             p.IsPuppet = false;
         }
+
+        _cart.Rb.position = _cart.transform.position;
+        _cart.Rb.rotation = _cart.transform.rotation;
+        _cart.Rb.linearVelocity = Vector3.zero;
+        _cart.Rb.angularVelocity = Vector3.zero;
+
+        _cart.GetComponent<Animator>().enabled = true;
+        _cart.IsPuppet = false;
     }
 
-    public void EnableAnimators()
+    public void EnablePlayerAnimators()
     {
         foreach (PlayerController p in _players)
         {
@@ -41,7 +59,7 @@ public class CutscenePuppeteer : MonoBehaviour
         }
     }
 
-    public void DisableAnimators()
+    public void DisablePlayerAnimators()
     {
         foreach (PlayerController p in _players)
         {
@@ -52,6 +70,34 @@ public class CutscenePuppeteer : MonoBehaviour
 
             p.GetComponent<Animator>().enabled = false;
         }
+    }
+
+    public void EnableCartAnimator()
+    {
+        _cart.GetComponent<Animator>().enabled = true;
+    }
+
+    public void DisableCartAnimator()
+    {
+        Vector3 pos = _cart.transform.position;
+        Quaternion rot = _cart.transform.rotation;
+
+        _cart.GetComponent<Animator>().enabled = false;
+
+        foreach (Rigidbody rb in _cart.GetComponentsInChildren<Rigidbody>())
+        {
+            rb.isKinematic = false;
+        }
+
+        _cart.transform.position = pos;
+        _cart.transform.rotation = rot;
+        _cart.Rb.position = pos;
+        _cart.Rb.rotation = rot;
+        _cart.Rb.linearVelocity = Vector3.zero;
+        _cart.Rb.angularVelocity = Vector3.zero;
+        _cart.Rb.WakeUp();
+
+        Physics.SyncTransforms();
     }
 
     public void RunInCircles(float seconds)
@@ -85,6 +131,15 @@ public class CutscenePuppeteer : MonoBehaviour
             p1.AnalogueMoveScale = Mathf.Clamp01(Mathf.InverseLerp(0.0f, _timeToMaxSpeed, timer)) * _maxSpeed;
             p2.AnalogueMoveScale = Mathf.Clamp01(Mathf.InverseLerp(0.0f, _timeToMaxSpeed, timer)) * _maxSpeed;
 
+            if (timer >= 2.0f)
+            {
+                p1.PuppetRequestJump = true;
+            }
+            if (timer >= 2.5f)
+            {
+                p2.PuppetRequestJump = true;
+            }
+
             yield return null; //Wait for next frame
         }
 
@@ -110,5 +165,102 @@ public class CutscenePuppeteer : MonoBehaviour
         Vector3 finalDir = (tangent + inward * 0.0f).normalized;
 
         return finalDir;
+    }
+
+
+    public void NudgeCart()
+    {
+        StartCoroutine(NudgeCartCoroutine());
+    }
+
+    private IEnumerator NudgeCartCoroutine()
+    {
+        Vector3 dir = Vector3.ProjectOnPlane(_cartNudgeDirection.forward, Vector3.up).normalized;
+        WheelSeat[] wheels = _cart.GetComponentsInChildren<WheelSeat>();
+
+        float timer = 0f;
+        while (timer < _cartNudgeDuration)
+        {
+            foreach (WheelSeat wheel in wheels)
+            {
+                wheel.ApplyDrive(dir, _cartNudgeScale * (timer / _cartNudgeDuration));
+            }
+
+            timer += Time.fixedDeltaTime;
+            yield return new WaitForFixedUpdate();
+        }
+    }
+
+
+    public void RapidJump(float seconds)
+    {
+        StartCoroutine(RapidJumpCoroutine(seconds));
+    }
+
+    private IEnumerator RapidJumpCoroutine(float seconds)
+    {
+        PlayerController p1 = _players[0];
+        PlayerController p2 = _players[1];
+
+        float gravityMult = _rapidJumpSpeedMultiplier;
+        float jumpMult = Mathf.Sqrt(Mathf.Sqrt(gravityMult));
+
+        p1.PuppetGravityMultiplier = gravityMult;
+        p2.PuppetGravityMultiplier = gravityMult;
+        p1.PuppetJumpForceMultiplier = jumpMult;
+        p2.PuppetJumpForceMultiplier = jumpMult;
+
+        float timer = 0f;
+        while (timer < seconds)
+        {
+            p1.PuppetWorldSpaceMoveDir = Vector3.zero;
+            p2.PuppetWorldSpaceMoveDir = Vector3.zero;
+
+            p1.PuppetRequestJump = true;
+            if (timer > 0.2f)
+            {
+                p2.PuppetRequestJump = true;
+            }
+
+            timer += Time.fixedDeltaTime;
+            yield return new WaitForFixedUpdate();
+        }
+
+        p1.PuppetRequestJump = false;
+        p2.PuppetRequestJump = false;
+        p1.PuppetGravityMultiplier = 1f;
+        p2.PuppetGravityMultiplier = 1f;
+        p1.PuppetJumpForceMultiplier = 1f;
+        p2.PuppetJumpForceMultiplier = 1f;
+    }
+
+
+    public void PlayersRunTowardsTargets()
+    {
+        StartCoroutine(PlayersRunTowardsTargetsCoroutine());
+    }
+
+    private IEnumerator PlayersRunTowardsTargetsCoroutine()
+    {
+        foreach (Transform target in _playerRunTargets)
+        {
+            //Move on to next target when either of the players reach the target
+            bool targetReached = false;
+            while (!targetReached)
+            {
+                foreach (PlayerController p in _players)
+                {
+                    Vector2 dir = (new Vector2(target.position.x, target.position.z) - new Vector2(p.transform.position.x, p.transform.position.z));
+
+                    targetReached = (dir.sqrMagnitude < 1e-2);
+                    if (targetReached) { break; }
+
+                    //Run towards current target
+                    p.PuppetWorldSpaceMoveDir = new Vector3(dir.normalized.x, 0.0f, dir.normalized.y);
+                    p.AnalogueMoveScale = 1.0f;
+                }
+                yield return null;
+            }
+        }
     }
 }

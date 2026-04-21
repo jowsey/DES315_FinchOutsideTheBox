@@ -13,6 +13,12 @@ namespace Util
         private void OnTriggerEnter(Collider other)
         {
             if (NetworkClient.localPlayer?.gameObject != other.attachedRigidbody.gameObject) return;
+            SetValue();
+        }
+
+        //For cutscene testing
+        public void SetValue()
+        {
             _state.SetValue();
         }
     }

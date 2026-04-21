@@ -149,4 +149,11 @@ public class WheelSeat : NetworkBehaviour
         Gizmos.color = Color.cyan;
         Gizmos.DrawWireSphere(transform.position, _sphereCollider.radius * transform.lossyScale.y);
     }
+
+    public void ApplyDrive(Vector3 worldMoveDir, float scale)
+    {
+        Vector3 torqueAxis = Vector3.Cross(Vector3.up, worldMoveDir.normalized);
+        _wheelRb.WakeUp();
+        _wheelRb.AddTorque(torqueAxis * (MoveForce * scale));
+    }
 }

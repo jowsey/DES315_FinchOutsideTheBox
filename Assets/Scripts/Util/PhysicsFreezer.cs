@@ -41,6 +41,8 @@ public class PhysicsFreezer : MonoBehaviour
                 rb.angularVelocity = Vector3.zero;
             }
         }
+
+        Camera.main.GetComponent<CrosshairDetection>().enabled = false;
     }
 
     private void OnCutsceneStopped(PlayableDirector director)
@@ -52,5 +54,6 @@ public class PhysicsFreezer : MonoBehaviour
                 rb.isKinematic = _originalKinematicStates[rb];
             }
         }
+        Camera.main.GetComponent<CrosshairDetection>().enabled = true;
     }
 }
