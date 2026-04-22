@@ -1,0 +1,266 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class CutscenePuppeteer : MonoBehaviour
+{
+    //todo: make not serialise field, pull at runtime
+    [SerializeField] private List<PlayerController> _players = new();
+    [SerializeField] private Cart _cart;
+
+    [SerializeField] [Range(0, 1)] private float _maxSpeed;
+    [SerializeField] private float _timeToMaxSpeed;
+
+    [SerializeField] private Transform _cartNudgeDirection;
+    [SerializeField] private float _cartNudgeDuration;
+    [SerializeField] private float _cartNudgeScale;
+
+    [SerializeField] private float _rapidJumpSpeedMultiplier;
+
+    [SerializeField] private Transform[] _playerRunTargets;
+
+
+    public void MakePuppets()
+    {
+        foreach (PlayerController p in _players)
+        {
+            p.IsPuppet = true;
+        }
+        _cart.IsPuppet = true;
+    }
+
+    public void MakeNonPuppets()
+    {
+        foreach (PlayerController p in _players)
+        {
+            p.Rb.position = p.transform.position;
+            p.Rb.rotation = p.transform.rotation;
+            p.Rb.linearVelocity = Vector3.zero;
+            p.Rb.angularVelocity = Vector3.zero;
+
+            p.GetComponent<Animator>().enabled = true;
+            p.IsPuppet = false;
+        }
+
+        _cart.Rb.position = _cart.transform.position;
+        _cart.Rb.rotation = _cart.transform.rotation;
+        _cart.Rb.linearVelocity = Vector3.zero;
+        _cart.Rb.angularVelocity = Vector3.zero;
+
+        _cart.GetComponent<Animator>().enabled = true;
+        _cart.IsPuppet = false;
+    }
+
+    public void EnablePlayerAnimators()
+    {
+        foreach (PlayerController p in _players)
+        {
+            p.GetComponent<Animator>().enabled = true;
+        }
+    }
+
+    public void DisablePlayerAnimators()
+    {
+        foreach (PlayerController p in _players)
+        {
+            p.Rb.position = p.transform.position;
+            p.Rb.rotation = p.transform.rotation;
+            p.Rb.linearVelocity = Vector3.zero;
+            p.Rb.angularVelocity = Vector3.zero;
+
+            p.GetComponent<Animator>().enabled = false;
+        }
+    }
+
+    public void EnableCartAnimator()
+    {
+        _cart.GetComponent<Animator>().enabled = true;
+    }
+
+    public void DisableCartAnimator()
+    {
+        Vector3 pos = _cart.transform.position;
+        Quaternion rot = _cart.transform.rotation;
+
+        _cart.GetComponent<Animator>().enabled = false;
+
+        foreach (Rigidbody rb in _cart.GetComponentsInChildren<Rigidbody>())
+        {
+            rb.isKinematic = false;
+        }
+
+        _cart.transform.position = pos;
+        _cart.transform.rotation = rot;
+        _cart.Rb.position = pos;
+        _cart.Rb.rotation = rot;
+        _cart.Rb.linearVelocity = Vector3.zero;
+        _cart.Rb.angularVelocity = Vector3.zero;
+        _cart.Rb.WakeUp();
+
+        Physics.SyncTransforms();
+    }
+
+    public void RunInCircles(float seconds)
+    {
+        StartCoroutine(RunInCirclesCoroutine(seconds));
+    }
+
+    private IEnumerator RunInCirclesCoroutine(float seconds)
+    {
+        PlayerController p1 = _players[0];
+        PlayerController p2 = _players[1];
+
+        //Calculate xz-midpoint
+        Vector3 p1Pos = p1.transform.position;
+        Vector3 p2Pos = p2.transform.position;
+        Vector3 center = new Vector3((p1Pos.x + p2Pos.x) / 2f, 0f, (p1Pos.z + p2Pos.z) / 2f);
+
+        p1.Rb.position = p1.transform.position;
+        p2.Rb.position = p2.transform.position;
+
+        float timer = 0.0f;
+        while (timer < seconds)
+        {
+            timer += Time.deltaTime;
+
+            //Update directions
+            p1.PuppetWorldSpaceMoveDir = GetOrbitDirection(p1.transform.position, center);
+            p2.PuppetWorldSpaceMoveDir = GetOrbitDirection(p2.transform.position, center);
+
+            //Speed up over time
+            p1.AnalogueMoveScale = Mathf.Clamp01(Mathf.InverseLerp(0.0f, _timeToMaxSpeed, timer)) * _maxSpeed;
+            p2.AnalogueMoveScale = Mathf.Clamp01(Mathf.InverseLerp(0.0f, _timeToMaxSpeed, timer)) * _maxSpeed;
+
+            if (timer >= 2.0f)
+            {
+                p1.PuppetRequestJump = true;
+            }
+            if (timer >= 2.5f)
+            {
+                p2.PuppetRequestJump = true;
+            }
+
+            yield return null; //Wait for next frame
+        }
+
+        //Time is up, stop moving
+        p1.PuppetWorldSpaceMoveDir = Vector3.zero;
+        p2.PuppetWorldSpaceMoveDir = Vector3.zero;
+    }
+
+    private Vector3 GetOrbitDirection(Vector3 playerPos, Vector3 center)
+    {
+        //Get XZ offset from centre (flatten y)
+        Vector3 offset = playerPos - center;
+        offset.y = 0f;
+
+        //Calculate counter-clockwise tangent
+        //Vector3(-z, 0, x) rotates a vector by 90 degrees
+        Vector3 tangent = new Vector3(-offset.z, 0f, offset.x).normalized;
+
+        //Since we're just setting the direction, moving just according to the tangent will cause the players to slowly drift outwards
+        //As a hacky fix we can just add a little 15% lerp towards the centre of the circle
+        //^^i actually decided i like them going out over time :bleh:
+        Vector3 inward = -offset.normalized;
+        Vector3 finalDir = (tangent + inward * 0.0f).normalized;
+
+        return finalDir;
+    }
+
+
+    public void NudgeCart()
+    {
+        StartCoroutine(NudgeCartCoroutine());
+    }
+
+    private IEnumerator NudgeCartCoroutine()
+    {
+        Vector3 dir = Vector3.ProjectOnPlane(_cartNudgeDirection.forward, Vector3.up).normalized;
+        WheelSeat[] wheels = _cart.GetComponentsInChildren<WheelSeat>();
+
+        float timer = 0f;
+        while (timer < _cartNudgeDuration)
+        {
+            foreach (WheelSeat wheel in wheels)
+            {
+                wheel.ApplyDrive(dir, _cartNudgeScale * (timer / _cartNudgeDuration));
+            }
+
+            timer += Time.fixedDeltaTime;
+            yield return new WaitForFixedUpdate();
+        }
+    }
+
+
+    public void RapidJump(float seconds)
+    {
+        StartCoroutine(RapidJumpCoroutine(seconds));
+    }
+
+    private IEnumerator RapidJumpCoroutine(float seconds)
+    {
+        PlayerController p1 = _players[0];
+        PlayerController p2 = _players[1];
+
+        float gravityMult = _rapidJumpSpeedMultiplier;
+        float jumpMult = Mathf.Sqrt(Mathf.Sqrt(gravityMult));
+
+        p1.PuppetGravityMultiplier = gravityMult;
+        p2.PuppetGravityMultiplier = gravityMult;
+        p1.PuppetJumpForceMultiplier = jumpMult;
+        p2.PuppetJumpForceMultiplier = jumpMult;
+
+        float timer = 0f;
+        while (timer < seconds)
+        {
+            p1.PuppetWorldSpaceMoveDir = Vector3.zero;
+            p2.PuppetWorldSpaceMoveDir = Vector3.zero;
+
+            p1.PuppetRequestJump = true;
+            if (timer > 0.2f)
+            {
+                p2.PuppetRequestJump = true;
+            }
+
+            timer += Time.fixedDeltaTime;
+            yield return new WaitForFixedUpdate();
+        }
+
+        p1.PuppetRequestJump = false;
+        p2.PuppetRequestJump = false;
+        p1.PuppetGravityMultiplier = 1f;
+        p2.PuppetGravityMultiplier = 1f;
+        p1.PuppetJumpForceMultiplier = 1f;
+        p2.PuppetJumpForceMultiplier = 1f;
+    }
+
+
+    public void PlayersRunTowardsTargets()
+    {
+        StartCoroutine(PlayersRunTowardsTargetsCoroutine());
+    }
+
+    private IEnumerator PlayersRunTowardsTargetsCoroutine()
+    {
+        foreach (Transform target in _playerRunTargets)
+        {
+            //Move on to next target when either of the players reach the target
+            bool targetReached = false;
+            while (!targetReached)
+            {
+                foreach (PlayerController p in _players)
+                {
+                    Vector2 dir = (new Vector2(target.position.x, target.position.z) - new Vector2(p.transform.position.x, p.transform.position.z));
+
+                    targetReached = (dir.sqrMagnitude < 1e-2);
+                    if (targetReached) { break; }
+
+                    //Run towards current target
+                    p.PuppetWorldSpaceMoveDir = new Vector3(dir.normalized.x, 0.0f, dir.normalized.y);
+                    p.AnalogueMoveScale = 1.0f;
+                }
+                yield return null;
+            }
+        }
+    }
+}

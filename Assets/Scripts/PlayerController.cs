@@ -1,6 +1,6 @@
 using Mirror;
-using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using System.Collections.Generic;
 using TMPro;
 using UI;
 using Unity.Cinemachine;
@@ -8,10 +8,11 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using Util;
+using VoIP;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
-using ShowInInspectorAttribute = Sirenix.OdinInspector.ShowInInspectorAttribute;
 using ReadOnlyAttribute = Sirenix.OdinInspector.ReadOnlyAttribute;
+using ShowInInspectorAttribute = Sirenix.OdinInspector.ShowInInspectorAttribute;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : NetworkBehaviour
@@ -93,7 +94,7 @@ public class PlayerController : NetworkBehaviour
     [ReadOnly] public Flask HeldFlask;
 
     [field: SyncVar] [field: ShowInInspector] [field: ReadOnly] public Vector3 WorldSpaceMoveDir { get; private set; }
-    [field: SyncVar] [field: ShowInInspector] [field: ReadOnly] public float AnalogueMoveScale { get; private set; }
+    [SyncVar] public float AnalogueMoveScale;
 
     [Header("Skin materials")]
     [SerializeField] private Renderer[] _skinnedRenderers;
@@ -118,6 +119,37 @@ public class PlayerController : NetworkBehaviour
 
     public bool FlaskPickupAllowed => ControlsEnabled && !Seat && !HeldFlask;
     public bool FlaskPutdownAllowed => ControlsEnabled && !Seat && HeldFlask && HeldFlask.State == Flask.FlaskState.Held;
+
+    //Cutscene puppeting
+    [HideInInspector] public Vector3 PuppetWorldSpaceMoveDir;
+    [HideInInspector] public bool PuppetRequestJump;
+    [HideInInspector] public float PuppetGravityMultiplier;
+    [HideInInspector] public float PuppetJumpForceMultiplier;
+    private bool _isPuppet;
+    [HideInInspector]
+    public bool IsPuppet
+    {
+        get => _isPuppet;
+        set
+        {
+            if (_isPuppet == value) { return; }
+            _isPuppet = value;
+            NetworkTransformBase ntb = GetComponent<NetworkTransformBase>();
+            if (_isPuppet)
+            {
+                //Disable ntb, ensure rigidbody is non-kinematic, and disable voip client for entering puppet mode
+                if (ntb != null) { ntb.enabled = false; }
+                Rb.isKinematic = false;
+                GetComponent<VoipClient>().enabled = false;
+            }
+            else
+            {
+                //Exiting puppet mode, hand control back over to ntb and reenable voip client
+                if (ntb != null) { ntb.enabled = true; }
+                GetComponent<VoipClient>().enabled = true;
+            }
+        }
+    }
 
     public static void AddControlBlocker(Object blocker)
     {
@@ -150,6 +182,12 @@ public class PlayerController : NetworkBehaviour
         WwiseAnimationEvents = GetComponent<WwiseAnimationEvents>();
 
         Checkpoint.RespawnEvent.AddListener(OnRespawn);
+
+        PuppetGravityMultiplier = 1.0f;
+        PuppetJumpForceMultiplier = 1.0f;
+        IsPuppet = false;
+        PuppetWorldSpaceMoveDir = Vector3.zero;
+        PuppetRequestJump = false;
     }
 
     private void Start()
@@ -260,7 +298,7 @@ public class PlayerController : NetworkBehaviour
 
     private void Update()
     {
-        if (!authority) return;
+        if (!authority && !IsPuppet) return;
 
         //First-person controls
         if (CameraZoomController.FirstPerson && ControlsEnabled)
@@ -310,7 +348,7 @@ public class PlayerController : NetworkBehaviour
             transform.position = Seat.SeatedPosition;
         }
 
-        if (!isLocalPlayer)
+        if (!isLocalPlayer && !IsPuppet)
         {
             _nameplateCanvas.transform.rotation = Quaternion.LookRotation(_nameplateCanvas.transform.position - _camera.transform.position);
         }
@@ -356,32 +394,48 @@ public class PlayerController : NetworkBehaviour
             WwiseAnimationEvents.ResetGlideTrigger();
         }
 
-        if (!authority) return;
+        if (!authority && !IsPuppet) return;
 
         //Movement input
-        Vector2 inputDirection = ControlsEnabled ? MoveAction.action.ReadValue<Vector2>() : Vector2.zero; //no input when controls are blocked
-        AnalogueMoveScale = inputDirection.magnitude; //input system has a normalise processor on the move input action
-        if (CameraZoomController.FirstPerson)
+        if (IsPuppet)
         {
-            Vector3 forward = Vector3.Scale(transform.forward, new Vector3(1, 0, 1)).normalized;
-            Vector3 right = transform.right;
-            WorldSpaceMoveDir = (forward * inputDirection.y + right * inputDirection.x).normalized;
-            Rb.MoveRotation(Rb.rotation * Quaternion.Euler(0f, _cameraYawAccumulator, 0f));
+            if (PuppetWorldSpaceMoveDir.sqrMagnitude > 0)
+            {
+                Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, Quaternion.LookRotation(PuppetWorldSpaceMoveDir, Vector3.up), Time.fixedDeltaTime * rotationSmoothingSpeed));
+            }
+            else
+            {
+                AnalogueMoveScale = 0.0f;
+            }
+            _networkAnimator.animator.SetBool(RunningState, PuppetWorldSpaceMoveDir.sqrMagnitude > 0);
+            WorldSpaceMoveDir = PuppetWorldSpaceMoveDir;
         }
         else
         {
-            Quaternion cameraOrientation = _cinemachineCamera ? _cinemachineCamera.State.GetFinalOrientation() : Quaternion.identity;
-            Vector3 cameraForward = Vector3.Scale(cameraOrientation * Vector3.forward, new Vector3(1, 0, 1)).normalized;
-            Vector3 cameraRight = cameraOrientation * Vector3.right;
-
-            WorldSpaceMoveDir = (cameraForward * inputDirection.y + cameraRight * inputDirection.x).normalized;
-            if (WorldSpaceMoveDir.sqrMagnitude > 0)
+            Vector2 inputDirection = ControlsEnabled ? MoveAction.action.ReadValue<Vector2>() : Vector2.zero; //no input when controls are blocked
+            AnalogueMoveScale = inputDirection.magnitude; //input system has a normalise processor on the move input action
+            if (CameraZoomController.FirstPerson)
             {
-                Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, Quaternion.LookRotation(WorldSpaceMoveDir, Vector3.up), Time.fixedDeltaTime * rotationSmoothingSpeed));
+                Vector3 forward = Vector3.Scale(transform.forward, new Vector3(1, 0, 1)).normalized;
+                Vector3 right = transform.right;
+                WorldSpaceMoveDir = (forward * inputDirection.y + right * inputDirection.x).normalized;
+                Rb.MoveRotation(Rb.rotation * Quaternion.Euler(0f, _cameraYawAccumulator, 0f));
             }
+            else
+            {
+                Quaternion cameraOrientation = _cinemachineCamera ? _cinemachineCamera.State.GetFinalOrientation() : Quaternion.identity;
+                Vector3 cameraForward = Vector3.Scale(cameraOrientation * Vector3.forward, new Vector3(1, 0, 1)).normalized;
+                Vector3 cameraRight = cameraOrientation * Vector3.right;
+
+                WorldSpaceMoveDir = (cameraForward * inputDirection.y + cameraRight * inputDirection.x).normalized;
+                if (WorldSpaceMoveDir.sqrMagnitude > 0)
+                {
+                    Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, Quaternion.LookRotation(WorldSpaceMoveDir, Vector3.up), Time.fixedDeltaTime * rotationSmoothingSpeed));
+                }
+            }
+            _networkAnimator.animator.SetBool(RunningState, WorldSpaceMoveDir.sqrMagnitude > 0);
         }
 
-        _networkAnimator.animator.SetBool(RunningState, WorldSpaceMoveDir.sqrMagnitude > 0);
 
         //Unsitting
         if (Seat && ControlsEnabled && _jumpPressed)
@@ -407,6 +461,10 @@ public class PlayerController : NetworkBehaviour
         bool groundedOnBumpy = Physics.CheckSphere(Rb.position, _groundedSphereRadius, LayerMask.GetMask("Bumpy"), QueryTriggerInteraction.Ignore);
         Rb.useGravity = !groundedOnBumpy;
         _networkAnimator.animator.SetBool(GroundedState, grounded || groundedOnBumpy);
+        if (IsPuppet && !grounded && !groundedOnBumpy && PuppetGravityMultiplier > 1f)
+        {
+            Rb.AddForce(Physics.gravity * (PuppetGravityMultiplier - 1f), ForceMode.Acceleration);
+        }
 
         //Movement
         if (!Seat)
@@ -449,10 +507,11 @@ public class PlayerController : NetworkBehaviour
         }
 
         //Jumping
-        if (ControlsEnabled && _jumpPressed && (grounded || groundedOnBumpy))
+        if ((ControlsEnabled || IsPuppet) && (_jumpPressed || PuppetRequestJump) && (grounded || groundedOnBumpy))
         {
-            _networkAnimator.SetTrigger(JumpTrigger);
-            Rb.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
+            _networkAnimator.animator.SetTrigger(JumpTrigger);
+            float jumpMultiplier = IsPuppet ? PuppetJumpForceMultiplier : 1f;
+            Rb.AddForce(Vector3.up * (_jumpForce * jumpMultiplier), ForceMode.Impulse);
         }
 
         CleanupFixedUpdate();
@@ -506,6 +565,7 @@ public class PlayerController : NetworkBehaviour
     {
         _jumpPressed = false;
         _cameraYawAccumulator = 0.0f;
+        PuppetRequestJump = false;
     }
 
     private void OnTriggerEnter(Collider other)
