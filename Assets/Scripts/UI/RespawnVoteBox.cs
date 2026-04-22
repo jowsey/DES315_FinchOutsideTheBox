@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Mirror;
 using PrimeTween;
@@ -67,6 +67,9 @@ namespace UI
         private Vector2 _hiddenPosition => _openPosition + ((RectTransform)transform).sizeDelta * Vector2.up;
 
         private Cart _linkedCart;
+
+        // Tracking when all flasks are lost
+        private int _lastKnownFlaskCount;
 
         private void Awake()
         {
@@ -144,8 +147,9 @@ namespace UI
                 }
             }
 
-            // Force open if respawn pressed or there are active votes
-            if (_votesActive > 0 || (PlayerController.ControlsEnabled && _respawnAction.action.WasPressedThisFrame()))
+            // Force active if respawn pressed, there are active votes, or we just lost our last flask
+            if (_votesActive > 0 || (PlayerController.ControlsEnabled && _respawnAction.action.WasPressedThisFrame()) ||
+                (_lastKnownFlaskCount > 0 && _linkedCart.NumCarriedFlasks == 0))
             {
                 _lastActivityTime = Time.time;
             }
@@ -224,9 +228,14 @@ namespace UI
                 _keyPromptHidden = true;
             }
 
-            _chargeImage.fillAmount = _voteCharge;
-            _countText.text = $"<b>{_votesActive}</b>/{_votesRequired}";
-            _flaskCountOnRespawnText.text = $"You will respawn with <b>{_linkedCart.CheckpointFlaskCounts[_linkedCart.CurrentCheckpointIndex]}</b> flasks.";
+            if (_state != ShowState.Closed)
+            {
+                _chargeImage.fillAmount = _voteCharge;
+                _countText.text = $"<b>{_votesActive}</b>/{_votesRequired}";
+                _flaskCountOnRespawnText.text = $"You will respawn with <b>{_linkedCart.CheckpointFlaskCounts[_linkedCart.CurrentCheckpointIndex]}</b> flasks.";
+            }
+
+            _lastKnownFlaskCount = _linkedCart.NumCarriedFlasks;
         }
 
         [Command(requiresAuthority = false)]
