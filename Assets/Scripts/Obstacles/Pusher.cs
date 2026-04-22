@@ -35,7 +35,7 @@ public class Pusher : Mirror.NetworkBehaviour
         private float _maxScale = -1.0f;
 
         [ShowInInspector, ReadOnly, ProgressBar("_minScale", "_maxScale")]
-    #endif
+#endif
         private float _currentScale; //todo figure out why this doesn't show up in the editor?
 
 
@@ -115,7 +115,12 @@ public class Pusher : Mirror.NetworkBehaviour
         }
     }
 
-
+    public void OnDestroy()
+    {
+        //Stops playing sounds when out of use to not overload the game
+        PlatformSound.Stop(gameObject);
+    }
+    
 #if UNITY_EDITOR
         [OnInspectorGUI]
         private void RepaintConstantly()
@@ -180,11 +185,5 @@ public class Pusher : Mirror.NetworkBehaviour
                 if (val > _maxScale) { _maxScale = val; }
             }
         }
-
-    public void OnDestroy()
-    {
-        //Stops playing sounds when out of use to not overload the game
-        PlatformSound.Stop(gameObject);
-    }
 #endif
 }
