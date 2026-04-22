@@ -1,7 +1,7 @@
 ﻿using PrimeTween;
 using Sirenix.OdinInspector;
-using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace UI
 {
@@ -9,8 +9,8 @@ namespace UI
     {
         [SerializeField] private CanvasGroup _mainGroup;
 
-        [SerializeField] private TextMeshProUGUI _taglineText;
-        [SerializeField] private TextMeshProUGUI _areaNameText;
+        [SerializeField] private Image _image;
+        [SerializeField] private Animator _animator;
 
         [ReadOnly] public Checkpoint Checkpoint;
 
@@ -18,12 +18,9 @@ namespace UI
 
         private void Start()
         {
-            _areaNameText.text = Checkpoint.AreaName;
-
+            _animator.runtimeAnimatorController = Checkpoint.AnimatorController;
             _mainGroup.alpha = 0;
-            _taglineText.alpha = 0f;
-            _areaNameText.alpha = 0f;
-
+         
             Tween.Delay(1.5f, () =>
             {
                 if (this && gameObject) CheckpointJingle.Post(gameObject);
@@ -31,8 +28,6 @@ namespace UI
 
             Sequence.Create()
                 .Group(Tween.Alpha(_mainGroup, 1, 2.5f, ease: Ease.InOutCubic))
-                .Group(Tween.Alpha(_taglineText, 1, 3f, ease: Ease.InOutCubic, startDelay: 0.5f))
-                .Group(Tween.Alpha(_areaNameText, 1, 3f, ease: Ease.InOutCubic, startDelay: 1f))
                 .ChainDelay(3f)
                 .Chain(Tween.Alpha(_mainGroup, 0, 3f, ease: Ease.InOutCubic))
                 .OnComplete(() => Destroy(gameObject), false);
