@@ -3,6 +3,7 @@ using UI;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
 
 [RequireComponent(typeof(Camera))]
 [RequireComponent(typeof(CinemachineBrain))]
@@ -55,7 +56,8 @@ public class CameraZoomController : MonoBehaviour
 
         foreach (Renderer r in _targetTransform.GetComponentsInChildren<Renderer>())
         {
-            r.enabled = !FirstPerson;
+            // r.enabled = !FirstPerson;
+            r.shadowCastingMode = toggle ? ShadowCastingMode.ShadowsOnly : ShadowCastingMode.On;
         }
 
         if (FirstPerson)
