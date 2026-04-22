@@ -62,7 +62,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2283620393017782939}
   - component: {fileID: 4830982452033091194}
-  - component: {fileID: 3787721018968593654}
+  - component: {fileID: 8619557972223829814}
   m_Layer: 5
   m_Name: SettingsText
   m_TagString: Untagged
@@ -99,7 +99,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5423107748241798193}
   m_CullTransparentMesh: 1
---- !u!114 &3787721018968593654
+--- !u!114 &8619557972223829814
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -108,27 +108,29 @@ MonoBehaviour:
   m_GameObject: {fileID: 5423107748241798193}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Script: {fileID: 11500000, guid: faf1d9844dae940668fe7d04623674c8, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_EditorClassIdentifier: Gilzoide.RoundedCorners::Gilzoide.RoundedCorners.RoundedRect
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.49803922}
+  m_Color: {r: 0.101960786, g: 0.09803922, b: 0.08235294, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
+  _bottomLeft:
+    Radius: 16
+    TriangleCount: 8
+  _topLeft:
+    Radius: 16
+    TriangleCount: 8
+  _topRight:
+    Radius: 16
+    TriangleCount: 8
+  _bottomRight:
+    Radius: 16
+    TriangleCount: 8
 --- !u!1 &5536021189722670069
 GameObject:
   m_ObjectHideFlags: 0

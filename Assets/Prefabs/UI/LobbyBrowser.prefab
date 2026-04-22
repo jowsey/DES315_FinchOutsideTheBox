@@ -63,6 +63,7 @@ GameObject:
   - component: {fileID: 6174675761226077560}
   - component: {fileID: 8158825400962373739}
   - component: {fileID: 4899757325471535553}
+  - component: {fileID: 513178957616763248}
   m_Layer: 5
   m_Name: LobbyCreator
   m_TagString: Untagged
@@ -112,7 +113,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Gilzoide.RoundedCorners::Gilzoide.RoundedCorners.RoundedRect
   m_Material: {fileID: 0}
-  m_Color: {r: 0.98823535, g: 0.95294124, b: 0.86274517, a: 1}
+  m_Color: {r: 1, g: 0.8980392, b: 0.7137255, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -131,6 +132,21 @@ MonoBehaviour:
   _bottomRight:
     Radius: 48
     TriangleCount: 8
+--- !u!114 &513178957616763248
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1082306824612310424}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Shadow
+  m_EffectColor: {r: 0.7372549, g: 0.41960785, b: 0.2901961, a: 0.5}
+  m_EffectDistance: {x: 0, y: -4}
+  m_UseGraphicAlpha: 1
 --- !u!1 &1689567069457428852
 GameObject:
   m_ObjectHideFlags: 0
@@ -595,7 +611,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4286282619
-  m_fontColor: {r: 0.4811321, g: 0.4811321, b: 0.4811321, a: 1}
+  m_fontColor: {r: 0.10196079, g: 0.098039225, b: 0.08235294, a: 0.7490196}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -967,7 +983,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Gilzoide.RoundedCorners::Gilzoide.RoundedCorners.RoundedRect
   m_Material: {fileID: 0}
-  m_Color: {r: 0.99215686, g: 0.9529412, b: 0.8627451, a: 1}
+  m_Color: {r: 1, g: 0.8980392, b: 0.7137255, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1692,7 +1708,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4286282619
-  m_fontColor: {r: 0.4811321, g: 0.4811321, b: 0.4811321, a: 1}
+  m_fontColor: {r: 0.10196079, g: 0.098039225, b: 0.08235294, a: 0.7490196}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
