@@ -26,19 +26,23 @@ public class CutscenePuppeteer : MonoBehaviour
 
     public void SetPlayer2SkinIndex(int index)
     {
+        _players[1].PlayerSkinIndex = index;
         foreach (Renderer renderer in _players[1].SkinnedRenderers)
         {
+            if (renderer.transform.name == "eyes_MESH") { continue; }
             renderer.sharedMaterial = PlayerController.LoadedSkins[index].Material;
         }
     }
 
     public void SetPlayer1Name(string name)
     {
+        _players[0].PlayerName = name;
         _players[0].PlayerNameText.text = name;
     }
 
     public void SetPlayer2Name(string name)
     {
+        _players[1].PlayerName = name;
         _players[1].PlayerNameText.text = name;
     }
 

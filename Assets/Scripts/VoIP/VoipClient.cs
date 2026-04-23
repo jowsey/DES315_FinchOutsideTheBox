@@ -136,7 +136,10 @@ namespace VoIP
                 _source.loop = true;
                 _source.Play();
 
-                _vcIcon.sprite = _vcInactiveIcon;
+                if (!_player.CutscenePlayer)
+                {
+                    _vcIcon.sprite = _vcInactiveIcon;
+                }
 
                 SettingsManager.ActiveSettings.PlayerVoiceVolumePercents.TryAdd(_player.PlayerUID, 100);
             }
@@ -248,7 +251,7 @@ namespace VoIP
 
         public void Update()
         {
-            if (!isLocalPlayer)
+            if (!isLocalPlayer && !_player.CutscenePlayer)
             {
                 _vcIcon.sprite = _playbackActive ? _vcActiveIcon : _vcInactiveIcon;
             }

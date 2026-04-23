@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.Playables;
+using UnityEngine.UI;
 using Util;
 using VoIP;
 using Object = UnityEngine.Object;
@@ -36,7 +37,7 @@ public class PlayerController : NetworkBehaviour
 
     [SyncVar] [ReadOnly] public string PlayerUID;
 
-    [SyncVar] [ReadOnly] public string PlayerName;
+    [SyncVar(hook = nameof(OnPlayerNameChanged))][ReadOnly] public string PlayerName;
     [SyncVar] [ReadOnly] public int PlayerSkinIndex;
 
     [Header("Components")]
@@ -344,6 +345,12 @@ public class PlayerController : NetworkBehaviour
         _playerRbIds.Remove(Rb.GetInstanceID());
     }
 
+    private void OnPlayerNameChanged(string oldValue, string newValue)
+    {
+        if (PlayerNameText) { PlayerNameText.text = newValue; }
+        LayoutRebuilder.ForceRebuildLayoutImmediate(_nameplateCanvas.GetComponent<RectTransform>());
+    }
+
     private void Update()
     {
         if (!authority && !IsPuppet) return;
@@ -396,7 +403,7 @@ public class PlayerController : NetworkBehaviour
             transform.position = Seat.SeatedPosition;
         }
 
-        if (!isLocalPlayer && !IsPuppet)
+        if (!isLocalPlayer || CutscenePlayer)
         {
             _nameplateCanvas.transform.rotation = Quaternion.LookRotation(_nameplateCanvas.transform.position - _camera.transform.position);
         }

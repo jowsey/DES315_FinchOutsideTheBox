@@ -1,14 +1,19 @@
+using Mirror;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Playables;
 
-public class CutsceneStart : MonoBehaviour
+public class CutsceneStart : NetworkBehaviour
 {
     [SerializeField] private PlayableDirector _director;
     [SerializeField] private Cart _cart;
+    
+    //todo: maybe remove if we decide to have the cutscene triggered by button prompt instead? so that players can watch it multiple times
+    private bool _played;
 
     private void Awake()
     {
+        _played = false;
         _director.played += OnCutsceneStarted;
         _director.stopped += OnCutsceneStopped;
     }
@@ -21,7 +26,11 @@ public class CutsceneStart : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        _director.Play();
+        if (!_played)
+        {
+            _director.Play();
+            _played = true;
+        }
     }
 
     //Wasn't sure where to chuck these
@@ -34,5 +43,10 @@ public class CutsceneStart : MonoBehaviour
     {
         Camera.main.GetComponent<ObstructionDitherer>().enabled = true;
         Camera.main.GetComponent<CrosshairDetection>().enabled = true;
+
+        if (isServer)
+        {
+            _cart.CmdInvokeRespawnEvent(_cart.CurrentCheckpointIndex);
+        }
     }
 }
