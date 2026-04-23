@@ -22,7 +22,7 @@ public class IdleBreakerScheduler : MonoBehaviour
         _animator = GetComponent<Animator>();
         _networkAnimator = GetComponent<NetworkAnimator>();
         
-        AnimationClip idleClip = _animator.runtimeAnimatorController.animationClips.First(clip => clip.name == "Idle");
+        AnimationClip idleClip = _networkAnimator.animator.runtimeAnimatorController.animationClips.First(clip => clip.name == "Idle");
         int numFixedUpdatesPerIdleAnim = (int)(idleClip.length / Time.fixedDeltaTime);
         _idleBreakerFrequencyTicks = (int)(numFixedUpdatesPerIdleAnim * _idleBreakerFrequency);
     }

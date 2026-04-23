@@ -95,7 +95,7 @@ MonoBehaviour:
   PlayerName: 
   PlayerSkinIndex: 0
   _nameplateCanvas: {fileID: 8175546624545099596}
-  _playerNameText: {fileID: 3767821037199890394}
+  PlayerNameText: {fileID: 3767821037199890394}
   _fallAnimationMinDownardsVelocity: -2.5
   MoveAction: {fileID: -1680190386980627800, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
   JumpAction: {fileID: -2099379676528639254, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
@@ -113,15 +113,22 @@ MonoBehaviour:
   _groundedSphereRadius: 0.1
   Seat: {fileID: 0}
   HeldFlask: {fileID: 0}
-  _skinnedRenderers:
+  AnalogueMoveScale: 0
+  SkinnedRenderers:
   - {fileID: 8683301048273285800}
   - {fileID: 808149607671167287}
   - {fileID: 3765863655153250324}
+  - {fileID: 4316091296859325829}
   - {fileID: 7686259106341467690}
   - {fileID: 5210508226090316216}
   _actionCurveLinePrefab: {fileID: 7011724201460765554, guid: 8110da47f80f14b1e92c4f0876b3ad30, type: 3}
   <FlaskPickupTarget>k__BackingField: {fileID: 6669740496216783317}
   _cameraObstructionDithererRayEndPosition: {fileID: 6015846886383839233}
+  CutscenePlayer: 0
+  PuppetWorldSpaceMoveDir: {x: 0, y: 0, z: 0}
+  PuppetRequestJump: 0
+  PuppetGravityMultiplier: 0
+  PuppetJumpForceMultiplier: 0
 --- !u!114 &2406511369735062858
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1310,6 +1317,11 @@ SkinnedMeshRenderer:
 --- !u!137 &3765863655153250324 stripped
 SkinnedMeshRenderer:
   m_CorrespondingSourceObject: {fileID: -1881852318387118557, guid: 8278f31be19f2704f968360de553136d, type: 3}
+  m_PrefabInstance: {fileID: 5882079636585508407}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &4316091296859325829 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -1565970186777367630, guid: 8278f31be19f2704f968360de553136d, type: 3}
   m_PrefabInstance: {fileID: 5882079636585508407}
   m_PrefabAsset: {fileID: 0}
 --- !u!137 &5210508226090316216 stripped

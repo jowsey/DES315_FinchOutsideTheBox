@@ -16,9 +16,6 @@ public class PhysicsFreezer : MonoBehaviour
 
         _director.played += OnCutsceneStarted;
         _director.stopped += OnCutsceneStopped;
-
-        //temp for testing, todo: remove when Play on Awake is unchecked
-        OnCutsceneStarted(_director);
     }
 
     private void OnDestroy()

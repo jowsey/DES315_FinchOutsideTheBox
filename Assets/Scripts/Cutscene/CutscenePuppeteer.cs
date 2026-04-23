@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Playables;
+using static UnityEngine.LowLevelPhysics2D.PhysicsLayers;
 
 public class CutscenePuppeteer : MonoBehaviour
 {
@@ -19,6 +21,27 @@ public class CutscenePuppeteer : MonoBehaviour
 
     [SerializeField] private Transform[] _playerRunTargets;
 
+    private Dictionary<ConfigurableJoint, (ConfigurableJointMotion x, ConfigurableJointMotion y, ConfigurableJointMotion z, ConfigurableJointMotion angX, ConfigurableJointMotion angY, ConfigurableJointMotion angZ)> _savedJointMotions = new();
+
+
+    public void SetPlayer2SkinIndex(int index)
+    {
+        foreach (Renderer renderer in _players[1].SkinnedRenderers)
+        {
+            renderer.sharedMaterial = PlayerController.LoadedSkins[index].Material;
+        }
+    }
+
+    public void SetPlayer1Name(string name)
+    {
+        _players[0].PlayerNameText.text = name;
+    }
+
+    public void SetPlayer2Name(string name)
+    {
+        _players[1].PlayerNameText.text = name;
+    }
+
 
     public void MakePuppets()
     {
@@ -27,6 +50,33 @@ public class CutscenePuppeteer : MonoBehaviour
             p.IsPuppet = true;
         }
         _cart.IsPuppet = true;
+
+        foreach (Rigidbody rb in _cart.GetComponentsInChildren<Rigidbody>())
+        {
+            rb.interpolation = RigidbodyInterpolation.None;
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+            rb.position = rb.transform.position;
+            rb.rotation = rb.transform.rotation;
+            rb.isKinematic = true;
+        }
+
+        _savedJointMotions.Clear();
+        foreach (ConfigurableJoint joint in _cart.GetComponentsInChildren<ConfigurableJoint>())
+        {
+            _savedJointMotions[joint] = (
+                joint.xMotion, joint.yMotion, joint.zMotion,
+                joint.angularXMotion, joint.angularYMotion, joint.angularZMotion
+            );
+            joint.xMotion = ConfigurableJointMotion.Free;
+            joint.yMotion = ConfigurableJointMotion.Free;
+            joint.zMotion = ConfigurableJointMotion.Free;
+            joint.angularXMotion = ConfigurableJointMotion.Free;
+            joint.angularYMotion = ConfigurableJointMotion.Free;
+            joint.angularZMotion = ConfigurableJointMotion.Free;
+        }
+
+        Physics.SyncTransforms();
     }
 
     public void MakeNonPuppets()
@@ -86,7 +136,23 @@ public class CutscenePuppeteer : MonoBehaviour
 
         foreach (Rigidbody rb in _cart.GetComponentsInChildren<Rigidbody>())
         {
+            rb.position = rb.transform.position;
+            rb.rotation = rb.transform.rotation;
             rb.isKinematic = false;
+            rb.interpolation = RigidbodyInterpolation.Interpolate;
+        }
+
+        foreach (var kvp in _savedJointMotions)
+        {
+            if (kvp.Key != null)
+            {
+                kvp.Key.xMotion = kvp.Value.x;
+                kvp.Key.yMotion = kvp.Value.y;
+                kvp.Key.zMotion = kvp.Value.z;
+                kvp.Key.angularXMotion = kvp.Value.angX;
+                kvp.Key.angularYMotion = kvp.Value.angY;
+                kvp.Key.angularZMotion = kvp.Value.angZ;
+            }
         }
 
         _cart.transform.position = pos;
@@ -252,7 +318,7 @@ public class CutscenePuppeteer : MonoBehaviour
                 {
                     Vector2 dir = (new Vector2(target.position.x, target.position.z) - new Vector2(p.transform.position.x, p.transform.position.z));
 
-                    targetReached = (dir.sqrMagnitude < 1e-2);
+                    targetReached = (dir.sqrMagnitude < 0.1f);
                     if (targetReached) { break; }
 
                     //Run towards current target

@@ -7,6 +7,7 @@ using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using UnityEngine.Playables;
 using Util;
 using VoIP;
 using Object = UnityEngine.Object;
@@ -43,7 +44,7 @@ public class PlayerController : NetworkBehaviour
 
     private NetworkAnimator _networkAnimator;
     [SerializeField] private Canvas _nameplateCanvas;
-    [SerializeField] private TextMeshProUGUI _playerNameText;
+    [SerializeField] public TextMeshProUGUI PlayerNameText; //Public for cutscene puppeteering
 
     [Header("Animation")]
     [Tooltip("The minimum velocity required to initiate the gliding animation (should be negative)")]
@@ -97,7 +98,7 @@ public class PlayerController : NetworkBehaviour
     [SyncVar] public float AnalogueMoveScale;
 
     [Header("Skin materials")]
-    [SerializeField] private Renderer[] _skinnedRenderers;
+    public Renderer[] SkinnedRenderers;
 
     private List<Vector3> _contactNormals = new();
 
@@ -119,6 +120,9 @@ public class PlayerController : NetworkBehaviour
 
     public bool FlaskPickupAllowed => ControlsEnabled && !Seat && !HeldFlask;
     public bool FlaskPutdownAllowed => ControlsEnabled && !Seat && HeldFlask && HeldFlask.State == Flask.FlaskState.Held;
+
+    //Set in inspector to true if this player will only exist in cutscenes
+    public bool CutscenePlayer;
 
     //Cutscene puppeting
     [HideInInspector] public Vector3 PuppetWorldSpaceMoveDir;
@@ -175,11 +179,18 @@ public class PlayerController : NetworkBehaviour
     {
         LoadedSkins ??= Resources.LoadAll<SkinData>("PlayerSkins");
 
-        _cinemachineCamera = FindAnyObjectByType<CinemachineCamera>(FindObjectsInactive.Include);
+        foreach (CinemachineCamera cam in FindObjectsByType<CinemachineCamera>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+        {
+            if (cam.CompareTag("FreeLookCam"))
+            {
+                _cinemachineCamera = cam;
+                break;
+            }
+        }
 
         Rb = GetComponent<Rigidbody>();
         _networkAnimator = GetComponent<NetworkAnimator>();
-        WwiseAnimationEvents = GetComponent<WwiseAnimationEvents>();
+        WwiseAnimationEvents = GetComponentInChildren<WwiseAnimationEvents>(true);
 
         Checkpoint.RespawnEvent.AddListener(OnRespawn);
 
@@ -194,16 +205,43 @@ public class PlayerController : NetworkBehaviour
     {
         // doesn't work in Awake on non-host. "huh?" don't worry about it
         _camera = Camera.main;
+
+        PlayableDirector director = FindAnyObjectByType<PlayableDirector>();
+        if (director)
+        {
+            director.played += OnCutsceneStarted;
+            director.stopped += OnCutsceneStopped;
+        }
+
+        if (NetworkServer.connections.Count == 1)
+        {
+            //We are player 1
+            CutscenePuppeteer puppeteer = FindAnyObjectByType<CutscenePuppeteer>();
+            puppeteer.SetPlayer1Name(PlayerName);
+
+            //Default (in case you somehow beat the game by yourself without anybody else joining?)
+            puppeteer.SetPlayer2Name("DefaultCat");
+            puppeteer.SetPlayer2SkinIndex(1);
+        }
+
+        if (NetworkServer.connections.Count == 2)
+        {
+            //We are player 2
+            CutscenePuppeteer puppeteer = FindAnyObjectByType<CutscenePuppeteer>();
+            puppeteer.SetPlayer2Name(PlayerName);
+            puppeteer.SetPlayer2SkinIndex(PlayerSkinIndex);
+        }
     }
 
     public override void OnStartClient()
     {
-        foreach (Renderer renderer in _skinnedRenderers)
+        foreach (Renderer renderer in SkinnedRenderers)
         {
+            if (renderer.transform.name == "eyes_MESH") { continue; }
             renderer.sharedMaterial = LoadedSkins[PlayerSkinIndex].Material;
         }
 
-        _playerNameText.text = PlayerName;
+        PlayerNameText.text = PlayerName;
 
         OnPlayerReady.Invoke(this);
     }
@@ -231,6 +269,9 @@ public class PlayerController : NetworkBehaviour
 
             var orbitalFollow = _cinemachineCamera.GetComponent<CinemachineOrbitalFollow>();
             orbitalFollow.HorizontalAxis.Value = transform.eulerAngles.y;
+
+            //Snap
+            _cinemachineCamera.PreviousStateIsValid = false;
         }
 
         // Hide nameplate for local player
@@ -267,6 +308,13 @@ public class PlayerController : NetworkBehaviour
     private void OnDestroy()
     {
         Checkpoint.RespawnEvent.RemoveListener(OnRespawn);
+
+        PlayableDirector director = FindAnyObjectByType<PlayableDirector>();
+        if (director)
+        {
+            director.played += OnCutsceneStarted;
+            director.stopped += OnCutsceneStopped;
+        }
     }
 
     private void OnRespawn(Checkpoint checkpoint)
@@ -447,14 +495,29 @@ public class PlayerController : NetworkBehaviour
         }
 
         //Grounded
-        var groundedHits = Physics.OverlapSphereNonAlloc(Rb.position, _groundedSphereRadius, _groundedCheckColliderBuffer, ~0, QueryTriggerInteraction.Ignore);
+        int groundedHits = Physics.OverlapSphereNonAlloc(Rb.position, _groundedSphereRadius, _groundedCheckColliderBuffer, ~0, QueryTriggerInteraction.Ignore);
         bool grounded = false;
         for (int i = 0; i < groundedHits; i++)
         {
             // ignore self but *do* find other players
-            // in a just world this would just be a T[].AsSpan().Any() call but noOoOo Mono doesn't have the technology
-            if (_groundedCheckColliderBuffer[i].transform.root == transform) continue;
-            grounded = true;
+            //Check all parents
+            bool self = false;
+            Transform t = _groundedCheckColliderBuffer[i].transform;
+            do
+            {
+                if (t == transform)
+                {
+                    self = true;
+                    break;
+                }
+                t = t.parent;
+            } while (t != null);
+
+            if (!self)
+            {
+                //Player has collided with something other than themself
+                grounded = true;
+            }
             break;
         }
 
@@ -577,6 +640,34 @@ public class PlayerController : NetworkBehaviour
         {
             newSeat.CmdTrySitPlayer();
         }
+    }
+
+    private void OnCutsceneStarted(PlayableDirector _)
+    {
+        foreach (SkinnedMeshRenderer renderer in SkinnedRenderers)
+        {
+            renderer.enabled = CutscenePlayer;
+        }
+        foreach (Collider collider in GetComponentsInChildren<Collider>())
+        {
+            collider.enabled = CutscenePlayer;
+        }
+        _nameplateCanvas.enabled = CutscenePlayer;
+        Rb.isKinematic = !CutscenePlayer;
+    }
+
+    private void OnCutsceneStopped(PlayableDirector _)
+    {
+        foreach (SkinnedMeshRenderer renderer in SkinnedRenderers)
+        {
+            renderer.enabled = !CutscenePlayer;
+        }
+        foreach (Collider collider in GetComponentsInChildren<Collider>())
+        {
+            collider.enabled = !CutscenePlayer;
+        }
+        _nameplateCanvas.enabled = !CutscenePlayer;
+        Rb.isKinematic = CutscenePlayer;
     }
 
     private void OnDrawGizmos()
