@@ -1,5 +1,4 @@
 using Sirenix.OdinInspector;
-using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -12,7 +11,7 @@ public class Checkpoint : MonoBehaviour
 
     public string AreaName = "Unnamed Checkpoint";
 
-    [field: SerializeField] [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)] public AnimatorController AnimatorController { get; private set; }
+    [field: SerializeField] [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)] public RuntimeAnimatorController AnimatorController { get; private set; }
 
     private void OnValidate()
     {
