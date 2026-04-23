@@ -9,13 +9,13 @@ public class EnsureSelection : MonoBehaviour
     private void Update()
     {
         GameObject current = EventSystem.current.currentSelectedGameObject;
-        if (current != null && current.activeInHierarchy)
+        if (current && current.activeInHierarchy)
         {
             _lastSelected = current;
         }
         else
         {
-            GameObject newSelected = (_lastSelected != null && _lastSelected.activeInHierarchy ? _lastSelected : EventSystem.current.firstSelectedGameObject);
+            GameObject newSelected = (_lastSelected && _lastSelected.activeInHierarchy ? _lastSelected : EventSystem.current.firstSelectedGameObject);
             EventSystem.current.SetSelectedGameObject(newSelected);
         }
     }

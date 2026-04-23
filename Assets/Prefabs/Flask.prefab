@@ -26,9 +26,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1114166858940687297}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.028028676, y: -0.00014463489, z: 0.0051581524, w: 0.9995938}
-  m_LocalPosition: {x: -0.00627561, y: 0.090858705, z: 0.0031024278}
-  m_LocalScale: {x: 1.055826, y: 0.9990373, z: 0.7646834}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.05, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 898777731173117822}
@@ -540,7 +540,6 @@ GameObject:
   - component: {fileID: 5250285066618139248}
   - component: {fileID: 3476284598509054034}
   - component: {fileID: 5991406108292985603}
-  - component: {fileID: 3597070853723929676}
   - component: {fileID: 6031892998083999218}
   m_Layer: 0
   m_Name: Juice
@@ -2805,28 +2804,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9172546180545931216}
   m_Mesh: {fileID: 0}
---- !u!64 &3597070853723929676
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9172546180545931216}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 0}
 --- !u!114 &6031892998083999218
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2839,7 +2816,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f7bd842cca3c854996da03c5aa89c7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  stiffness: 50
+  stiffness: 4
   damping: 5
 --- !u!1001 &2376600152709995828
 PrefabInstance:

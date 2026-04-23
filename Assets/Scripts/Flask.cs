@@ -19,6 +19,7 @@ public class Flask : NetworkBehaviour
     private Transform _moveTarget;
     private Collider[] _colliders;
     private Renderer[] _renderers;
+    private Light[] _lights;
 
     [SerializeField] private float _movementSpeed;
 
@@ -40,6 +41,7 @@ public class Flask : NetworkBehaviour
         Rb = GetComponent<Rigidbody>();
         _colliders = GetComponentsInChildren<Collider>();
         _renderers = GetComponentsInChildren<Renderer>();
+        _lights = GetComponentsInChildren<Light>();
     }
 
     public override void OnStartClient()
@@ -78,6 +80,11 @@ public class Flask : NetworkBehaviour
                 foreach (Renderer rend in _renderers)
                 {
                     rend.enabled = true;
+                }
+
+                foreach (Light l in _lights)
+                {
+                    l.enabled = true;
                 }
 
                 if (_holder)
@@ -147,6 +154,11 @@ public class Flask : NetworkBehaviour
                 foreach (Renderer rend in _renderers)
                 {
                     rend.enabled = false;
+                }
+
+                foreach (Light l in _lights)
+                {
+                    l.enabled = false;
                 }
 
                 Instantiate(_smashedFlaskPrefab, transform.position, transform.rotation);

@@ -333,22 +333,20 @@ public class PlayerController : NetworkBehaviour
     private void FixedUpdate()
     {
         // Audio state for all clients
-        if (!Seat && Physics.Raycast(Rb.position, Vector3.down, out var hit, 0.1f, ~(1 << gameObject.layer), QueryTriggerInteraction.Ignore))
+        if (!Seat && Physics.Raycast(Rb.position + (Vector3.up * 0.01f), Vector3.down, out var hit, 0.1f, ~(1 << gameObject.layer), QueryTriggerInteraction.Ignore))
         {
             Renderer hitRenderer = hit.transform.GetComponentInChildren<Renderer>();
             if (hitRenderer)
             {
-                switch (hitRenderer.sharedMaterial.name)
+                if (hitRenderer.sharedMaterial.name.StartsWith("Sand_"))
                 {
-                    case "Sand_Brown" or "Sand_Background" or "Sand_DarkBrown" or "Sand_LightYellow" or "Sand_Red" or "Sand_White" or "Sand_Yellow":
-                        AkUnitySoundEngine.SetSwitch("Footsteps", "Sand", gameObject);
-                        break;
-                    case "Stone_Burgandy" or "Stone_DarkBrown" or "Stone_DarkRed" or "Stone_Green" or "Stone_LightGreen" or "Stone_LightYellow" or "Stone_Purple" or "Stone_Red" or "Stone_White" or "Stone_Yellow" or "Prototype_512x512_White":
-                        AkUnitySoundEngine.SetSwitch("Footsteps", "Stone", gameObject);
-                        break;
-                    case "Bricks_SD":
-                        AkUnitySoundEngine.SetSwitch("Footsteps", "Stone", gameObject);
-                        break;
+                    AkUnitySoundEngine.SetSwitch("Footsteps", "Sand", gameObject);
+                }
+                else if (hitRenderer.sharedMaterial.name.StartsWith("Stone_") ||
+                         hitRenderer.sharedMaterial.name == "Prototype_512x512_White" ||
+                         hitRenderer.sharedMaterial.name == "Bricks_SD")
+                {
+                    AkUnitySoundEngine.SetSwitch("Footsteps", "Stone", gameObject);
                 }
             }
         }

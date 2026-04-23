@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1317584043728300644}
   - component: {fileID: 5330447334383663236}
-  - component: {fileID: 485623589070763117}
+  - component: {fileID: 719322822550431587}
   m_Layer: 5
   m_Name: PlayTimer
   m_TagString: Untagged
@@ -46,36 +46,38 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2468647621953819298}
   m_CullTransparentMesh: 1
---- !u!114 &485623589070763117
+--- !u!114 &719322822550431587
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2468647621953819298}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Script: {fileID: 11500000, guid: faf1d9844dae940668fe7d04623674c8, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_EditorClassIdentifier: Gilzoide.RoundedCorners::Gilzoide.RoundedCorners.RoundedRect
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 0.9960785, g: 0.8980393, b: 0.7137255, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
+  _bottomLeft:
+    Radius: 24
+    TriangleCount: 8
+  _topLeft:
+    Radius: 0
+    TriangleCount: 8
+  _topRight:
+    Radius: 0
+    TriangleCount: 8
+  _bottomRight:
+    Radius: 24
+    TriangleCount: 8
 --- !u!1 &6056266727978411293
 GameObject:
   m_ObjectHideFlags: 0
@@ -152,15 +154,15 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4281073477
-  m_fontColor: {r: 0.26872247, g: 1, b: 0.17000002, a: 1}
-  m_enableVertexGradient: 1
-  m_colorMode: 2
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 0
   m_fontColorGradient:
-    topLeft: {r: 0.27058825, g: 1, b: 0.16862746, a: 1}
-    topRight: {r: 0.27058825, g: 1, b: 0.16862746, a: 1}
-    bottomLeft: {r: 0.05736868, g: 0.4716981, b: 0, a: 1}
-    bottomRight: {r: 0.05736868, g: 0.4716981, b: 0, a: 1}
+    topLeft: {r: 0.10196079, g: 0.098039225, b: 0.08235294, a: 1}
+    topRight: {r: 0.10196079, g: 0.098039225, b: 0.08235294, a: 1}
+    bottomLeft: {r: 0.10196079, g: 0.098039225, b: 0.08235294, a: 1}
+    bottomRight: {r: 0.10196079, g: 0.098039225, b: 0.08235294, a: 1}
   m_fontColorGradientPreset: {fileID: 0}
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0

@@ -44,7 +44,8 @@ namespace Util
         {
             // Don't use contacts if body is kinematic
             foreach (var col in _colliders)
-                col.hasModifiableContacts = !_rb.isKinematic;
+                if (col.hasModifiableContacts != !_rb.isKinematic)
+                    col.hasModifiableContacts = !_rb.isKinematic;
         }
 
         private static void OnModifyContacts(PhysicsScene scene, NativeArray<ModifiableContactPair> pairs)
