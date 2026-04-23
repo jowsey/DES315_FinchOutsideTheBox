@@ -3798,6 +3798,55 @@
 										<ActiveSource Name="cat ping meow-004" ID="{7F60E0EB-5F26-4413-8D47-E8B0D54E0A79}" Platform="Linked"/>
 									</ActiveSourceList>
 								</Sound>
+								<Sound Name="cat ping meow-005" ID="{FAAF4C11-631E-4AE1-B198-7B26A61E405B}" ShortID="760003047">
+									<PropertyList>
+										<Property Name="Pitch" Type="int32">
+											<ValueList>
+												<Value>-2400</Value>
+											</ValueList>
+											<ModifierList>
+												<ModifierInfo>
+													<Modifier Name="" ID="{AF399FA3-B808-4CA1-8028-7ED44797F4DE}">
+														<PropertyList>
+															<Property Name="Enabled" Type="bool" Value="True"/>
+															<Property Name="Min" Type="Real64" Value="-1825"/>
+														</PropertyList>
+													</Modifier>
+												</ModifierInfo>
+											</ModifierList>
+										</Property>
+										<Property Name="Weight" Type="Real64">
+											<ValueList>
+												<Value>5</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="cat ping meow-004" ID="{AE0A1DD5-4F63-49F0-ACA5-CA87F5AE56D9}">
+											<PropertyList>
+												<Property Name="FadeOutDuration" Type="Real64" Value="0.0609389975153167"/>
+												<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+												<Property Name="TrimEnd" Type="Real64" Value="0.175760888560065"/>
+											</PropertyList>
+											<Language>SFX</Language>
+											<AudioFile>cat ping meow-004.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="98700581"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="cat ping meow-004" ID="{AE0A1DD5-4F63-49F0-ACA5-CA87F5AE56D9}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
 							</ChildrenList>
 							<ObjectLists>
 								<ObjectList Name="RTPC">
@@ -8332,7 +8381,7 @@
 										</Property>
 										<Property Name="Volume" Type="Real64">
 											<ValueList>
-												<Value>-19</Value>
+												<Value>-14</Value>
 											</ValueList>
 										</Property>
 									</PropertyList>
