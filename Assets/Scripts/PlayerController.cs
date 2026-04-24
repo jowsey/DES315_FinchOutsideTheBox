@@ -214,23 +214,31 @@ public class PlayerController : NetworkBehaviour
             director.stopped += OnCutsceneStopped;
         }
 
-        if (NetworkServer.connections.Count == 1)
+        if (director.state == PlayState.Paused && director.time == director.initialTime)
         {
-            //We are player 1
-            CutscenePuppeteer puppeteer = FindAnyObjectByType<CutscenePuppeteer>();
-            puppeteer.SetPlayer1Name(PlayerName);
+            //The cutscene hasn't started yet
+            if (NetworkServer.connections.Count == 1)
+            {
+                //We are player 1
+                CutscenePuppeteer puppeteer = FindAnyObjectByType<CutscenePuppeteer>();
+                puppeteer.SetPlayer1Name(PlayerName);
 
-            //Default (in case you somehow beat the game by yourself without anybody else joining?)
-            puppeteer.SetPlayer2Name("DefaultCat");
-            puppeteer.SetPlayer2SkinIndex(1);
+                //Default (in case you somehow beat the game by yourself without anybody else joining?)
+                puppeteer.SetPlayer2Name("DefaultCat");
+                puppeteer.SetPlayer2SkinIndex(1);
+            }
+            else if (NetworkServer.connections.Count == 2)
+            {
+                //We are player 2
+                CutscenePuppeteer puppeteer = FindAnyObjectByType<CutscenePuppeteer>();
+                puppeteer.SetPlayer2Name(PlayerName);
+                puppeteer.SetPlayer2SkinIndex(PlayerSkinIndex);
+            }
         }
-
-        if (NetworkServer.connections.Count == 2)
+        else
         {
-            //We are player 2
-            CutscenePuppeteer puppeteer = FindAnyObjectByType<CutscenePuppeteer>();
-            puppeteer.SetPlayer2Name(PlayerName);
-            puppeteer.SetPlayer2SkinIndex(PlayerSkinIndex);
+            //The cutscene has already started
+            OnCutsceneStarted(director);
         }
     }
 
@@ -244,7 +252,7 @@ public class PlayerController : NetworkBehaviour
 
         PlayerNameText.text = PlayerName;
 
-        OnPlayerReady.Invoke(this);
+        if (!CutscenePlayer) { OnPlayerReady.Invoke(this); }
     }
 
     public override void OnStopClient()

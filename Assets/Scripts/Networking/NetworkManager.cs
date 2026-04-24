@@ -141,7 +141,10 @@ namespace Networking
             // No need to report on our own presence
             if (msg.PlayerNetId == NetworkClient.connection.identity.netId) return;
 
-            var player = NetworkClient.spawned[msg.PlayerNetId].GetComponent<PlayerController>();
+            //Also don't need to report the cutscene players
+            PlayerController player = NetworkClient.spawned[msg.PlayerNetId].GetComponent<PlayerController>();
+            if (player.CutscenePlayer) { return; }
+
             PlayerPresenceFeed.OnPlayerJoin.Invoke(player);
         }
 
