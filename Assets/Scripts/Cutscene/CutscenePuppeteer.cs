@@ -22,6 +22,7 @@ public class CutscenePuppeteer : MonoBehaviour
     [SerializeField] private Transform[] _playerRunTargets;
 
     private Dictionary<ConfigurableJoint, (ConfigurableJointMotion x, ConfigurableJointMotion y, ConfigurableJointMotion z, ConfigurableJointMotion angX, ConfigurableJointMotion angY, ConfigurableJointMotion angZ)> _savedJointMotions = new();
+    private List<(Flask flask, Transform originalParent)> _parentedFlasks = new();
 
 
     public void SetPlayer2SkinIndex(int index)
@@ -168,6 +169,34 @@ public class CutscenePuppeteer : MonoBehaviour
         _cart.Rb.WakeUp();
 
         Physics.SyncTransforms();
+    }
+
+    public void ParentFlasksToCart()
+    {
+        _parentedFlasks.Clear();
+        foreach (Flask flask in _cart.CarriedFlasks)
+        {
+            _parentedFlasks.Add((flask, flask.transform.parent));
+            flask.transform.SetParent(_cart.transform);
+            if (flask.TryGetComponent<Rigidbody>(out Rigidbody rb))
+            {
+                rb.isKinematic = true;
+            }
+        }
+    }
+
+    public void UnparentFlasks()
+    {
+        foreach (var (flask, originalParent) in _parentedFlasks)
+        {
+            if (flask == null) { continue; }
+            flask.transform.SetParent(originalParent);
+            if (flask.TryGetComponent<Rigidbody>(out Rigidbody rb))
+            {
+                rb.isKinematic = false;
+            }
+        }
+        _parentedFlasks.Clear();
     }
 
     public void RunInCircles(float seconds)

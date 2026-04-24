@@ -44,7 +44,7 @@ public class Cart : NetworkBehaviour
 
     // Populated on server, unnecessary on clients
     private Dictionary<Flask, FlaskSnapshot>[] _flasksAtCheckpoint;
-    private readonly HashSet<Flask> _carriedFlasks = new();
+    public readonly HashSet<Flask> CarriedFlasks = new();
 
     [field: SyncVar(hook = nameof(OnNumCarriedFlasksChanged))] public int NumCarriedFlasks { get; private set; }
     public readonly SyncList<int> CheckpointFlaskCounts = new();
@@ -151,7 +151,7 @@ public class Cart : NetworkBehaviour
         Debug.Log($"Capturing snapshot: {NumCarriedFlasks} flasks carried at checkpoint {CurrentCheckpointIndex}");
 
         Physics.SyncTransforms();
-        foreach (Flask flask in _carriedFlasks)
+        foreach (Flask flask in CarriedFlasks)
         {
             _flasksAtCheckpoint[CurrentCheckpointIndex][flask] = new FlaskSnapshot
             {
@@ -236,14 +236,14 @@ public class Cart : NetworkBehaviour
 
     public void AddCarriedFlask(Flask flask)
     {
-        _carriedFlasks.Add(flask);
-        NumCarriedFlasks = _carriedFlasks.Count;
+        CarriedFlasks.Add(flask);
+        NumCarriedFlasks = CarriedFlasks.Count;
     }
 
     public void RemoveCarriedFlask(Flask flask)
     {
-        _carriedFlasks.Remove(flask);
-        NumCarriedFlasks = _carriedFlasks.Count;
+        CarriedFlasks.Remove(flask);
+        NumCarriedFlasks = CarriedFlasks.Count;
     }
 
     private void OnNumCarriedFlasksChanged(int oldValue, int newValue)
