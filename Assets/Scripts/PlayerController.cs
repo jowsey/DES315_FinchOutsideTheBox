@@ -1,17 +1,20 @@
 using Mirror;
-using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using System.Collections.Generic;
 using TMPro;
 using UI;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using UnityEngine.Playables;
+using UnityEngine.UI;
 using Util;
+using VoIP;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
-using ShowInInspectorAttribute = Sirenix.OdinInspector.ShowInInspectorAttribute;
 using ReadOnlyAttribute = Sirenix.OdinInspector.ReadOnlyAttribute;
+using ShowInInspectorAttribute = Sirenix.OdinInspector.ShowInInspectorAttribute;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : NetworkBehaviour
@@ -34,7 +37,7 @@ public class PlayerController : NetworkBehaviour
 
     [SyncVar] [ReadOnly] public string PlayerUID;
 
-    [SyncVar] [ReadOnly] public string PlayerName;
+    [SyncVar(hook = nameof(OnPlayerNameChanged))][ReadOnly] public string PlayerName;
     [SyncVar] [ReadOnly] public int PlayerSkinIndex;
 
     [Header("Components")]
@@ -42,7 +45,7 @@ public class PlayerController : NetworkBehaviour
 
     private NetworkAnimator _networkAnimator;
     [SerializeField] private Canvas _nameplateCanvas;
-    [SerializeField] private TextMeshProUGUI _playerNameText;
+    [SerializeField] public TextMeshProUGUI PlayerNameText; //Public for cutscene puppeteering
 
     [Header("Animation")]
     [Tooltip("The minimum velocity required to initiate the gliding animation (should be negative)")]
@@ -93,10 +96,10 @@ public class PlayerController : NetworkBehaviour
     [ReadOnly] public Flask HeldFlask;
 
     [field: SyncVar] [field: ShowInInspector] [field: ReadOnly] public Vector3 WorldSpaceMoveDir { get; private set; }
-    [field: SyncVar] [field: ShowInInspector] [field: ReadOnly] public float AnalogueMoveScale { get; private set; }
+    [SyncVar] public float AnalogueMoveScale;
 
     [Header("Skin materials")]
-    [SerializeField] private Renderer[] _skinnedRenderers;
+    public Renderer[] SkinnedRenderers;
 
     private List<Vector3> _contactNormals = new();
 
@@ -118,6 +121,16 @@ public class PlayerController : NetworkBehaviour
 
     public bool FlaskPickupAllowed => ControlsEnabled && !Seat && !HeldFlask;
     public bool FlaskPutdownAllowed => ControlsEnabled && !Seat && HeldFlask && HeldFlask.State == Flask.FlaskState.Held;
+
+    //Set in inspector to true if this player will only exist in cutscenes
+    public bool CutscenePlayer;
+
+    //Cutscene puppeting
+    [HideInInspector] public Vector3 PuppetWorldSpaceMoveDir;
+    [HideInInspector] public bool PuppetRequestJump;
+    [HideInInspector] public float PuppetGravityMultiplier;
+    [HideInInspector] public float PuppetJumpForceMultiplier;
+    [HideInInspector] public bool IsPuppet;
 
     public static void AddControlBlocker(Object blocker)
     {
@@ -143,31 +156,79 @@ public class PlayerController : NetworkBehaviour
     {
         LoadedSkins ??= Resources.LoadAll<SkinData>("PlayerSkins");
 
-        _cinemachineCamera = FindAnyObjectByType<CinemachineCamera>(FindObjectsInactive.Include);
+        foreach (CinemachineCamera cam in FindObjectsByType<CinemachineCamera>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+        {
+            if (cam.CompareTag("FreeLookCam"))
+            {
+                _cinemachineCamera = cam;
+                break;
+            }
+        }
 
         Rb = GetComponent<Rigidbody>();
         _networkAnimator = GetComponent<NetworkAnimator>();
-        WwiseAnimationEvents = GetComponent<WwiseAnimationEvents>();
+        WwiseAnimationEvents = GetComponentInChildren<WwiseAnimationEvents>(true);
 
         Checkpoint.RespawnEvent.AddListener(OnRespawn);
+
+        PuppetGravityMultiplier = 1.0f;
+        PuppetJumpForceMultiplier = 1.0f;
+        IsPuppet = false;
+        PuppetWorldSpaceMoveDir = Vector3.zero;
+        PuppetRequestJump = false;
     }
 
     private void Start()
     {
         // doesn't work in Awake on non-host. "huh?" don't worry about it
         _camera = Camera.main;
+
+        PlayableDirector director = FindAnyObjectByType<PlayableDirector>();
+        if (director)
+        {
+            director.played += OnCutsceneStarted;
+            director.stopped += OnCutsceneStopped;
+        }
+
+        if (director.state == PlayState.Paused && director.time == director.initialTime)
+        {
+            //The cutscene hasn't started yet
+            if (NetworkServer.connections.Count == 1)
+            {
+                //We are player 1
+                CutscenePuppeteer puppeteer = FindAnyObjectByType<CutscenePuppeteer>();
+                puppeteer.SetPlayer1Name(PlayerName);
+
+                //Default (in case you somehow beat the game by yourself without anybody else joining?)
+                puppeteer.SetPlayer2Name("DefaultCat");
+                puppeteer.SetPlayer2SkinIndex(1);
+            }
+            else if (NetworkServer.connections.Count == 2)
+            {
+                //We are player 2
+                CutscenePuppeteer puppeteer = FindAnyObjectByType<CutscenePuppeteer>();
+                puppeteer.SetPlayer2Name(PlayerName);
+                puppeteer.SetPlayer2SkinIndex(PlayerSkinIndex);
+            }
+        }
+        else
+        {
+            //The cutscene has already started
+            OnCutsceneStarted(director);
+        }
     }
 
     public override void OnStartClient()
     {
-        foreach (Renderer renderer in _skinnedRenderers)
+        foreach (Renderer renderer in SkinnedRenderers)
         {
+            if (renderer.transform.name == "eyes_MESH") { continue; }
             renderer.sharedMaterial = LoadedSkins[PlayerSkinIndex].Material;
         }
 
-        _playerNameText.text = PlayerName;
+        PlayerNameText.text = PlayerName;
 
-        OnPlayerReady.Invoke(this);
+        if (!CutscenePlayer) { OnPlayerReady.Invoke(this); }
     }
 
     public override void OnStopClient()
@@ -190,9 +251,15 @@ public class PlayerController : NetworkBehaviour
             _cinemachineCamera.gameObject.SetActive(true);
             _cinemachineCamera.Follow = transform;
             _cinemachineCamera.LookAt = transform;
-
             var orbitalFollow = _cinemachineCamera.GetComponent<CinemachineOrbitalFollow>();
             orbitalFollow.HorizontalAxis.Value = transform.eulerAngles.y;
+
+            var brain = FindAnyObjectByType<CinemachineBrain>(FindObjectsInactive.Include);
+            var prevUpdateMethod = brain.UpdateMethod;
+            brain.UpdateMethod = CinemachineBrain.UpdateMethods.ManualUpdate;
+            brain.ManualUpdate();
+            brain.UpdateMethod = prevUpdateMethod;
+            _cinemachineCamera.PreviousStateIsValid = false;
         }
 
         // Hide nameplate for local player
@@ -229,6 +296,13 @@ public class PlayerController : NetworkBehaviour
     private void OnDestroy()
     {
         Checkpoint.RespawnEvent.RemoveListener(OnRespawn);
+
+        PlayableDirector director = FindAnyObjectByType<PlayableDirector>();
+        if (director)
+        {
+            director.played += OnCutsceneStarted;
+            director.stopped += OnCutsceneStopped;
+        }
     }
 
     private void OnRespawn(Checkpoint checkpoint)
@@ -258,9 +332,15 @@ public class PlayerController : NetworkBehaviour
         _playerRbIds.Remove(Rb.GetInstanceID());
     }
 
+    private void OnPlayerNameChanged(string oldValue, string newValue)
+    {
+        if (PlayerNameText) { PlayerNameText.text = newValue; }
+        LayoutRebuilder.ForceRebuildLayoutImmediate(_nameplateCanvas.GetComponent<RectTransform>());
+    }
+
     private void Update()
     {
-        if (!authority) return;
+        if (!authority && !IsPuppet) return;
 
         //First-person controls
         if (CameraZoomController.FirstPerson && ControlsEnabled)
@@ -310,7 +390,7 @@ public class PlayerController : NetworkBehaviour
             transform.position = Seat.SeatedPosition;
         }
 
-        if (!isLocalPlayer)
+        if (!isLocalPlayer || CutscenePlayer)
         {
             _nameplateCanvas.transform.rotation = Quaternion.LookRotation(_nameplateCanvas.transform.position - _camera.transform.position);
         }
@@ -356,32 +436,48 @@ public class PlayerController : NetworkBehaviour
             WwiseAnimationEvents.ResetGlideTrigger();
         }
 
-        if (!authority) return;
+        if (!authority && !IsPuppet) return;
 
         //Movement input
-        Vector2 inputDirection = ControlsEnabled ? MoveAction.action.ReadValue<Vector2>() : Vector2.zero; //no input when controls are blocked
-        AnalogueMoveScale = inputDirection.magnitude; //input system has a normalise processor on the move input action
-        if (CameraZoomController.FirstPerson)
+        if (IsPuppet)
         {
-            Vector3 forward = Vector3.Scale(transform.forward, new Vector3(1, 0, 1)).normalized;
-            Vector3 right = transform.right;
-            WorldSpaceMoveDir = (forward * inputDirection.y + right * inputDirection.x).normalized;
-            Rb.MoveRotation(Rb.rotation * Quaternion.Euler(0f, _cameraYawAccumulator, 0f));
+            if (PuppetWorldSpaceMoveDir.sqrMagnitude > 0)
+            {
+                Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, Quaternion.LookRotation(PuppetWorldSpaceMoveDir, Vector3.up), Time.fixedDeltaTime * rotationSmoothingSpeed));
+            }
+            else
+            {
+                AnalogueMoveScale = 0.0f;
+            }
+            _networkAnimator.animator.SetBool(RunningState, PuppetWorldSpaceMoveDir.sqrMagnitude > 0);
+            WorldSpaceMoveDir = PuppetWorldSpaceMoveDir;
         }
         else
         {
-            Quaternion cameraOrientation = _cinemachineCamera ? _cinemachineCamera.State.GetFinalOrientation() : Quaternion.identity;
-            Vector3 cameraForward = Vector3.Scale(cameraOrientation * Vector3.forward, new Vector3(1, 0, 1)).normalized;
-            Vector3 cameraRight = cameraOrientation * Vector3.right;
-
-            WorldSpaceMoveDir = (cameraForward * inputDirection.y + cameraRight * inputDirection.x).normalized;
-            if (WorldSpaceMoveDir.sqrMagnitude > 0)
+            Vector2 inputDirection = ControlsEnabled ? MoveAction.action.ReadValue<Vector2>() : Vector2.zero; //no input when controls are blocked
+            AnalogueMoveScale = inputDirection.magnitude; //input system has a normalise processor on the move input action
+            if (CameraZoomController.FirstPerson)
             {
-                Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, Quaternion.LookRotation(WorldSpaceMoveDir, Vector3.up), Time.fixedDeltaTime * rotationSmoothingSpeed));
+                Vector3 forward = Vector3.Scale(transform.forward, new Vector3(1, 0, 1)).normalized;
+                Vector3 right = transform.right;
+                WorldSpaceMoveDir = (forward * inputDirection.y + right * inputDirection.x).normalized;
+                Rb.MoveRotation(Rb.rotation * Quaternion.Euler(0f, _cameraYawAccumulator, 0f));
             }
+            else
+            {
+                Quaternion cameraOrientation = _cinemachineCamera ? _cinemachineCamera.State.GetFinalOrientation() : Quaternion.identity;
+                Vector3 cameraForward = Vector3.Scale(cameraOrientation * Vector3.forward, new Vector3(1, 0, 1)).normalized;
+                Vector3 cameraRight = cameraOrientation * Vector3.right;
+
+                WorldSpaceMoveDir = (cameraForward * inputDirection.y + cameraRight * inputDirection.x).normalized;
+                if (WorldSpaceMoveDir.sqrMagnitude > 0)
+                {
+                    Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, Quaternion.LookRotation(WorldSpaceMoveDir, Vector3.up), Time.fixedDeltaTime * rotationSmoothingSpeed));
+                }
+            }
+            _networkAnimator.animator.SetBool(RunningState, WorldSpaceMoveDir.sqrMagnitude > 0);
         }
 
-        _networkAnimator.animator.SetBool(RunningState, WorldSpaceMoveDir.sqrMagnitude > 0);
 
         //Unsitting
         if (Seat && ControlsEnabled && _jumpPressed)
@@ -393,20 +489,39 @@ public class PlayerController : NetworkBehaviour
         }
 
         //Grounded
-        var groundedHits = Physics.OverlapSphereNonAlloc(Rb.position, _groundedSphereRadius, _groundedCheckColliderBuffer, ~0, QueryTriggerInteraction.Ignore);
+        int groundedHits = Physics.OverlapSphereNonAlloc(Rb.position, _groundedSphereRadius, _groundedCheckColliderBuffer, ~0, QueryTriggerInteraction.Ignore);
         bool grounded = false;
         for (int i = 0; i < groundedHits; i++)
         {
             // ignore self but *do* find other players
-            // in a just world this would just be a T[].AsSpan().Any() call but noOoOo Mono doesn't have the technology
-            if (_groundedCheckColliderBuffer[i].transform.root == transform) continue;
-            grounded = true;
+            //Check all parents
+            bool self = false;
+            Transform t = _groundedCheckColliderBuffer[i].transform;
+            do
+            {
+                if (t == transform)
+                {
+                    self = true;
+                    break;
+                }
+                t = t.parent;
+            } while (t != null);
+
+            if (!self)
+            {
+                //Player has collided with something other than themself
+                grounded = true;
+            }
             break;
         }
 
         bool groundedOnBumpy = Physics.CheckSphere(Rb.position, _groundedSphereRadius, LayerMask.GetMask("Bumpy"), QueryTriggerInteraction.Ignore);
         Rb.useGravity = !groundedOnBumpy;
         _networkAnimator.animator.SetBool(GroundedState, grounded || groundedOnBumpy);
+        if (IsPuppet && !grounded && !groundedOnBumpy && PuppetGravityMultiplier > 1f)
+        {
+            Rb.AddForce(Physics.gravity * (PuppetGravityMultiplier - 1f), ForceMode.Acceleration);
+        }
 
         //Movement
         if (!Seat)
@@ -449,10 +564,11 @@ public class PlayerController : NetworkBehaviour
         }
 
         //Jumping
-        if (ControlsEnabled && _jumpPressed && (grounded || groundedOnBumpy))
+        if ((ControlsEnabled || IsPuppet) && (_jumpPressed || PuppetRequestJump) && (grounded || groundedOnBumpy))
         {
-            _networkAnimator.SetTrigger(JumpTrigger);
-            Rb.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
+            _networkAnimator.animator.SetTrigger(JumpTrigger);
+            float jumpMultiplier = IsPuppet ? PuppetJumpForceMultiplier : 1f;
+            Rb.AddForce(Vector3.up * (_jumpForce * jumpMultiplier), ForceMode.Impulse);
         }
 
         CleanupFixedUpdate();
@@ -506,6 +622,7 @@ public class PlayerController : NetworkBehaviour
     {
         _jumpPressed = false;
         _cameraYawAccumulator = 0.0f;
+        PuppetRequestJump = false;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -517,6 +634,34 @@ public class PlayerController : NetworkBehaviour
         {
             newSeat.CmdTrySitPlayer();
         }
+    }
+
+    private void OnCutsceneStarted(PlayableDirector _)
+    {
+        foreach (SkinnedMeshRenderer renderer in SkinnedRenderers)
+        {
+            renderer.enabled = CutscenePlayer;
+        }
+        foreach (Collider collider in GetComponentsInChildren<Collider>())
+        {
+            collider.enabled = CutscenePlayer;
+        }
+        _nameplateCanvas.enabled = CutscenePlayer;
+        Rb.isKinematic = !CutscenePlayer;
+    }
+
+    private void OnCutsceneStopped(PlayableDirector _)
+    {
+        foreach (SkinnedMeshRenderer renderer in SkinnedRenderers)
+        {
+            renderer.enabled = !CutscenePlayer;
+        }
+        foreach (Collider collider in GetComponentsInChildren<Collider>())
+        {
+            collider.enabled = !CutscenePlayer;
+        }
+        _nameplateCanvas.enabled = !CutscenePlayer;
+        Rb.isKinematic = CutscenePlayer;
     }
 
     private void OnDrawGizmos()
