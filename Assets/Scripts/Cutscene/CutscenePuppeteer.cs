@@ -1,9 +1,6 @@
-using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Playables;
-using static UnityEngine.LowLevelPhysics2D.PhysicsLayers;
 
 public class CutscenePuppeteer : MonoBehaviour
 {
