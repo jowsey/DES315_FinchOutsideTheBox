@@ -8,15 +8,23 @@ using UnityEngine;
 public class Pusher : Mirror.NetworkBehaviour
 {
     [SerializeField] private float _duration;
+    [Tooltip("If enabled, changing the Duration will automatically call ScaleEditorAnimationCurve, scaling all keys in the Scale Curve to fit the new Duration.")]
+    [SerializeField] private bool _autoScaleEditorCurve;
     [SerializeField] private AnimationCurve _scaleCurve;
     [SerializeField] private bool _moveByDefault;
-    [SerializeField] private float _startT;
+    [SerializeField] private float _startTime01;
     private bool _isMoving;
-    private double _timeElapsed; //Tracks the passing Time.fixedDeltaTime but only when _isMoving is true
-    private float _targetT;
-    private bool _useTargetT;
-    private float _tLastTick;
-    private float _currentT;
+    [ShowInInspector] [ReadOnly] private double _timeElapsed; //Tracks the passing Time.fixedDeltaTime but only when _isMoving is true
+    
+    private bool _useTargetScale;
+    private float _targetScale;
+    private float _scaleLastTick;
+
+    private bool _useTargetTime;
+    private float _targetTime;
+    private float _timeLastTick;
+
+    [ShowInInspector] [ReadOnly] private float _currentScale;
 
     //Wwise Stuff
     public AK.Wwise.Event PlatformSound = new();
@@ -33,25 +41,19 @@ public class Pusher : Mirror.NetworkBehaviour
         //Used just for updating _currentScale's progress bar
         private float _minScale = -1.0f;
         private float _maxScale = -1.0f;
-
-        [ShowInInspector, ReadOnly, ProgressBar("_minScale", "_maxScale")]
     #endif
-        private float _currentScale; //todo figure out why this doesn't show up in the editor?
 
 
     private void Awake()
     {
         _isMoving = _moveByDefault;
-        _timeElapsed = _startT * _duration;
-        _targetT = (float)_timeElapsed;
-        _useTargetT = false;
-        _tLastTick = (float)_timeElapsed;
-        _currentT = _startT;
+        _timeElapsed = _startTime01 * _duration;
+        _currentScale = _scaleCurve.Evaluate(_startTime01);
     }
 
     private void Start()
     {
-        _currentScale = _scaleCurve.Evaluate(_currentT);
+        _currentScale = _scaleCurve.Evaluate((float)_timeElapsed % _duration);
         transform.localScale = new Vector3(_currentScale, transform.localScale.y, transform.localScale.z);
         
         RTPCPlatform.SetGlobalValue(rtpcPlatformFloat);
@@ -61,53 +63,86 @@ public class Pusher : Mirror.NetworkBehaviour
     public void StartMoving()
     {
         _isMoving = true;
-        _useTargetT = false;
+        _useTargetScale = false;
+        _useTargetTime = false;
     }
 
     public void StopMoving()
     {
         _isMoving = false;
-        _useTargetT = false;
+        _useTargetScale = false;
+        _useTargetTime = false;
     }
 
-    public void SetTargetT(float t)
+    public void SetTargetScale(float val)
     {
-        _useTargetT = true;
-        _targetT = t;
+        _useTargetScale = true;
+        _useTargetTime = false;
+        _targetScale = val;
+    }
+
+    public void SetTargetTime(float time)
+    {
+        _useTargetTime = true;
+        _useTargetScale = false;
+        _targetTime = time;
+    }
+
+    public void SetTargetTime01(float time01)
+    {
+        float time = time01 * _duration;
+        _useTargetTime = true;
+        _useTargetScale = false;
+        _targetTime = time;
+    }
+
+    public void ResetIfNotMoving()
+    {
+        if (!_isMoving)
+        {
+            _timeElapsed = 0.0f;
+        }
     }
 
     void FixedUpdate()
     {
         if (!isServer) { return; }
 
-        if (_useTargetT)
+        if (_isMoving)
         {
-            _isMoving = (Mathf.Abs(_currentT - _targetT) > 0.01f);
-            if (_isMoving && Mathf.Abs(_targetT - _duration) < 0.01f)
-            {
-                //_targetT is _duration, need to handle special case where t wraps around from _duration to 0
-                if (_tLastTick > _currentT)
-                {
-                    //t has wrapped around from _duration to 0 and so has hit the target t
-                    _isMoving = false;
-                    _currentScale = _scaleCurve.Evaluate(_tLastTick);
-                    transform.localScale = new Vector3(_currentScale, transform.localScale.y, transform.localScale.z);
-                }
-            }
+            _scaleLastTick = _currentScale;
+            _timeLastTick = (float)_timeElapsed;
+            _timeElapsed += Time.fixedDeltaTime;
+        }
+
+        if (_useTargetScale)
+        {
+            _isMoving = (Mathf.Abs(_currentScale - _targetScale) > 0.01f);
 
             //Just for cleanliness sake
             if (!_isMoving)
             {
-                _currentT = _targetT;
+                _currentScale = _targetScale;
+            }
+        }
+        else if (_useTargetTime)
+        {
+            _isMoving = (float)_timeElapsed < _targetTime;
+
+            //Just for cleanliness sake
+            if (!_isMoving)
+            {
+                _timeElapsed = _targetTime;
             }
         }
 
         if (_isMoving)
         {
-            _tLastTick = _currentT;
-            _timeElapsed += Time.fixedDeltaTime;
-            _currentT = (float)(_timeElapsed % _duration); //range [0, _duration]
-            _currentScale = _scaleCurve.Evaluate(_currentT);
+            //Range [0, _duration]
+            float currentTime = _useTargetTime ? (float)_timeElapsed : (float)(_timeElapsed % _duration);
+
+            //Map the current time to the scale shaped by the _scaleCurve
+            _currentScale = _scaleCurve.Evaluate(currentTime);
             transform.localScale = new Vector3(_currentScale, transform.localScale.y, transform.localScale.z);
 
             RTPCPlatform.SetGlobalValue(_currentScale);
@@ -134,7 +169,10 @@ public class Pusher : Mirror.NetworkBehaviour
             {
                 if (_oldDuration > 0.0f)
                 {
-                    ScaleEditorAnimationCurve();
+                    if (_autoScaleEditorCurve)
+                    {
+                        ScaleEditorAnimationCurve();
+                    }
                 }
                 _oldDuration = _duration;
             }

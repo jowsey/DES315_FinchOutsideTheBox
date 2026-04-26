@@ -32,6 +32,8 @@ namespace UI
 
         private LobbyListing _activeJoinAttempt;
 
+        private bool _privateLobbyCreationToggle;
+
         private void OnEnable()
         {
             _createLobbyButton.Button.onClick.AddListener(TryCreateLobby);
@@ -90,7 +92,7 @@ namespace UI
 
             EosLobby.CreateLobby(
                 (uint)NetworkManager.singleton.maxConnections,
-                LobbyPermissionLevel.Publicadvertised,
+                _privateLobbyCreationToggle ? LobbyPermissionLevel.Inviteonly : LobbyPermissionLevel.Publicadvertised,
                 false,
                 new AttributeData[]
                 {
