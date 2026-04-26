@@ -130,31 +130,7 @@ public class PlayerController : NetworkBehaviour
     [HideInInspector] public bool PuppetRequestJump;
     [HideInInspector] public float PuppetGravityMultiplier;
     [HideInInspector] public float PuppetJumpForceMultiplier;
-    private bool _isPuppet;
-    [HideInInspector]
-    public bool IsPuppet
-    {
-        get => _isPuppet;
-        set
-        {
-            if (_isPuppet == value) { return; }
-            _isPuppet = value;
-            NetworkTransformBase ntb = GetComponent<NetworkTransformBase>();
-            if (_isPuppet)
-            {
-                //Disable ntb, ensure rigidbody is non-kinematic, and disable voip client for entering puppet mode
-                if (ntb != null) { ntb.enabled = false; }
-                Rb.isKinematic = false;
-                GetComponent<VoipClient>().enabled = false;
-            }
-            else
-            {
-                //Exiting puppet mode, hand control back over to ntb and reenable voip client
-                if (ntb != null) { ntb.enabled = true; }
-                GetComponent<VoipClient>().enabled = true;
-            }
-        }
-    }
+    [HideInInspector] public bool IsPuppet;
 
     public static void AddControlBlocker(Object blocker)
     {
