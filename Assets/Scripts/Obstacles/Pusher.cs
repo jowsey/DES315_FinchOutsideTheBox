@@ -96,6 +96,14 @@ public class Pusher : Mirror.NetworkBehaviour
         _targetTime = time;
     }
 
+    public void ResetIfNotMoving()
+    {
+        if (!_isMoving)
+        {
+            _timeElapsed = 0.0f;
+        }
+    }
+
     void FixedUpdate()
     {
         if (!isServer) { return; }

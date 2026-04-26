@@ -94,6 +94,14 @@ public class MovingPlatform : NetworkBehaviour
         _targetTime = time;
     }
 
+    public void ResetIfNotMoving()
+    {
+        if (!_isMoving)
+        {
+            _timeElapsed = 0.0f;
+        }
+    }
+
     private void FixedUpdate()
     {
         //Used Later in here
