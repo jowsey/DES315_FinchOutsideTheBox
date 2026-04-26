@@ -163,6 +163,7 @@ GameObject:
   - component: {fileID: 8404039627716201106}
   - component: {fileID: 4010331646531671833}
   - component: {fileID: 8824723510661456513}
+  - component: {fileID: 5967759628048253830}
   m_Layer: 5
   m_Name: InputPrompt
   m_TagString: Untagged
@@ -227,6 +228,23 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &5967759628048253830
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2274040121049519761}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc312d0e63e29c248934719ffb5be94b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  _image: {fileID: 8824723510661456513}
+  _keyboardMouseSprite: {fileID: 21300000, guid: 5c9c3b5a0cf84324ea1326e4d4da3968, type: 3}
+  _playstationSprite: {fileID: 21300000, guid: 9a0d813d09747144c8ca47034b244338, type: 3}
+  _switchSprite: {fileID: 21300000, guid: 3bfe4b381d7403045815f074c6bf4b33, type: 3}
+  _xboxSprite: {fileID: 21300000, guid: bf0b509d34f1f1b4a9887265e1e7e52b, type: 3}
 --- !u!1 &5897592355308795173
 GameObject:
   m_ObjectHideFlags: 0
