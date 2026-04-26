@@ -43,10 +43,10 @@ namespace UI
 
         public static readonly string[] DefaultPlayerNames =
         {
-            "Buttons", "Jupiter", "Misha", "Squid",
-            "Avocado", "Kato",
-            "Marley", "Mittens", "Chez", "Batman", "Juno",
-            "Felix", "Mollie", "Luna", "Kylo", "Padmé", "Clyde", "Julita",
+            "Buttons", "Jupiter", "Misha", "Squid", // Becca's
+            "Avocado", "Kato", // Paolo's
+            "Marley", "Mittens", "Chez", "Batman", "Bella", // Jowsey's
+            "Felix", "Mollie", "Luna", "Kylo", "Padmé", "Clyde", "Julita", // Ellis'
         };
 
         public static string GetRandomName() => DefaultPlayerNames[Random.Range(0, DefaultPlayerNames.Length)];
