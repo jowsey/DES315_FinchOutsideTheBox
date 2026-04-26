@@ -254,9 +254,6 @@ public class PlayerController : NetworkBehaviour
 
             var orbitalFollow = _cinemachineCamera.GetComponent<CinemachineOrbitalFollow>();
             orbitalFollow.HorizontalAxis.Value = transform.eulerAngles.y;
-
-            //Snap
-            _cinemachineCamera.PreviousStateIsValid = false;
         }
 
         // Hide nameplate for local player
