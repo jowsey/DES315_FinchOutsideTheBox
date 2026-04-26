@@ -160,10 +160,5 @@ namespace Networking
             EosLobby.ConnectedLobbyDetails.CopyInfo(ref options, out var lobbyInfo);
             return lobbyInfo?.MaxMembers ?? 0;
         }
-
-        public string GetLobbyID()
-        {
-            return EosLobby.GetCurrentLobbyId();
-        }
     }
 }
