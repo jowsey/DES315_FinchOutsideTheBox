@@ -251,9 +251,15 @@ public class PlayerController : NetworkBehaviour
             _cinemachineCamera.gameObject.SetActive(true);
             _cinemachineCamera.Follow = transform;
             _cinemachineCamera.LookAt = transform;
-
             var orbitalFollow = _cinemachineCamera.GetComponent<CinemachineOrbitalFollow>();
             orbitalFollow.HorizontalAxis.Value = transform.eulerAngles.y;
+
+            var brain = FindAnyObjectByType<CinemachineBrain>(FindObjectsInactive.Include);
+            var prevUpdateMethod = brain.UpdateMethod;
+            brain.UpdateMethod = CinemachineBrain.UpdateMethods.ManualUpdate;
+            brain.ManualUpdate();
+            brain.UpdateMethod = prevUpdateMethod;
+            _cinemachineCamera.PreviousStateIsValid = false;
         }
 
         // Hide nameplate for local player
