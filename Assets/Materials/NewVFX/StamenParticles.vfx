@@ -18,8 +18,8 @@ MonoBehaviour:
       serializedVersion: 2
       x: 852
       y: -1433
-      width: 475
-      height: 2328
+      width: 476
+      height: 2473
     contents:
     - model: {fileID: 8926484042661614608}
       id: 0
@@ -39,7 +39,7 @@ MonoBehaviour:
     serializedVersion: 2
     x: 852
     y: -1433
-    width: 475
+    width: 476
     height: 2473
 --- !u!114 &114350483966674976
 MonoBehaviour:
@@ -51,7 +51,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7d4c867f6b72b714dbb5fd1780afe208, type: 3}
-  m_Name: Fireflies
+  m_Name: StamenParticles
   m_EditorClassIdentifier: 
   m_UIIgnoredErrors: []
   m_Parent: {fileID: 0}
@@ -77,7 +77,7 @@ VisualEffectResource:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Fireflies
+  m_Name: StamenParticles
   m_Graph: {fileID: 114350483966674976}
   m_Infos:
     m_RendererSettings:
@@ -193,7 +193,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
-      m_SerializableObject: 5
+      m_SerializableObject: 2
     m_Space: -1
   m_Property:
     name: Rate
@@ -296,7 +296,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614662}
   - {fileID: 8926484042661614989}
   dataType: 0
-  capacity: 68
+  capacity: 15
   stripCapacity: 1
   particlePerStripCount: 32
   needsComputeBounds: 0
@@ -320,7 +320,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614827}
   - {fileID: 8926484042661615001}
   - {fileID: 8926484042661615012}
-  m_UIPosition: {x: 878, y: -187}
+  m_UIPosition: {x: 879, y: -103}
   m_UICollapsed: 0
   m_UISuperCollapsed: 0
   m_InputSlots: []
@@ -2089,7 +2089,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEditor.VFX.Vector, Unity.VisualEffectGraph.Editor,
           Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"vector":{"x":0.0,"y":0.029999999329447748,"z":0.0}}'
+      m_SerializableObject: '{"vector":{"x":0.0,"y":0.20000000298023225,"z":0.0}}'
     m_Space: 1
   m_Property:
     name: Force
@@ -3136,7 +3136,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEditor.VFX.TArcCone, Unity.VisualEffectGraph.Editor,
           Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"cone":{"transform":{"position":{"x":0.0,"y":0.0,"z":0.0},"angles":{"x":0.0,"y":0.0,"z":0.0},"scale":{"x":1.0,"y":1.0,"z":1.0}},"baseRadius":3.4100000858306886,"topRadius":1.2799999713897706,"height":12.699999809265137},"arc":6.2831854820251469}'
+      m_SerializableObject: '{"cone":{"transform":{"position":{"x":0.0,"y":0.0,"z":0.0},"angles":{"x":0.0,"y":0.0,"z":0.0},"scale":{"x":1.0,"y":1.0,"z":1.0}},"baseRadius":0.27000001072883608,"topRadius":1.4299999475479127,"height":3.25},"arc":6.2831854820251469}'
     m_Space: 0
   m_Property:
     name: arcCone
