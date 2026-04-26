@@ -1,3 +1,4 @@
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -53,11 +54,18 @@ public class CutscenePuppeteer : MonoBehaviour
         foreach (PlayerController p in _players)
         {
             p.IsPuppet = true;
+            if (p.TryGetComponent<AkAudioListener>(out AkAudioListener l))
+            {
+                l.enabled = false;
+            }
         }
         _cart.IsPuppet = true;
+        PlayerController.AddControlBlocker(this);
 
         foreach (Rigidbody rb in _cart.GetComponentsInChildren<Rigidbody>())
         {
+            if (rb.gameObject.CompareTag("Flask")) { continue; }
+
             rb.interpolation = RigidbodyInterpolation.None;
             rb.linearVelocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
@@ -95,7 +103,13 @@ public class CutscenePuppeteer : MonoBehaviour
 
             p.GetComponent<Animator>().enabled = true;
             p.IsPuppet = false;
+
+            if (p.TryGetComponent<AkAudioListener>(out AkAudioListener l))
+            {
+                l.enabled = true;
+            }
         }
+        PlayerController.RemoveControlBlocker(this);
 
         _cart.Rb.position = _cart.transform.position;
         _cart.Rb.rotation = _cart.transform.rotation;
@@ -104,6 +118,7 @@ public class CutscenePuppeteer : MonoBehaviour
 
         _cart.GetComponent<Animator>().enabled = true;
         _cart.IsPuppet = false;
+        Physics.SyncTransforms();
     }
 
     public void EnablePlayerAnimators()
@@ -141,6 +156,7 @@ public class CutscenePuppeteer : MonoBehaviour
 
         foreach (Rigidbody rb in _cart.GetComponentsInChildren<Rigidbody>())
         {
+            if (rb.gameObject.CompareTag("Flask")) { continue; }
             rb.position = rb.transform.position;
             rb.rotation = rb.transform.rotation;
             rb.isKinematic = false;
@@ -169,34 +185,6 @@ public class CutscenePuppeteer : MonoBehaviour
         _cart.Rb.WakeUp();
 
         Physics.SyncTransforms();
-    }
-
-    public void ParentFlasksToCart()
-    {
-        _parentedFlasks.Clear();
-        foreach (Flask flask in _cart.CarriedFlasks)
-        {
-            _parentedFlasks.Add((flask, flask.transform.parent));
-            flask.transform.SetParent(_cart.transform);
-            if (flask.TryGetComponent<Rigidbody>(out Rigidbody rb))
-            {
-                rb.isKinematic = true;
-            }
-        }
-    }
-
-    public void UnparentFlasks()
-    {
-        foreach (var (flask, originalParent) in _parentedFlasks)
-        {
-            if (flask == null) { continue; }
-            flask.transform.SetParent(originalParent);
-            if (flask.TryGetComponent<Rigidbody>(out Rigidbody rb))
-            {
-                rb.isKinematic = false;
-            }
-        }
-        _parentedFlasks.Clear();
     }
 
     public void RunInCircles(float seconds)
