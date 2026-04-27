@@ -45,12 +45,14 @@ namespace Util
             if (!IsGamepadActive() || Gamepad.current == null)
             {
                 CurrentInputType = InputType.KeyboardMouse;
+                Cursor.visible = true;
             }
             else
             {
                 if (Gamepad.current is DualShockGamepad) { CurrentInputType = InputType.Playstation; }
                 else if (Gamepad.current.description.manufacturer == "Nintendo") { CurrentInputType = InputType.Switch; }
                 else { CurrentInputType = InputType.Xbox; }
+                Cursor.visible = false;
             }
         }
 
