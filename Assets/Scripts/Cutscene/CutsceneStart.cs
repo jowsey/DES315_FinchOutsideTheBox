@@ -1,5 +1,4 @@
 using Mirror;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.Playables;
 using System.Collections.Generic;
@@ -10,6 +9,8 @@ public class CutsceneStart : NetworkBehaviour
     [SerializeField] private Cart _cart;
     [SerializeField] private GameObject _crosshair;
     [SerializeField] private Transform _cartStartTransform;
+    
+    [SerializeField] private float _cutsceneSpeedScale = 1f;
     
     //todo: maybe remove if we decide to have the cutscene triggered by button prompt instead? so that players can watch it multiple times
     private bool _played;
@@ -62,13 +63,18 @@ public class CutsceneStart : NetworkBehaviour
     //Wasn't sure where to chuck these
     private void OnCutsceneStarted(PlayableDirector _)
     {
+        Time.timeScale = _cutsceneSpeedScale;
+        
         _crosshair.SetActive(false);
         Camera.main.GetComponent<ObstructionDitherer>().enabled = false;
         Camera.main.GetComponent<CrosshairDetection>().enabled = false;
         Camera.main.GetComponent<AkAudioListener>().enabled = true;
     }
+    
     private void OnCutsceneStopped(PlayableDirector _)
     {
+        Time.timeScale = 1f;
+        
         _crosshair.SetActive(true);
         Camera.main.GetComponent<ObstructionDitherer>().enabled = true;
         Camera.main.GetComponent<CrosshairDetection>().enabled = true;
