@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Mirror;
 using Sirenix.OdinInspector;
 using UI;
@@ -84,7 +85,7 @@ public class Cart : NetworkBehaviour
             _flasksAtCheckpoint[i] = new Dictionary<Flask, FlaskSnapshot>();
         }
 
-        CheckpointFlaskCounts.AddRange(new int[Checkpoints.Count]);
+        CheckpointFlaskCounts.AddRange(Enumerable.Repeat(-1, Checkpoints.Count).ToArray());
 
         // First checkpoint runs on Frame 0 before flasks run OnTriggerEnter so we need to manually init
         // - Bounds check isn't perfectly accurate, but we can reasonably assume
@@ -292,7 +293,7 @@ public class Cart : NetworkBehaviour
         CurrentCheckpointIndex = newCheckpointIndex;
 
         // fallback for dev hotkeys, otherwise will naturally be populated
-        if (isServer && CheckpointFlaskCounts[CurrentCheckpointIndex] == 0)
+        if (isServer && CheckpointFlaskCounts[CurrentCheckpointIndex] == -1)
         {
             CaptureCheckpointFlasksSnapshot();
         }
