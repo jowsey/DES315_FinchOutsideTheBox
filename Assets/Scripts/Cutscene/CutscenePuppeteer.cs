@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
+using UI;
 using UnityEngine;
 
 public class CutscenePuppeteer : MonoBehaviour
@@ -22,6 +24,7 @@ public class CutscenePuppeteer : MonoBehaviour
     private Dictionary<ConfigurableJoint, (ConfigurableJointMotion x, ConfigurableJointMotion y, ConfigurableJointMotion z, ConfigurableJointMotion angX, ConfigurableJointMotion angY, ConfigurableJointMotion angZ)> _savedJointMotions = new();
     private List<(Flask flask, Transform originalParent)> _parentedFlasks = new();
 
+    [SerializeField] [Required] private Credits _creditsPrefab;
 
     public void SetPlayer2SkinIndex(int index)
     {
@@ -45,7 +48,6 @@ public class CutscenePuppeteer : MonoBehaviour
         _players[1].PlayerNameText.text = name;
     }
 
-
     public void MakePuppets()
     {
         foreach (PlayerController p in _players)
@@ -64,8 +66,6 @@ public class CutscenePuppeteer : MonoBehaviour
             if (rb.gameObject.CompareTag("Flask")) { continue; }
 
             rb.interpolation = RigidbodyInterpolation.None;
-            rb.linearVelocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
             rb.position = rb.transform.position;
             rb.rotation = rb.transform.rotation;
             rb.isKinematic = true;
@@ -110,8 +110,6 @@ public class CutscenePuppeteer : MonoBehaviour
 
         _cart.Rb.position = _cart.transform.position;
         _cart.Rb.rotation = _cart.transform.rotation;
-        _cart.Rb.linearVelocity = Vector3.zero;
-        _cart.Rb.angularVelocity = Vector3.zero;
 
         _cart.GetComponent<Animator>().enabled = true;
         _cart.IsPuppet = false;
@@ -346,5 +344,11 @@ public class CutscenePuppeteer : MonoBehaviour
                 yield return null;
             }
         }
+    }
+
+    public void RollCredits()
+    {
+        var uiCanvas = GameObject.FindWithTag("UICanvas");
+        Instantiate(_creditsPrefab, uiCanvas.transform);
     }
 }

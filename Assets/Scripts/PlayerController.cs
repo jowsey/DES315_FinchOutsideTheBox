@@ -511,8 +511,8 @@ public class PlayerController : NetworkBehaviour
             {
                 //Player has collided with something other than themself
                 grounded = true;
+                break;
             }
-            break;
         }
 
         bool groundedOnBumpy = Physics.CheckSphere(Rb.position, _groundedSphereRadius, LayerMask.GetMask("Bumpy"), QueryTriggerInteraction.Ignore);
