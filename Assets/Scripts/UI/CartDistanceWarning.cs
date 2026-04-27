@@ -9,6 +9,7 @@ namespace UI
     {
         [SerializeField] [Required] private Image _icon;
         [SerializeField] private float _warningDistance = 50f;
+        [SerializeField] private float _iconAnimationScale = 1.05f;
 
         [SerializeField] [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)] private Transform _cart;
 
@@ -21,7 +22,7 @@ namespace UI
 
         private void Start()
         {
-            Tween.Scale(_icon.transform, Vector3.one * 1.1f, 1f, Ease.InOutQuad, -1, CycleMode.Rewind);
+            Tween.Scale(_icon.transform, Vector3.one * _iconAnimationScale, 1f, Ease.InOutQuad, -1, CycleMode.Rewind);
         }
 
         private void LateUpdate()
