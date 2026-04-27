@@ -254,6 +254,7 @@ public class PlayerController : NetworkBehaviour
             var orbitalFollow = _cinemachineCamera.GetComponent<CinemachineOrbitalFollow>();
             orbitalFollow.HorizontalAxis.Value = transform.eulerAngles.y;
 
+            // Snap to position
             var brain = FindAnyObjectByType<CinemachineBrain>(FindObjectsInactive.Include);
             var prevUpdateMethod = brain.UpdateMethod;
             brain.UpdateMethod = CinemachineBrain.UpdateMethods.ManualUpdate;
