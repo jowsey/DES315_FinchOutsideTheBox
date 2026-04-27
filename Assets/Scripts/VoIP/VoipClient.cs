@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using Mirror;
+using PrimeTween;
 using UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -34,18 +35,25 @@ namespace VoIP
         [SerializeField] [ReadOnly] private string _device;
         [SerializeField] private AudioSource _source;
 
-        [SerializeField] private InputActionReference _pushToTalkAction;
         public bool Muted { get; private set; }
-        [SerializeField] private Image _bottomRightIcon;
-        [SerializeField] private Color _bottomRightDefaultColour;
-        [SerializeField] private Color _bottomRightMutedColour;
-        [SerializeField] private Color _bottomRightTalkingColour;
+
+        [SerializeField] private InputActionReference _pushToTalkAction;
+
+        private Image _micIconImage;
+        private Outline _micIconOutline;
+
+        private Color _micIconDefaultColour;
+        private Color _micOutlineDefaultColour;
+
+        [SerializeField] private Color _micMutedColour;
+        [SerializeField] private Color _micOutlineTalkingColour;
+
         private float _lastTalkTime;
         private const float _talkHangTime = 0.15f; //keep the talking colour for 150ms after data stops being sent
 
-        [SerializeField] private Image _vcIcon;
-        [SerializeField] private Sprite _vcActiveIcon;
-        [SerializeField] private Sprite _vcInactiveIcon;
+        [SerializeField] private Image _nameplateIcon;
+        [SerializeField] private Sprite _nameplateActiveIcon;
+        [SerializeField] private Sprite _nameplateInactiveIcon;
 
         [SerializeField] private PlayerController _player;
 
@@ -112,7 +120,13 @@ namespace VoIP
                 _denoiseBuffer = new float[RnNoiseProcessor.FrameSize];
                 _opusPacketBuffer = new byte[OpusProcessor.MaxPacketSize];
 
-                _bottomRightIcon = GameObject.FindGameObjectWithTag("PushToTalkBottomRightIcon").GetComponent<Image>();
+                // todo way too silently coupled
+                var micIcon = GameObject.FindGameObjectWithTag("PushToTalkBottomRightIcon");
+                _micIconImage = micIcon.GetComponent<Image>();
+                _micIconOutline = micIcon.GetComponentInParent<Outline>();
+
+                _micIconDefaultColour = _micIconImage.color;
+                _micOutlineDefaultColour = _micIconOutline.effectColor;
 
                 if (SettingsManager.ActiveSettings.InputDevice != null)
                 {
@@ -147,7 +161,7 @@ namespace VoIP
 
                 if (!_player.CutscenePlayer)
                 {
-                    _vcIcon.sprite = _vcInactiveIcon;
+                    _nameplateIcon.sprite = _nameplateInactiveIcon;
                 }
 
                 SettingsManager.ActiveSettings.PlayerVoiceVolumePercents.TryAdd(_player.PlayerUID, 100);
@@ -260,16 +274,16 @@ namespace VoIP
 
         public void Update()
         {
-            if (!isLocalPlayer && !_player.CutscenePlayer)
+            if (!isLocalPlayer)
             {
-                _vcIcon.sprite = _playbackActive ? _vcActiveIcon : _vcInactiveIcon;
+                _nameplateIcon.sprite = _playbackActive ? _nameplateActiveIcon : _nameplateInactiveIcon;
+                return;
             }
 
-            if (!isLocalPlayer) { return; }
-            else if (!_isRecording || !Microphone.IsRecording(_device))
+            if (!_isRecording || !Microphone.IsRecording(_device))
             {
-                //Force bottom right icon to be muted colour
-                _bottomRightIcon.color = _bottomRightMutedColour;
+                //Force icon to be muted colour
+                if (_micIconImage.color != _micMutedColour) _micIconImage.color = _micMutedColour;
                 return;
             }
 
@@ -293,6 +307,7 @@ namespace VoIP
                 if (_pushToTalkAction.action.WasPressedThisFrame())
                 {
                     Muted = !Muted;
+
                     if (!Muted)
                     {
                         _micReadPos = micWritePos;
@@ -302,11 +317,14 @@ namespace VoIP
                 }
             }
 
+            var idealMutedColour = Muted ? _micMutedColour : _micIconDefaultColour;
+            if (_micIconImage.color != idealMutedColour) _micIconImage.color = idealMutedColour;
+
             if (Muted)
             {
-                if (_bottomRightIcon.color != _bottomRightMutedColour) { _bottomRightIcon.color = _bottomRightMutedColour; }
+                //Force talking outline off
+                if (_micOutlineTalkingColour != _micOutlineDefaultColour) _micIconOutline.effectColor = _micOutlineDefaultColour;
 
-                //Don't do anything else if muted
                 return;
             }
 
@@ -366,21 +384,10 @@ namespace VoIP
                 _lastTalkTime = Time.time;
             }
 
-            //Update bottom right icon based on whether we're talking
-            if (Time.time - _lastTalkTime < _talkHangTime)
-            {
-                if (_bottomRightIcon.color != _bottomRightTalkingColour)
-                {
-                    _bottomRightIcon.color = _bottomRightTalkingColour;
-                }
-            }
-            else
-            {
-                if (_bottomRightIcon.color != _bottomRightDefaultColour)
-                {
-                    _bottomRightIcon.color = _bottomRightDefaultColour;
-                }
-            }
+            //Update outline colour based on whether we're talking
+            var isTalking = Time.time - _lastTalkTime < _talkHangTime;
+            var idealTalkingColour = isTalking ? _micOutlineTalkingColour : _micOutlineDefaultColour;
+            if (_micIconOutline.effectColor != idealTalkingColour) _micIconOutline.effectColor = idealTalkingColour;
         }
 
         [Command(channel = Channels.Unreliable)]
