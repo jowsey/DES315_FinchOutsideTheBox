@@ -15,35 +15,41 @@ namespace UI
         [SerializeField] private Sprite _switchSprite;
         [SerializeField] private Sprite _xboxSprite;
 
+        private InputDeviceManager.InputType _currentlyDisplayedInputType;
+
         public void Start()
         {
-            InputDeviceManager.InputTypeChanged.AddListener(OnInputTypeChanged);
+            _currentlyDisplayedInputType = InputDeviceManager.InputType.KeyboardMouse;
+            CheckForInputTypeChange();
         }
 
-        public void OnDestroy()
+        private void Update()
         {
-            InputDeviceManager.InputTypeChanged.RemoveListener(OnInputTypeChanged);
+            CheckForInputTypeChange();
         }
 
-        private void OnInputTypeChanged()
+        private void CheckForInputTypeChange()
         {
-            //Debug.Log(InputDeviceManager.CurrentInputType);
-            switch (InputDeviceManager.CurrentInputType)
+            if (_currentlyDisplayedInputType != InputDeviceManager.CurrentInputType)
             {
-                case 
-                    InputDeviceManager.InputType.KeyboardMouse:
-                    _image.sprite = _keyboardMouseSprite;
-                    break;
-                case InputDeviceManager.InputType.Switch:
-                    _image.sprite = _switchSprite;
-                    break;
-                case InputDeviceManager.InputType.Playstation:
-                    _image.sprite = _playstationSprite;
-                    break;
-                default: //fallback (xbox for now)
-                    _image.sprite = _xboxSprite;
-                    break;
+                switch (InputDeviceManager.CurrentInputType)
+                {
+                    case
+                        InputDeviceManager.InputType.KeyboardMouse:
+                        _image.sprite = _keyboardMouseSprite;
+                        break;
+                    case InputDeviceManager.InputType.Switch:
+                        _image.sprite = _switchSprite;
+                        break;
+                    case InputDeviceManager.InputType.Playstation:
+                        _image.sprite = _playstationSprite;
+                        break;
+                    default: //fallback (xbox for now)
+                        _image.sprite = _xboxSprite;
+                        break;
 
+                }
+                _currentlyDisplayedInputType = InputDeviceManager.CurrentInputType;
             }
         }
     }
