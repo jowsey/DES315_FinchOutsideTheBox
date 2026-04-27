@@ -888,6 +888,7 @@ GameObject:
   - component: {fileID: 2730365782155389244}
   - component: {fileID: 2959797987507267762}
   - component: {fileID: 36222897327878317}
+  - component: {fileID: 3152156132344075562}
   m_Layer: 5
   m_Name: KeyPrompt
   m_TagString: Untagged
@@ -952,3 +953,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &3152156132344075562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7324687623755512412}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc312d0e63e29c248934719ffb5be94b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI.InputIconManager
+  _image: {fileID: 36222897327878317}
+  _keyboardMouseSprite: {fileID: 21300000, guid: 779d8220f3127f641934774bb889c0b3, type: 3}
+  _playstationSprite: {fileID: 21300000, guid: a929ac459e0ab794595b84d13f0059ef, type: 3}
+  _switchSprite: {fileID: 21300000, guid: f40648a9ab0a99e4a9265aa7f9083162, type: 3}
+  _xboxSprite: {fileID: 21300000, guid: d2e897d42d4e4174a8b975936b1d8cf1, type: 3}

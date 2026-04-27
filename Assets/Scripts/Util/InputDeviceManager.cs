@@ -57,7 +57,7 @@ namespace Util
         private static void DetectKeyboardMouseInput()
         {
             bool keyboardActive = (Keyboard.current != null && Keyboard.current.anyKey.isPressed);
-            bool mouseActive = (Mouse.current != null && (Mouse.current.leftButton.isPressed || Mouse.current.rightButton.isPressed || Mouse.current.middleButton.isPressed));
+            bool mouseActive = (Mouse.current != null && (Mouse.current.leftButton.isPressed || Mouse.current.rightButton.isPressed || Mouse.current.middleButton.isPressed || Mouse.current.delta.ReadValue().magnitude > 1.0f));
             if (keyboardActive || mouseActive)
             {
                 _lastKBMTime = Time.time;
