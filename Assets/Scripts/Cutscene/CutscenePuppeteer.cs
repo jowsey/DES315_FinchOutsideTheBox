@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
+using UI;
 using UnityEngine;
 
 public class CutscenePuppeteer : MonoBehaviour
@@ -22,6 +24,7 @@ public class CutscenePuppeteer : MonoBehaviour
     private Dictionary<ConfigurableJoint, (ConfigurableJointMotion x, ConfigurableJointMotion y, ConfigurableJointMotion z, ConfigurableJointMotion angX, ConfigurableJointMotion angY, ConfigurableJointMotion angZ)> _savedJointMotions = new();
     private List<(Flask flask, Transform originalParent)> _parentedFlasks = new();
 
+    [SerializeField] [Required] private Credits _creditsPrefab;
 
     public void SetPlayer2SkinIndex(int index)
     {
@@ -44,7 +47,6 @@ public class CutscenePuppeteer : MonoBehaviour
         _players[1].PlayerName = name;
         _players[1].PlayerNameText.text = name;
     }
-
 
     public void MakePuppets()
     {
@@ -346,5 +348,11 @@ public class CutscenePuppeteer : MonoBehaviour
                 yield return null;
             }
         }
+    }
+
+    public void RollCredits()
+    {
+        var uiCanvas = GameObject.FindWithTag("UICanvas");
+        Instantiate(_creditsPrefab, uiCanvas.transform);
     }
 }
