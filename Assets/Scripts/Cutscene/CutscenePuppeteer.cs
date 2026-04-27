@@ -66,8 +66,6 @@ public class CutscenePuppeteer : MonoBehaviour
             if (rb.gameObject.CompareTag("Flask")) { continue; }
 
             rb.interpolation = RigidbodyInterpolation.None;
-            rb.linearVelocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
             rb.position = rb.transform.position;
             rb.rotation = rb.transform.rotation;
             rb.isKinematic = true;
@@ -112,8 +110,6 @@ public class CutscenePuppeteer : MonoBehaviour
 
         _cart.Rb.position = _cart.transform.position;
         _cart.Rb.rotation = _cart.transform.rotation;
-        _cart.Rb.linearVelocity = Vector3.zero;
-        _cart.Rb.angularVelocity = Vector3.zero;
 
         _cart.GetComponent<Animator>().enabled = true;
         _cart.IsPuppet = false;
