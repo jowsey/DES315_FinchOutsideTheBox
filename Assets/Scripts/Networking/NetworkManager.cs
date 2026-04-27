@@ -135,6 +135,13 @@ namespace Networking
             return EosLobby.ConnectedLobbyDetails.GetMemberCount(ref options);
         }
 
+        public LobbyPermissionLevel GetLobbyPermissionLevel()
+        {
+            var options = new LobbyDetailsCopyInfoOptions();
+            EosLobby.ConnectedLobbyDetails.CopyInfo(ref options, out var lobbyInfo);
+            return lobbyInfo?.PermissionLevel ?? LobbyPermissionLevel.Publicadvertised;
+        }
+
         public uint GetLobbyMaxPlayerCount()
         {
             var options = new LobbyDetailsCopyInfoOptions();

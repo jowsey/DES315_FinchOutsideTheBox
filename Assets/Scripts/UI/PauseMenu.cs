@@ -1,4 +1,6 @@
+using Epic.OnlineServices.Lobby;
 using Mirror;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,6 +12,7 @@ namespace UI
         [SerializeField] private InputActionReference _openAction;
 
         [SerializeField] private RectTransform _hostLeaveDisbandWarning;
+        [SerializeField] private TextMeshProUGUI _lobbyIdText;
 
         private bool _isActive;
         private CanvasGroup _canvasGroup;
@@ -27,6 +30,33 @@ namespace UI
             {
                 _hostLeaveDisbandWarning.gameObject.SetActive(false);
             }
+
+            var isOnline = Networking.NetworkManager.singleton?.EosLobby?.ConnectedToLobby == true;
+
+            _lobbyIdText.gameObject.SetActive(isOnline);
+            if (isOnline)
+            {
+                var lobbyId = Networking.NetworkManager.singleton.EosLobby.GetCurrentLobbyId();
+                var lobbyPermissionLevel = Networking.NetworkManager.singleton.GetLobbyPermissionLevel();
+
+                var formattedLobbyID = lobbyPermissionLevel == LobbyPermissionLevel.Publicadvertised
+                    ? lobbyId
+                    : new string('*', lobbyId.Length);
+                var formattedLobbyPermissionLevel = lobbyPermissionLevel == LobbyPermissionLevel.Publicadvertised
+                    ? "public"
+                    : "private";
+
+                _lobbyIdText.text = $"<b>Lobby ID</b>: {formattedLobbyID}\n" +
+                                    $"This lobby is <b>{formattedLobbyPermissionLevel}</b>.";
+            }
+        }
+
+        public void CopyLobbyId()
+        {
+            if (!NetworkClient.active) return;
+
+            var lobbyId = Networking.NetworkManager.singleton.EosLobby.GetCurrentLobbyId();
+            GUIUtility.systemCopyBuffer = lobbyId;
         }
 
         private void OnDisable()
