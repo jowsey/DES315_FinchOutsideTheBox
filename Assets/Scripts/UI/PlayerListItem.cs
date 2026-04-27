@@ -16,7 +16,6 @@ namespace UI
         [SerializeField] [Required] private Slider _voiceVolumeSlider;
 
         [SerializeField] [Required] private Button _kickButton;
-        [SerializeField] [Required] private Button _banButton;
 
         private PlayerController _player;
 
@@ -33,12 +32,10 @@ namespace UI
             if (NetworkServer.active)
             {
                 _kickButton.onClick.AddListener(OnKickClicked);
-                _banButton.onClick.AddListener(OnBanClicked);
             }
             else
             {
                 _kickButton.interactable = false;
-                _banButton.interactable = false;
             }
             
             PlayerPresenceFeed.OnPlayerLeave.AddListener(OnPlayerLeave);
@@ -62,14 +59,6 @@ namespace UI
             if (!NetworkServer.active) return;
 
             _player.connectionToClient.Disconnect();
-            Destroy(gameObject);
-        }
-
-        private void OnBanClicked()
-        {
-            if (!NetworkServer.active) return;
-
-            ((Networking.NetworkManager)NetworkManager.singleton).BanPlayer(_player);
             Destroy(gameObject);
         }
 

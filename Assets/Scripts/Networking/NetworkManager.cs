@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Epic.OnlineServices.Lobby;
 using Mirror;
 using UI;
@@ -29,17 +28,6 @@ namespace Networking
         private int _nextPlayerIndex;
 
         public EOSLobby EosLobby { get; private set; }
-
-        // this is, of course, terribly insecure, given it's trusting the client to
-        // be honest about its hardware ID, but I imagine 99% of people won't bother to
-        // spoof it, so i think it functions as a good enough deterrent
-        private readonly HashSet<string> _bannedPlayerUids = new();
-
-        public void BanPlayer(PlayerController player)
-        {
-            _bannedPlayerUids.Add(player.PlayerUID);
-            player.connectionToClient.Disconnect();
-        }
 
         public override void Start()
         {
@@ -107,13 +95,6 @@ namespace Networking
 
         private void OnClientInfoMessage(NetworkConnectionToClient conn, ClientInfoMessage msg)
         {
-            if (_bannedPlayerUids.Contains(msg.PlayerUID))
-            {
-                Debug.Log($"Client {conn.connectionId} is banned. Rejecting.");
-                conn.Disconnect();
-                return;
-            }
-
             if (conn.identity)
             {
                 Debug.LogWarning($"Client {conn.connectionId} sent PlayerJoinMessage but has already joined");
