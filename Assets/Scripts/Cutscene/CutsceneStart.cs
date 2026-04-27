@@ -69,8 +69,6 @@ public class CutsceneStart : NetworkBehaviour
     
     private void OnCutsceneStopped(PlayableDirector _)
     {
-        Time.timeScale = 1f;
-        
         _crosshair.SetActive(true);
         Camera.main.GetComponent<ObstructionDitherer>().enabled = true;
         Camera.main.GetComponent<CrosshairDetection>().enabled = true;
