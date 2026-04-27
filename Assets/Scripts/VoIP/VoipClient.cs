@@ -35,6 +35,13 @@ namespace VoIP
         [SerializeField] private AudioSource _source;
 
         [SerializeField] private InputActionReference _pushToTalkAction;
+        public bool Muted { get; private set; }
+        [SerializeField] private Image _bottomRightIcon;
+        [SerializeField] private Color _bottomRightDefaultColour;
+        [SerializeField] private Color _bottomRightMutedColour;
+        [SerializeField] private Color _bottomRightTalkingColour;
+        private float _lastTalkTime;
+        private const float _talkHangTime = 0.15f; //keep the talking colour for 150ms after data stops being sent
 
         [SerializeField] private Image _vcIcon;
         [SerializeField] private Sprite _vcActiveIcon;
@@ -104,6 +111,8 @@ namespace VoIP
                 _sendAccumulationBuffer = new RingBuffer<float>(SampleRate);
                 _denoiseBuffer = new float[RnNoiseProcessor.FrameSize];
                 _opusPacketBuffer = new byte[OpusProcessor.MaxPacketSize];
+
+                _bottomRightIcon = GameObject.FindGameObjectWithTag("PushToTalkBottomRightIcon").GetComponent<Image>();
 
                 if (SettingsManager.ActiveSettings.InputDevice != null)
                 {
@@ -256,14 +265,19 @@ namespace VoIP
                 _vcIcon.sprite = _playbackActive ? _vcActiveIcon : _vcInactiveIcon;
             }
 
-            if (!isLocalPlayer || !_isRecording || !Microphone.IsRecording(_device)) return;
+            if (!isLocalPlayer) { return; }
+            else if (!_isRecording || !Microphone.IsRecording(_device))
+            {
+                //Force bottom right icon to be muted colour
+                _bottomRightIcon.color = _bottomRightMutedColour;
+                return;
+            }
 
             int micWritePos = Microphone.GetPosition(_device);
 
             if (SettingsManager.ActiveSettings.PushToTalk)
             {
-                //Do nothing if PTT inactive
-                if (!_pushToTalkAction.action.IsPressed()) return;
+                Muted = !_pushToTalkAction.action.IsPressed();
 
                 //When starting a new PTT block, reset reading state
                 if (_pushToTalkAction.action.WasPressedThisFrame())
@@ -272,6 +286,28 @@ namespace VoIP
                     _sendAccumulationBuffer.Clear();
                     _opus.ResetEncoderState();
                 }
+            }
+            else
+            {
+                //Treat PTT action as toggle mute
+                if (_pushToTalkAction.action.WasPressedThisFrame())
+                {
+                    Muted = !Muted;
+                    if (!Muted)
+                    {
+                        _micReadPos = micWritePos;
+                        _sendAccumulationBuffer.Clear();
+                        _opus.ResetEncoderState();
+                    }
+                }
+            }
+
+            if (Muted)
+            {
+                if (_bottomRightIcon.color != _bottomRightMutedColour) { _bottomRightIcon.color = _bottomRightMutedColour; }
+
+                //Don't do anything else if muted
+                return;
             }
 
             //Get available samples
@@ -326,6 +362,24 @@ namespace VoIP
 
                 var packetSegment = new ArraySegment<byte>(_opusPacketBuffer, 0, packetSize);
                 CmdSendAudio(++_lastSentSequence, packetSegment);
+
+                _lastTalkTime = Time.time;
+            }
+
+            //Update bottom right icon based on whether we're talking
+            if (Time.time - _lastTalkTime < _talkHangTime)
+            {
+                if (_bottomRightIcon.color != _bottomRightTalkingColour)
+                {
+                    _bottomRightIcon.color = _bottomRightTalkingColour;
+                }
+            }
+            else
+            {
+                if (_bottomRightIcon.color != _bottomRightDefaultColour)
+                {
+                    _bottomRightIcon.color = _bottomRightDefaultColour;
+                }
             }
         }
 
