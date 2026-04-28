@@ -119,7 +119,7 @@ public class Cart : NetworkBehaviour
 
     private void Update()
     {
-
+#if UNITY_EDITOR
         if (_devCheckpointBackAction.action.WasPressedThisFrame() && CurrentCheckpointIndex != 0)
         {
             CmdInvokeRespawnEvent(CurrentCheckpointIndex - 1);
@@ -128,6 +128,7 @@ public class Cart : NetworkBehaviour
         {
             CmdInvokeRespawnEvent(CurrentCheckpointIndex + 1);
         }
+#endif
 
         // manually calculate velocity since we don't have the luxury of knowing it on all clients
         var linearVelocity = (transform.position - _positionLastFrame) / Time.fixedDeltaTime;
@@ -276,7 +277,11 @@ public class Cart : NetworkBehaviour
         _numCarriedFlasksRTPC.SetGlobalValue(newValue);
     }
 
+#if UNITY_EDITOR
     [Command(requiresAuthority = false)]
+#else
+    [Command]
+#endif
     public void CmdInvokeRespawnEvent(int newCheckpointIndex)
     {
         // todo we can definitely simplify this a bunch, we've got clients subscribing to OnRespawn just to do isServer checks and such
