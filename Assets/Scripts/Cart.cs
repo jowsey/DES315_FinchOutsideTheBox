@@ -225,6 +225,15 @@ public class Cart : NetworkBehaviour
     {
         if (!isServer) return;
 
+        foreach (Flask flask in CarriedFlasks)
+        {
+            if (!_flasksAtCheckpoint[CurrentCheckpointIndex].ContainsKey(flask))
+            {
+                //This flask is currently in the carrier but wasn't in the carrier when the checkpoint was reached, disable it instead of letting it smash
+                flask.gameObject.SetActive(false);
+            }
+        }
+
         foreach (KeyValuePair<Flask, FlaskSnapshot> flaskState in _flasksAtCheckpoint[CurrentCheckpointIndex])
         {
             flaskState.Key.transform.position = transform.TransformPoint(flaskState.Value.LocalPosition);
