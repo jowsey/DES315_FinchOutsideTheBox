@@ -249,9 +249,11 @@ namespace UI
                         return;
                     }
                 }
-            }
 
-            _activeSearchAttemptCode = null;
+                // no matching lobby found
+                GloballyLockedButton.RemoveLockSource(this); // paired with TryJoinLobby
+                _activeSearchAttemptCode = null;
+            }
 
             var lobbiesNameSorted = lobbies.OrderBy(lobbyDetails =>
             {
