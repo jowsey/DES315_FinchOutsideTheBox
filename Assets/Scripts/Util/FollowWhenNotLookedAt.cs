@@ -24,13 +24,14 @@ namespace Util
         private bool _wasVisible;
         private float _invisibleStartTime;
 
-        private void Awake()
-        {
-            _camera = Camera.main;
-        }
-
         private void LateUpdate()
         {
+            //Can't be set in Start() because the camera's NetworkIdentity means it's inactive until the connection is established
+            if (!_camera)
+            {
+                _camera = Camera.main;
+                if (!_camera) { return; }
+            }
             var planes = GeometryUtility.CalculateFrustumPlanes(_camera);
             var visible = GeometryUtility.TestPlanesAABB(planes, _boundsCollider.bounds);
 
