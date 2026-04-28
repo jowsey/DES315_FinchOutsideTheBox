@@ -64,9 +64,9 @@ public class PlayerController : NetworkBehaviour
     public AK.Wwise.Event FlaskPickupFX;
 
     [Tooltip("Percentage of gravity to negate when gliding")]
-    [SerializeField] [Range(0, 100)] private float gravityNegationPercentage;
+    [SerializeField] [Range(0, 100)] private float _gravityNegationPercentage;
 
-    [SerializeField] private float rotationSmoothingSpeed;
+    [SerializeField] private float _rotationSmoothingSpeed;
 
     [Header("Camera")]
     private Camera _camera;
@@ -445,7 +445,7 @@ public class PlayerController : NetworkBehaviour
         {
             if (PuppetWorldSpaceMoveDir.sqrMagnitude > 0)
             {
-                Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, Quaternion.LookRotation(PuppetWorldSpaceMoveDir, Vector3.up), Time.fixedDeltaTime * rotationSmoothingSpeed));
+                Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, Quaternion.LookRotation(PuppetWorldSpaceMoveDir, Vector3.up), Time.fixedDeltaTime * _rotationSmoothingSpeed));
             }
             else
             {
@@ -474,7 +474,7 @@ public class PlayerController : NetworkBehaviour
                 WorldSpaceMoveDir = (cameraForward * inputDirection.y + cameraRight * inputDirection.x).normalized;
                 if (WorldSpaceMoveDir.sqrMagnitude > 0)
                 {
-                    Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, Quaternion.LookRotation(WorldSpaceMoveDir, Vector3.up), Time.fixedDeltaTime * rotationSmoothingSpeed));
+                    Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, Quaternion.LookRotation(WorldSpaceMoveDir, Vector3.up), Time.fixedDeltaTime * _rotationSmoothingSpeed));
                 }
             }
             _networkAnimator.animator.SetBool(RunningState, WorldSpaceMoveDir.sqrMagnitude > 0);
@@ -546,8 +546,8 @@ public class PlayerController : NetworkBehaviour
         if (ControlsEnabled && isFalling && JumpAction.action.IsPressed())
         {
             //Player is gliding
-            float gravityNegationPercentage01 = gravityNegationPercentage / 100.0f;
-            Rb.AddForce(-Physics.gravity * gravityNegationPercentage01, ForceMode.Acceleration);
+            float _gravityNegationPercentage01 = _gravityNegationPercentage / 100.0f;
+            Rb.AddForce(-Physics.gravity * _gravityNegationPercentage01, ForceMode.Acceleration);
 
             _networkAnimator.animator.SetBool(FallState, false);
             _networkAnimator.animator.SetBool(GlideState, true);
