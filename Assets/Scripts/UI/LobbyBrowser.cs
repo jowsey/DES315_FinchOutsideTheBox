@@ -89,8 +89,6 @@ namespace UI
 
         private void OnDisable()
         {
-            StopCoroutine(RefreshLobbyInterval());
-
             _createLobbyButton.Button.onClick.RemoveListener(TryCreateLobby);
             _joinByCodeButton.Button.onClick.RemoveListener(TryJoinLobby);
             _lobbyNameField.onSubmit.RemoveListener(TryCreateLobby);
