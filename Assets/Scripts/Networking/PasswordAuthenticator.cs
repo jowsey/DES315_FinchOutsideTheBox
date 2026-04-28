@@ -67,10 +67,10 @@ namespace Networking
             {
                 ClientReject();
 
-                if (NetworkManager.singleton?.EosLobby?.ConnectedToLobby == true)
-                {
-                    NetworkManager.singleton.EosLobby.LeaveLobby();
-                }
+                //if (NetworkManager.singleton?.EosLobby?.ConnectedToLobby == true)
+                //{
+                //    NetworkManager.singleton.EosLobby.LeaveLobby();
+                //}
             }
         }
     }
