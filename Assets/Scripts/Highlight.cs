@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Highlight : MonoBehaviour
 {
+    private static readonly int BaseColour = Shader.PropertyToID("_BaseColour");
+    private static readonly int BaseColor = Shader.PropertyToID("_BaseColor");
+    
     //Mapping from tag to whether or not that tag can be highlighted
     private static readonly Dictionary<string, bool> _isTagHighlightable = new();
 
@@ -12,7 +15,7 @@ public class Highlight : MonoBehaviour
     private bool _highlighted;
     private Renderer[] _renderers;
 
-    [SerializeField] [Required] private Color _highlightedColour;
+    [SerializeField] [Required] private Color _highlightedColour = new(0x87 / 255f, 0xDF / 255f, 0xFF / 255f, 0f);
 
     private void Awake()
     {
@@ -77,11 +80,11 @@ public class Highlight : MonoBehaviour
                 //is it worth it to maintain british loyalty? yes
                 if (rend.sharedMaterial.shader.name == "Shader Graphs/Dithered" || rend.sharedMaterial.shader.name == "Shader Graphs/DitheredPBR")
                 {
-                    mpb.SetColor("_BaseColour", _highlightedColour);
+                    mpb.SetColor(BaseColour, _highlightedColour);
                 }
                 else
                 {
-                    mpb.SetColor("_BaseColor", _highlightedColour);
+                    mpb.SetColor(BaseColor, _highlightedColour);
                 }
                 rend.SetPropertyBlock(mpb);
             }

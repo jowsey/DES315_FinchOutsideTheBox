@@ -95,8 +95,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UI.LobbyListing
   <LobbyNameText>k__BackingField: {fileID: 4751543735291648809}
   <MetadataText>k__BackingField: {fileID: 4085905813973714552}
-  <JoinButton>k__BackingField: {fileID: 2917021039920190417}
-  <JoiningText>k__BackingField: Joining...
+  <JoinButton>k__BackingField: {fileID: 2534457376978903261}
 --- !u!1 &827719564333809774
 GameObject:
   m_ObjectHideFlags: 0
@@ -521,6 +520,7 @@ GameObject:
   - component: {fileID: 2736528723690810492}
   - component: {fileID: 4026029785664155616}
   - component: {fileID: 2917021039920190417}
+  - component: {fileID: 2534457376978903261}
   - component: {fileID: 1321099120023295418}
   m_Layer: 5
   m_Name: JoinButton
@@ -633,6 +633,21 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &2534457376978903261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8663626036020110893}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08093c867dd149f083344ed5ab8b2c5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI.LoadingButton
+  <Button>k__BackingField: {fileID: 2917021039920190417}
+  <LabelText>k__BackingField: {fileID: 468428656851115572}
+  <LoadingText>k__BackingField: Joining...
 --- !u!114 &1321099120023295418
 MonoBehaviour:
   m_ObjectHideFlags: 0

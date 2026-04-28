@@ -49,6 +49,7 @@ namespace AK
         static const AkUniqueID RESPAWNPING = 814740291U;
         static const AkUniqueID SIDESWEEPER = 988175737U;
         static const AkUniqueID SPINNERMOVING = 3496537566U;
+        static const AkUniqueID STOP = 788884573U;
         static const AkUniqueID TAPESTRYSFX = 3446999052U;
         static const AkUniqueID TESTSOUJD1 = 1035878255U;
         static const AkUniqueID VERTSPINMOVING = 2481782438U;

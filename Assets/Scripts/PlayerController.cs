@@ -37,7 +37,7 @@ public class PlayerController : NetworkBehaviour
 
     [SyncVar] [ReadOnly] public string PlayerUID;
 
-    [SyncVar(hook = nameof(OnPlayerNameChanged))][ReadOnly] public string PlayerName;
+    [SyncVar(hook = nameof(OnPlayerNameChanged))] [ReadOnly] public string PlayerName;
     [SyncVar] [ReadOnly] public int PlayerSkinIndex;
 
     [Header("Components")]
@@ -64,9 +64,9 @@ public class PlayerController : NetworkBehaviour
     public AK.Wwise.Event FlaskPickupFX;
 
     [Tooltip("Percentage of gravity to negate when gliding")]
-    [SerializeField] [Range(0, 100)] private float gravityNegationPercentage;
+    [SerializeField] [Range(0, 100)] private float _gravityNegationPercentage;
 
-    [SerializeField] private float rotationSmoothingSpeed;
+    [SerializeField] private float _rotationSmoothingSpeed;
 
     [Header("Camera")]
     private Camera _camera;
@@ -254,6 +254,7 @@ public class PlayerController : NetworkBehaviour
             var orbitalFollow = _cinemachineCamera.GetComponent<CinemachineOrbitalFollow>();
             orbitalFollow.HorizontalAxis.Value = transform.eulerAngles.y;
 
+            // Snap to position
             var brain = FindAnyObjectByType<CinemachineBrain>(FindObjectsInactive.Include);
             var prevUpdateMethod = brain.UpdateMethod;
             brain.UpdateMethod = CinemachineBrain.UpdateMethods.ManualUpdate;
@@ -334,8 +335,9 @@ public class PlayerController : NetworkBehaviour
 
     private void OnPlayerNameChanged(string oldValue, string newValue)
     {
+        // Update nameplate
         if (PlayerNameText) { PlayerNameText.text = newValue; }
-        LayoutRebuilder.ForceRebuildLayoutImmediate(_nameplateCanvas.GetComponent<RectTransform>());
+        LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)_nameplateCanvas.transform);
     }
 
     private void Update()
@@ -345,7 +347,8 @@ public class PlayerController : NetworkBehaviour
         //First-person controls
         if (CameraZoomController.FirstPerson && ControlsEnabled)
         {
-            Vector2 scaledMouseDelta = _firstPersonLookAction.action.ReadValue<Vector2>() * (SettingsManager.ActiveSettings.FirstPersonSensPercent * 0.01f);
+            float scale = (InputDeviceManager.CurrentInputType == InputDeviceManager.InputType.KeyboardMouse ? 0.01f : 0.1f);
+            Vector2 scaledMouseDelta = _firstPersonLookAction.action.ReadValue<Vector2>() * (SettingsManager.ActiveSettings.FirstPersonSensPercent * scale);
             _cameraPitch = Mathf.Clamp(_cameraPitch - scaledMouseDelta.y, -89.0f, 89.0f);
             _cameraYawAccumulator += scaledMouseDelta.x;
         }
@@ -443,7 +446,7 @@ public class PlayerController : NetworkBehaviour
         {
             if (PuppetWorldSpaceMoveDir.sqrMagnitude > 0)
             {
-                Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, Quaternion.LookRotation(PuppetWorldSpaceMoveDir, Vector3.up), Time.fixedDeltaTime * rotationSmoothingSpeed));
+                Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, Quaternion.LookRotation(PuppetWorldSpaceMoveDir, Vector3.up), Time.fixedDeltaTime * _rotationSmoothingSpeed));
             }
             else
             {
@@ -472,7 +475,7 @@ public class PlayerController : NetworkBehaviour
                 WorldSpaceMoveDir = (cameraForward * inputDirection.y + cameraRight * inputDirection.x).normalized;
                 if (WorldSpaceMoveDir.sqrMagnitude > 0)
                 {
-                    Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, Quaternion.LookRotation(WorldSpaceMoveDir, Vector3.up), Time.fixedDeltaTime * rotationSmoothingSpeed));
+                    Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, Quaternion.LookRotation(WorldSpaceMoveDir, Vector3.up), Time.fixedDeltaTime * _rotationSmoothingSpeed));
                 }
             }
             _networkAnimator.animator.SetBool(RunningState, WorldSpaceMoveDir.sqrMagnitude > 0);
@@ -544,8 +547,8 @@ public class PlayerController : NetworkBehaviour
         if (ControlsEnabled && isFalling && JumpAction.action.IsPressed())
         {
             //Player is gliding
-            float gravityNegationPercentage01 = gravityNegationPercentage / 100.0f;
-            Rb.AddForce(-Physics.gravity * gravityNegationPercentage01, ForceMode.Acceleration);
+            float _gravityNegationPercentage01 = _gravityNegationPercentage / 100.0f;
+            Rb.AddForce(-Physics.gravity * _gravityNegationPercentage01, ForceMode.Acceleration);
 
             _networkAnimator.animator.SetBool(FallState, false);
             _networkAnimator.animator.SetBool(GlideState, true);

@@ -3,6 +3,7 @@ using UI;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Playables;
 using UnityEngine.Rendering;
 
 [RequireComponent(typeof(Camera))]
@@ -26,6 +27,10 @@ public class CameraZoomController : MonoBehaviour
     [SerializeField] private float _smoothSpeed = 10f;
     private float _targetRadius;
 
+    //Cutscene
+    private bool _firstPersonBeforeCutscene;
+    [SerializeField] private PlayableDirector _director;
+
     public static bool FirstPerson { get; private set; }
 
     private Transform _targetTransform => _orbitalFollow.FollowTarget;
@@ -47,6 +52,7 @@ public class CameraZoomController : MonoBehaviour
         FirstPerson = false;
         _targetRadius = _defaultZoom;
         _orbitalFollow.Radius = _targetRadius;
+        _director.stopped += OnCutsceneStopped;
     }
 
     private void ToggleFirstPerson(bool toggle)
@@ -109,5 +115,19 @@ public class CameraZoomController : MonoBehaviour
     private void OnDestroy()
     {
         FirstPerson = false;
+        _director.stopped += OnCutsceneStopped;
+    }
+
+    //Called by CutsceneStart
+    public void OnCutsceneStarted()
+    {
+        _firstPersonBeforeCutscene = FirstPerson;
+        if (FirstPerson) { ToggleFirstPerson(!FirstPerson); }
+    }
+
+    //Callback from director
+    private void OnCutsceneStopped(PlayableDirector _)
+    {
+        if (FirstPerson != _firstPersonBeforeCutscene) { ToggleFirstPerson(!FirstPerson); }
     }
 }

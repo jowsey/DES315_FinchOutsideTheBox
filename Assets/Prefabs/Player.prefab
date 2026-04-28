@@ -104,8 +104,8 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: fb4eeb34be92fdc47ab02109d737e816, type: 2}
-  gravityNegationPercentage: 60
-  rotationSmoothingSpeed: 8
+  _gravityNegationPercentage: 60
+  _rotationSmoothingSpeed: 8
   _firstPersonCameraViewPosition: {fileID: 4262451585859541057}
   _firstPersonLookAction: {fileID: -5630151704836100654, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
   _jumpForce: 110
@@ -201,13 +201,12 @@ MonoBehaviour:
   _device: 
   _source: {fileID: 4479242599431745982}
   _pushToTalkAction: {fileID: 2690577918822895486, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
-  _bottomRightIcon: {fileID: 0}
-  _bottomRightDefaultColour: {r: 1, g: 1, b: 1, a: 1}
-  _bottomRightMutedColour: {r: 1, g: 0, b: 0, a: 1}
-  _bottomRightTalkingColour: {r: 0.654902, g: 0.8745098, b: 1, a: 1}
-  _vcIcon: {fileID: 7726611170980639366}
-  _vcActiveIcon: {fileID: 21300000, guid: 7b90f1c6f83a1db4ab72b02f97ccc209, type: 3}
-  _vcInactiveIcon: {fileID: 21300000, guid: 80e37b8af7da1c84ca6ac9d3bbb512e4, type: 3}
+  _mutedMicSprite: {fileID: 21300000, guid: 448d6a94e72607844bde20794d27c054, type: 3}
+  _micMutedColour: {r: 0.6666667, g: 0.24705882, b: 0.1882353, a: 1}
+  _micOutlineTalkingColour: {r: 0.19835217, g: 0.6666667, b: 0.18823528, a: 1}
+  _nameplateIcon: {fileID: 7726611170980639366}
+  _nameplateActiveIcon: {fileID: 21300000, guid: 7b90f1c6f83a1db4ab72b02f97ccc209, type: 3}
+  _nameplateInactiveIcon: {fileID: 21300000, guid: 80e37b8af7da1c84ca6ac9d3bbb512e4, type: 3}
   _player: {fileID: 8993189542338515069}
 --- !u!82 &4479242599431745982
 AudioSource:

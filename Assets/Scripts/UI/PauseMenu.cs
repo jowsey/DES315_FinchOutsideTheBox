@@ -1,4 +1,6 @@
+using Epic.OnlineServices.Lobby;
 using Mirror;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,6 +12,7 @@ namespace UI
         [SerializeField] private InputActionReference _openAction;
 
         [SerializeField] private RectTransform _hostLeaveDisbandWarning;
+        [SerializeField] private TextMeshProUGUI _lobbyIdText;
 
         private bool _isActive;
         private CanvasGroup _canvasGroup;
@@ -27,6 +30,30 @@ namespace UI
             {
                 _hostLeaveDisbandWarning.gameObject.SetActive(false);
             }
+
+            var isOnline = Networking.NetworkManager.singleton?.EosLobby?.ConnectedToLobby == true;
+
+            _lobbyIdText.gameObject.SetActive(isOnline);
+            if (isOnline)
+            {
+                var visibility = Networking.NetworkManager.singleton.GetLobbyVisibility();
+                var joinCode = Networking.NetworkManager.singleton.GetLobbyJoinCode();
+
+                var formattedJoinCode = visibility == "public"
+                    ? joinCode
+                    : new string('*', joinCode.Length);
+
+                _lobbyIdText.text = $"<b>Lobby ID</b>: {formattedJoinCode}\n" +
+                                    $"This lobby is <b>{visibility}</b>.";
+            }
+        }
+
+        public void CopyLobbyId()
+        {
+            if (!NetworkClient.active) return;
+
+            var joinCode = Networking.NetworkManager.singleton.GetLobbyJoinCode();
+            GUIUtility.systemCopyBuffer = joinCode;
         }
 
         private void OnDisable()

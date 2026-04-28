@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.DualShock;
 
@@ -28,8 +27,6 @@ namespace Util
 
         private void Start()
         {
-            DontDestroyOnLoad(this);
-
             CurrentInputType = InputType.KeyboardMouse;
 
             //Default to keyboard

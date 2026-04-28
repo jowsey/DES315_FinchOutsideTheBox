@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Mirror;
 using Sirenix.OdinInspector;
 using UI;
@@ -84,7 +85,7 @@ public class Cart : NetworkBehaviour
             _flasksAtCheckpoint[i] = new Dictionary<Flask, FlaskSnapshot>();
         }
 
-        CheckpointFlaskCounts.AddRange(new int[Checkpoints.Count]);
+        CheckpointFlaskCounts.AddRange(Enumerable.Repeat(-1, Checkpoints.Count).ToArray());
 
         // First checkpoint runs on Frame 0 before flasks run OnTriggerEnter so we need to manually init
         // - Bounds check isn't perfectly accurate, but we can reasonably assume
@@ -118,7 +119,7 @@ public class Cart : NetworkBehaviour
 
     private void Update()
     {
-
+#if UNITY_EDITOR
         if (_devCheckpointBackAction.action.WasPressedThisFrame() && CurrentCheckpointIndex != 0)
         {
             CmdInvokeRespawnEvent(CurrentCheckpointIndex - 1);
@@ -127,6 +128,7 @@ public class Cart : NetworkBehaviour
         {
             CmdInvokeRespawnEvent(CurrentCheckpointIndex + 1);
         }
+#endif
 
         // manually calculate velocity since we don't have the luxury of knowing it on all clients
         var linearVelocity = (transform.position - _positionLastFrame) / Time.fixedDeltaTime;
@@ -224,6 +226,15 @@ public class Cart : NetworkBehaviour
     {
         if (!isServer) return;
 
+        foreach (Flask flask in CarriedFlasks)
+        {
+            if (!_flasksAtCheckpoint[CurrentCheckpointIndex].ContainsKey(flask))
+            {
+                //This flask is currently in the carrier but wasn't in the carrier when the checkpoint was reached, disable it instead of letting it smash
+                flask.gameObject.SetActive(false);
+            }
+        }
+
         foreach (KeyValuePair<Flask, FlaskSnapshot> flaskState in _flasksAtCheckpoint[CurrentCheckpointIndex])
         {
             flaskState.Key.transform.position = transform.TransformPoint(flaskState.Value.LocalPosition);
@@ -266,7 +277,11 @@ public class Cart : NetworkBehaviour
         _numCarriedFlasksRTPC.SetGlobalValue(newValue);
     }
 
+#if UNITY_EDITOR
     [Command(requiresAuthority = false)]
+#else
+    [Command]
+#endif
     public void CmdInvokeRespawnEvent(int newCheckpointIndex)
     {
         // todo we can definitely simplify this a bunch, we've got clients subscribing to OnRespawn just to do isServer checks and such
@@ -292,7 +307,7 @@ public class Cart : NetworkBehaviour
         CurrentCheckpointIndex = newCheckpointIndex;
 
         // fallback for dev hotkeys, otherwise will naturally be populated
-        if (isServer && CheckpointFlaskCounts[CurrentCheckpointIndex] == 0)
+        if (isServer && CheckpointFlaskCounts[CurrentCheckpointIndex] == -1)
         {
             CaptureCheckpointFlasksSnapshot();
         }

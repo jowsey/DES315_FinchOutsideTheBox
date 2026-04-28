@@ -1,4 +1,3 @@
-﻿using System.Collections.Generic;
 using System.Linq;
 using Epic.OnlineServices.Lobby;
 using Mirror;
@@ -29,17 +28,6 @@ namespace Networking
         private int _nextPlayerIndex;
 
         public EOSLobby EosLobby { get; private set; }
-
-        // this is, of course, terribly insecure, given it's trusting the client to
-        // be honest about its hardware ID, but I imagine 99% of people won't bother to
-        // spoof it, so i think it functions as a good enough deterrent
-        private readonly HashSet<string> _bannedPlayerUids = new();
-
-        public void BanPlayer(PlayerController player)
-        {
-            _bannedPlayerUids.Add(player.PlayerUID);
-            player.connectionToClient.Disconnect();
-        }
 
         public override void Start()
         {
@@ -107,13 +95,6 @@ namespace Networking
 
         private void OnClientInfoMessage(NetworkConnectionToClient conn, ClientInfoMessage msg)
         {
-            if (_bannedPlayerUids.Contains(msg.PlayerUID))
-            {
-                Debug.Log($"Client {conn.connectionId} is banned. Rejecting.");
-                conn.Disconnect();
-                return;
-            }
-
             if (conn.identity)
             {
                 Debug.LogWarning($"Client {conn.connectionId} sent PlayerJoinMessage but has already joined");
@@ -143,7 +124,7 @@ namespace Networking
 
             //Also don't need to report the cutscene players
             PlayerController player = NetworkClient.spawned[msg.PlayerNetId].GetComponent<PlayerController>();
-            if (player.CutscenePlayer) { return; }
+            if (player.CutscenePlayer) return;
 
             PlayerPresenceFeed.OnPlayerJoin.Invoke(player);
         }
@@ -159,6 +140,41 @@ namespace Networking
             var options = new LobbyDetailsCopyInfoOptions();
             EosLobby.ConnectedLobbyDetails.CopyInfo(ref options, out var lobbyInfo);
             return lobbyInfo?.MaxMembers ?? 0;
+        }
+
+        public string GetLobbyJoinCode()
+        {
+            var options = new LobbyDetailsCopyAttributeByKeyOptions { AttrKey = LobbyBrowser.RoomCodeKey };
+            EosLobby.ConnectedLobbyDetails.CopyAttributeByKey(ref options, out var roomCodeAttribute);
+            if (roomCodeAttribute == null)
+            {
+                Debug.LogError("Failed to get lobby room code attribute");
+                return null;
+            }
+
+            var visibility = GetLobbyVisibility();
+            if (visibility == "public")
+            {
+                return roomCodeAttribute?.Data?.Value.AsUtf8.ToString();
+            }
+
+            // we use client password instead of server password because if we're in the game, it's
+            // guaranteed to match ServerPassword and, crucially, is populated on both client and server
+            var password = authenticator.GetComponent<PasswordAuthenticator>().ClientPassword;
+            return $"{roomCodeAttribute?.Data?.Value.AsUtf8}.{password}";
+        }
+
+        public string GetLobbyVisibility()
+        {
+            var options = new LobbyDetailsCopyAttributeByKeyOptions { AttrKey = LobbyBrowser.VisibilityKey };
+            EosLobby.ConnectedLobbyDetails.CopyAttributeByKey(ref options, out var visibilityAttribute);
+            if (visibilityAttribute == null)
+            {
+                Debug.LogError("Failed to get lobby visibility attribute");
+                return null;
+            }
+
+            return visibilityAttribute?.Data?.Value.AsUtf8.ToString();
         }
     }
 }

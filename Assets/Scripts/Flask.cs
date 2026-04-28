@@ -89,12 +89,6 @@ public class Flask : NetworkBehaviour
 
                 if (_holder)
                 {
-                    if (_holder.isLocalPlayer)
-                    {
-                        Highlight.SetHighlightable("Flask", true);
-                        Highlight.SetHighlightable("FlaskCarrier", false);
-                    }
-
                     _holder.HeldFlask = null;
                     _holder = null;
                 }
@@ -135,6 +129,12 @@ public class Flask : NetworkBehaviour
                 {
                     Rb.position = _holder.FlaskPickupTarget.position;
                     Rb.rotation = _holder.FlaskPickupTarget.rotation;
+                }
+
+                if (_holder?.isLocalPlayer == true)
+                {
+                    Highlight.SetHighlightable("Flask", true);
+                    Highlight.SetHighlightable("FlaskCarrier", false);
                 }
 
                 break;

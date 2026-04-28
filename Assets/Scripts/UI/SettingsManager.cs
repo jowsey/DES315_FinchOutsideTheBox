@@ -164,6 +164,12 @@ namespace UI
         {
             ActiveSettings.PlayerName = val;
             SaveToDisk();
+
+            // If currently in a game, sync name
+            if (NetworkClient.active && PlayerController.LocalPlayer)
+            {
+                PlayerController.LocalPlayer.GetComponent<PlayerController>().PlayerName = val;
+            }
         }
 
         private void OnFirstPersonFovChanged(float val)
