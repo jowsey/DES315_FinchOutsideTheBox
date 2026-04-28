@@ -291,10 +291,10 @@ namespace UI
                                             $" <color=#999>–</color> " +
                                             $"<color={(lobbyGameVersion == Application.version ? "white" : "red")}>v{lobbyGameVersion}</color>";
 
-                listing.JoinButton.onClick.AddListener(() =>
+                listing.JoinButton.Button.onClick.AddListener(() =>
                 {
                     _activeJoinAttempt = listing;
-                    listing.JoinButtonText.text = listing.JoiningText;
+                    listing.JoinButton.SetLoading(true);
                     GloballyLockedButton.AddLockSource(this);
 
                     EosLobby.JoinLobby(lobbyDetails);
@@ -320,7 +320,7 @@ namespace UI
 
             if (_activeJoinAttempt)
             {
-                _activeJoinAttempt.JoinButtonText.text = _activeJoinAttempt.DefaultText;
+                _activeJoinAttempt.JoinButton.SetLoading(false);
                 _activeJoinAttempt = null;
             }
 
@@ -331,8 +331,11 @@ namespace UI
         {
             Debug.LogError($"Failed to join lobby: {error}");
 
-            _activeJoinAttempt.JoinButtonText.text = _activeJoinAttempt.DefaultText;
-            _activeJoinAttempt = null;
+            if (_activeJoinAttempt)
+            {
+                _activeJoinAttempt.JoinButton.SetLoading(false);
+                _activeJoinAttempt = null;
+            }
 
             GloballyLockedButton.RemoveLockSource(this); // paired with listing join button + TryJoinLobby
         }
