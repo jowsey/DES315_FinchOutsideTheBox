@@ -124,7 +124,7 @@ namespace Networking
 
             //Also don't need to report the cutscene players
             PlayerController player = NetworkClient.spawned[msg.PlayerNetId].GetComponent<PlayerController>();
-            if (player.CutscenePlayer) { return; }
+            if (player.CutscenePlayer) return;
 
             PlayerPresenceFeed.OnPlayerJoin.Invoke(player);
         }
@@ -158,7 +158,9 @@ namespace Networking
                 return roomCodeAttribute?.Data?.Value.AsUtf8.ToString();
             }
 
-            var password = authenticator.GetComponent<PasswordAuthenticator>().ServerPassword;
+            // we use client password instead of server password because if we're in the game, it's
+            // guaranteed to match ServerPassword and, crucially, is populated on both client and server
+            var password = authenticator.GetComponent<PasswordAuthenticator>().ClientPassword;
             return $"{roomCodeAttribute?.Data?.Value.AsUtf8}.{password}";
         }
 

@@ -318,8 +318,11 @@ namespace UI
             NetworkManager.singleton.networkAddress = hostAddress;
             NetworkManager.singleton.StartClient();
 
-            _activeJoinAttempt.JoinButtonText.text = _activeJoinAttempt.DefaultText;
-            _activeJoinAttempt = null;
+            if (_activeJoinAttempt)
+            {
+                _activeJoinAttempt.JoinButtonText.text = _activeJoinAttempt.DefaultText;
+                _activeJoinAttempt = null;
+            }
 
             GloballyLockedButton.RemoveLockSource(this); // paired with listing join button + TryJoinLobby
         }
