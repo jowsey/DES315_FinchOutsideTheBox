@@ -40,12 +40,12 @@ namespace VoIP
 
         private Image _micIconImage;
         private Outline _micIconOutline;
-        private Color _micIconDefaultColour;
         private Color _micOutlineDefaultColour;
         private Sprite _defaultMicSprite;
+
         [SerializeField] private Sprite _mutedMicSprite;
-        [SerializeField] private Color _micMutedColour;
         [SerializeField] private Color _micOutlineTalkingColour;
+        
         private float _lastTalkTime;
         private const float _talkHangTime = 0.15f; //keep the talking colour for 150ms after data stops being sent
 
@@ -123,7 +123,6 @@ namespace VoIP
                 _micIconImage = micIcon.GetComponent<Image>();
                 _micIconOutline = micIcon.GetComponentInParent<Outline>();
                 _defaultMicSprite = _micIconImage.sprite;
-                _micIconDefaultColour = _micIconImage.color;
                 _micOutlineDefaultColour = _micIconOutline.effectColor;
 
                 if (SettingsManager.ActiveSettings.InputDevice != null)
@@ -281,7 +280,6 @@ namespace VoIP
             if (!_isRecording || !Microphone.IsRecording(_device))
             {
                 //Force icon to be muted
-                if (_micIconImage.color != _micMutedColour) { _micIconImage.color = _micMutedColour; }
                 if (_micIconImage.sprite != _mutedMicSprite) { _micIconImage.sprite = _mutedMicSprite; }
                 return;
             }
@@ -316,8 +314,6 @@ namespace VoIP
                 }
             }
 
-            Color idealMutedColour = Muted ? _micMutedColour : _micIconDefaultColour;
-            if (_micIconImage.color != idealMutedColour) { _micIconImage.color = idealMutedColour; }
             Sprite idealSprite = Muted ? _mutedMicSprite : _defaultMicSprite;
             if (_micIconImage.sprite != idealSprite) { _micIconImage.sprite = idealSprite; }
 
