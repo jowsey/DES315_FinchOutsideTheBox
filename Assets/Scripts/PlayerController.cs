@@ -346,7 +346,8 @@ public class PlayerController : NetworkBehaviour
         //First-person controls
         if (CameraZoomController.FirstPerson && ControlsEnabled)
         {
-            Vector2 scaledMouseDelta = _firstPersonLookAction.action.ReadValue<Vector2>() * (SettingsManager.ActiveSettings.FirstPersonSensPercent * 0.01f);
+            float scale = (InputDeviceManager.CurrentInputType == InputDeviceManager.InputType.KeyboardMouse ? 0.01f : 0.1f);
+            Vector2 scaledMouseDelta = _firstPersonLookAction.action.ReadValue<Vector2>() * (SettingsManager.ActiveSettings.FirstPersonSensPercent * scale);
             _cameraPitch = Mathf.Clamp(_cameraPitch - scaledMouseDelta.y, -89.0f, 89.0f);
             _cameraYawAccumulator += scaledMouseDelta.x;
         }
