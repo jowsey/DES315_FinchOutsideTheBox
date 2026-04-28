@@ -24,6 +24,8 @@ namespace UI
         [SerializeField] [Required] private TMP_InputField _lobbyCodeField;
         [SerializeField] [Required] private LoadingButton _joinByCodeButton;
 
+        [SerializeField] [Required] private TextMeshProUGUI _joinErrorText;
+
         [SerializeField] [Required] private GameObject _emptyListNotice;
         [SerializeField] [Required] private GameObject _refreshNotice;
 
@@ -44,6 +46,8 @@ namespace UI
 
         private void OnEnable()
         {
+            _joinErrorText.text = string.Empty;
+
             _createLobbyButton.Button.onClick.AddListener(TryCreateLobby);
             _joinByCodeButton.Button.onClick.AddListener(TryJoinLobby);
             _lobbyNameField.onSubmit.AddListener(TryCreateLobby);
@@ -309,6 +313,11 @@ namespace UI
         private void FindLobbiesFailed(string error)
         {
             Debug.LogError($"Failed to find lobbies: {error}");
+
+            if (error.Contains("LobbyTooManyPlayers"))
+            {
+                _joinErrorText.text = "That lobby is full.";
+            }
         }
 
         private void JoinLobbySucceeded(List<Attribute> attributes)
@@ -333,6 +342,12 @@ namespace UI
         private void JoinLobbyFailed(string error)
         {
             Debug.LogError($"Failed to join lobby: {error}");
+
+            // epic hasn't registered that we've left yet
+            if (error.Contains("LobbyLobbyAlreadyExists"))
+            {
+                _joinErrorText.text = "Please wait a few seconds before trying to join another lobby.";
+            }
 
             if (_activeJoinAttempt)
             {
