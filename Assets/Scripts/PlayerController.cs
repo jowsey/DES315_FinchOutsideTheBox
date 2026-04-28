@@ -37,7 +37,7 @@ public class PlayerController : NetworkBehaviour
 
     [SyncVar] [ReadOnly] public string PlayerUID;
 
-    [SyncVar(hook = nameof(OnPlayerNameChanged))][ReadOnly] public string PlayerName;
+    [SyncVar(hook = nameof(OnPlayerNameChanged))] [ReadOnly] public string PlayerName;
     [SyncVar] [ReadOnly] public int PlayerSkinIndex;
 
     [Header("Components")]
@@ -335,8 +335,9 @@ public class PlayerController : NetworkBehaviour
 
     private void OnPlayerNameChanged(string oldValue, string newValue)
     {
+        // Update nameplate
         if (PlayerNameText) { PlayerNameText.text = newValue; }
-        LayoutRebuilder.ForceRebuildLayoutImmediate(_nameplateCanvas.GetComponent<RectTransform>());
+        LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)_nameplateCanvas.transform);
     }
 
     private void Update()
