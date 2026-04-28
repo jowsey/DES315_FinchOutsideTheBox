@@ -55,6 +55,9 @@ public class CutsceneStart : NetworkBehaviour
                 rb.rotation = worldRot;
             }
             Physics.SyncTransforms();
+
+            Camera.main.GetComponent<CameraZoomController>().OnCutsceneStarted();
+
             _director.Play();
             _played = true;
         }
