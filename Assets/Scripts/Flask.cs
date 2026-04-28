@@ -9,7 +9,8 @@ public class Flask : NetworkBehaviour
         Idle,
         Held,
         PuttingDown,
-        Smashed
+        Smashed,
+        Inactive
     }
 
     private bool _hasInitialised;
@@ -140,6 +141,7 @@ public class Flask : NetworkBehaviour
                 break;
             }
             case FlaskState.Smashed:
+            case FlaskState.Inactive:
             {
                 if (isServer)
                 {
@@ -161,10 +163,14 @@ public class Flask : NetworkBehaviour
                     l.enabled = false;
                 }
 
-                Instantiate(_smashedFlaskPrefab, transform.position, transform.rotation);
-                if (_hasInitialised)
+                // Smashed same as Inactive except it also makes a smashed flask
+                if (State == FlaskState.Smashed)
                 {
-                    _flaskSmashFx.Post(gameObject);
+                    Instantiate(_smashedFlaskPrefab, transform.position, transform.rotation);
+                    if (_hasInitialised)
+                    {
+                        _flaskSmashFx.Post(gameObject);
+                    }
                 }
 
                 break;
