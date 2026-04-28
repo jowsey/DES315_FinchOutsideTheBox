@@ -251,6 +251,7 @@ namespace UI
                 }
 
                 // no matching lobby found
+                _joinByCodeButton.SetLoading(false);
                 GloballyLockedButton.RemoveLockSource(this); // paired with TryJoinLobby
                 _activeSearchAttemptCode = null;
             }
@@ -336,7 +337,7 @@ namespace UI
                 _activeJoinAttempt.JoinButton.SetLoading(false);
                 _activeJoinAttempt = null;
             }
-
+            
             GloballyLockedButton.RemoveLockSource(this); // paired with listing join button + TryJoinLobby
         }
 
