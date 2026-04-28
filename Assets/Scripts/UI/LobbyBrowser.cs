@@ -325,6 +325,8 @@ namespace UI
                 _activeJoinAttempt = null;
             }
 
+            _joinByCodeButton.SetLoading(false);
+
             GloballyLockedButton.RemoveLockSource(this); // paired with listing join button + TryJoinLobby
         }
 
@@ -337,7 +339,9 @@ namespace UI
                 _activeJoinAttempt.JoinButton.SetLoading(false);
                 _activeJoinAttempt = null;
             }
-            
+
+            _joinByCodeButton.SetLoading(false);
+
             GloballyLockedButton.RemoveLockSource(this); // paired with listing join button + TryJoinLobby
         }
 
