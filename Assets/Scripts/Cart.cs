@@ -231,7 +231,7 @@ public class Cart : NetworkBehaviour
             if (!_flasksAtCheckpoint[CurrentCheckpointIndex].ContainsKey(flask))
             {
                 //This flask is currently in the carrier but wasn't in the carrier when the checkpoint was reached, disable it instead of letting it smash
-                flask.gameObject.SetActive(false);
+                flask.State = Flask.FlaskState.Inactive;
             }
         }
 
