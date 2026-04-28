@@ -59,8 +59,19 @@ namespace Networking
 
         private void OnAuthResponse(AuthResponse msg)
         {
-            if (msg.Success) ClientAccept();
-            else ClientReject();
+            if (msg.Success)
+            {
+                ClientAccept();
+            }
+            else
+            {
+                ClientReject();
+
+                if (NetworkManager.singleton?.EosLobby?.ConnectedToLobby == true)
+                {
+                    NetworkManager.singleton.EosLobby.LeaveLobby();
+                }
+            }
         }
     }
 }
