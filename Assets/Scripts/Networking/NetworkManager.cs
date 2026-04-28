@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using Epic.OnlineServices.Lobby;
 using Mirror;
 using UI;
@@ -135,18 +135,44 @@ namespace Networking
             return EosLobby.ConnectedLobbyDetails.GetMemberCount(ref options);
         }
 
-        public LobbyPermissionLevel GetLobbyPermissionLevel()
-        {
-            var options = new LobbyDetailsCopyInfoOptions();
-            EosLobby.ConnectedLobbyDetails.CopyInfo(ref options, out var lobbyInfo);
-            return lobbyInfo?.PermissionLevel ?? LobbyPermissionLevel.Publicadvertised;
-        }
-
         public uint GetLobbyMaxPlayerCount()
         {
             var options = new LobbyDetailsCopyInfoOptions();
             EosLobby.ConnectedLobbyDetails.CopyInfo(ref options, out var lobbyInfo);
             return lobbyInfo?.MaxMembers ?? 0;
+        }
+
+        public string GetLobbyJoinCode()
+        {
+            var options = new LobbyDetailsCopyAttributeByKeyOptions { AttrKey = LobbyBrowser.RoomCodeKey };
+            EosLobby.ConnectedLobbyDetails.CopyAttributeByKey(ref options, out var roomCodeAttribute);
+            if (roomCodeAttribute == null)
+            {
+                Debug.LogError("Failed to get lobby room code attribute");
+                return null;
+            }
+
+            var visibility = GetLobbyVisibility();
+            if (visibility == "public")
+            {
+                return roomCodeAttribute?.Data?.Value.AsUtf8.ToString();
+            }
+
+            var password = authenticator.GetComponent<PasswordAuthenticator>().ServerPassword;
+            return $"{roomCodeAttribute?.Data?.Value.AsUtf8}.{password}";
+        }
+
+        public string GetLobbyVisibility()
+        {
+            var options = new LobbyDetailsCopyAttributeByKeyOptions { AttrKey = LobbyBrowser.VisibilityKey };
+            EosLobby.ConnectedLobbyDetails.CopyAttributeByKey(ref options, out var visibilityAttribute);
+            if (visibilityAttribute == null)
+            {
+                Debug.LogError("Failed to get lobby visibility attribute");
+                return null;
+            }
+
+            return visibilityAttribute?.Data?.Value.AsUtf8.ToString();
         }
     }
 }

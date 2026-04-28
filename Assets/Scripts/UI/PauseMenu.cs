@@ -36,18 +36,15 @@ namespace UI
             _lobbyIdText.gameObject.SetActive(isOnline);
             if (isOnline)
             {
-                var lobbyId = Networking.NetworkManager.singleton.EosLobby.GetCurrentLobbyId();
-                var lobbyPermissionLevel = Networking.NetworkManager.singleton.GetLobbyPermissionLevel();
+                var visibility = Networking.NetworkManager.singleton.GetLobbyVisibility();
+                var joinCode = Networking.NetworkManager.singleton.GetLobbyJoinCode();
 
-                var formattedLobbyID = lobbyPermissionLevel == LobbyPermissionLevel.Publicadvertised
-                    ? lobbyId
-                    : new string('*', lobbyId.Length);
-                var formattedLobbyPermissionLevel = lobbyPermissionLevel == LobbyPermissionLevel.Publicadvertised
-                    ? "public"
-                    : "private";
+                var formattedJoinCode = visibility == "public"
+                    ? joinCode
+                    : new string('*', joinCode.Length);
 
-                _lobbyIdText.text = $"<b>Lobby ID</b>: {formattedLobbyID}\n" +
-                                    $"This lobby is <b>{formattedLobbyPermissionLevel}</b>.";
+                _lobbyIdText.text = $"<b>Lobby ID</b>: {formattedJoinCode}\n" +
+                                    $"This lobby is <b>{visibility}</b>.";
             }
         }
 
@@ -55,8 +52,8 @@ namespace UI
         {
             if (!NetworkClient.active) return;
 
-            var lobbyId = Networking.NetworkManager.singleton.EosLobby.GetCurrentLobbyId();
-            GUIUtility.systemCopyBuffer = lobbyId;
+            var joinCode = Networking.NetworkManager.singleton.GetLobbyJoinCode();
+            GUIUtility.systemCopyBuffer = joinCode;
         }
 
         private void OnDisable()

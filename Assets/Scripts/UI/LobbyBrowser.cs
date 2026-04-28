@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Epic.OnlineServices;
 using Epic.OnlineServices.Lobby;
-using Networking;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Util;
+using NetworkManager = Networking.NetworkManager;
 
 namespace UI
 {
@@ -27,14 +29,17 @@ namespace UI
 
         [ReadOnly] public EOSLobby EosLobby;
 
-        private const string LobbyNameKey = "lobbyName";
-        private const string OwnerNameKey = "ownerName";
-        private const string GameVersionKey = "gameVersion";
+        public const string LobbyNameKey = "lobbyName";
+        public const string OwnerNameKey = "ownerName";
+        public const string GameVersionKey = "gameVersion";
+        public const string RoomCodeKey = "roomCode";
+        public const string VisibilityKey = "visibility";
 
-        private const string DefaultLobbyName = "Unnamed Lobby";
-        private const string DefaultOwnerName = "???";
-        private const string DefaultGameVersion = "?.?.?";
+        public const string DefaultLobbyName = "Unnamed Lobby";
+        public const string DefaultOwnerName = "???";
+        public const string DefaultGameVersion = "?.?.?";
 
+        private string _activeSearchAttemptCode;
         private LobbyListing _activeJoinAttempt;
 
         private void OnEnable()
@@ -62,9 +67,22 @@ namespace UI
 
         private IEnumerator RefreshLobbyInterval()
         {
+            var publicSearchOptions = new[]
+            {
+                new LobbySearchSetParameterOptions
+                {
+                    ComparisonOp = ComparisonOp.Notequal,
+                    Parameter = new AttributeData
+                    {
+                        Key = VisibilityKey,
+                        Value = "protected"
+                    }
+                }
+            };
+
             while (this && enabled)
             {
-                if (!_activeJoinAttempt) EosLobby.FindLobbies();
+                if (!_activeJoinAttempt && _activeSearchAttemptCode == null) EosLobby.FindLobbies(lobbySearchSetParameterOptions: publicSearchOptions);
                 yield return new WaitForSeconds(3f); // SessionSearch rate limit is 30/min, so anything over 2s should be chill
             }
         }
@@ -102,7 +120,30 @@ namespace UI
                 return;
             }
 
-            EosLobby.JoinLobbyByID(_lobbyCodeField.text);
+            // todo this is horrible
+            var split = _lobbyCodeField.text.Split('.');
+
+            var searchCode = split[0];
+            _activeSearchAttemptCode = searchCode;
+
+            if (split.Length > 1)
+            {
+                var password = split[1];
+                NetworkManager.singleton.authenticator.GetComponent<Networking.PasswordAuthenticator>().ClientPassword = password;
+            }
+
+            EosLobby.FindLobbies(1, new[]
+            {
+                new LobbySearchSetParameterOptions
+                {
+                    ComparisonOp = ComparisonOp.Equal,
+                    Parameter = new AttributeData
+                    {
+                        Key = RoomCodeKey,
+                        Value = searchCode
+                    }
+                }
+            });
 
             GloballyLockedButton.AddLockSource(this);
             _joinByCodeButton.SetLoading(true);
@@ -116,9 +157,23 @@ namespace UI
                 return;
             }
 
+            var authenticator = NetworkManager.singleton.authenticator.GetComponent<Networking.PasswordAuthenticator>();
+            if (!_lobbyPublicToggle.isOn)
+            {
+                var password = Base64Url.Generate(8);
+                authenticator.ServerPassword = password;
+                authenticator.ClientPassword = password;
+            }
+            else
+            {
+                authenticator.ServerPassword = null;
+                authenticator.ClientPassword = null;
+            }
+
+            var roomCode = Base64Url.Generate(6);
             EosLobby.CreateLobby(
                 (uint)NetworkManager.singleton.maxConnections,
-                _lobbyPublicToggle.isOn ? LobbyPermissionLevel.Publicadvertised : LobbyPermissionLevel.Inviteonly,
+                LobbyPermissionLevel.Publicadvertised,
                 false,
                 new AttributeData[]
                 {
@@ -136,6 +191,16 @@ namespace UI
                     {
                         Key = GameVersionKey,
                         Value = Application.version
+                    },
+                    new()
+                    {
+                        Key = RoomCodeKey,
+                        Value = roomCode
+                    },
+                    new()
+                    {
+                        Key = VisibilityKey,
+                        Value = _lobbyPublicToggle.isOn ? "public" : "protected"
                     }
                 }
             );
@@ -169,6 +234,26 @@ namespace UI
         private void FindLobbiesSucceeded(List<LobbyDetails> lobbies)
         {
             ClearLobbyListings();
+
+            // active search pre-pass
+            if (_activeSearchAttemptCode != null)
+            {
+                foreach (var lobbyDetails in lobbies)
+                {
+                    var roomCodeOptions = new LobbyDetailsCopyAttributeByKeyOptions { AttrKey = RoomCodeKey };
+                    lobbyDetails.CopyAttributeByKey(ref roomCodeOptions, out var roomCodeAttribute);
+                    var roomCode = roomCodeAttribute?.Data?.Value.AsUtf8.ToString();
+
+                    if (roomCode == _activeSearchAttemptCode)
+                    {
+                        EosLobby.JoinLobby(lobbyDetails);
+                        _activeSearchAttemptCode = null;
+                        return;
+                    }
+                }
+            }
+
+            _activeSearchAttemptCode = null;
 
             var lobbiesNameSorted = lobbies.OrderBy(lobbyDetails =>
             {
