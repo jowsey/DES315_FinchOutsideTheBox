@@ -46,7 +46,8 @@ public class Emoter : MonoBehaviour
 
         //Animation is complete, remove control blocker flags and snap back to the locomotion layer
         PlayerController.RemoveAllControlBlockerFlags(this);
-        
+        anim.animator.SetLayerWeight(EmoteLayerIndex, 0.0f);
+
     }
 
     private IEnumerator SetLayerWeight(float target)
@@ -68,6 +69,7 @@ public class Emoter : MonoBehaviour
 
         //For cleanliness
         anim.animator.SetLayerWeight(EmoteLayerIndex, target);
+        yield return null;
 
         Debug.Log($"SetLayerWeight complete, final weight: {anim.animator.GetLayerWeight(EmoteLayerIndex)}");
     }

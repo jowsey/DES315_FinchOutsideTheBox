@@ -125,6 +125,7 @@ public class PlayerController : NetworkBehaviour
         Ping = 1 << 7,
         ToggleTextChat = 1 << 8,
         Respawn = 1 << 9,
+        Emote = 1 << 10,
         All = ~0
     }
     private static readonly Dictionary<Object, ControlBlockerFlags> _controlBlockers = new();
@@ -635,7 +636,7 @@ public class PlayerController : NetworkBehaviour
             Rb.AddForce(Vector3.up * (_jumpForce * jumpMultiplier), ForceMode.Impulse);
         }
 
-        if (InteractAction.action.WasPressedThisFrame())
+        if (ControlEnabled(ControlBlockerFlags.Emote) && InteractAction.action.WasPressedThisFrame())
         {
             GetComponent<Emoter>().PlayEmote("Emote_Frontflip");
         }
