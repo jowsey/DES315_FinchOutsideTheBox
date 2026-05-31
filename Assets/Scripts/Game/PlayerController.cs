@@ -574,6 +574,11 @@ public class PlayerController : NetworkBehaviour
             Rb.AddForce(Vector3.up * (_jumpForce * jumpMultiplier), ForceMode.Impulse);
         }
 
+        if (InteractAction.action.WasPressedThisFrame())
+        {
+            GetComponent<Emoter>().PlayEmote("Emote_Frontflip");
+        }
+
         CleanupFixedUpdate();
     }
 
