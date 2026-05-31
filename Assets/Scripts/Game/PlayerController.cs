@@ -600,7 +600,11 @@ public class PlayerController : NetworkBehaviour
                 }
             }
 
-            Rb.MovePosition(Rb.position + delta);
+            //Only apply movement if there's an active movement delta (this is primarily to stop the player controller from fighting the emoter)
+            if (delta.sqrMagnitude > 0)
+            {
+                Rb.MovePosition(Rb.position + delta);
+            }
         }
 
         bool isFalling = Rb.linearVelocity.y < _fallAnimationMinDownardsVelocity;
@@ -638,7 +642,7 @@ public class PlayerController : NetworkBehaviour
 
         if (ControlEnabled(ControlBlockerFlags.Emote) && InteractAction.action.WasPressedThisFrame())
         {
-            GetComponent<Emoter>().PlayEmote("Emote_Frontflip");
+            GetComponent<Emoter>().PlayEmote("Emote_Spin");
         }
 
         CleanupFixedUpdate();

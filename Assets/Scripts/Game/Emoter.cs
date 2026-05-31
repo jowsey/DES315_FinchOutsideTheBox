@@ -5,12 +5,22 @@ using UnityEngine;
 public class Emoter : MonoBehaviour
 {
     private NetworkAnimator anim;
+    private Rigidbody _rb;
     private static int EmoteLayerIndex;
+    private bool _isEmoting;
+
+    //For propagation to the parent rigidbody
+    private Vector3 _animDeltaPos;
+    private Quaternion _animDeltaRot;
 
     public void Awake()
     {
         anim = GetComponent<NetworkAnimator>();
+        _rb = GetComponent<Rigidbody>();
         EmoteLayerIndex = anim.animator.GetLayerIndex("EmoteLayer");
+        _isEmoting = false;
+        _animDeltaPos = Vector3.zero;
+        _animDeltaRot = Quaternion.identity;
     }
 
     public void PlayEmote(string triggerName)
@@ -29,6 +39,8 @@ public class Emoter : MonoBehaviour
         controllerBlockerFlags &= ~PlayerController.ControlBlockerFlags.Respawn;
         PlayerController.AddControlBlockerFlags(this, controllerBlockerFlags);
 
+        _isEmoting = true;
+
         //We're currently on the locomotion (base) layer, so need to transition to the emote layer
         //We do this via layer blending to create a seamless transition between any currently-playing locomotion animation and the emote animation
         //Start playing the emote animation first so we're actually blending towards something
@@ -45,6 +57,7 @@ public class Emoter : MonoBehaviour
         }
 
         //Animation is complete, remove control blocker flags and snap back to the locomotion layer
+        _isEmoting = false;
         PlayerController.RemoveAllControlBlockerFlags(this);
         anim.animator.SetLayerWeight(EmoteLayerIndex, 0.0f);
 
@@ -52,8 +65,6 @@ public class Emoter : MonoBehaviour
 
     private IEnumerator SetLayerWeight(float target)
     {
-        Debug.Log($"Starting SetLayerWeight to {target}");
-
         float elapsed = 0.0f;
         const float duration = 0.15f; //todo: move to field
         float current = anim.animator.GetLayerWeight(EmoteLayerIndex);
@@ -62,7 +73,6 @@ public class Emoter : MonoBehaviour
         {
             elapsed += Time.deltaTime;
             float weight = Mathf.Lerp(current, target, elapsed / duration);
-            Debug.Log($"Current weight: {weight}");
             anim.animator.SetLayerWeight(EmoteLayerIndex, weight);
             yield return null;
         }
@@ -70,7 +80,31 @@ public class Emoter : MonoBehaviour
         //For cleanliness
         anim.animator.SetLayerWeight(EmoteLayerIndex, target);
         yield return null;
+    }
 
-        Debug.Log($"SetLayerWeight complete, final weight: {anim.animator.GetLayerWeight(EmoteLayerIndex)}");
+    //This callback stops Unity from automatically applying root motion and lets us intercept the deltas instead
+    private void OnAnimatorMove()
+    {
+        if (_isEmoting)
+        {
+            //Accumulate position and rotation changes
+            _animDeltaPos += anim.animator.deltaPosition;
+            _animDeltaRot *= anim.animator.deltaRotation;
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if (_isEmoting)
+        {
+            //Propagate accumulated pos/rot deltas to the rigidbody
+            _rb.MovePosition(_rb.position + _animDeltaPos);
+            _rb.MoveRotation(_rb.rotation * _animDeltaRot);
+
+            Debug.Log(_animDeltaPos + " " + _animDeltaRot);
+
+            _animDeltaPos = Vector3.zero;
+            _animDeltaRot = Quaternion.identity;
+        }
     }
 }
