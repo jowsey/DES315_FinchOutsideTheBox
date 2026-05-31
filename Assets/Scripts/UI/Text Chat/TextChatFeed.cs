@@ -108,7 +108,6 @@ namespace UI
 
                 _inputField.ActivateInputField();
                 PlayerController.ControlBlockerFlags controllerBlockerFlags = PlayerController.ControlBlockerFlags.All;
-                controllerBlockerFlags &= ~PlayerController.ControlBlockerFlags.ToggleTextChat;
                 controllerBlockerFlags &= ~PlayerController.ControlBlockerFlags.Pause;
                 PlayerController.AddControlBlockerFlags(this, controllerBlockerFlags);
                 Cursor.lockState = CursorLockMode.None;
