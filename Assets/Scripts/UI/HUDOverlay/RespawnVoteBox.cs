@@ -148,7 +148,7 @@ namespace UI
             }
 
             // Force active if respawn pressed, there are active votes, or we just lost our last flask
-            if (_votesActive > 0 || (PlayerController.ControlsEnabled && _respawnAction.action.WasPressedThisFrame()) ||
+            if (_votesActive > 0 || (PlayerController.ControlEnabled(PlayerController.ControlBlockerFlags.Respawn) && _respawnAction.action.WasPressedThisFrame()) ||
                 (_lastKnownFlaskCount > 0 && _linkedCart.NumCarriedFlasks == 0))
             {
                 _lastActivityTime = Time.time;
@@ -173,7 +173,7 @@ namespace UI
                 }
                 case ShowState.Open:
                 {
-                    if (PlayerController.ControlsEnabled && _respawnAction.action.IsPressed())
+                    if (PlayerController.ControlEnabled(PlayerController.ControlBlockerFlags.Respawn) && _respawnAction.action.IsPressed())
                     {
                         // Charge vote
                         _lastActivityTime = Time.time;
