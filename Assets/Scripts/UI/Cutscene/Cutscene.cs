@@ -41,13 +41,15 @@ namespace UI
             transform.SetAsLastSibling();
 
             DrawFrame(0);
-            
-            PlayerController.AddControlBlocker(this);
+
+            PlayerController.ControlBlockerFlags controllerBlockerFlags = PlayerController.ControlBlockerFlags.All;
+            controllerBlockerFlags &= ~PlayerController.ControlBlockerFlags.Look;
+            PlayerController.AddControlBlockerFlags(this, controllerBlockerFlags);
         }
 
         private void OnDestroy()
         {
-            PlayerController.RemoveControlBlocker(this);
+            PlayerController.RemoveAllControlBlockerFlags(this);
         }
 
         private void Update()

@@ -21,8 +21,13 @@ public class Emoter : MonoBehaviour
 
     private IEnumerator RunEmote(string triggerName)
     {
-        //Player shouldn't be able to access controls during emote
-        PlayerController.AddControlBlocker(this);
+        //Player shouldn't be able to access any controls besides look and pause during emote
+        PlayerController.ControlBlockerFlags controllerBlockerFlags = PlayerController.ControlBlockerFlags.All;
+        controllerBlockerFlags &= ~PlayerController.ControlBlockerFlags.Look;
+        controllerBlockerFlags &= ~PlayerController.ControlBlockerFlags.Pause;
+        controllerBlockerFlags &= ~PlayerController.ControlBlockerFlags.ToggleTextChat;
+        controllerBlockerFlags &= ~PlayerController.ControlBlockerFlags.Respawn;
+        PlayerController.AddControlBlockerFlags(this, controllerBlockerFlags);
 
         //We're currently on the locomotion (base) layer, so need to transition to the emote layer
         //We do this via layer blending to create a seamless transition between any currently-playing locomotion animation and the emote animation
@@ -39,8 +44,8 @@ public class Emoter : MonoBehaviour
             yield return null;
         }
 
-        //Animation is complete, remove control blocker and snap back to the locomotion layer
-        PlayerController.RemoveControlBlocker(this);
+        //Animation is complete, remove control blocker flags and snap back to the locomotion layer
+        PlayerController.RemoveAllControlBlockerFlags(this);
         
     }
 

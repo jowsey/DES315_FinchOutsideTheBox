@@ -20,7 +20,7 @@ public class PositionalPing : NetworkBehaviour
 
     private void Update()
     {
-        if (PlayerController.ControlsEnabled && _pingAction.action.WasPressedThisFrame())
+        if (PlayerController.ControlEnabled(PlayerController.ControlBlockerFlags.Ping) && _pingAction.action.WasPressedThisFrame())
         {
             var ray = _camera.ViewportPointToRay(new Vector2(0.5f, 0.5f));
             if (Physics.Raycast(ray, out var hit, 100, ~LayerMask.GetMask("Player"), QueryTriggerInteraction.Ignore))

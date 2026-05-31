@@ -85,13 +85,13 @@ public class CameraZoomController : MonoBehaviour
 
     private void Update()
     {
-        if (PlayerController.ControlsEnabled && _changePerspectiveAction.action.WasPressedThisFrame())
+        if (PlayerController.ControlEnabled(PlayerController.ControlBlockerFlags.ChangePerspective) && _changePerspectiveAction.action.WasPressedThisFrame())
         {
             ToggleFirstPerson(!FirstPerson);
         }
 
         var zoom = _zoomAction.action.ReadValue<float>();
-        if (PlayerController.ControlsEnabled && zoom != 0)
+        if (PlayerController.ControlEnabled(PlayerController.ControlBlockerFlags.ChangePerspective) && zoom != 0)
         {
             // mouse scroll isn't continuous so it shouldn't be deltaTime'd
             var isDeviceMouse = _zoomAction.action.activeControl?.device is Mouse;
