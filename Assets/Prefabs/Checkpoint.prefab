@@ -56,7 +56,7 @@ Transform:
   m_GameObject: {fileID: 3580267194491117902}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 8}
+  m_LocalPosition: {x: 0, y: 0, z: 8.62}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -94,8 +94,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4221880605503247291}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: -1, z: 0, w: 0}
-  m_LocalPosition: {x: 880.37573, y: 68.45, z: 1087.7432}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -103,7 +103,7 @@ Transform:
   - {fileID: 9217774296895352854}
   - {fileID: 8941958678919668759}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: -180, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &683626801796291691
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -351,7 +351,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3596589001327942935, guid: 06759f5c32676424d84000fa107c112a, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 15
+      value: 7.78
       objectReference: {fileID: 0}
     - target: {fileID: 3596589001327942935, guid: 06759f5c32676424d84000fa107c112a, type: 3}
       propertyPath: m_LocalRotation.w
@@ -383,12 +383,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4225069180271642541, guid: 06759f5c32676424d84000fa107c112a, type: 3}
       propertyPath: m_Name
-      value: Checkpoint_Respawn_Plate_Mesh_01
+      value: Respawn_Plate
       objectReference: {fileID: 0}
-    - target: {fileID: 7757217278056760246, guid: 06759f5c32676424d84000fa107c112a, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: 8c61b7b7344202c4d82afba1513136a3, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -428,7 +424,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 32cb120ef0d17014891ace55ccf112a9, type: 2}
     - target: {fileID: 3597508935486343676, guid: 5b2f2f93323d69848a8a4306bfd36ef0, type: 3}
       propertyPath: m_Name
-      value: Checkpoint_Landmark_Mesh_01
+      value: Landmark
       objectReference: {fileID: 0}
     - target: {fileID: 4226412730527339334, guid: 5b2f2f93323d69848a8a4306bfd36ef0, type: 3}
       propertyPath: m_LocalPosition.x
