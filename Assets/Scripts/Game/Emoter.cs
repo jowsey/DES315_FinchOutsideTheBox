@@ -21,10 +21,6 @@ public class Emoter : MonoBehaviour
         }
     }
 
-    //For propagation to the parent rigidbody
-    private Vector3 _animDeltaPos;
-    private Quaternion _animDeltaRot;
-
     public void Awake()
     {
         anim = GetComponent<NetworkAnimator>();
@@ -32,8 +28,6 @@ public class Emoter : MonoBehaviour
         _zoomController = Camera.main.GetComponent<CameraZoomController>();
         EmoteLayerIndex = anim.animator.GetLayerIndex("EmoteLayer");
         IsEmoting = false;
-        _animDeltaPos = Vector3.zero;
-        _animDeltaRot = Quaternion.identity;
     }
 
     //For testing
@@ -100,29 +94,5 @@ public class Emoter : MonoBehaviour
         //For cleanliness
         anim.animator.SetLayerWeight(EmoteLayerIndex, target);
         yield return null;
-    }
-
-    //This callback stops Unity from automatically applying root motion and lets us intercept the deltas instead
-    private void OnAnimatorMove()
-    {
-        if (IsEmoting)
-        {
-            //Accumulate position and rotation changes
-            _animDeltaPos += anim.animator.deltaPosition;
-            _animDeltaRot *= anim.animator.deltaRotation;
-        }
-    }
-
-    private void FixedUpdate()
-    {
-        if (IsEmoting)
-        {
-            //Propagate accumulated pos/rot deltas to the rigidbody
-            _rb.MovePosition(_rb.position + _animDeltaPos);
-            _rb.MoveRotation(_rb.rotation * _animDeltaRot);
-
-            _animDeltaPos = Vector3.zero;
-            _animDeltaRot = Quaternion.identity;
-        }
     }
 }
