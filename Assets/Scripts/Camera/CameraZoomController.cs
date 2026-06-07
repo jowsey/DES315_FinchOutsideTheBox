@@ -27,9 +27,10 @@ public class CameraZoomController : MonoBehaviour
     [SerializeField] private float _smoothSpeed = 10f;
     private float _targetRadius;
 
-    //Cutscene
-    private bool _firstPersonBeforeCutscene;
     [SerializeField] private PlayableDirector _director;
+    
+    //Used for tracking and restoring state for cutscenes and emotes (guaranteed to be identical if both are needed at the same time)
+    private bool _firstPersonBeforeAction;
 
     public static bool FirstPerson { get; private set; }
 
@@ -52,7 +53,7 @@ public class CameraZoomController : MonoBehaviour
         FirstPerson = false;
         _targetRadius = _defaultZoom;
         _orbitalFollow.Radius = _targetRadius;
-        _director.stopped += OnCutsceneStopped;
+        _director.stopped += OnRestorePreActionFirstPersonState;
     }
 
     private void ToggleFirstPerson(bool toggle)
@@ -115,19 +116,19 @@ public class CameraZoomController : MonoBehaviour
     private void OnDestroy()
     {
         FirstPerson = false;
-        _director.stopped += OnCutsceneStopped;
+        _director.stopped += OnRestorePreActionFirstPersonState;
     }
 
-    //Called by CutsceneStart
-    public void OnCutsceneStarted()
+    //Called by CutsceneStart and Emoter
+    public void OnForceThirdPersonActionStarted()
     {
-        _firstPersonBeforeCutscene = FirstPerson;
+        _firstPersonBeforeAction = FirstPerson;
         if (FirstPerson) { ToggleFirstPerson(!FirstPerson); }
     }
 
-    //Callback from director
-    private void OnCutsceneStopped(PlayableDirector _)
+    //Called by Emoter and callback from director
+    public void OnRestorePreActionFirstPersonState(PlayableDirector _ = null)
     {
-        if (FirstPerson != _firstPersonBeforeCutscene) { ToggleFirstPerson(!FirstPerson); }
+        if (FirstPerson != _firstPersonBeforeAction) { ToggleFirstPerson(!FirstPerson); }
     }
 }

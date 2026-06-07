@@ -653,7 +653,7 @@ public class PlayerController : NetworkBehaviour
 
         //if (ControlEnabled(ControlBlockerFlags.Emote) && InteractAction.action.WasPressedThisFrame())
         //{
-        //    _emoter.PlayEmote("Emote_Headshake");
+        //    _emoter.PlayEmote("Emote_Spin");
         //}
 
         CleanupFixedUpdate();

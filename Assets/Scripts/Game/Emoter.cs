@@ -6,8 +6,20 @@ public class Emoter : MonoBehaviour
 {
     private NetworkAnimator anim;
     private Rigidbody _rb;
+    private CameraZoomController _zoomController;
     private static int EmoteLayerIndex;
-    public bool IsEmoting { get; private set; }
+    private bool _isEmoting;
+    public bool IsEmoting
+    {
+        get { return _isEmoting; }
+        private set
+        {
+            if (_isEmoting == value) { return; }
+            _isEmoting = value;
+            if (_isEmoting) { _zoomController.OnForceThirdPersonActionStarted(); }
+            else { _zoomController.OnRestorePreActionFirstPersonState(); }
+        }
+    }
 
     //For propagation to the parent rigidbody
     private Vector3 _animDeltaPos;
@@ -17,6 +29,7 @@ public class Emoter : MonoBehaviour
     {
         anim = GetComponent<NetworkAnimator>();
         _rb = GetComponent<Rigidbody>();
+        _zoomController = Camera.main.GetComponent<CameraZoomController>();
         EmoteLayerIndex = anim.animator.GetLayerIndex("EmoteLayer");
         IsEmoting = false;
         _animDeltaPos = Vector3.zero;
@@ -107,8 +120,6 @@ public class Emoter : MonoBehaviour
             //Propagate accumulated pos/rot deltas to the rigidbody
             _rb.MovePosition(_rb.position + _animDeltaPos);
             _rb.MoveRotation(_rb.rotation * _animDeltaRot);
-
-            Debug.Log(_animDeltaPos + " " + _animDeltaRot);
 
             _animDeltaPos = Vector3.zero;
             _animDeltaRot = Quaternion.identity;
