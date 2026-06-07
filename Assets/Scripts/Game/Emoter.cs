@@ -7,7 +7,7 @@ public class Emoter : MonoBehaviour
     private NetworkAnimator anim;
     private Rigidbody _rb;
     private static int EmoteLayerIndex;
-    private bool _isEmoting;
+    public bool IsEmoting { get; private set; }
 
     //For propagation to the parent rigidbody
     private Vector3 _animDeltaPos;
@@ -18,7 +18,7 @@ public class Emoter : MonoBehaviour
         anim = GetComponent<NetworkAnimator>();
         _rb = GetComponent<Rigidbody>();
         EmoteLayerIndex = anim.animator.GetLayerIndex("EmoteLayer");
-        _isEmoting = false;
+        IsEmoting = false;
         _animDeltaPos = Vector3.zero;
         _animDeltaRot = Quaternion.identity;
     }
@@ -39,7 +39,7 @@ public class Emoter : MonoBehaviour
         controllerBlockerFlags &= ~PlayerController.ControlBlockerFlags.Respawn;
         PlayerController.AddControlBlockerFlags(this, controllerBlockerFlags);
 
-        _isEmoting = true;
+        IsEmoting = true;
 
         //We're currently on the locomotion (base) layer, so need to transition to the emote layer
         //We do this via layer blending to create a seamless transition between any currently-playing locomotion animation and the emote animation
@@ -57,7 +57,7 @@ public class Emoter : MonoBehaviour
         }
 
         //Animation is complete, remove control blocker flags and snap back to the locomotion layer
-        _isEmoting = false;
+        IsEmoting = false;
         PlayerController.RemoveAllControlBlockerFlags(this);
         anim.animator.SetLayerWeight(EmoteLayerIndex, 0.0f);
 
@@ -85,7 +85,7 @@ public class Emoter : MonoBehaviour
     //This callback stops Unity from automatically applying root motion and lets us intercept the deltas instead
     private void OnAnimatorMove()
     {
-        if (_isEmoting)
+        if (IsEmoting)
         {
             //Accumulate position and rotation changes
             _animDeltaPos += anim.animator.deltaPosition;
@@ -95,7 +95,7 @@ public class Emoter : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (_isEmoting)
+        if (IsEmoting)
         {
             //Propagate accumulated pos/rot deltas to the rigidbody
             _rb.MovePosition(_rb.position + _animDeltaPos);

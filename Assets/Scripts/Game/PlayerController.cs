@@ -160,6 +160,8 @@ public class PlayerController : NetworkBehaviour
     [HideInInspector] public float PuppetJumpForceMultiplier;
     [HideInInspector] public bool IsPuppet;
 
+    private Emoter _emoter;
+
     public static void AddControlBlockerFlags(Object blocker, ControlBlockerFlags flags)
     {
         if (_controlBlockers.TryGetValue(blocker, out ControlBlockerFlags existing))
@@ -238,6 +240,8 @@ public class PlayerController : NetworkBehaviour
         IsPuppet = false;
         PuppetWorldSpaceMoveDir = Vector3.zero;
         PuppetRequestJump = false;
+
+        _emoter = GetComponent<Emoter>();
     }
 
     private void Start()
@@ -463,7 +467,14 @@ public class PlayerController : NetworkBehaviour
         if (isLocalPlayer && CameraZoomController.FirstPerson)
         {
             _camera.transform.position = _firstPersonCameraViewPosition.position;
-            _camera.transform.rotation = transform.rotation * Quaternion.Euler(_cameraPitch, _cameraYawAccumulator, 0f);
+            if (_emoter && _emoter.IsEmoting)
+            {
+                _camera.transform.rotation = _firstPersonCameraViewPosition.rotation;
+            }
+            else
+            {
+                _camera.transform.rotation = transform.rotation * Quaternion.Euler(_cameraPitch, _cameraYawAccumulator, 0f);
+            }
         }
     }
 
@@ -642,7 +653,7 @@ public class PlayerController : NetworkBehaviour
 
         if (ControlEnabled(ControlBlockerFlags.Emote) && InteractAction.action.WasPressedThisFrame())
         {
-            GetComponent<Emoter>().PlayEmote("Emote_Spin");
+            _emoter.PlayEmote("Emote_Headshake");
         }
 
         CleanupFixedUpdate();
