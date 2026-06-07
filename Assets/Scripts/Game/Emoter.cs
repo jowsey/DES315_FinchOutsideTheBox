@@ -23,6 +23,12 @@ public class Emoter : MonoBehaviour
         _animDeltaRot = Quaternion.identity;
     }
 
+    //For testing
+    [Sirenix.OdinInspector.Button] private void Spin() { PlayEmote("Emote_Spin"); }
+    [Sirenix.OdinInspector.Button] private void Nod() { PlayEmote("Emote_Nod"); }
+    [Sirenix.OdinInspector.Button] private void Headshake() { PlayEmote("Emote_Headshake"); }
+    [Sirenix.OdinInspector.Button] private void Frontflip() { PlayEmote("Emote_Frontflip"); }
+
     public void PlayEmote(string triggerName)
     {
         StopAllCoroutines();
@@ -56,11 +62,12 @@ public class Emoter : MonoBehaviour
             yield return null;
         }
 
-        //Animation is complete, remove control blocker flags and snap back to the locomotion layer
-        IsEmoting = false;
-        PlayerController.RemoveAllControlBlockerFlags(this);
-        anim.animator.SetLayerWeight(EmoteLayerIndex, 0.0f);
+        //Animation is complete, blend back to the locomotion layer
+        yield return StartCoroutine(SetLayerWeight(0.0f));
 
+        //Now on the locomotion layer, remove control blocker flags
+        PlayerController.RemoveAllControlBlockerFlags(this);
+        IsEmoting = false;
     }
 
     private IEnumerator SetLayerWeight(float target)

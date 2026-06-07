@@ -651,10 +651,10 @@ public class PlayerController : NetworkBehaviour
             Rb.AddForce(Vector3.up * (_jumpForce * jumpMultiplier), ForceMode.Impulse);
         }
 
-        if (ControlEnabled(ControlBlockerFlags.Emote) && InteractAction.action.WasPressedThisFrame())
-        {
-            _emoter.PlayEmote("Emote_Headshake");
-        }
+        //if (ControlEnabled(ControlBlockerFlags.Emote) && InteractAction.action.WasPressedThisFrame())
+        //{
+        //    _emoter.PlayEmote("Emote_Headshake");
+        //}
 
         CleanupFixedUpdate();
     }
