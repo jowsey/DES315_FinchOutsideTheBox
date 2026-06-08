@@ -59,7 +59,6 @@ public class CutscenePuppeteer : MonoBehaviour
             }
         }
         _cart.IsPuppet = true;
-        PlayerController.AddControlBlocker(this);
 
         foreach (Rigidbody rb in _cart.GetComponentsInChildren<Rigidbody>())
         {
@@ -106,7 +105,6 @@ public class CutscenePuppeteer : MonoBehaviour
                 l.enabled = true;
             }
         }
-        PlayerController.RemoveControlBlocker(this);
 
         _cart.Rb.position = _cart.transform.position;
         _cart.Rb.rotation = _cart.transform.rotation;

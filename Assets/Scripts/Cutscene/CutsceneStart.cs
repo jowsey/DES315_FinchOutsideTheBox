@@ -56,7 +56,7 @@ public class CutsceneStart : NetworkBehaviour
             }
             Physics.SyncTransforms();
 
-            Camera.main.GetComponent<CameraZoomController>().OnCutsceneStarted();
+            Camera.main.GetComponent<CameraZoomController>().OnForceThirdPersonActionStarted();
 
             _director.Play();
             _played = true;

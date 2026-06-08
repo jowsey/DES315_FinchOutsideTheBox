@@ -70,7 +70,7 @@ namespace UI
         // Wrapper for event listener
         private void OnOpen(InputAction.CallbackContext ctx)
         {
-            if (!PlayerController.ControlsEnabled && !_isActive) return;
+            if (!PlayerController.ControlEnabled(PlayerController.ControlBlockerFlags.Pause) && !_isActive) return;
             OnOpen(!_isActive);
         }
 
@@ -81,11 +81,13 @@ namespace UI
             Cursor.lockState = active ? CursorLockMode.None : CursorLockMode.Locked;
             if (active)
             {
-                PlayerController.AddControlBlocker(this);
+                PlayerController.ControlBlockerFlags controllerBlockerFlags = PlayerController.ControlBlockerFlags.All;
+                controllerBlockerFlags &= ~PlayerController.ControlBlockerFlags.Pause;
+                PlayerController.AddControlBlockerFlags(this, controllerBlockerFlags);
             }
             else
             {
-                PlayerController.RemoveControlBlocker(this);
+                PlayerController.RemoveAllControlBlockerFlags(this);
             }
 
             // we don't use SetActive since we want the menu to still receive input events, and being inactive would disable that

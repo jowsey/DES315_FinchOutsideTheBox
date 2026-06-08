@@ -80,7 +80,7 @@ namespace UI
 
         private void Update()
         {
-            if (PlayerController.ControlsEnabled && !_inputFieldActive && !_closedThisFrame && _activateInputAction.action.WasPressedThisFrame())
+            if (PlayerController.ControlEnabled(PlayerController.ControlBlockerFlags.ToggleTextChat) && !_inputFieldActive && !_closedThisFrame && _activateInputAction.action.WasPressedThisFrame())
             {
                 Toggle(true);
             }
@@ -107,7 +107,9 @@ namespace UI
                     Tween.Alpha(_inputFieldCanvasGroup, 1f, 0.1f, Ease.OutCubic);
 
                 _inputField.ActivateInputField();
-                PlayerController.AddControlBlocker(this);
+                PlayerController.ControlBlockerFlags controllerBlockerFlags = PlayerController.ControlBlockerFlags.All;
+                controllerBlockerFlags &= ~PlayerController.ControlBlockerFlags.Pause;
+                PlayerController.AddControlBlockerFlags(this, controllerBlockerFlags);
                 Cursor.lockState = CursorLockMode.None;
             }
             else
@@ -116,7 +118,7 @@ namespace UI
                     Tween.Alpha(_inputFieldCanvasGroup, 0f, 0.1f, Ease.InCubic);
 
                 _inputField.DeactivateInputField();
-                PlayerController.RemoveControlBlocker(this);
+                PlayerController.RemoveAllControlBlockerFlags(this);
                 Cursor.lockState = CursorLockMode.Locked;
 
                 _closedThisFrame = true;

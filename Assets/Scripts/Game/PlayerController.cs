@@ -1,5 +1,6 @@
 using Mirror;
 using Sirenix.OdinInspector;
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UI;
@@ -10,7 +11,6 @@ using UnityEngine.InputSystem;
 using UnityEngine.Playables;
 using UnityEngine.UI;
 using Util;
-using VoIP;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 using ReadOnlyAttribute = Sirenix.OdinInspector.ReadOnlyAttribute;
@@ -111,16 +111,45 @@ public class PlayerController : NetworkBehaviour
     // Does NOT imply the player has just joined
     public static readonly UnityEvent<PlayerController> OnPlayerReady = new();
 
-    // While there are any control blockers, the player won't be able to be controlled
-    private static readonly HashSet<Object> _controlBlockers = new();
+    //While there are any control blockers for a given action, that action will be blocked
+    [Flags]
+    public enum ControlBlockerFlags
+    {
+        None = 0,
+        Move = 1 << 0,
+        Jump = 1 << 1,
+        Interact = 1 << 2,
+        Look = 1 << 3,
+        ChangePerspective = 1 << 4,
+        Glide = 1 << 5,
+        Pause = 1 << 6,
+        Ping = 1 << 7,
+        ToggleTextChat = 1 << 8,
+        Respawn = 1 << 9,
+        Emote = 1 << 10,
+        All = ~0
+    }
+    private static readonly Dictionary<Object, ControlBlockerFlags> _controlBlockers = new();
+    public static ControlBlockerFlags ActiveBlockers
+    {
+        get
+        {
+            ControlBlockerFlags flags = ControlBlockerFlags.None;
+            foreach (ControlBlockerFlags flag in _controlBlockers.Values)
+            {
+                flags |= flag;
+            }
+            return flags;
+        }
+    }
+    public static bool ControlEnabled(ControlBlockerFlags flag) => !ActiveBlockers.HasFlag(flag);
+    
     private static CinemachineInputAxisController _cinemachineInput;
-
-    public static bool ControlsEnabled => _controlBlockers.Count == 0;
 
     [SerializeField] private Transform _cameraObstructionDithererRayEndPosition;
 
-    public bool FlaskPickupAllowed => ControlsEnabled && !Seat && !HeldFlask;
-    public bool FlaskPutdownAllowed => ControlsEnabled && !Seat && HeldFlask && HeldFlask.State == Flask.FlaskState.Held;
+    public bool FlaskPickupAllowed => ControlEnabled(ControlBlockerFlags.Interact) && !Seat && !HeldFlask;
+    public bool FlaskPutdownAllowed => ControlEnabled(ControlBlockerFlags.Interact) && !Seat && HeldFlask && HeldFlask.State == Flask.FlaskState.Held;
 
     //Set in inspector to true if this player will only exist in cutscenes
     public bool CutscenePlayer;
@@ -132,23 +161,59 @@ public class PlayerController : NetworkBehaviour
     [HideInInspector] public float PuppetJumpForceMultiplier;
     [HideInInspector] public bool IsPuppet;
 
-    public static void AddControlBlocker(Object blocker)
-    {
-        _controlBlockers.Add(blocker);
+    private Emoter _emoter;
 
-        if (_controlBlockers.Count == 1)
+    public static void AddControlBlockerFlags(Object blocker, ControlBlockerFlags flags)
+    {
+        if (_controlBlockers.TryGetValue(blocker, out ControlBlockerFlags existing))
         {
-            if (_cinemachineInput) _cinemachineInput.enabled = false;
+            _controlBlockers[blocker] = existing | flags;
+        }
+        else
+        {
+            _controlBlockers.Add(blocker, flags);
+        }
+
+        if (flags.HasFlag(ControlBlockerFlags.Look) && _cinemachineInput.enabled)
+        {
+            _cinemachineInput.enabled = false;
         }
     }
 
-    public static void RemoveControlBlocker(Object blocker)
+    public static void RemoveControlBlockerFlags(Object blocker, ControlBlockerFlags flags)
+    {
+        if (_controlBlockers.TryGetValue(blocker, out ControlBlockerFlags existing))
+        {
+            ControlBlockerFlags updated = existing & ~flags;
+            if (updated == ControlBlockerFlags.None)
+            {
+                _controlBlockers.Remove(blocker);
+            }
+            else
+            {
+                _controlBlockers[blocker] = updated;
+            }
+        }
+
+        if (_cinemachineInput)
+        {
+            if (ControlEnabled(ControlBlockerFlags.Look) && !_cinemachineInput.enabled)
+            {
+                _cinemachineInput.enabled = true;
+            }
+        }
+    }
+
+    public static void RemoveAllControlBlockerFlags(Object blocker)
     {
         _controlBlockers.Remove(blocker);
 
-        if (_controlBlockers.Count == 0)
+        if (_cinemachineInput)
         {
-            if (_cinemachineInput) _cinemachineInput.enabled = true;
+            if (ControlEnabled(ControlBlockerFlags.Look) && !_cinemachineInput.enabled)
+            {
+                _cinemachineInput.enabled = true;
+            }
         }
     }
 
@@ -176,6 +241,8 @@ public class PlayerController : NetworkBehaviour
         IsPuppet = false;
         PuppetWorldSpaceMoveDir = Vector3.zero;
         PuppetRequestJump = false;
+
+        _emoter = GetComponent<Emoter>();
     }
 
     private void Start()
@@ -345,7 +412,7 @@ public class PlayerController : NetworkBehaviour
         if (!authority && !IsPuppet) return;
 
         //First-person controls
-        if (CameraZoomController.FirstPerson && ControlsEnabled)
+        if (CameraZoomController.FirstPerson && ControlEnabled(ControlBlockerFlags.Look))
         {
             float scale = (InputDeviceManager.CurrentInputType == InputDeviceManager.InputType.KeyboardMouse ? 0.01f : 0.1f);
             Vector2 scaledMouseDelta = _firstPersonLookAction.action.ReadValue<Vector2>() * (SettingsManager.ActiveSettings.FirstPersonSensPercent * scale);
@@ -401,7 +468,14 @@ public class PlayerController : NetworkBehaviour
         if (isLocalPlayer && CameraZoomController.FirstPerson)
         {
             _camera.transform.position = _firstPersonCameraViewPosition.position;
-            _camera.transform.rotation = transform.rotation * Quaternion.Euler(_cameraPitch, _cameraYawAccumulator, 0f);
+            if (_emoter && _emoter.IsEmoting)
+            {
+                _camera.transform.rotation = _firstPersonCameraViewPosition.rotation;
+            }
+            else
+            {
+                _camera.transform.rotation = transform.rotation * Quaternion.Euler(_cameraPitch, _cameraYawAccumulator, 0f);
+            }
         }
     }
 
@@ -457,7 +531,7 @@ public class PlayerController : NetworkBehaviour
         }
         else
         {
-            Vector2 inputDirection = ControlsEnabled ? MoveAction.action.ReadValue<Vector2>() : Vector2.zero; //no input when controls are blocked
+            Vector2 inputDirection = ControlEnabled(ControlBlockerFlags.Move) ? MoveAction.action.ReadValue<Vector2>() : Vector2.zero; //no input when controls are blocked
             AnalogueMoveScale = inputDirection.magnitude; //input system has a normalise processor on the move input action
             if (CameraZoomController.FirstPerson)
             {
@@ -483,7 +557,7 @@ public class PlayerController : NetworkBehaviour
 
 
         //Unsitting
-        if (Seat && ControlsEnabled && _jumpPressed)
+        if (Seat && ControlEnabled(ControlBlockerFlags.Jump) && _jumpPressed)
         {
             Seat.CmdUnsitPlayer();
 
@@ -538,13 +612,17 @@ public class PlayerController : NetworkBehaviour
                 }
             }
 
-            Rb.MovePosition(Rb.position + delta);
+            //Only apply movement if there's an active movement delta (this is primarily to stop the player controller from fighting the emoter)
+            if (delta.sqrMagnitude > 0)
+            {
+                Rb.MovePosition(Rb.position + delta);
+            }
         }
 
         bool isFalling = Rb.linearVelocity.y < _fallAnimationMinDownardsVelocity;
 
         //Player is falling - are they gliding?
-        if (ControlsEnabled && isFalling && JumpAction.action.IsPressed())
+        if (ControlEnabled(ControlBlockerFlags.Glide) && isFalling && JumpAction.action.IsPressed())
         {
             //Player is gliding
             float _gravityNegationPercentage01 = _gravityNegationPercentage / 100.0f;
@@ -567,12 +645,17 @@ public class PlayerController : NetworkBehaviour
         }
 
         //Jumping
-        if ((ControlsEnabled || IsPuppet) && (_jumpPressed || PuppetRequestJump) && (grounded || groundedOnBumpy))
+        if ((ControlEnabled(ControlBlockerFlags.Jump) || IsPuppet) && (_jumpPressed || PuppetRequestJump) && (grounded || groundedOnBumpy))
         {
             _networkAnimator.animator.SetTrigger(JumpTrigger);
             float jumpMultiplier = IsPuppet ? PuppetJumpForceMultiplier : 1f;
             Rb.AddForce(Vector3.up * (_jumpForce * jumpMultiplier), ForceMode.Impulse);
         }
+
+        //if (ControlEnabled(ControlBlockerFlags.Emote) && InteractAction.action.WasPressedThisFrame())
+        //{
+        //    _emoter.PlayEmote("Emote_Spin");
+        //}
 
         CleanupFixedUpdate();
     }
