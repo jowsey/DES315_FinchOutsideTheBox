@@ -10,16 +10,16 @@ using UnityEngine.UI;
 
 namespace UI
 {
+    public enum ShowState
+    {
+        Closed,
+        Closing,
+        Open,
+        Opening
+    }
+
     public class RespawnVoteBox : NetworkBehaviour
     {
-        private enum ShowState
-        {
-            Closed,
-            Closing,
-            Open,
-            Opening
-        }
-
         [SerializeField] private InputActionReference _respawnAction;
         [SerializeField] private AK.Wwise.Event _respawnPing;
 
