@@ -287,6 +287,7 @@ namespace UI
             }
 
             // Audio
+            _masterVolumeSlider.value = ActiveSettings.MasterVolumePercent;
             _musicVolumeSlider.value = ActiveSettings.MusicVolumePercent;
             _sfxVolumeSlider.value = ActiveSettings.SfxVolumePercent;
 
