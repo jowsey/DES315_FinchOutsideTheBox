@@ -127,6 +127,7 @@ public class PlayerController : NetworkBehaviour
         ToggleTextChat = 1 << 8,
         Respawn = 1 << 9,
         Emote = 1 << 10,
+        OpenEmoteWheel = 1 << 11,
         All = ~0
     }
     private static readonly Dictionary<Object, ControlBlockerFlags> _controlBlockers = new();
