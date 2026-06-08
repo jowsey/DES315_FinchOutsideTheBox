@@ -121,12 +121,13 @@ public class PlayerController : NetworkBehaviour
         Interact = 1 << 2,
         Look = 1 << 3,
         ChangePerspective = 1 << 4,
-        Glide = 1 << 5,
-        Pause = 1 << 6,
-        Ping = 1 << 7,
-        ToggleTextChat = 1 << 8,
-        Respawn = 1 << 9,
-        Emote = 1 << 10,
+        CameraZoom = 1 << 5,
+        Glide = 1 << 6,
+        Pause = 1 << 7,
+        Ping = 1 << 8,
+        ToggleTextChat = 1 << 9,
+        Respawn = 1 << 10,
+        Emote = 1 << 11,
         All = ~0
     }
     private static readonly Dictionary<Object, ControlBlockerFlags> _controlBlockers = new();
