@@ -24,7 +24,7 @@ namespace UI
             //_fillImage.fillAmount = _linkedCart.TreasuresRemainingRatio;
             //_countText.text = $"{_linkedCart.CarriedTreasures} / {_linkedCart.MaxTreasures}";
             _fillImage.fillAmount = 1.0f;
-            _countText.text = $"{_linkedCart.NumCarriedTreasures}";
+            _countText.text = $"{_linkedCart.TotalCarriedTreasures}";
         }
     }
 }

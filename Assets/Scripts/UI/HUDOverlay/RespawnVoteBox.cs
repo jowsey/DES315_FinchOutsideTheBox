@@ -149,7 +149,7 @@ namespace UI
 
             // Force active if respawn pressed, there are active votes, or we just lost our last treasure
             if (_votesActive > 0 || (PlayerController.ControlEnabled(PlayerController.ControlBlockerFlags.Respawn) && _respawnAction.action.WasPressedThisFrame()) ||
-                (_lastKnownTreasureCount > 0 && _linkedCart.NumCarriedTreasures == 0))
+                (_lastKnownTreasureCount > 0 && _linkedCart.TotalCarriedTreasures == 0))
             {
                 _lastActivityTime = Time.time;
             }
@@ -232,10 +232,10 @@ namespace UI
             {
                 _chargeImage.fillAmount = _voteCharge;
                 _countText.text = $"<b>{_votesActive}</b>/{_votesRequired}";
-                _treasureCountOnRespawnText.text = $"You will respawn with <b>{_linkedCart.CheckpointTreasureCounts[_linkedCart.CurrentCheckpointIndex]}</b> treasures.";
+                _treasureCountOnRespawnText.text = $"You will respawn with <b>???</b> treasures."; //@jowsey maybe we get rid of this now ? or we could tell them the balance they'll have?
             }
 
-            _lastKnownTreasureCount = _linkedCart.NumCarriedTreasures;
+            _lastKnownTreasureCount = _linkedCart.TotalCarriedTreasures;
         }
 
         [Command(requiresAuthority = false)]

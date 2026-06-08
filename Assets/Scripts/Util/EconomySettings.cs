@@ -4,17 +4,22 @@ using UnityEngine;
 
 public enum TreasureType
 {
-    Flask,
-    Gem,
+    Flask = 0,
+    Gem = 1,
+    
+    NUM_TYPES = 2,
 }
 
 public enum ItemType
 {
-    RedBox,
-    GreenBox,
-    BlueBox,
+    RedBox = 0,
+    GreenBox = 1,
+    BlueBox = 2,
+
+    NUM_TYPES = 3,
 }
 
+//Lets us easily have different settings for different difficulty modes
 [CreateAssetMenu(fileName = "EconomySettings", menuName = "Settings/Economy")]
 public class EconomySettings : SerializedScriptableObject
 {

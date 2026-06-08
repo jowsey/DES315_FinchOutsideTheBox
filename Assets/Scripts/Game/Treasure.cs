@@ -13,6 +13,8 @@ public class Treasure : NetworkBehaviour
         Inactive
     }
 
+    public TreasureType Type;
+
     private bool _hasInitialised;
 
     public Rigidbody Rb { get; private set; }

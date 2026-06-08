@@ -47,8 +47,9 @@ public class Cart : NetworkBehaviour
     private Dictionary<Treasure, TreasureSnapshot>[] _treasuresAtCheckpoint;
     public readonly HashSet<Treasure> CarriedTreasures = new();
 
-    [field: SyncVar(hook = nameof(OnNumCarriedTreasuresChanged))] public int NumCarriedTreasures { get; private set; }
-    public readonly SyncList<int> CheckpointTreasureCounts = new();
+    public readonly SyncDictionary<TreasureType, int> CarriedTreasureCounts = new SyncDictionary<TreasureType, int>();
+    [field: SyncVar(hook = nameof(OnTotalCarriedTreasuresChanged))] public int TotalCarriedTreasures { get; private set; }
+    public readonly SyncList<int> CheckpointTotalTreasures = new();
 
     //Sound effects
     [SerializeField] [Required] private AK.Wwise.Event _carSound;
@@ -85,7 +86,7 @@ public class Cart : NetworkBehaviour
             _treasuresAtCheckpoint[i] = new Dictionary<Treasure, TreasureSnapshot>();
         }
 
-        CheckpointTreasureCounts.AddRange(Enumerable.Repeat(-1, Checkpoints.Count).ToArray());
+        CheckpointTotalTreasures.AddRange(Enumerable.Repeat(-1, Checkpoints.Count).ToArray());
 
         // First checkpoint runs on Frame 0 before treasures run OnTriggerEnter so we need to manually init
         // - Bounds check isn't perfectly accurate, but we can reasonably assume
@@ -150,7 +151,7 @@ public class Cart : NetworkBehaviour
     // Records the local positions of all CarriedTreasures and writes them to the current checkpoint's snapshot
     private void CaptureCheckpointTreasuresSnapshot()
     {
-        Debug.Log($"Capturing snapshot: {NumCarriedTreasures} treasures carried at checkpoint {CurrentCheckpointIndex}");
+        Debug.Log($"Capturing snapshot: {TotalCarriedTreasures} treasures carried at checkpoint {CurrentCheckpointIndex}");
 
         Physics.SyncTransforms();
         foreach (Treasure treasure in CarriedTreasures)
@@ -162,7 +163,7 @@ public class Cart : NetworkBehaviour
             };
         }
 
-        CheckpointTreasureCounts[CurrentCheckpointIndex] = NumCarriedTreasures;
+        CheckpointTotalTreasures[CurrentCheckpointIndex] = TotalCarriedTreasures;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -248,16 +249,20 @@ public class Cart : NetworkBehaviour
     public void AddCarriedTreasure(Treasure treasure)
     {
         CarriedTreasures.Add(treasure);
-        NumCarriedTreasures = CarriedTreasures.Count;
+        TotalCarriedTreasures = CarriedTreasures.Count;
+        if (CarriedTreasureCounts.ContainsKey(treasure.Type)) { CarriedTreasureCounts[treasure.Type]++; }
+        else { CarriedTreasureCounts.Add(treasure.Type, 1); }
     }
 
     public void RemoveCarriedTreasure(Treasure treasure)
     {
         CarriedTreasures.Remove(treasure);
-        NumCarriedTreasures = CarriedTreasures.Count;
+        TotalCarriedTreasures = CarriedTreasures.Count;
+        if (CarriedTreasureCounts.ContainsKey(treasure.Type)) { CarriedTreasureCounts[treasure.Type]--; }
+        if (CarriedTreasureCounts.ContainsKey(treasure.Type) && CarriedTreasureCounts[treasure.Type] <= 0) { CarriedTreasureCounts.Remove(treasure.Type); }
     }
 
-    private void OnNumCarriedTreasuresChanged(int oldValue, int newValue)
+    private void OnTotalCarriedTreasuresChanged(int oldValue, int newValue)
     {
         if (newValue <= _lowTreasuresThreshold && !_lowTreasureWarningUI)
         {
@@ -307,11 +312,23 @@ public class Cart : NetworkBehaviour
         CurrentCheckpointIndex = newCheckpointIndex;
 
         // fallback for dev hotkeys, otherwise will naturally be populated
-        if (isServer && CheckpointTreasureCounts[CurrentCheckpointIndex] == -1)
+        if (isServer && CheckpointTotalTreasures[CurrentCheckpointIndex] == -1)
         {
             CaptureCheckpointTreasuresSnapshot();
         }
 
         Checkpoint.RespawnEvent.Invoke(Checkpoints[CurrentCheckpointIndex]);
+    }
+
+    [Command(requiresAuthority = false)]
+    public void CmdRemoveAllTreasures()
+    {
+        //To prevent iterator invalidation from setting the state (which disables collider which runs OnTriggerExit which removes the treasure from Cart.CarriedTreasures)
+        List<Treasure> treasuresToRemove = CarriedTreasures.ToList();
+        foreach (Treasure treasure in treasuresToRemove)
+        {
+            //SyncVar hook hides the mesh, make it kinematic, and disable the collider
+            treasure.State = Treasure.TreasureState.Inactive;
+        }
     }
 }
