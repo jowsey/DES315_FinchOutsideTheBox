@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Rendering.HighDefinition;
 
-public class SmashedFlask : MonoBehaviour
+public class SmashedTreasure : MonoBehaviour
 {
     private float _smashImpulseForce = 0.2f;
     private DecalProjector _decalProjector;

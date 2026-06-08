@@ -11,7 +11,7 @@ using ShowInInspector = Sirenix.OdinInspector.ShowInInspectorAttribute;
 [RequireComponent(typeof(Rigidbody))]
 public class Cart : NetworkBehaviour
 {
-    private struct FlaskSnapshot
+    private struct TreasureSnapshot
     {
         public Vector3 LocalPosition;
         public Quaternion Rotation;
@@ -35,30 +35,30 @@ public class Cart : NetworkBehaviour
     [Tooltip("Exponent for how much the amount of tilt-correction increases in response to tilting. 1 means consistent, higher makes it kick in far more when tilting more.")]
     [SerializeField] private float _tiltCorrectionScaling = 2f;
 
-    [SerializeField] private int _lowFlasksThreshold = 3;
+    [SerializeField] private int _lowTreasuresThreshold = 3;
 
     // UI
     private Transform _uiCanvas;
 
-    // Flask carrying
-    [SerializeField] [Required] private Collider _flaskBounds;
+    // Treasure carrying
+    [SerializeField] [Required] private Collider _treasureBounds;
 
     // Populated on server, unnecessary on clients
-    private Dictionary<Flask, FlaskSnapshot>[] _flasksAtCheckpoint;
-    public readonly HashSet<Flask> CarriedFlasks = new();
+    private Dictionary<Treasure, TreasureSnapshot>[] _treasuresAtCheckpoint;
+    public readonly HashSet<Treasure> CarriedTreasures = new();
 
-    [field: SyncVar(hook = nameof(OnNumCarriedFlasksChanged))] public int NumCarriedFlasks { get; private set; }
-    public readonly SyncList<int> CheckpointFlaskCounts = new();
+    [field: SyncVar(hook = nameof(OnNumCarriedTreasuresChanged))] public int NumCarriedTreasures { get; private set; }
+    public readonly SyncList<int> CheckpointTreasureCounts = new();
 
     //Sound effects
     [SerializeField] [Required] private AK.Wwise.Event _carSound;
     [SerializeField] [Required] private AK.Wwise.Event _carOnSurface;
     [SerializeField] [Required] private AK.Wwise.Event _glassInVehicle;
     [SerializeField] [Required] private AK.Wwise.RTPC _cartSpeedRTPC;
-    [SerializeField] [Required] private AK.Wwise.RTPC _numCarriedFlasksRTPC;
+    [SerializeField] [Required] private AK.Wwise.RTPC _numCarriedTreasuresRTPC;
 
-    [SerializeField] [Required] private WorldFollowUI _lowFlaskWarningPrefab;
-    private WorldFollowUI _lowFlaskWarningUI;
+    [SerializeField] [Required] private WorldFollowUI _lowTreasureWarningPrefab;
+    private WorldFollowUI _lowTreasureWarningUI;
 
     //Velocity doesn't exist on non-authed client, so we use this to calculate our own rough speed
     private Vector3 _positionLastFrame;
@@ -79,28 +79,28 @@ public class Cart : NetworkBehaviour
     {
         Checkpoint.RespawnEvent.AddListener(OnRespawn);
 
-        _flasksAtCheckpoint = new Dictionary<Flask, FlaskSnapshot>[Checkpoints.Count];
-        for (int i = 0; i < _flasksAtCheckpoint.Length; ++i)
+        _treasuresAtCheckpoint = new Dictionary<Treasure, TreasureSnapshot>[Checkpoints.Count];
+        for (int i = 0; i < _treasuresAtCheckpoint.Length; ++i)
         {
-            _flasksAtCheckpoint[i] = new Dictionary<Flask, FlaskSnapshot>();
+            _treasuresAtCheckpoint[i] = new Dictionary<Treasure, TreasureSnapshot>();
         }
 
-        CheckpointFlaskCounts.AddRange(Enumerable.Repeat(-1, Checkpoints.Count).ToArray());
+        CheckpointTreasureCounts.AddRange(Enumerable.Repeat(-1, Checkpoints.Count).ToArray());
 
-        // First checkpoint runs on Frame 0 before flasks run OnTriggerEnter so we need to manually init
+        // First checkpoint runs on Frame 0 before treasures run OnTriggerEnter so we need to manually init
         // - Bounds check isn't perfectly accurate, but we can reasonably assume
-        // there won't be flasks in the level that are both within the bounds of
-        // the flask carrier on scene start yet not meant to be in the flask
-        var allFlasks = FindObjectsByType<Flask>(FindObjectsSortMode.None);
-        foreach (var flask in allFlasks)
+        // there won't be treasures in the level that are both within the bounds of
+        // the treasure carrier on scene start yet not meant to be in the treasure
+        var allTreasures = FindObjectsByType<Treasure>(FindObjectsSortMode.None);
+        foreach (var treasure in allTreasures)
         {
-            if (_flaskBounds.bounds.Contains(flask.transform.position))
+            if (_treasureBounds.bounds.Contains(treasure.transform.position))
             {
-                AddCarriedFlask(flask);
+                AddCarriedTreasure(treasure);
             }
         }
 
-        CaptureCheckpointFlasksSnapshot();
+        CaptureCheckpointTreasuresSnapshot();
     }
 
     public override void OnStartClient()
@@ -147,22 +147,22 @@ public class Cart : NetworkBehaviour
         Rb.AddTorque(_tiltCorrection * rotExp * transform.forward);
     }
 
-    // Records the local positions of all CarriedFlasks and writes them to the current checkpoint's snapshot
-    private void CaptureCheckpointFlasksSnapshot()
+    // Records the local positions of all CarriedTreasures and writes them to the current checkpoint's snapshot
+    private void CaptureCheckpointTreasuresSnapshot()
     {
-        Debug.Log($"Capturing snapshot: {NumCarriedFlasks} flasks carried at checkpoint {CurrentCheckpointIndex}");
+        Debug.Log($"Capturing snapshot: {NumCarriedTreasures} treasures carried at checkpoint {CurrentCheckpointIndex}");
 
         Physics.SyncTransforms();
-        foreach (Flask flask in CarriedFlasks)
+        foreach (Treasure treasure in CarriedTreasures)
         {
-            _flasksAtCheckpoint[CurrentCheckpointIndex][flask] = new FlaskSnapshot
+            _treasuresAtCheckpoint[CurrentCheckpointIndex][treasure] = new TreasureSnapshot
             {
-                LocalPosition = transform.InverseTransformPoint(flask.transform.position),
-                Rotation = flask.transform.rotation
+                LocalPosition = transform.InverseTransformPoint(treasure.transform.position),
+                Rotation = treasure.transform.rotation
             };
         }
 
-        CheckpointFlaskCounts[CurrentCheckpointIndex] = NumCarriedFlasks;
+        CheckpointTreasureCounts[CurrentCheckpointIndex] = NumCarriedTreasures;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -184,7 +184,7 @@ public class Cart : NetworkBehaviour
 
                 if (isServer)
                 {
-                    CaptureCheckpointFlasksSnapshot();
+                    CaptureCheckpointTreasuresSnapshot();
                 }
             }
         }
@@ -219,62 +219,62 @@ public class Cart : NetworkBehaviour
             rb.angularVelocity = Vector3.zero;
         }
 
-        ResetFlasks();
+        ResetTreasures();
     }
 
-    public void ResetFlasks()
+    public void ResetTreasures()
     {
         if (!isServer) return;
 
-        foreach (Flask flask in CarriedFlasks)
+        foreach (Treasure treasure in CarriedTreasures)
         {
-            if (!_flasksAtCheckpoint[CurrentCheckpointIndex].ContainsKey(flask))
+            if (!_treasuresAtCheckpoint[CurrentCheckpointIndex].ContainsKey(treasure))
             {
-                //This flask is currently in the carrier but wasn't in the carrier when the checkpoint was reached, disable it instead of letting it smash
-                flask.State = Flask.FlaskState.Inactive;
+                //This treasure is currently in the carrier but wasn't in the carrier when the checkpoint was reached, disable it instead of letting it smash
+                treasure.State = Treasure.TreasureState.Inactive;
             }
         }
 
-        foreach (KeyValuePair<Flask, FlaskSnapshot> flaskState in _flasksAtCheckpoint[CurrentCheckpointIndex])
+        foreach (KeyValuePair<Treasure, TreasureSnapshot> treasureState in _treasuresAtCheckpoint[CurrentCheckpointIndex])
         {
-            flaskState.Key.transform.position = transform.TransformPoint(flaskState.Value.LocalPosition);
-            flaskState.Key.transform.rotation = flaskState.Value.Rotation;
+            treasureState.Key.transform.position = transform.TransformPoint(treasureState.Value.LocalPosition);
+            treasureState.Key.transform.rotation = treasureState.Value.Rotation;
             Physics.SyncTransforms();
 
-            flaskState.Key.State = Flask.FlaskState.Idle;
+            treasureState.Key.State = Treasure.TreasureState.Idle;
         }
     }
 
-    public void AddCarriedFlask(Flask flask)
+    public void AddCarriedTreasure(Treasure treasure)
     {
-        CarriedFlasks.Add(flask);
-        NumCarriedFlasks = CarriedFlasks.Count;
+        CarriedTreasures.Add(treasure);
+        NumCarriedTreasures = CarriedTreasures.Count;
     }
 
-    public void RemoveCarriedFlask(Flask flask)
+    public void RemoveCarriedTreasure(Treasure treasure)
     {
-        CarriedFlasks.Remove(flask);
-        NumCarriedFlasks = CarriedFlasks.Count;
+        CarriedTreasures.Remove(treasure);
+        NumCarriedTreasures = CarriedTreasures.Count;
     }
 
-    private void OnNumCarriedFlasksChanged(int oldValue, int newValue)
+    private void OnNumCarriedTreasuresChanged(int oldValue, int newValue)
     {
-        if (newValue <= _lowFlasksThreshold && !_lowFlaskWarningUI)
+        if (newValue <= _lowTreasuresThreshold && !_lowTreasureWarningUI)
         {
-            //_lowFlaskWarningUI = Instantiate(_lowFlaskWarningPrefab, _uiCanvas);
-            //_lowFlaskWarningUI.TrackingTarget = transform;
-            //_lowFlaskWarningUI.TrackingOffset = new Vector3(0, 5.5f, 0);
-            //_lowFlaskWarningUI.ApplyOffsetLocally = true;
+            //_lowTreasureWarningUI = Instantiate(_lowTreasureWarningPrefab, _uiCanvas);
+            //_lowTreasureWarningUI.TrackingTarget = transform;
+            //_lowTreasureWarningUI.TrackingOffset = new Vector3(0, 5.5f, 0);
+            //_lowTreasureWarningUI.ApplyOffsetLocally = true;
             
-            //_lowFlaskWarningUI.transform.SetAsFirstSibling(); // send to back layer
+            //_lowTreasureWarningUI.transform.SetAsFirstSibling(); // send to back layer
         }
-        else if (newValue > _lowFlasksThreshold && _lowFlaskWarningUI)
+        else if (newValue > _lowTreasuresThreshold && _lowTreasureWarningUI)
         {
-            Destroy(_lowFlaskWarningUI.gameObject);
-            _lowFlaskWarningUI = null;
+            Destroy(_lowTreasureWarningUI.gameObject);
+            _lowTreasureWarningUI = null;
         }
 
-        _numCarriedFlasksRTPC.SetGlobalValue(newValue);
+        _numCarriedTreasuresRTPC.SetGlobalValue(newValue);
     }
 
 #if UNITY_EDITOR
@@ -307,9 +307,9 @@ public class Cart : NetworkBehaviour
         CurrentCheckpointIndex = newCheckpointIndex;
 
         // fallback for dev hotkeys, otherwise will naturally be populated
-        if (isServer && CheckpointFlaskCounts[CurrentCheckpointIndex] == -1)
+        if (isServer && CheckpointTreasureCounts[CurrentCheckpointIndex] == -1)
         {
-            CaptureCheckpointFlasksSnapshot();
+            CaptureCheckpointTreasuresSnapshot();
         }
 
         Checkpoint.RespawnEvent.Invoke(Checkpoints[CurrentCheckpointIndex]);

@@ -27,7 +27,7 @@ namespace UI
         [SerializeField] private TextMeshProUGUI _countText;
         [SerializeField] private Image _chargeImage;
         [SerializeField] private RectTransform _keyPrompt;
-        [SerializeField] private TextMeshProUGUI _flaskCountOnRespawnText;
+        [SerializeField] private TextMeshProUGUI _treasureCountOnRespawnText;
 
         [Tooltip("How much vote charge is generated per second of holding the respawn key?")]
         [SerializeField] [SuffixLabel("/second")] private float _chargeSpeed = 1 / 1.5f;
@@ -68,8 +68,8 @@ namespace UI
 
         private Cart _linkedCart;
 
-        // Tracking when all flasks are lost
-        private int _lastKnownFlaskCount;
+        // Tracking when all treasures are lost
+        private int _lastKnownTreasureCount;
 
         private void Awake()
         {
@@ -147,9 +147,9 @@ namespace UI
                 }
             }
 
-            // Force active if respawn pressed, there are active votes, or we just lost our last flask
+            // Force active if respawn pressed, there are active votes, or we just lost our last treasure
             if (_votesActive > 0 || (PlayerController.ControlEnabled(PlayerController.ControlBlockerFlags.Respawn) && _respawnAction.action.WasPressedThisFrame()) ||
-                (_lastKnownFlaskCount > 0 && _linkedCart.NumCarriedFlasks == 0))
+                (_lastKnownTreasureCount > 0 && _linkedCart.NumCarriedTreasures == 0))
             {
                 _lastActivityTime = Time.time;
             }
@@ -232,10 +232,10 @@ namespace UI
             {
                 _chargeImage.fillAmount = _voteCharge;
                 _countText.text = $"<b>{_votesActive}</b>/{_votesRequired}";
-                _flaskCountOnRespawnText.text = $"You will respawn with <b>{_linkedCart.CheckpointFlaskCounts[_linkedCart.CurrentCheckpointIndex]}</b> flasks.";
+                _treasureCountOnRespawnText.text = $"You will respawn with <b>{_linkedCart.CheckpointTreasureCounts[_linkedCart.CurrentCheckpointIndex]}</b> treasures.";
             }
 
-            _lastKnownFlaskCount = _linkedCart.NumCarriedFlasks;
+            _lastKnownTreasureCount = _linkedCart.NumCarriedTreasures;
         }
 
         [Command(requiresAuthority = false)]

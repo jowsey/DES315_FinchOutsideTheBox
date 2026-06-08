@@ -58,10 +58,10 @@ public class CrosshairDetection : MonoBehaviour
         TargetedTransform = interactable.InteractedTransform;
 
         // Interaction UI
-        var viewingFlask = PlayerController.LocalPlayer.FlaskPickupAllowed && TargetedTransform.TryGetComponent(out Flask flask) && flask.State == Flask.FlaskState.Idle;
-        var viewingPutdownTarget = PlayerController.LocalPlayer.FlaskPutdownAllowed && TargetedTransform.CompareTag("FlaskCarrier");
+        var viewingTreasure = PlayerController.LocalPlayer.TreasurePickupAllowed && TargetedTransform.TryGetComponent(out Treasure treasure) && treasure.State == Treasure.TreasureState.Idle;
+        var viewingPutdownTarget = PlayerController.LocalPlayer.TreasurePutdownAllowed && TargetedTransform.CompareTag("TreasureCarrier");
 
-        var showPrompt = viewingFlask || viewingPutdownTarget;
+        var showPrompt = viewingTreasure || viewingPutdownTarget;
         if (showPrompt)
         {
             if (!_interactPromptInstance)
@@ -69,11 +69,11 @@ public class CrosshairDetection : MonoBehaviour
                 _interactPromptInstance = Instantiate(_interactPromptPrefab, _uiCanvas);
             }
 
-            if (viewingFlask)
+            if (viewingTreasure)
             {
                 _interactPromptInstance.Build(InteractPrompt.InteractionType.PickUp);
 
-                // Position to right of flask
+                // Position to right of treasure
                 _interactPromptInstance.WorldFollowUI.TrackingTarget = TargetedTransform;
                 ((RectTransform)_interactPromptInstance.transform).pivot = new Vector2(0, 0.5f);
                 _interactPromptInstance.WorldFollowUI.UIPositionOffset = new Vector2(32, 0);
@@ -83,7 +83,7 @@ public class CrosshairDetection : MonoBehaviour
                 _interactPromptInstance.Build(InteractPrompt.InteractionType.PutDown);
 
                 // Position to top of target
-                _interactPromptInstance.WorldFollowUI.TrackingTarget = TargetedTransform.GetComponentInChildren<FlaskPutdownTarget>().transform;
+                _interactPromptInstance.WorldFollowUI.TrackingTarget = TargetedTransform.GetComponentInChildren<TreasurePutdownTarget>().transform;
                 ((RectTransform)_interactPromptInstance.transform).pivot = new Vector2(0.5f, 0);
                 _interactPromptInstance.WorldFollowUI.UIPositionOffset = new Vector2(0, -32);
             }

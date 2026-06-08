@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace UI
 {
-    public class FlasksBar : MonoBehaviour
+    public class TreasuresBar : MonoBehaviour
     {
         [SerializeField] [RequiredIn(PrefabKind.NonPrefabInstance)] private Cart _linkedCart;
         [SerializeField] [Required] private TextMeshProUGUI _countText;
@@ -21,10 +21,10 @@ namespace UI
 
         private void Update()
         {
-            //_fillImage.fillAmount = _linkedCart.FlasksRemainingRatio;
-            //_countText.text = $"{_linkedCart.CarriedFlasks} / {_linkedCart.MaxFlasks}";
+            //_fillImage.fillAmount = _linkedCart.TreasuresRemainingRatio;
+            //_countText.text = $"{_linkedCart.CarriedTreasures} / {_linkedCart.MaxTreasures}";
             _fillImage.fillAmount = 1.0f;
-            _countText.text = $"{_linkedCart.NumCarriedFlasks}";
+            _countText.text = $"{_linkedCart.NumCarriedTreasures}";
         }
     }
 }
