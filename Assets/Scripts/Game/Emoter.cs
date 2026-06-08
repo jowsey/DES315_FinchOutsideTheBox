@@ -63,7 +63,13 @@ public class Emoter : MonoBehaviour
         //Fade in to emote layer
         yield return StartCoroutine(SetLayerWeight(1.0f));
 
-        //We're now blended entirely on to the emote layer, wait until the animation is complete
+        //We're now blended entirely on to the emote layer, wait until we're fully out of the passthrough node
+        while (anim.animator.IsInTransition(EmoteLayerIndex))
+        {
+            yield return null;
+        }
+
+        //We're now fully out of the passthrough node and on to the emote node, wait until the animation is complete (i.e.: when we return back to the passthrough node)
         while (!anim.animator.GetCurrentAnimatorStateInfo(EmoteLayerIndex).IsName("Passthrough"))
         {
             yield return null;

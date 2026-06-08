@@ -127,6 +127,7 @@ public class PlayerController : NetworkBehaviour
         ToggleTextChat = 1 << 8,
         Respawn = 1 << 9,
         Emote = 1 << 10,
+        OpenEmoteWheel = 1 << 11,
         All = ~0
     }
     private static readonly Dictionary<Object, ControlBlockerFlags> _controlBlockers = new();
@@ -160,8 +161,8 @@ public class PlayerController : NetworkBehaviour
     [HideInInspector] public float PuppetGravityMultiplier;
     [HideInInspector] public float PuppetJumpForceMultiplier;
     [HideInInspector] public bool IsPuppet;
-
-    private Emoter _emoter;
+    
+    public Emoter Emoter { get; private set; }
 
     public static void AddControlBlockerFlags(Object blocker, ControlBlockerFlags flags)
     {
@@ -242,7 +243,7 @@ public class PlayerController : NetworkBehaviour
         PuppetWorldSpaceMoveDir = Vector3.zero;
         PuppetRequestJump = false;
 
-        _emoter = GetComponent<Emoter>();
+        Emoter = GetComponent<Emoter>();
     }
 
     private void Start()
@@ -468,7 +469,7 @@ public class PlayerController : NetworkBehaviour
         if (isLocalPlayer && CameraZoomController.FirstPerson)
         {
             _camera.transform.position = _firstPersonCameraViewPosition.position;
-            if (_emoter && _emoter.IsEmoting)
+            if (Emoter && Emoter.IsEmoting)
             {
                 _camera.transform.rotation = _firstPersonCameraViewPosition.rotation;
             }
