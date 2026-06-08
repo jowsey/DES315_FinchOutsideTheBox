@@ -1,5 +1,6 @@
 using Mirror;
 using Sirenix.OdinInspector;
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UI;
@@ -10,7 +11,6 @@ using UnityEngine.InputSystem;
 using UnityEngine.Playables;
 using UnityEngine.UI;
 using Util;
-using VoIP;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 using ReadOnlyAttribute = Sirenix.OdinInspector.ReadOnlyAttribute;
@@ -112,6 +112,7 @@ public class PlayerController : NetworkBehaviour
     public static readonly UnityEvent<PlayerController> OnPlayerReady = new();
 
     //While there are any control blockers for a given action, that action will be blocked
+    [Flags]
     public enum ControlBlockerFlags
     {
         None = 0,
