@@ -93,7 +93,7 @@ public class PlayerController : NetworkBehaviour
     [Header("State")]
     [ReadOnly] public WheelSeat Seat;
 
-    [ReadOnly] public Treasure HeldTreasure;
+    [ReadOnly] public Holdable HeldObject;
 
     [field: SyncVar] [field: ShowInInspector] [field: ReadOnly] public Vector3 WorldSpaceMoveDir { get; private set; }
     [SyncVar] public float AnalogueMoveScale;
@@ -105,7 +105,7 @@ public class PlayerController : NetworkBehaviour
 
     [SerializeField] private ActionCurveLine _actionCurveLinePrefab;
 
-    [field: SerializeField] public Transform TreasurePickupTarget { get; private set; }
+    [field: SerializeField] public Transform HeldObjectPickupTarget { get; private set; }
 
     // Called when a player object is done being initially setup
     // Does NOT imply the player has just joined
@@ -149,8 +149,8 @@ public class PlayerController : NetworkBehaviour
 
     [SerializeField] private Transform _cameraObstructionDithererRayEndPosition;
 
-    public bool TreasurePickupAllowed => ControlEnabled(ControlBlockerFlags.Interact) && !Seat && !HeldTreasure;
-    public bool TreasurePutdownAllowed => ControlEnabled(ControlBlockerFlags.Interact) && !Seat && HeldTreasure && HeldTreasure.State == Treasure.TreasureState.Held;
+    public bool TreasurePickupAllowed => ControlEnabled(ControlBlockerFlags.Interact) && !Seat && !HeldObject;
+    public bool TreasurePutdownAllowed => ControlEnabled(ControlBlockerFlags.Interact) && !Seat && HeldObject && HeldObject.State == Treasure.HoldableState.Held;
 
     //Set in inspector to true if this player will only exist in cutscenes
     public bool CutscenePlayer;
@@ -432,7 +432,7 @@ public class PlayerController : NetworkBehaviour
                 if (!CrosshairDetection.TargetedTransform.CompareTag("Treasure")) return;
 
                 Treasure newTreasure = CrosshairDetection.TargetedTransform.GetComponentInParent<Treasure>();
-                if (newTreasure.State != Treasure.TreasureState.Idle) return;
+                if (newTreasure.State != Treasure.HoldableState.Idle) return;
 
                 if (InteractAction.action.WasPressedThisFrame())
                 {
@@ -443,10 +443,10 @@ public class PlayerController : NetworkBehaviour
             {
                 if (!CrosshairDetection.TargetedTransform.CompareTag("TreasureCarrier")) return;
 
-                TreasurePutdownTarget carrierTarget = CrosshairDetection.TargetedTransform.GetComponentInChildren<TreasurePutdownTarget>();
+                HeldObjectPutdownTarget carrierTarget = CrosshairDetection.TargetedTransform.GetComponentInChildren<HeldObjectPutdownTarget>();
                 if (InteractAction.action.WasPressedThisFrame())
                 {
-                    HeldTreasure.CmdTryPutdown(carrierTarget);
+                    HeldObject.CmdTryPutdown(carrierTarget);
                     TreasurePickupFX.Post(gameObject);
                 }
             }

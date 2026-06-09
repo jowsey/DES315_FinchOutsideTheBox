@@ -51,7 +51,7 @@ public class WheelSeat : NetworkBehaviour
         if (_seatedPlayer || Time.time < _lastUnsitTime + _sitCooldown) return;
         
         var player = sender!.identity.GetComponent<PlayerController>();
-        if (player.HeldTreasure?.State == Treasure.TreasureState.Held) return; // dont allow sitting while holding a treasure
+        if (player.HeldObject?.State == Treasure.HoldableState.Held) return; // dont allow sitting while holding a treasure
         
         _seatedPlayerIdentity = player.netIdentity; //synced to all clients
     }

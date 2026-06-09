@@ -34,17 +34,17 @@ public class CutsceneStart : NetworkBehaviour
         if (!_played)
         {
             Physics.SyncTransforms();
-            Dictionary<Treasure, (Vector3 localPos, Quaternion rot)> treasureSnapshots = new Dictionary<Treasure, (Vector3 localPos, Quaternion rot)>();
+            Dictionary<Treasure, (Vector3 localPos, Quaternion rot)> ObjectSnapshots = new Dictionary<Treasure, (Vector3 localPos, Quaternion rot)>();
             foreach (Treasure treasure in _cart.CarriedTreasures)
             {
-                treasureSnapshots[treasure] = (_cart.transform.InverseTransformPoint(treasure.transform.position), treasure.transform.rotation);
+                ObjectSnapshots[treasure] = (_cart.transform.InverseTransformPoint(treasure.transform.position), treasure.transform.rotation);
             }
             _cart.transform.position = _cartStartTransform.position;
             _cart.transform.rotation = _cartStartTransform.rotation;
             _cart.Rb.position = _cartStartTransform.position;
             _cart.Rb.rotation = _cartStartTransform.rotation;
             Physics.SyncTransforms();
-            foreach (var kvp in treasureSnapshots)
+            foreach (var kvp in ObjectSnapshots)
             {
                 Vector3 worldPos = _cart.transform.TransformPoint(kvp.Value.localPos);
                 Quaternion worldRot = kvp.Value.rot;

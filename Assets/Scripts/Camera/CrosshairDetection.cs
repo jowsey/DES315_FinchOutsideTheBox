@@ -58,7 +58,7 @@ public class CrosshairDetection : MonoBehaviour
         TargetedTransform = interactable.InteractedTransform;
 
         // Interaction UI
-        var viewingTreasure = PlayerController.LocalPlayer.TreasurePickupAllowed && TargetedTransform.TryGetComponent(out Treasure treasure) && treasure.State == Treasure.TreasureState.Idle;
+        var viewingTreasure = PlayerController.LocalPlayer.TreasurePickupAllowed && TargetedTransform.TryGetComponent(out Treasure treasure) && treasure.State == Treasure.HoldableState.Idle;
         var viewingPutdownTarget = PlayerController.LocalPlayer.TreasurePutdownAllowed && TargetedTransform.CompareTag("TreasureCarrier");
 
         var showPrompt = viewingTreasure || viewingPutdownTarget;
@@ -83,7 +83,7 @@ public class CrosshairDetection : MonoBehaviour
                 _interactPromptInstance.Build(InteractPrompt.InteractionType.PutDown);
 
                 // Position to top of target
-                _interactPromptInstance.WorldFollowUI.TrackingTarget = TargetedTransform.GetComponentInChildren<TreasurePutdownTarget>().transform;
+                _interactPromptInstance.WorldFollowUI.TrackingTarget = TargetedTransform.GetComponentInChildren<HeldObjectPutdownTarget>().transform;
                 ((RectTransform)_interactPromptInstance.transform).pivot = new Vector2(0.5f, 0);
                 _interactPromptInstance.WorldFollowUI.UIPositionOffset = new Vector2(0, -32);
             }

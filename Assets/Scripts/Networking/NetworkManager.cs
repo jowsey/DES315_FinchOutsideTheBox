@@ -74,9 +74,9 @@ namespace Networking
         {
             // Make player drop treasure if they had one
             var player = conn.identity?.GetComponent<PlayerController>();
-            if (player && player.HeldTreasure)
+            if (player && player.HeldObject)
             {
-                player.HeldTreasure.State = Treasure.TreasureState.Idle;
+                player.HeldObject.State = Treasure.HoldableState.Idle;
             }
 
             base.OnServerDisconnect(conn);

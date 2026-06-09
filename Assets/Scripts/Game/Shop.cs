@@ -1,10 +1,17 @@
+using Mirror;
 using Sirenix.OdinInspector;
 using System.Collections.Generic;
 using Unity.Cinemachine;
-using Unity.VisualScripting;
 using UnityEngine;
 
-public class Shop : SerializedMonoBehaviour //for _itemPrefabs serialisation (@jowsey is there a better way of doing this ?)
+public enum PurchaseError
+{
+    None,
+    NotEnoughMoney,
+    AlreadyHoldingObject,
+}
+
+public class Shop : NetworkBehaviour
 {
     private CinemachineCamera _cinemachineCamera;
     private CinemachineOrbitalFollow _orbitalFollow;
@@ -15,29 +22,42 @@ public class Shop : SerializedMonoBehaviour //for _itemPrefabs serialisation (@j
     [Header("Visual Spawning")]
     [SerializeField] private Transform _itemSpawnStart;
     [SerializeField] private Transform _itemSpawnEnd;
+
+    //Because Dictionary isn't serialisable by default (and we can't inherit from SerializedMonoBehaviour since we're inheriting from NetworkBehaviour) (@jowsey is there a better way of doing this ?)
+    [System.Serializable]
+    private struct ItemPrefabMapping
+    {
+        public ItemType ItemType;
+        public GameObject Prefab;
+    }
     [Tooltip("Map from each ItemType to the visual prefab that will be spawned")]
+    [SerializeField] private List<ItemPrefabMapping> _itemPrefabsList = new();
     [SerializeField] private Dictionary<ItemType, GameObject> _itemPrefabs = new();
-    private List<GameObject> _spawnedVisuals = new List<GameObject>();
 
     [SerializeField] private int _numPurchasableItems;
-    private List<ItemType> _purchasableItems = new List<ItemType>();
-    public List<ItemType> PurchasableItems
-    {
-        get => _purchasableItems;
-        private set
-        {
-            _purchasableItems = value;
-            RefreshVisuals();
-        }
-    }
+    private List<Item> _purchasableItems = new List<Item>();
     [SerializeField] private EconomySettings _economySettings;
 
-    //For restoring bought items upon respawn
-    private Dictionary<Checkpoint, List<ItemType>> _shopStateAtCheckpoint = new Dictionary<Checkpoint, List<ItemType>>();
+    [Tooltip("The types of items that will be spawned on the shelf when the game starts.")]
+    [SerializeField] private List<ItemType> _plannedItemTypes = new List<ItemType>();
 
+    //For restoring bought items upon respawn
+    private Dictionary<Checkpoint, List<Item>> _shopStateAtCheckpoint = new();
+
+
+    private void SyncItemPrefabsDictionary()
+    {
+        _itemPrefabs.Clear();
+        if (_itemPrefabsList == null) { return; }
+        foreach (ItemPrefabMapping mapping in _itemPrefabsList)
+        {
+            _itemPrefabs[mapping.ItemType] = mapping.Prefab;
+        }
+    }
 
     void Awake()
     {
+        SyncItemPrefabsDictionary();
         foreach (CinemachineCamera cam in FindObjectsByType<CinemachineCamera>(FindObjectsInactive.Include, FindObjectsSortMode.None))
         {
             if (cam.CompareTag("FreeLookCam"))
@@ -50,76 +70,89 @@ public class Shop : SerializedMonoBehaviour //for _itemPrefabs serialisation (@j
         _zoomController = Camera.main.GetComponent<CameraZoomController>();
     }
 
-    private void Start()
+    public override void OnStartServer()
     {
         Cart.OnReachCheckpoint.AddListener(SaveShopState);
         Checkpoint.RespawnEvent.AddListener(RestoreShopState);
+        SpawnPhysicalItems();
     }
 
-    private void OnDestroy()
+    public override void OnStopServer()
     {
         Cart.OnReachCheckpoint.RemoveListener(SaveShopState);
         Checkpoint.RespawnEvent.RemoveListener(RestoreShopState);
     }
 
-    private void RefreshVisuals()
+    [Server]
+    private void SpawnPhysicalItems()
     {
-        if (!Application.isPlaying) { return; }
-
-        //Destroy the old visuals
-        foreach (GameObject visual in _spawnedVisuals)
-        {
-            if (visual != null) { Destroy(visual); }
-        }
-        _spawnedVisuals.Clear();
-        if (_purchasableItems == null || _purchasableItems.Count == 0 || _itemSpawnStart == null || _itemSpawnEnd == null) { return; }
-
-        //Instantiate the new visuals evenly spaced between _itemSpawnStart and _itemSpawnEnd
-        int count = _purchasableItems.Count;
+        _purchasableItems.Clear();
+        int count = _plannedItemTypes.Count;
         for (int i = 0; i < count; ++i)
         {
-            ItemType itemToSpawn = _purchasableItems[i];
+            ItemType itemToSpawn = _plannedItemTypes[i];
             if (_itemPrefabs.TryGetValue(itemToSpawn, out GameObject prefab))
             {
                 //Calculate position along the line
-                //If there's only 1 item, stick it in the middle. Otherwise, space em out evenly.
+                //If there's only one item, stick it in the middle. Otherwise, space em out evenly
                 float t = (count == 1) ? 0.5f : (float)i / (count - 1);
                 Vector3 spawnPos = Vector3.Lerp(_itemSpawnStart.position, _itemSpawnEnd.position, t);
-                GameObject newVisual = Instantiate(prefab, spawnPos, _itemSpawnStart.rotation, this.transform);
-                _spawnedVisuals.Add(newVisual);
+
+                //Spawn the networked object and track it
+                GameObject newVisual = Instantiate(prefab, spawnPos, _itemSpawnStart.rotation);
+                NetworkServer.Spawn(newVisual);
+                _purchasableItems.Add(newVisual.GetComponent<Item>());
             }
             else
             {
-                Debug.LogWarning($"Shop is trying to spawn {itemToSpawn} but it's not set in _itemPrefabs");
+                Debug.LogWarning($"Shop is trying to spawn {itemToSpawn} but it's not set in _itemPrefabsList");
             }
         }
     }
 
+    [Server]
     private void SaveShopState(Checkpoint checkpoint)
     {
-        _shopStateAtCheckpoint[checkpoint] = new List<ItemType>(PurchasableItems);
+        _shopStateAtCheckpoint[checkpoint] = new List<Item>(_purchasableItems);
     }
 
+    [Server]
     private void RestoreShopState(Checkpoint checkpoint)
     {
-        if (_shopStateAtCheckpoint.TryGetValue(checkpoint, out List<ItemType> savedItems))
+        if (_shopStateAtCheckpoint.TryGetValue(checkpoint, out List<Item> savedItems))
         {
-            PurchasableItems = new List<ItemType>(savedItems); //deep copy (todo maybe not necessary ?)
-            Debug.Log($"Shop restored: inventory reverted at {checkpoint.AreaName}");
+            _purchasableItems = new List<Item>(savedItems); //deep copy (todo maybe not necessary ?)
+
+            //Put the items back on the display rack
+            int count = _purchasableItems.Count;
+            for (int i = 0; i < count; ++i)
+            {
+                Item item = _purchasableItems[i];
+                if (item != null)
+                {
+                    float t = (count == 1) ? 0.5f : (float)i / (count - 1);
+                    item.Rb.position = Vector3.Lerp(_itemSpawnStart.position, _itemSpawnEnd.position, t);
+                    item.Rb.rotation = _itemSpawnStart.rotation;
+                    Physics.SyncTransforms();
+                    item.State = Holdable.HoldableState.Idle;
+                }
+            }
+            Debug.Log($"Shop restored: display rack reverted at {checkpoint.AreaName}");
         }
     }
 
     private void OnValidate()
     {
+        SyncItemPrefabsDictionary();
         _numPurchasableItems = Mathf.Clamp(_numPurchasableItems, 0, (int)ItemType.NUM_TYPES);
-        if (PurchasableItems.Count != _numPurchasableItems)
+        if (_plannedItemTypes.Count != _numPurchasableItems)
         {
-            RandomiseItems();
+            RandomisePlannedItems();
         }
     }
 
     [Button]
-    private void RandomiseItems()
+    private void RandomisePlannedItems()
     {
         List<ItemType> newItems = new List<ItemType>();
         for (int i = 0; i < _numPurchasableItems; ++i)
@@ -131,7 +164,7 @@ public class Shop : SerializedMonoBehaviour //for _itemPrefabs serialisation (@j
             } while (newItems.Contains(item));
             newItems.Add(item);
         }
-        PurchasableItems = newItems;
+        _plannedItemTypes = newItems;
     }
 
     [Button]
@@ -166,32 +199,68 @@ public class Shop : SerializedMonoBehaviour //for _itemPrefabs serialisation (@j
         PlayerController.RemoveAllControlBlockerFlags(this);
     }
 
-    //Returns false if purchase was unsuccessful due to a lack of balance
-    public bool TryBuy(int index)
+    private void TryBuy(int index)
     {
-        int price = _economySettings.ItemBuyPrices[PurchasableItems[index]];
-        if (price > BankManager.Instance.Balance) { return false; }
-
-        BankManager.Instance.CmdSubtractFromBalance(price);
-        _purchasableItems.RemoveAt(index);
-        RefreshVisuals();
-
-        return true;
+        CmdTryBuy(index);
     }
 
-    //wasnt sure which one u wanted mush
-
-    //Returns false if purchase was unsuccessful due to a lack of balance
-    public bool TryBuy(ItemType item)
+    [Command(requiresAuthority = false)]
+    private void CmdTryBuy(int index, NetworkConnectionToClient sender = null)
     {
-        int price = _economySettings.ItemBuyPrices[item];
-        if (price > BankManager.Instance.Balance) { return false; }
-        
-        BankManager.Instance.CmdSubtractFromBalance(price);
-        _purchasableItems.Remove(item);
-        RefreshVisuals();
+        //Buncha input validation
+        if (index < 0 || index >= _purchasableItems.Count)
+        {
+            Debug.LogError("Shop.TryBuy() called with index " + index + " which was out of range (_purchasableItems.Count = " + _purchasableItems.Count + ")");
+            return;
+        }
+        Item itemToBuy = _purchasableItems[index];
+        if (itemToBuy == null || itemToBuy.State != Holdable.HoldableState.Idle)
+        {
+            Debug.LogError("Shop.TryBuy() called with index " + index + " which returned a " + (itemToBuy == null ? "null item" : "non-idle item (name = " + itemToBuy.name + ")"));
+            return;
+        }
+        if (sender.identity.GetComponent<PlayerController>().HeldObject != null)
+        {
+            TargetBuyResult(sender, PurchaseError.AlreadyHoldingObject, itemToBuy, -1);
+        }
+        int price = _economySettings.ItemBuyPrices[itemToBuy.Type];
+        if (BankManager.Instance.Balance < price)
+        {
+            TargetBuyResult(sender, PurchaseError.NotEnoughMoney, itemToBuy, price);
+            return;
+        }
 
-        return true;
+        //Take the money, remove from the display rack, and put it in the player's hands
+        BankManager.Instance.CmdSubtractFromBalance(price);
+        _purchasableItems.RemoveAt(index);
+        itemToBuy.CmdTryPickup(sender);
+        TargetBuyResult(sender, PurchaseError.None, itemToBuy, price);
+    }
+
+    [TargetRpc]
+    private void TargetBuyResult(NetworkConnection target, PurchaseError err, Item item, int price)
+    {
+        //@jowsey this gets called after the client tries to buy something, feel free to add some ui stuff in here for a successful / unsuccessful purchase
+
+        //placeholder:
+        switch (err)
+        {
+        case PurchaseError.None:
+        {
+            Debug.Log("Successfully purchased " + item.name + " for " + price + " juice coins");
+            break;
+        }
+        case PurchaseError.NotEnoughMoney:
+        {
+            Debug.Log("Failed to purchase " + item.name + " (price = " + price + ", balance = " + BankManager.Instance.Balance + ")");
+            break;
+        }
+        case PurchaseError.AlreadyHoldingObject:
+        {
+            Debug.Log("Failed to purchase " + item.name + " (already holding an object)");
+            break;
+        }
+        }
     }
 
     //Returns the sell price of all treasures in the cart (abstracted out of SellAll() for ui purposes) (@jowsey lmk if u need smth different here)
@@ -210,8 +279,8 @@ public class Shop : SerializedMonoBehaviour //for _itemPrefabs serialisation (@j
 
     public void SellAll(Cart cart)
     {
+        BankManager.Instance.CmdAddToBalance(EvaluateSellAllPrice(cart)); //must be done before removing all the treasure, obviously
         cart.CmdRemoveAllTreasures();
-        BankManager.Instance.CmdAddToBalance(EvaluateSellAllPrice(cart));
     }
 
 
@@ -219,6 +288,7 @@ public class Shop : SerializedMonoBehaviour //for _itemPrefabs serialisation (@j
     [Button] public void BuyIndex0() => TryBuy(0);
     [Button] public void BuyIndex1() => TryBuy(1);
     [Button] public void BuyIndex2() => TryBuy(2);
-    [Button] public void DebugSellAllPrice() => Debug.Log(EvaluateSellAllPrice(FindAnyObjectByType<Cart>()));
+    [Button] public void DebugSellAllPrice() => Debug.Log("Current sell all price: " + EvaluateSellAllPrice(FindAnyObjectByType<Cart>()) + " juice coins");
     [Button] public void SellAll() => SellAll(FindAnyObjectByType<Cart>());
+    [Button] public void DebugBalance() => Debug.Log("Balance: " + BankManager.Instance.Balance + " juice coins");
 }
