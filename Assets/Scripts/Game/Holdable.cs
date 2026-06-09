@@ -30,8 +30,9 @@ public abstract class Holdable : NetworkBehaviour
     protected PlayerController _holder;
 
     [SyncVar(hook = nameof(OnStateChanged))]
-    [ReadOnly]
-    public HoldableState State;
+    [ReadOnly] public HoldableState State;
+    [SyncVar(hook = nameof(OnPickuppableChanged))]
+    public bool Pickuppable;
 
     protected virtual void Awake()
     {
@@ -39,6 +40,7 @@ public abstract class Holdable : NetworkBehaviour
         _colliders = GetComponentsInChildren<Collider>();
         _renderers = GetComponentsInChildren<Renderer>();
         _lights = GetComponentsInChildren<Light>();
+        Pickuppable = true;
     }
 
     public override void OnStartClient()
@@ -118,13 +120,19 @@ public abstract class Holdable : NetworkBehaviour
         }
     }
 
+    private void OnPickuppableChanged(bool _, bool newState)
+    {
+        GetComponent<Highlight>().enabled = newState;
+    }
+
     [Command(requiresAuthority = false)]
     public void CmdTryPickup(NetworkConnectionToClient sender = null)
     {
-        if (State != HoldableState.Idle) return;
+        if (State != HoldableState.Idle) { return; }
+        if (!Pickuppable) { return; }
 
         var player = sender!.identity.GetComponent<PlayerController>();
-        if (player.HeldObject) return;
+        if (player.HeldObject) { return; }
 
         _holderIdentity = sender.identity;
         State = HoldableState.Held;

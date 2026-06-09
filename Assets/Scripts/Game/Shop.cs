@@ -101,7 +101,9 @@ public class Shop : NetworkBehaviour
                 //Spawn the networked object and track it
                 GameObject newVisual = Instantiate(prefab, spawnPos, _itemSpawnStart.rotation);
                 NetworkServer.Spawn(newVisual);
-                _purchasableItems.Add(newVisual.GetComponent<Item>());
+                Item item = newVisual.GetComponent<Item>();
+                item.Pickuppable = false;
+                _purchasableItems.Add(item);
             }
             else
             {
@@ -135,6 +137,7 @@ public class Shop : NetworkBehaviour
                     item.Rb.rotation = _itemSpawnStart.rotation;
                     Physics.SyncTransforms();
                     item.State = Holdable.HoldableState.Idle;
+                    item.Pickuppable = false;
                 }
             }
             Debug.Log($"Shop restored: display rack reverted at {checkpoint.AreaName}");
@@ -233,6 +236,7 @@ public class Shop : NetworkBehaviour
         //Take the money, remove from the display rack, and put it in the player's hands
         BankManager.Instance.CmdSubtractFromBalance(price);
         _purchasableItems.RemoveAt(index);
+        itemToBuy.Pickuppable = true;
         itemToBuy.CmdTryPickup(sender);
         TargetBuyResult(sender, PurchaseError.None, itemToBuy, price);
     }
