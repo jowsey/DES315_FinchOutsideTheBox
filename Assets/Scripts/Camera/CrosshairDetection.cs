@@ -58,8 +58,8 @@ public class CrosshairDetection : MonoBehaviour
         TargetedTransform = interactable.InteractedTransform;
 
         // Interaction UI
-        var viewingTreasure = PlayerController.LocalPlayer.TreasurePickupAllowed && TargetedTransform.TryGetComponent(out Treasure treasure) && treasure.State == Treasure.HoldableState.Idle;
-        var viewingPutdownTarget = PlayerController.LocalPlayer.TreasurePutdownAllowed && TargetedTransform.CompareTag("TreasureCarrier");
+        var viewingTreasure = PlayerController.LocalPlayer.PickupAllowed && TargetedTransform.TryGetComponent(out Treasure treasure) && treasure.State == Treasure.HoldableState.Idle;
+        var viewingPutdownTarget = PlayerController.LocalPlayer.PutdownAllowed && TargetedTransform.CompareTag("ObjectCarrier");
 
         var showPrompt = viewingTreasure || viewingPutdownTarget;
         if (showPrompt)

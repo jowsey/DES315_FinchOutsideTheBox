@@ -36,7 +36,7 @@ public class Item : Holdable
     {
         if (!isServer) return;
 
-        if (other.CompareTag("TreasureCarrier"))
+        if (other.CompareTag("ObjectCarrier"))
         {
             Cart cart = other.GetComponentInParent<Cart>();
             cart.AddCarriedItem(this);
@@ -47,7 +47,7 @@ public class Item : Holdable
     {
         if (!isServer) return;
 
-        if (other.CompareTag("TreasureCarrier"))
+        if (other.CompareTag("ObjectCarrier"))
         {
             Cart cart = other.GetComponentInParent<Cart>();
             cart.RemoveCarriedItem(this);

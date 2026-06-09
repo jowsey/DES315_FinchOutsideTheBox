@@ -149,8 +149,8 @@ public class PlayerController : NetworkBehaviour
 
     [SerializeField] private Transform _cameraObstructionDithererRayEndPosition;
 
-    public bool TreasurePickupAllowed => ControlEnabled(ControlBlockerFlags.Interact) && !Seat && !HeldObject;
-    public bool TreasurePutdownAllowed => ControlEnabled(ControlBlockerFlags.Interact) && !Seat && HeldObject && HeldObject.State == Treasure.HoldableState.Held;
+    public bool PickupAllowed => ControlEnabled(ControlBlockerFlags.Interact) && !Seat && !HeldObject;
+    public bool PutdownAllowed => ControlEnabled(ControlBlockerFlags.Interact) && !Seat && HeldObject && HeldObject.State == Treasure.HoldableState.Held;
 
     //Set in inspector to true if this player will only exist in cutscenes
     public bool CutscenePlayer;
@@ -336,7 +336,7 @@ public class PlayerController : NetworkBehaviour
 
         // Set default highlight states for interactables
         Highlight.SetHighlightable("Treasure", true);
-        Highlight.SetHighlightable("TreasureCarrier", false);
+        Highlight.SetHighlightable("ObjectCarrier", false);
 
         // todo this sucks
         // eventually we should just link carts to 2 players so we can have an arbitrary number of carts/players
@@ -427,21 +427,21 @@ public class PlayerController : NetworkBehaviour
 
         if (CrosshairDetection.TargetedTransform)
         {
-            if (TreasurePickupAllowed)
+            if (PickupAllowed)
             {
-                if (!CrosshairDetection.TargetedTransform.CompareTag("Treasure")) return;
+                if (!CrosshairDetection.TargetedTransform.CompareTag("Treasure") && !CrosshairDetection.TargetedTransform.CompareTag("Item")) { return; }
 
-                Treasure newTreasure = CrosshairDetection.TargetedTransform.GetComponentInParent<Treasure>();
-                if (newTreasure.State != Treasure.HoldableState.Idle) return;
+                Holdable holdable = CrosshairDetection.TargetedTransform.GetComponentInParent<Holdable>();
+                if (holdable.State != Treasure.HoldableState.Idle) return;
 
                 if (InteractAction.action.WasPressedThisFrame())
                 {
-                    newTreasure.CmdTryPickup();
+                    holdable.CmdTryPickup();
                 }
             }
-            else if (TreasurePutdownAllowed)
+            else if (PutdownAllowed)
             {
-                if (!CrosshairDetection.TargetedTransform.CompareTag("TreasureCarrier")) return;
+                if (!CrosshairDetection.TargetedTransform.CompareTag("ObjectCarrier")) return;
 
                 HeldObjectPutdownTarget carrierTarget = CrosshairDetection.TargetedTransform.GetComponentInChildren<HeldObjectPutdownTarget>();
                 if (InteractAction.action.WasPressedThisFrame())

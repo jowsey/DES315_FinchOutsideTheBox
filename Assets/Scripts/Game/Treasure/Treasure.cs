@@ -28,7 +28,7 @@ public class Treasure : Holdable
                 if (_holder.isLocalPlayer)
                 {
                     Highlight.SetHighlightable("Treasure", false);
-                    Highlight.SetHighlightable("TreasureCarrier", true);
+                    Highlight.SetHighlightable("ObjectCarrier", true);
                 }
                 if (_hasInitialised)
                 {
@@ -41,7 +41,7 @@ public class Treasure : Holdable
                 if (_holder?.isLocalPlayer == true)
                 {
                     Highlight.SetHighlightable("Treasure", true);
-                    Highlight.SetHighlightable("TreasureCarrier", false);
+                    Highlight.SetHighlightable("ObjectCarrier", false);
                 }
                 break;
             }
@@ -62,7 +62,7 @@ public class Treasure : Holdable
         if (!isServer) return;
 
         if (!col.collider.CompareTag("Treasure") &&
-            !col.collider.CompareTag("TreasureCarrier") &&
+            !col.collider.CompareTag("ObjectCarrier") &&
             LayerMask.LayerToName(col.collider.gameObject.layer) != "Cart")
         {
             if (Smashable)
@@ -75,7 +75,7 @@ public class Treasure : Holdable
     private void OnTriggerEnter(Collider other)
     {
         if (!isServer) { return; }
-        if (other.CompareTag("TreasureCarrier"))
+        if (other.CompareTag("ObjectCarrier"))
         {
             Cart cart = other.GetComponentInParent<Cart>();
             cart.AddCarriedTreasure(this);
@@ -86,7 +86,7 @@ public class Treasure : Holdable
     private void OnTriggerExit(Collider other)
     {
         if (!isServer) { return; }
-        if (other.CompareTag("TreasureCarrier"))
+        if (other.CompareTag("ObjectCarrier"))
         {
             Cart cart = other.GetComponentInParent<Cart>();
             cart.RemoveCarriedTreasure(this);
