@@ -63,6 +63,7 @@ public class Treasure : Holdable
 
         if (!col.collider.CompareTag("Treasure") &&
             !col.collider.CompareTag("ObjectCarrier") &&
+            !col.collider.CompareTag("Item") &&
             LayerMask.LayerToName(col.collider.gameObject.layer) != "Cart")
         {
             if (Smashable)

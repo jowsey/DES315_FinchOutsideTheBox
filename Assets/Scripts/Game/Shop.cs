@@ -222,7 +222,8 @@ public class Shop : NetworkBehaviour
             Debug.LogError("Shop.TryBuy() called with index " + index + " which returned a " + (itemToBuy == null ? "null item" : "non-idle item (name = " + itemToBuy.name + ")"));
             return;
         }
-        if (sender.identity.GetComponent<PlayerController>().HeldObject != null)
+        PlayerController buyer = sender.identity.GetComponent<PlayerController>();
+        if (buyer.HeldObject != null)
         {
             TargetBuyResult(sender, PurchaseError.AlreadyHoldingObject, itemToBuy, -1);
         }
@@ -237,7 +238,7 @@ public class Shop : NetworkBehaviour
         BankManager.Instance.CmdSubtractFromBalance(price);
         _purchasableItems.RemoveAt(index);
         itemToBuy.Pickuppable = true;
-        itemToBuy.CmdTryPickup(sender);
+        itemToBuy.ServerTryPickup(buyer);
         TargetBuyResult(sender, PurchaseError.None, itemToBuy, price);
     }
 

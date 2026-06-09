@@ -128,15 +128,22 @@ public abstract class Holdable : NetworkBehaviour
     [Command(requiresAuthority = false)]
     public void CmdTryPickup(NetworkConnectionToClient sender = null)
     {
-        if (State != HoldableState.Idle) { return; }
+        PlayerController player = sender!.identity.GetComponent<PlayerController>();
+        ServerTryPickup(player);
+    }
+
+    //because we might be picking up from Shop.CmdTryBuy() and calling a command from a command messes with the sender data or something ?
+    [Server]
+    public void ServerTryPickup(PlayerController player)
+    {
+        if (State != HoldableState.Idle) return;
         if (!Pickuppable) { return; }
+        if (player.HeldObject) return;
 
-        var player = sender!.identity.GetComponent<PlayerController>();
-        if (player.HeldObject) { return; }
-
-        _holderIdentity = sender.identity;
+        _holderIdentity = player.netIdentity;
         State = HoldableState.Held;
     }
+
 
     [Command(requiresAuthority = false)]
     public void CmdTryPutdown(HeldObjectPutdownTarget target, NetworkConnectionToClient sender = null)
