@@ -123,8 +123,8 @@ public abstract class Holdable : NetworkBehaviour
 
     private void OnPickuppableChanged(bool _, bool newState)
     {
-        GetComponent<Highlight>().enabled = newState;
-        GetComponent<PlayerImmovable>().enabled = !newState;
+        if (TryGetComponent<Highlight>(out Highlight h)) { h.enabled = newState; }
+        if (TryGetComponent<PlayerImmovable>(out PlayerImmovable pi)) { pi.enabled = !newState; }
     }
 
     [Command(requiresAuthority = false)]
