@@ -2,6 +2,7 @@ using System;
 using Mirror;
 using Sirenix.OdinInspector;
 using System.Collections.Generic;
+using PrimeTween;
 using UI;
 using Unity.Cinemachine;
 using UnityEngine;
@@ -34,8 +35,10 @@ public class Shop : NetworkBehaviour
     [SerializeField] private Transform _itemSpawnStart;
 
     [SerializeField] private Transform _itemSpawnEnd;
-
+    
     private Transform _uiCanvas;
+
+    [SerializeField] private CanvasGroup[] _hiddenUIElements;
 
     //Because Dictionary isn't serialisable by default (and we can't inherit from SerializedMonoBehaviour since we're inheriting from NetworkBehaviour) (@jowsey is there a better way of doing this ?)
     [System.Serializable]
@@ -205,6 +208,7 @@ public class Shop : NetworkBehaviour
         _cinemachineCamera.Follow = _cameraLockLocation;
         _cinemachineCamera.LookAt = _cameraLockLocation;
         _orbitalFollow.HorizontalAxis.Value = _cameraLockLocation.eulerAngles.y;
+        _orbitalFollow.VerticalAxis.Value = 20; // todo figure out correct values here
 
         //Add control blockers
         PlayerController.ControlBlockerFlags flags = PlayerController.ControlBlockerFlags.All;
@@ -212,6 +216,12 @@ public class Shop : NetworkBehaviour
         flags &= ~PlayerController.ControlBlockerFlags.ToggleTextChat;
         //todo: do we let players respawn if they're in the shop? i feel like it would introduce a loooot of edge cases like if they're in the middle of stuff
         PlayerController.AddControlBlockerFlags(this, flags);
+        
+        //Hide action UIs
+        foreach (CanvasGroup uiElement in _hiddenUIElements)
+        {
+            Tween.Alpha(uiElement, 0, 0.25f, Ease.OutCubic);
+        }
     }
 
     [Button]
@@ -226,6 +236,12 @@ public class Shop : NetworkBehaviour
 
         //Remove control blockers
         PlayerController.RemoveAllControlBlockerFlags(this);
+        
+        //Show action UIs
+        foreach (CanvasGroup uiElement in _hiddenUIElements)
+        {
+            Tween.Alpha(uiElement, 1, 0.25f, Ease.OutCubic);
+        }
     }
 
     private void TryBuy(int index)
