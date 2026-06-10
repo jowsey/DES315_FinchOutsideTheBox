@@ -12,14 +12,16 @@ namespace UI
 
         [SerializeField] private CanvasGroup _hoverCta;
 
+        [SerializeField] private Outline _outline;
+        [SerializeField] private Color _hoveredOutline = Color.white;
+        private Color _initialOutline;
+
         [SerializeField] private TextMeshProUGUI _itemNameText;
         [SerializeField] private TextMeshProUGUI _itemDescriptionText;
         [SerializeField] private TextMeshProUGUI _itemPriceText;
 
         [SerializeField] private RectTransform _contentRectTransform;
         private float _initialHeight;
-
-        [SerializeField] private Outline _outline;
 
         [SerializeField] [Min(0)] private float _transitionDuration = 0.25f;
 
@@ -35,6 +37,7 @@ namespace UI
         private void OnEnable()
         {
             _initialHeight = ((RectTransform)transform).sizeDelta.y;
+            _initialOutline = _outline.effectColor;
         }
 
         public void Build(Item item, int index, Shop shop)
@@ -60,6 +63,8 @@ namespace UI
             Tween.UISizeDelta(rt, new Vector2(rt.sizeDelta.x, _contentRectTransform.sizeDelta.y), _transitionDuration, Ease.OutCubic);
             Tween.Scale(rt, Vector3.one * 1.05f, _transitionDuration, Ease.OutCubic);
             Tween.Alpha(_hoverCta, 0, _transitionDuration, Ease.OutCubic);
+
+            _outline.effectColor = _hoveredOutline;
         }
 
         public void OnPointerExit(PointerEventData eventData)
@@ -68,6 +73,8 @@ namespace UI
             Tween.UISizeDelta(rt, new Vector2(rt.sizeDelta.x, _initialHeight), _transitionDuration, Ease.OutCubic);
             Tween.Scale(rt, Vector3.one, _transitionDuration, Ease.OutCubic);
             Tween.Alpha(_hoverCta, 1, _transitionDuration, Ease.OutCubic);
+
+            _outline.effectColor = _initialOutline;
         }
     }
 }

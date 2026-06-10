@@ -1,4 +1,3 @@
-using System;
 using Mirror;
 using Sirenix.OdinInspector;
 using System.Collections.Generic;
@@ -6,6 +5,7 @@ using PrimeTween;
 using UI;
 using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using Random = UnityEngine.Random;
 
@@ -50,6 +50,7 @@ public class Shop : NetworkBehaviour
         public ItemType ItemType;
         public GameObject Prefab;
     }
+    
     [Tooltip("Map from each ItemType to the visual prefab that will be spawned")]
     [SerializeField] private List<ItemPrefabMapping> _itemPrefabsList = new();
     [SerializeField] private Dictionary<ItemType, GameObject> _itemPrefabs = new();
@@ -63,6 +64,8 @@ public class Shop : NetworkBehaviour
 
     //For restoring bought items upon respawn
     private Dictionary<Checkpoint, List<Item>> _shopStateAtCheckpoint = new();
+    
+    public UnityEvent<Item, PurchaseError> OnReceiveBuyResult { get; private set; } = new();
     
     private void SyncItemPrefabsDictionary()
     {
@@ -301,24 +304,23 @@ public class Shop : NetworkBehaviour
     [TargetRpc]
     private void TargetBuyResult(NetworkConnection target, PurchaseError err, Item item, int price)
     {
-        //@jowsey this gets called after the client tries to buy something, feel free to add some ui stuff in here for a successful / unsuccessful purchase
-
-        //placeholder:
+        OnReceiveBuyResult.Invoke(item, err);
+        
         switch (err)
         {
             case PurchaseError.None:
             {
-                Debug.Log("Successfully purchased " + item.name + " for " + price + " juice coins");
+                Debug.Log($"Successfully purchased {item.name} (price = {price})");
                 break;
             }
             case PurchaseError.NotEnoughMoney:
             {
-                Debug.Log("Failed to purchase " + item.name + " (price = " + price + ", balance = " + BankManager.Instance.Balance + ")");
+                Debug.Log($"Failed to purchase {item.name} (price = {price}, balance = {BankManager.Instance.Balance})");
                 break;
             }
             case PurchaseError.AlreadyHoldingObject:
             {
-                Debug.Log("Failed to purchase " + item.name + " (already holding an object)");
+                Debug.Log($"Failed to purchase {item.name} (already holding an object)");
                 break;
             }
         }
@@ -346,7 +348,6 @@ public class Shop : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log($"Object entered shop range: {other}");
         if (NetworkClient.localPlayer?.gameObject == other.attachedRigidbody?.gameObject && !_enterPromptInstance)
         {
             _enterPromptInstance = Instantiate(_enterPromptPrefab, _uiCanvas);
@@ -357,7 +358,6 @@ public class Shop : NetworkBehaviour
     
     private void OnTriggerExit(Collider other)
     {
-        Debug.Log($"Object exited shop range: {other}");
         if (NetworkClient.localPlayer?.gameObject == other.attachedRigidbody?.gameObject && _enterPromptInstance)
         {
             Destroy(_enterPromptInstance.gameObject);

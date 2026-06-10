@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using PrimeTween;
 using TMPro;
 using UnityEngine;
 
@@ -10,6 +12,7 @@ namespace UI
 
         [SerializeField] private TextMeshProUGUI _sellAllEstimateText;
         [SerializeField] private TextMeshProUGUI _balanceText;
+        [SerializeField] private TextMeshProUGUI _errorText;
 
         [SerializeField] private ItemCard _itemCardPrefab;
 
@@ -23,9 +26,34 @@ namespace UI
             _cachedCart = FindAnyObjectByType<Cart>();
         }
 
+        private void OnEnable()
+        {
+            if (_shop) _shop.OnReceiveBuyResult.AddListener(OnReceiveBuyResult);
+        }
+
+        private void OnDisable()
+        {
+            if (_shop) _shop.OnReceiveBuyResult.RemoveListener(OnReceiveBuyResult);
+        }
+
+        private void OnReceiveBuyResult(Item item, PurchaseError result)
+        {
+            if (result == PurchaseError.None) return;
+
+            _errorText.text = result switch
+            {
+                PurchaseError.NotEnoughMoney => "You don't have enough coins to purchase this.",
+                PurchaseError.AlreadyHoldingObject => "You are already holding an object.",
+                _ => "An unknown error occurred :\\"
+            };
+
+            Tween.Color(_errorText, Color.red, _errorText.color, 0.5f, Ease.OutCubic);
+        }
+
         public void Build(Shop shop)
         {
             _shop = shop;
+            shop.OnReceiveBuyResult.AddListener(OnReceiveBuyResult);
 
             for (var i = 0; i < shop.PurchasableItems.Count; i++)
             {
