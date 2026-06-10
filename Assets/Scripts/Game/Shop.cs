@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using Random = UnityEngine.Random;
+using System;
 
 public enum PurchaseError
 {
@@ -182,7 +183,7 @@ public class Shop : NetworkBehaviour
     private void OnValidate()
     {
         SyncItemPrefabsDictionary();
-        _numPurchasableItems = Mathf.Clamp(_numPurchasableItems, 0, (int)ItemType.NUM_TYPES);
+        _numPurchasableItems = Mathf.Clamp(_numPurchasableItems, 0, Enum.GetNames(typeof(ItemType)).Length);
         if (_plannedItemTypes.Count != _numPurchasableItems)
         {
             RandomisePlannedItems();
@@ -198,7 +199,7 @@ public class Shop : NetworkBehaviour
             ItemType item;
             do
             {
-                item = (ItemType)Random.Range(0, (int)ItemType.NUM_TYPES);
+                item = (ItemType)Random.Range(0, Enum.GetNames(typeof(ItemType)).Length);
             } while (newItems.Contains(item));
             newItems.Add(item);
         }
@@ -331,11 +332,11 @@ public class Shop : NetworkBehaviour
     public int EvaluateSellAllPrice(Cart cart)
     {
         int sellPrice = 0;
-        for (TreasureType type = (TreasureType)0; type < TreasureType.NUM_TYPES; ++type)
+        for (int type = 0; type < Enum.GetNames(typeof(TreasureType)).Length; ++type)
         {
-            if (cart.CarriedTreasureCounts.ContainsKey(type))
+            if (cart.CarriedTreasureCounts.ContainsKey((TreasureType)type))
             {
-                sellPrice += cart.CarriedTreasureCounts[type] * EconomySettings.TreasureSellPrices[type];
+                sellPrice += cart.CarriedTreasureCounts[(TreasureType)type] * EconomySettings.TreasureSellPrices[(TreasureType)type];
             }
         }
         return sellPrice;

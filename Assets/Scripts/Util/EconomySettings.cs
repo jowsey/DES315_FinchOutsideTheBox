@@ -6,8 +6,6 @@ public enum TreasureType
 {
     Flask = 0,
     Gem = 1,
-    
-    NUM_TYPES = 2,
 }
 
 public enum ItemType
@@ -15,8 +13,6 @@ public enum ItemType
     RedBox = 0,
     GreenBox = 1,
     BlueBox = 2,
-
-    NUM_TYPES = 3,
 }
 
 //Lets us easily have different settings for different difficulty modes
