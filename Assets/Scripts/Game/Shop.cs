@@ -285,6 +285,7 @@ public class Shop : NetworkBehaviour
         if (buyer.HeldObject != null)
         {
             TargetBuyResult(sender, PurchaseError.AlreadyHoldingObject, itemToBuy, -1);
+            return;
         }
         int price = EconomySettings.ItemBuyPrices[itemToBuy.Type];
         if (BankManager.Instance.Balance < price)
