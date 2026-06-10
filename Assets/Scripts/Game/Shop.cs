@@ -209,6 +209,9 @@ public class Shop : NetworkBehaviour
     [Button]
     public void EnterShop()
     {
+        //Don't let the player enter the shop if they're on the cart
+        if (PlayerController.LocalPlayer.Seat) { return; }
+
         //Move camera
         _zoomController.OnForceThirdPersonActionStarted();
         _zoomController.OnForceMinThirdPersonRadiusActionStarted();
@@ -221,9 +224,10 @@ public class Shop : NetworkBehaviour
         PlayerController.ControlBlockerFlags flags = PlayerController.ControlBlockerFlags.All;
         flags &= ~PlayerController.ControlBlockerFlags.Pause;
         flags &= ~PlayerController.ControlBlockerFlags.ToggleTextChat;
-        //todo: do we let players respawn if they're in the shop? i feel like it would introduce a loooot of edge cases like if they're in the middle of stuff
+        flags &= ~PlayerController.ControlBlockerFlags.Respawn;
         PlayerController.AddControlBlockerFlags(this, flags);
         Cursor.lockState = CursorLockMode.None;
+        PlayerController.LocalPlayer.ActiveShop = this;
         
         //Show UI
         if (!_shopUIInstance)
@@ -252,6 +256,8 @@ public class Shop : NetworkBehaviour
         //Remove control blockers
         PlayerController.RemoveAllControlBlockerFlags(this);
         Cursor.lockState = CursorLockMode.Locked;
+
+        PlayerController.LocalPlayer.ActiveShop = null;
         
         //Destroy UI
         if (_shopUIInstance)
@@ -357,6 +363,9 @@ public class Shop : NetworkBehaviour
     {
         if (NetworkClient.localPlayer?.gameObject == other.attachedRigidbody?.gameObject && !_enterPromptInstance)
         {
+            //Don't show players enter shop ui if they're on the cart
+            if (PlayerController.LocalPlayer.Seat) { return; }
+            
             _enterPromptInstance = Instantiate(_enterPromptPrefab, _uiCanvas);
             _enterPromptInstance.Build(InteractPrompt.InteractionType.EnterShop);
             _enterPromptInstance.WorldFollowUI.TrackingTarget = _enterPromptPosition;

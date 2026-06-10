@@ -161,6 +161,9 @@ public class PlayerController : NetworkBehaviour
     [HideInInspector] public float PuppetGravityMultiplier;
     [HideInInspector] public float PuppetJumpForceMultiplier;
     [HideInInspector] public bool IsPuppet;
+
+    //Shop
+    public Shop ActiveShop; //The shop the player is currently in
     
     public Emoter Emoter { get; private set; }
 
@@ -376,7 +379,9 @@ public class PlayerController : NetworkBehaviour
 
     private void OnRespawn(Checkpoint checkpoint)
     {
-        if (!authority || Seat) return;
+        if (!authority || Seat) { return; }
+
+        ActiveShop?.LeaveShop();
 
         Transform newTransform = checkpoint.playerRespawnLocalTransforms[PlayerIndex % checkpoint.playerRespawnLocalTransforms.Length];
 
