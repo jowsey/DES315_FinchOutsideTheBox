@@ -276,6 +276,11 @@ public class Shop : NetworkBehaviour
             Debug.LogError("Shop.TryBuy() called with index " + index + " which was out of range (_purchasableItems.Count = " + PurchasableItems.Count + ")");
             return;
         }
+        if (PurchasableItems[index] == null)
+        {
+            Debug.LogError("Shop.TryBuy() called with index " + index + " which was null (has the item already been bought?)");
+            return;
+        }
         Item itemToBuy = PurchasableItems[index];
         if (itemToBuy == null || itemToBuy.State != Holdable.HoldableState.Idle)
         {
@@ -297,7 +302,7 @@ public class Shop : NetworkBehaviour
 
         //Take the money, remove from the display rack, and put it in the player's hands
         BankManager.Instance.Balance -= price;
-        PurchasableItems.RemoveAt(index);
+        PurchasableItems[index] = null;
         itemToBuy.Pickuppable = true;
         itemToBuy.ServerTryPickup(buyer);
         TargetBuyResult(sender, PurchaseError.None, itemToBuy, price);

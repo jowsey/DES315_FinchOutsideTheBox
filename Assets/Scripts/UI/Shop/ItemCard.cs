@@ -50,6 +50,7 @@ namespace UI
             _itemPriceText.text = $"Purchase for <b>{shop.EconomySettings.ItemBuyPrices[item.Type]}</b> coins";
 
             _shop = shop;
+            _shopIndex = index;
         }
 
         public void OnPointerClick(PointerEventData eventData)
