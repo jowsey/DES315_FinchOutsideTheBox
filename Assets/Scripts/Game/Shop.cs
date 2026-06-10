@@ -31,6 +31,9 @@ public class Shop : NetworkBehaviour
     [SerializeField] private InteractPrompt _enterPromptPrefab;
     private InteractPrompt _enterPromptInstance;
 
+    [SerializeField] private ShopUI _shopUIPrefab;
+    private ShopUI _shopUIInstance;
+
     [Header("Visual Spawning")]
     [SerializeField] private Transform _itemSpawnStart;
 
@@ -52,8 +55,8 @@ public class Shop : NetworkBehaviour
     [SerializeField] private Dictionary<ItemType, GameObject> _itemPrefabs = new();
 
     [SerializeField] private int _numPurchasableItems;
-    private List<Item> _purchasableItems = new List<Item>();
-    [SerializeField] private EconomySettings _economySettings;
+    public List<Item> PurchasableItems { get; private set; } = new();
+    [field: SerializeField] public EconomySettings EconomySettings { get; private set; }
 
     [Tooltip("The types of items that will be spawned on the shelf when the game starts.")]
     [SerializeField] private List<ItemType> _plannedItemTypes = new List<ItemType>();
@@ -115,7 +118,7 @@ public class Shop : NetworkBehaviour
     [Server]
     private void SpawnPhysicalItems()
     {
-        _purchasableItems.Clear();
+        PurchasableItems.Clear();
         int count = _plannedItemTypes.Count;
         for (int i = 0; i < count; ++i)
         {
@@ -132,7 +135,7 @@ public class Shop : NetworkBehaviour
                 NetworkServer.Spawn(newVisual);
                 Item item = newVisual.GetComponent<Item>();
                 item.Pickuppable = false;
-                _purchasableItems.Add(item);
+                PurchasableItems.Add(item);
             }
             else
             {
@@ -144,7 +147,7 @@ public class Shop : NetworkBehaviour
     [Server]
     private void SaveShopState(Checkpoint checkpoint)
     {
-        _shopStateAtCheckpoint[checkpoint] = new List<Item>(_purchasableItems);
+        _shopStateAtCheckpoint[checkpoint] = new List<Item>(PurchasableItems);
     }
 
     [Server]
@@ -152,13 +155,13 @@ public class Shop : NetworkBehaviour
     {
         if (_shopStateAtCheckpoint.TryGetValue(checkpoint, out List<Item> savedItems))
         {
-            _purchasableItems = new List<Item>(savedItems); //deep copy (todo maybe not necessary ?)
+            PurchasableItems = new List<Item>(savedItems); //deep copy (todo maybe not necessary ?)
 
             //Put the items back on the display rack
-            int count = _purchasableItems.Count;
+            int count = PurchasableItems.Count;
             for (int i = 0; i < count; ++i)
             {
-                Item item = _purchasableItems[i];
+                Item item = PurchasableItems[i];
                 if (item != null)
                 {
                     float t = (count == 1) ? 0.5f : (float)i / (count - 1);
@@ -208,7 +211,7 @@ public class Shop : NetworkBehaviour
         _cinemachineCamera.Follow = _cameraLockLocation;
         _cinemachineCamera.LookAt = _cameraLockLocation;
         _orbitalFollow.HorizontalAxis.Value = _cameraLockLocation.eulerAngles.y;
-        _orbitalFollow.VerticalAxis.Value = 20; // todo figure out correct values here
+        _orbitalFollow.VerticalAxis.Value = 20; // todo figure out correct dynamic values here
 
         //Add control blockers
         PlayerController.ControlBlockerFlags flags = PlayerController.ControlBlockerFlags.All;
@@ -216,6 +219,14 @@ public class Shop : NetworkBehaviour
         flags &= ~PlayerController.ControlBlockerFlags.ToggleTextChat;
         //todo: do we let players respawn if they're in the shop? i feel like it would introduce a loooot of edge cases like if they're in the middle of stuff
         PlayerController.AddControlBlockerFlags(this, flags);
+        Cursor.lockState = CursorLockMode.None;
+        
+        //Show UI
+        if (!_shopUIInstance)
+        {
+            _shopUIInstance = Instantiate(_shopUIPrefab, _uiCanvas);
+            _shopUIInstance.Build(this);
+        }
         
         //Hide action UIs
         foreach (CanvasGroup uiElement in _hiddenUIElements)
@@ -236,6 +247,14 @@ public class Shop : NetworkBehaviour
 
         //Remove control blockers
         PlayerController.RemoveAllControlBlockerFlags(this);
+        Cursor.lockState = CursorLockMode.Locked;
+        
+        //Destroy UI
+        if (_shopUIInstance)
+        {
+            Destroy(_shopUIInstance.gameObject);
+            _shopUIInstance = null;
+        }
         
         //Show action UIs
         foreach (CanvasGroup uiElement in _hiddenUIElements)
@@ -244,21 +263,16 @@ public class Shop : NetworkBehaviour
         }
     }
 
-    private void TryBuy(int index)
-    {
-        CmdTryBuy(index);
-    }
-
     [Command(requiresAuthority = false)]
-    private void CmdTryBuy(int index, NetworkConnectionToClient sender = null)
+    public void CmdTryBuy(int index, NetworkConnectionToClient sender = null)
     {
         //Buncha input validation
-        if (index < 0 || index >= _purchasableItems.Count)
+        if (index < 0 || index >= PurchasableItems.Count)
         {
-            Debug.LogError("Shop.TryBuy() called with index " + index + " which was out of range (_purchasableItems.Count = " + _purchasableItems.Count + ")");
+            Debug.LogError("Shop.TryBuy() called with index " + index + " which was out of range (_purchasableItems.Count = " + PurchasableItems.Count + ")");
             return;
         }
-        Item itemToBuy = _purchasableItems[index];
+        Item itemToBuy = PurchasableItems[index];
         if (itemToBuy == null || itemToBuy.State != Holdable.HoldableState.Idle)
         {
             Debug.LogError("Shop.TryBuy() called with index " + index + " which returned a " + (itemToBuy == null ? "null item" : "non-idle item (name = " + itemToBuy.name + ")"));
@@ -269,7 +283,7 @@ public class Shop : NetworkBehaviour
         {
             TargetBuyResult(sender, PurchaseError.AlreadyHoldingObject, itemToBuy, -1);
         }
-        int price = _economySettings.ItemBuyPrices[itemToBuy.Type];
+        int price = EconomySettings.ItemBuyPrices[itemToBuy.Type];
         if (BankManager.Instance.Balance < price)
         {
             TargetBuyResult(sender, PurchaseError.NotEnoughMoney, itemToBuy, price);
@@ -278,7 +292,7 @@ public class Shop : NetworkBehaviour
 
         //Take the money, remove from the display rack, and put it in the player's hands
         BankManager.Instance.CmdSubtractFromBalance(price);
-        _purchasableItems.RemoveAt(index);
+        PurchasableItems.RemoveAt(index);
         itemToBuy.Pickuppable = true;
         itemToBuy.ServerTryPickup(buyer);
         TargetBuyResult(sender, PurchaseError.None, itemToBuy, price);
@@ -318,7 +332,7 @@ public class Shop : NetworkBehaviour
         {
             if (cart.CarriedTreasureCounts.ContainsKey(type))
             {
-                sellPrice += cart.CarriedTreasureCounts[type] * _economySettings.TreasureSellPrices[type];
+                sellPrice += cart.CarriedTreasureCounts[type] * EconomySettings.TreasureSellPrices[type];
             }
         }
         return sellPrice;
@@ -352,9 +366,9 @@ public class Shop : NetworkBehaviour
     }
 
     //placeholder (@jowsey do yo shit)
-    [Button] public void BuyIndex0() => TryBuy(0);
-    [Button] public void BuyIndex1() => TryBuy(1);
-    [Button] public void BuyIndex2() => TryBuy(2);
+    [Button] public void BuyIndex0() => CmdTryBuy(0);
+    [Button] public void BuyIndex1() => CmdTryBuy(1);
+    [Button] public void BuyIndex2() => CmdTryBuy(2);
     [Button] public void DebugSellAllPrice() => Debug.Log("Current sell all price: " + EvaluateSellAllPrice(FindAnyObjectByType<Cart>()) + " juice coins");
     [Button] public void SellAll() => SellAll(FindAnyObjectByType<Cart>());
     [Button] public void DebugBalance() => Debug.Log("Balance: " + BankManager.Instance.Balance + " juice coins");
