@@ -1,8 +1,12 @@
+using System;
 using Mirror;
 using Sirenix.OdinInspector;
 using System.Collections.Generic;
+using UI;
 using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using Random = UnityEngine.Random;
 
 public enum PurchaseError
 {
@@ -16,12 +20,22 @@ public class Shop : NetworkBehaviour
     private CinemachineCamera _cinemachineCamera;
     private CinemachineOrbitalFollow _orbitalFollow;
     private CameraZoomController _zoomController;
+
+    [SerializeField] private InputActionReference _interactAction;
+
     [Tooltip("The transform that the camera will be moved to when the shop is entered")]
     [SerializeField] private Transform _cameraLockLocation;
 
+    [SerializeField] private Transform _enterPromptPosition;
+    [SerializeField] private InteractPrompt _enterPromptPrefab;
+    private InteractPrompt _enterPromptInstance;
+
     [Header("Visual Spawning")]
     [SerializeField] private Transform _itemSpawnStart;
+
     [SerializeField] private Transform _itemSpawnEnd;
+
+    private Transform _uiCanvas;
 
     //Because Dictionary isn't serialisable by default (and we can't inherit from SerializedMonoBehaviour since we're inheriting from NetworkBehaviour) (@jowsey is there a better way of doing this ?)
     [System.Serializable]
@@ -43,8 +57,7 @@ public class Shop : NetworkBehaviour
 
     //For restoring bought items upon respawn
     private Dictionary<Checkpoint, List<Item>> _shopStateAtCheckpoint = new();
-
-
+    
     private void SyncItemPrefabsDictionary()
     {
         _itemPrefabs.Clear();
@@ -67,7 +80,9 @@ public class Shop : NetworkBehaviour
                 break;
             }
         }
+
         _zoomController = Camera.main.GetComponent<CameraZoomController>();
+        _uiCanvas = GameObject.FindGameObjectWithTag("UICanvas").transform;
     }
 
     public override void OnStartServer()
@@ -81,6 +96,17 @@ public class Shop : NetworkBehaviour
     {
         Cart.OnReachCheckpoint.RemoveListener(SaveShopState);
         Checkpoint.RespawnEvent.RemoveListener(RestoreShopState);
+    }
+
+    private void Update()
+    {
+        if (_enterPromptInstance && _interactAction.action.WasPressedThisFrame())
+        {
+            Destroy(_enterPromptInstance.gameObject);
+            _enterPromptInstance = null;
+            
+            EnterShop();
+        }
     }
 
     [Server]
@@ -250,21 +276,21 @@ public class Shop : NetworkBehaviour
         //placeholder:
         switch (err)
         {
-        case PurchaseError.None:
-        {
-            Debug.Log("Successfully purchased " + item.name + " for " + price + " juice coins");
-            break;
-        }
-        case PurchaseError.NotEnoughMoney:
-        {
-            Debug.Log("Failed to purchase " + item.name + " (price = " + price + ", balance = " + BankManager.Instance.Balance + ")");
-            break;
-        }
-        case PurchaseError.AlreadyHoldingObject:
-        {
-            Debug.Log("Failed to purchase " + item.name + " (already holding an object)");
-            break;
-        }
+            case PurchaseError.None:
+            {
+                Debug.Log("Successfully purchased " + item.name + " for " + price + " juice coins");
+                break;
+            }
+            case PurchaseError.NotEnoughMoney:
+            {
+                Debug.Log("Failed to purchase " + item.name + " (price = " + price + ", balance = " + BankManager.Instance.Balance + ")");
+                break;
+            }
+            case PurchaseError.AlreadyHoldingObject:
+            {
+                Debug.Log("Failed to purchase " + item.name + " (already holding an object)");
+                break;
+            }
         }
     }
 
@@ -288,6 +314,26 @@ public class Shop : NetworkBehaviour
         cart.CmdRemoveAllTreasures();
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        Debug.Log($"Object entered shop range: {other}");
+        if (NetworkClient.localPlayer?.gameObject == other.attachedRigidbody?.gameObject && !_enterPromptInstance)
+        {
+            _enterPromptInstance = Instantiate(_enterPromptPrefab, _uiCanvas);
+            _enterPromptInstance.Build(InteractPrompt.InteractionType.EnterShop);
+            _enterPromptInstance.WorldFollowUI.TrackingTarget = _enterPromptPosition;
+        }
+    }
+    
+    private void OnTriggerExit(Collider other)
+    {
+        Debug.Log($"Object exited shop range: {other}");
+        if (NetworkClient.localPlayer?.gameObject == other.attachedRigidbody?.gameObject && _enterPromptInstance)
+        {
+            Destroy(_enterPromptInstance.gameObject);
+            _enterPromptInstance = null;
+        }
+    }
 
     //placeholder (@jowsey do yo shit)
     [Button] public void BuyIndex0() => TryBuy(0);
