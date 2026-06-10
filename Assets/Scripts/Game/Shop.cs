@@ -294,7 +294,7 @@ public class Shop : NetworkBehaviour
         }
 
         //Take the money, remove from the display rack, and put it in the player's hands
-        BankManager.Instance.CmdSubtractFromBalance(price);
+        BankManager.Instance.Balance -= price;
         PurchasableItems.RemoveAt(index);
         itemToBuy.Pickuppable = true;
         itemToBuy.ServerTryPickup(buyer);
@@ -340,10 +340,10 @@ public class Shop : NetworkBehaviour
         return sellPrice;
     }
 
-    public void SellAll(Cart cart)
+    public void CmdSellAll(Cart cart)
     {
-        BankManager.Instance.CmdAddToBalance(EvaluateSellAllPrice(cart)); //must be done before removing all the treasure, obviously
-        cart.CmdRemoveAllTreasures();
+        BankManager.Instance.Balance += EvaluateSellAllPrice(cart); //must be done before removing all the treasure, obviously
+        cart.RemoveAllTreasures();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -370,6 +370,6 @@ public class Shop : NetworkBehaviour
     [Button] public void BuyIndex1() => CmdTryBuy(1);
     [Button] public void BuyIndex2() => CmdTryBuy(2);
     [Button] public void DebugSellAllPrice() => Debug.Log("Current sell all price: " + EvaluateSellAllPrice(FindAnyObjectByType<Cart>()) + " juice coins");
-    [Button] public void SellAll() => SellAll(FindAnyObjectByType<Cart>());
+    [Button] public void SellAll() => CmdSellAll(FindAnyObjectByType<Cart>());
     [Button] public void DebugBalance() => Debug.Log("Balance: " + BankManager.Instance.Balance + " juice coins");
 }

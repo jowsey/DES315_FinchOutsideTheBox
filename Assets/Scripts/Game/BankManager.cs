@@ -7,7 +7,7 @@ public class BankManager : NetworkBehaviour
 {
     public static BankManager Instance { get; private set; }
 
-    [field: SyncVar] public int Balance { get; private set; }
+    [field: SyncVar] public int Balance;
     private Dictionary<Checkpoint, int> _balanceAtCheckpoint = new Dictionary<Checkpoint, int>();
 
     private void Awake()
@@ -44,9 +44,6 @@ public class BankManager : NetworkBehaviour
             Debug.Log($"Bank Restored: Balance reverted to {Balance}");
         }
     }
-
-    [Command(requiresAuthority = false)] public void CmdAddToBalance(int val) => Balance += val;
-    [Command(requiresAuthority = false)] public void CmdSubtractFromBalance(int val) => Balance -= val;
 
     [Button] public void DebugBalance() => Debug.Log(Balance);
 }

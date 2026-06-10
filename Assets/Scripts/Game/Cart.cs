@@ -368,8 +368,8 @@ public class Cart : NetworkBehaviour
         Checkpoint.RespawnEvent.Invoke(Checkpoints[CurrentCheckpointIndex]);
     }
 
-    [Command(requiresAuthority = false)]
-    public void CmdRemoveAllTreasures()
+    [Server]
+    public void RemoveAllTreasures()
     {
         //To prevent iterator invalidation from setting the state (which disables collider which runs OnTriggerExit which removes the treasure from Cart.CarriedTreasures)
         List<Treasure> treasuresToRemove = CarriedTreasures.ToList();
