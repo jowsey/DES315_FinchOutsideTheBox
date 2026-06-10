@@ -1,6 +1,7 @@
 using Mirror;
 using UnityEngine;
 using UnityEngine.UI;
+using Util;
 
 public abstract class Holdable : NetworkBehaviour
 {
@@ -123,6 +124,7 @@ public abstract class Holdable : NetworkBehaviour
     private void OnPickuppableChanged(bool _, bool newState)
     {
         GetComponent<Highlight>().enabled = newState;
+        GetComponent<PlayerImmovable>().enabled = !newState;
     }
 
     [Command(requiresAuthority = false)]

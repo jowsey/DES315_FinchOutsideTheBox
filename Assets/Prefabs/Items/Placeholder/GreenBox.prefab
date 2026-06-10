@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: -3904954286202555597}
   - component: {fileID: -6196461168201183541}
   - component: {fileID: -5100325530649107379}
+  - component: {fileID: -7997031348551171967}
   m_Layer: 11
   m_Name: GreenBox
   m_TagString: Item
@@ -188,6 +189,7 @@ MonoBehaviour:
   syncInterval: 0
   _movementSpeed: 5
   State: 0
+  Pickuppable: 0
   Type: 1
 --- !u!54 &-3904954286202555597
 Rigidbody:
@@ -242,3 +244,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Highlight
   _highlightedColour: {r: 0.5294118, g: 0.8745098, b: 1, a: 0}
+--- !u!114 &-7997031348551171967
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 380276506832609028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d708f620ddc74412bd1cd32665a8d74e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Util.PlayerImmovable

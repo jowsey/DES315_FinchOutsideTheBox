@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: -1007249930347480871}
   - component: {fileID: -2665364535292932485}
   - component: {fileID: -6820339759381075202}
+  - component: {fileID: -4520017643376003777}
   m_Layer: 11
   m_Name: RedBox
   m_TagString: Item
@@ -136,6 +137,7 @@ MonoBehaviour:
   syncInterval: 0
   _movementSpeed: 5
   State: 0
+  Pickuppable: 0
   Type: 0
 --- !u!114 &-1348062647955655686
 MonoBehaviour:
@@ -242,3 +244,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Highlight
   _highlightedColour: {r: 0.5294118, g: 0.8745098, b: 1, a: 0}
+--- !u!114 &-4520017643376003777
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2579090708869118861}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d708f620ddc74412bd1cd32665a8d74e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Util.PlayerImmovable

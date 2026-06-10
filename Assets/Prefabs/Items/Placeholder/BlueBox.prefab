@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 842814884756768176}
   - component: {fileID: 4625733742212349379}
   - component: {fileID: 5933646686787750991}
+  - component: {fileID: -4803673993267976646}
   m_Layer: 11
   m_Name: BlueBox
   m_TagString: Item
@@ -188,6 +189,7 @@ MonoBehaviour:
   syncInterval: 0
   _movementSpeed: 5
   State: 0
+  Pickuppable: 0
   Type: 2
 --- !u!54 &842814884756768176
 Rigidbody:
@@ -242,3 +244,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Highlight
   _highlightedColour: {r: 0.5294118, g: 0.8745098, b: 1, a: 0}
+--- !u!114 &-4803673993267976646
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8790606090940026166}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d708f620ddc74412bd1cd32665a8d74e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Util.PlayerImmovable
