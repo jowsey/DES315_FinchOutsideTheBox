@@ -407,6 +407,24 @@ public class PlayerController : NetworkBehaviour
         if (PlayerNameText) { PlayerNameText.text = newValue; }
         LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)_nameplateCanvas.transform);
     }
+    
+    public Vector3 InputToWorldDir(Vector2 input)
+    {
+        if (CameraZoomController.FirstPerson)
+        {
+            Vector3 forward = Vector3.Scale(transform.forward, new Vector3(1, 0, 1)).normalized;
+            Vector3 right = transform.right;
+            return (forward * input.y + right * input.x).normalized;
+        }
+        else
+        {
+            Quaternion cameraOrientation = _cinemachineCamera ? _cinemachineCamera.State.GetFinalOrientation() : Quaternion.identity;
+            Vector3 cameraForward = Vector3.Scale(cameraOrientation * Vector3.forward, new Vector3(1, 0, 1)).normalized;
+            Vector3 cameraRight = cameraOrientation * Vector3.right;
+
+            return (cameraForward * input.y + cameraRight * input.x).normalized;
+        }
+    }
 
     private void Update()
     {
@@ -534,20 +552,14 @@ public class PlayerController : NetworkBehaviour
         {
             Vector2 inputDirection = ControlEnabled(ControlBlockerFlags.Move) ? MoveAction.action.ReadValue<Vector2>() : Vector2.zero; //no input when controls are blocked
             AnalogueMoveScale = inputDirection.magnitude; //input system has a normalise processor on the move input action
+            
+            WorldSpaceMoveDir = InputToWorldDir(inputDirection);
             if (CameraZoomController.FirstPerson)
             {
-                Vector3 forward = Vector3.Scale(transform.forward, new Vector3(1, 0, 1)).normalized;
-                Vector3 right = transform.right;
-                WorldSpaceMoveDir = (forward * inputDirection.y + right * inputDirection.x).normalized;
                 Rb.MoveRotation(Rb.rotation * Quaternion.Euler(0f, _cameraYawAccumulator, 0f));
             }
             else
             {
-                Quaternion cameraOrientation = _cinemachineCamera ? _cinemachineCamera.State.GetFinalOrientation() : Quaternion.identity;
-                Vector3 cameraForward = Vector3.Scale(cameraOrientation * Vector3.forward, new Vector3(1, 0, 1)).normalized;
-                Vector3 cameraRight = cameraOrientation * Vector3.right;
-
-                WorldSpaceMoveDir = (cameraForward * inputDirection.y + cameraRight * inputDirection.x).normalized;
                 if (WorldSpaceMoveDir.sqrMagnitude > 0)
                 {
                     Rb.MoveRotation(Quaternion.Slerp(Rb.rotation, Quaternion.LookRotation(WorldSpaceMoveDir, Vector3.up), Time.fixedDeltaTime * _rotationSmoothingSpeed));

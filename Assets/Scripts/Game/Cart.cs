@@ -68,11 +68,20 @@ public class Cart : NetworkBehaviour
 
     public bool IsPuppet;
 
+#if UNITY_EDITOR
+    private WheelSeat[] _wheelSeats;
+    [SerializeField] private InputActionReference _alternateWheelMoveAction;
+#endif
+
     private void Awake()
     {
         Rb = GetComponent<Rigidbody>();
         _uiCanvas = GameObject.FindGameObjectWithTag("UICanvas").transform;
         IsPuppet = false;
+
+#if UNITY_EDITOR
+        _wheelSeats = GetComponentsInChildren<WheelSeat>();
+#endif
     }
 
     public override void OnStartServer()
@@ -135,6 +144,19 @@ public class Cart : NetworkBehaviour
         _positionLastFrame = transform.position;
 
         _cartSpeedRTPC.SetGlobalValue(linearVelocity.magnitude * 20);
+
+#if UNITY_EDITOR
+        var altMove = _alternateWheelMoveAction.action.ReadValue<Vector2>();
+        if (altMove.sqrMagnitude > 0)
+        {
+            var worldSpaceMoveDir = PlayerController.LocalPlayer.InputToWorldDir(altMove);
+            foreach (var wheelSeat in _wheelSeats)
+            {
+                if (wheelSeat.SeatedPlayer) continue;
+                wheelSeat.ApplyDrive(worldSpaceMoveDir, worldSpaceMoveDir.magnitude);
+            }
+        }
+#endif
     }
 
     private void FixedUpdate()
