@@ -375,7 +375,7 @@ GameObject:
   - component: {fileID: 7294525134081226135}
   m_Layer: 11
   m_Name: Flask
-  m_TagString: Flask
+  m_TagString: Treasure
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -460,12 +460,14 @@ MonoBehaviour:
   syncInterval: 0
   _movementSpeed: 16
   State: 0
+  Pickuppable: 0
+  Type: 0
   Smashable: 0
-  _smashedFlaskPrefab: {fileID: 8121012120109722422, guid: 05ec8daeb1916d64cb76ff281b17a95c, type: 3}
-  _flaskSmashFx:
+  _smashedTreasurePrefab: {fileID: 8121012120109722422, guid: 05ec8daeb1916d64cb76ff281b17a95c, type: 3}
+  _treasureSmashFx:
     idInternal: 0
     valueGuidInternal: 
-    WwiseObjectReference: {fileID: 11400000, guid: d4d41d3b09f327b4b8b3466dc22fe8a0, type: 2}
+    WwiseObjectReference: {fileID: 0}
 --- !u!114 &-4395463060295971911
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -695,39 +697,39 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8308051920352832707, guid: b5ea9efc5e464924b817fdcc4c75c863, type: 3}
       propertyPath: m_TagString
-      value: Flask
+      value: Treasure
       objectReference: {fileID: 0}
     - target: {fileID: -7633146031997273719, guid: b5ea9efc5e464924b817fdcc4c75c863, type: 3}
       propertyPath: m_TagString
-      value: Flask
+      value: Treasure
       objectReference: {fileID: 0}
     - target: {fileID: -7441197143744424489, guid: b5ea9efc5e464924b817fdcc4c75c863, type: 3}
       propertyPath: m_TagString
-      value: Flask
+      value: Treasure
       objectReference: {fileID: 0}
     - target: {fileID: -4389109622077883945, guid: b5ea9efc5e464924b817fdcc4c75c863, type: 3}
       propertyPath: m_TagString
-      value: Flask
+      value: Treasure
       objectReference: {fileID: 0}
     - target: {fileID: -3680480572318026280, guid: b5ea9efc5e464924b817fdcc4c75c863, type: 3}
       propertyPath: m_TagString
-      value: Flask
+      value: Treasure
       objectReference: {fileID: 0}
     - target: {fileID: -2557005202217389605, guid: b5ea9efc5e464924b817fdcc4c75c863, type: 3}
       propertyPath: m_TagString
-      value: Flask
+      value: Treasure
       objectReference: {fileID: 0}
     - target: {fileID: -2001229790247676989, guid: b5ea9efc5e464924b817fdcc4c75c863, type: 3}
       propertyPath: m_TagString
-      value: Flask
+      value: Treasure
       objectReference: {fileID: 0}
     - target: {fileID: -436959191219352952, guid: b5ea9efc5e464924b817fdcc4c75c863, type: 3}
       propertyPath: m_TagString
-      value: Flask
+      value: Treasure
       objectReference: {fileID: 0}
     - target: {fileID: -346788721996269360, guid: b5ea9efc5e464924b817fdcc4c75c863, type: 3}
       propertyPath: m_TagString
-      value: Flask
+      value: Treasure
       objectReference: {fileID: 0}
     - target: {fileID: 775119181275051162, guid: b5ea9efc5e464924b817fdcc4c75c863, type: 3}
       propertyPath: m_RenderingLayerMask
@@ -747,31 +749,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: b5ea9efc5e464924b817fdcc4c75c863, type: 3}
       propertyPath: m_TagString
-      value: Flask
+      value: Treasure
       objectReference: {fileID: 0}
     - target: {fileID: 928908795725694311, guid: b5ea9efc5e464924b817fdcc4c75c863, type: 3}
       propertyPath: m_TagString
-      value: Flask
+      value: Treasure
       objectReference: {fileID: 0}
     - target: {fileID: 1706816643670523420, guid: b5ea9efc5e464924b817fdcc4c75c863, type: 3}
       propertyPath: m_TagString
-      value: Flask
+      value: Treasure
       objectReference: {fileID: 0}
     - target: {fileID: 1889216124799925085, guid: b5ea9efc5e464924b817fdcc4c75c863, type: 3}
       propertyPath: m_TagString
-      value: Flask
+      value: Treasure
       objectReference: {fileID: 0}
     - target: {fileID: 3472848080631146160, guid: b5ea9efc5e464924b817fdcc4c75c863, type: 3}
       propertyPath: m_TagString
-      value: Flask
+      value: Treasure
       objectReference: {fileID: 0}
     - target: {fileID: 6988464225168165489, guid: b5ea9efc5e464924b817fdcc4c75c863, type: 3}
       propertyPath: m_TagString
-      value: Flask
+      value: Treasure
       objectReference: {fileID: 0}
     - target: {fileID: 8717565332371424089, guid: b5ea9efc5e464924b817fdcc4c75c863, type: 3}
       propertyPath: m_TagString
-      value: Flask
+      value: Treasure
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

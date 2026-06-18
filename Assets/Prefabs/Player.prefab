@@ -100,10 +100,10 @@ MonoBehaviour:
   MoveAction: {fileID: -1680190386980627800, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
   JumpAction: {fileID: -2099379676528639254, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
   InteractAction: {fileID: 1781555164194001046, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
-  FlaskPickupFX:
+  TreasurePickupFX:
     idInternal: 0
     valueGuidInternal: 
-    WwiseObjectReference: {fileID: 11400000, guid: fb4eeb34be92fdc47ab02109d737e816, type: 2}
+    WwiseObjectReference: {fileID: 0}
   _gravityNegationPercentage: 60
   _rotationSmoothingSpeed: 8
   _firstPersonCameraViewPosition: {fileID: 4262451585859541057}
@@ -112,7 +112,7 @@ MonoBehaviour:
   _moveForce: 6
   _groundedSphereRadius: 0.1
   Seat: {fileID: 0}
-  HeldFlask: {fileID: 0}
+  HeldObject: {fileID: 0}
   AnalogueMoveScale: 0
   SkinnedRenderers:
   - {fileID: 5906229853152553508}
@@ -123,7 +123,7 @@ MonoBehaviour:
   - {fileID: 794730768558143244}
   - {fileID: 3018275018661310622}
   _actionCurveLinePrefab: {fileID: 7011724201460765554, guid: 8110da47f80f14b1e92c4f0876b3ad30, type: 3}
-  <FlaskPickupTarget>k__BackingField: {fileID: 6669740496216783317}
+  <HeldObjectPickupTarget>k__BackingField: {fileID: 6669740496216783317}
   _cameraObstructionDithererRayEndPosition: {fileID: 6015846886383839233}
   CutscenePlayer: 0
   PuppetWorldSpaceMoveDir: {x: 0, y: 0, z: 0}
@@ -657,7 +657,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6669740496216783317}
   m_Layer: 8
-  m_Name: FlaskPickupTarget
+  m_Name: HeldObjectPickupTarget
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

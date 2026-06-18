@@ -860,15 +860,15 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  Rb: {fileID: 0}
+  Rb: {fileID: 5755687617286805364}
   <Checkpoints>k__BackingField: []
   _checkpointBannerPrefab: {fileID: 2550055375057606039, guid: 92851f9434601b54699a7986d3e29baa, type: 3}
   _devCheckpointBackAction: {fileID: -5390487181371502964, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
   _devCheckpointForwardAction: {fileID: 2059469255060023462, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
   _tiltCorrection: 7.6
   _tiltCorrectionScaling: 2
-  _lowFlasksThreshold: 3
-  _flaskBounds: {fileID: 3914605637317101704}
+  _lowTreasuresThreshold: 3
+  _treasureBounds: {fileID: 3914605637317101704}
   _carSound:
     idInternal: 0
     valueGuidInternal: 
@@ -885,11 +885,11 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: eacf6a35b6f67b140a656833c6c47da0, type: 2}
-  _numCarriedFlasksRTPC:
+  _numCarriedTreasuresRTPC:
     idInternal: 0
     valueGuidInternal: 
-    WwiseObjectReference: {fileID: 11400000, guid: 859ca60ecf171434d96ae9f11f3fd870, type: 2}
-  _lowFlaskWarningPrefab: {fileID: -2873459827256007788, guid: bb9a34ee5fc9d564ab1313bc83960fb6, type: 3}
+    WwiseObjectReference: {fileID: 0}
+  _lowTreasureWarningPrefab: {fileID: -2873459827256007788, guid: bb9a34ee5fc9d564ab1313bc83960fb6, type: 3}
   IsPuppet: 0
   _alternateWheelMoveAction: {fileID: 5266011620394464008, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
 --- !u!114 &6249258237167811541
@@ -6394,8 +6394,8 @@ GameObject:
   - component: {fileID: 7646919799619683667}
   - component: {fileID: 8334056327586105488}
   m_Layer: 7
-  m_Name: FlaskPutdownTarget
-  m_TagString: FlaskCarrier
+  m_Name: HeldObjectPutdownTarget
+  m_TagString: ObjectCarrier
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6424,7 +6424,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7583523631111064540}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1ee96ae1198644a3896c36fae64e9381, type: 3}
+  m_Script: {fileID: 11500000, guid: 925e4af7562ec2449984c4cbbf71a204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FlaskPutdownTarget
   syncMethod: 0
@@ -6497,7 +6497,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -7399006668046671671, guid: 008ea26ce26d66c42abe1a6e92f864d1, type: 3}
       propertyPath: m_TagString
-      value: FlaskCarrier
+      value: ObjectCarrier
       objectReference: {fileID: 0}
     - target: {fileID: -6377958603440598000, guid: 008ea26ce26d66c42abe1a6e92f864d1, type: 3}
       propertyPath: m_Layer
@@ -6505,7 +6505,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -6377958603440598000, guid: 008ea26ce26d66c42abe1a6e92f864d1, type: 3}
       propertyPath: m_TagString
-      value: FlaskCarrier
+      value: ObjectCarrier
       objectReference: {fileID: 0}
     - target: {fileID: -4680566820163676890, guid: 008ea26ce26d66c42abe1a6e92f864d1, type: 3}
       propertyPath: m_Layer
@@ -6513,7 +6513,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -4680566820163676890, guid: 008ea26ce26d66c42abe1a6e92f864d1, type: 3}
       propertyPath: m_TagString
-      value: FlaskCarrier
+      value: ObjectCarrier
       objectReference: {fileID: 0}
     - target: {fileID: -2151678649322744341, guid: 008ea26ce26d66c42abe1a6e92f864d1, type: 3}
       propertyPath: m_RenderingLayerMask
@@ -6533,7 +6533,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 008ea26ce26d66c42abe1a6e92f864d1, type: 3}
       propertyPath: m_TagString
-      value: FlaskCarrier
+      value: ObjectCarrier
       objectReference: {fileID: 0}
     - target: {fileID: 7585877377044528328, guid: 008ea26ce26d66c42abe1a6e92f864d1, type: 3}
       propertyPath: m_Layer
@@ -6541,7 +6541,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7585877377044528328, guid: 008ea26ce26d66c42abe1a6e92f864d1, type: 3}
       propertyPath: m_TagString
-      value: FlaskCarrier
+      value: ObjectCarrier
       objectReference: {fileID: 0}
     - target: {fileID: 8555046904898354361, guid: 008ea26ce26d66c42abe1a6e92f864d1, type: 3}
       propertyPath: m_Layer
@@ -6549,7 +6549,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8555046904898354361, guid: 008ea26ce26d66c42abe1a6e92f864d1, type: 3}
       propertyPath: m_TagString
-      value: FlaskCarrier
+      value: ObjectCarrier
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -61,7 +61,7 @@ public class PlayerController : NetworkBehaviour
 
     public WwiseAnimationEvents WwiseAnimationEvents { get; private set; }
 
-    public AK.Wwise.Event FlaskPickupFX;
+    public AK.Wwise.Event TreasurePickupFX;
 
     [Tooltip("Percentage of gravity to negate when gliding")]
     [SerializeField] [Range(0, 100)] private float _gravityNegationPercentage;
@@ -93,7 +93,7 @@ public class PlayerController : NetworkBehaviour
     [Header("State")]
     [ReadOnly] public WheelSeat Seat;
 
-    [ReadOnly] public Flask HeldFlask;
+    [ReadOnly] public Holdable HeldObject;
 
     [field: SyncVar] [field: ShowInInspector] [field: ReadOnly] public Vector3 WorldSpaceMoveDir { get; private set; }
     [SyncVar] public float AnalogueMoveScale;
@@ -105,7 +105,7 @@ public class PlayerController : NetworkBehaviour
 
     [SerializeField] private ActionCurveLine _actionCurveLinePrefab;
 
-    [field: SerializeField] public Transform FlaskPickupTarget { get; private set; }
+    [field: SerializeField] public Transform HeldObjectPickupTarget { get; private set; }
 
     // Called when a player object is done being initially setup
     // Does NOT imply the player has just joined
@@ -121,13 +121,13 @@ public class PlayerController : NetworkBehaviour
         Interact = 1 << 2,
         Look = 1 << 3,
         ChangePerspective = 1 << 4,
-        Glide = 1 << 5,
-        Pause = 1 << 6,
-        Ping = 1 << 7,
-        ToggleTextChat = 1 << 8,
-        Respawn = 1 << 9,
-        Emote = 1 << 10,
-        OpenEmoteWheel = 1 << 11,
+        CameraZoom = 1 << 5,
+        Glide = 1 << 6,
+        Pause = 1 << 7,
+        Ping = 1 << 8,
+        ToggleTextChat = 1 << 9,
+        Respawn = 1 << 10,
+        Emote = 1 << 11,
         All = ~0
     }
     private static readonly Dictionary<Object, ControlBlockerFlags> _controlBlockers = new();
@@ -149,8 +149,8 @@ public class PlayerController : NetworkBehaviour
 
     [SerializeField] private Transform _cameraObstructionDithererRayEndPosition;
 
-    public bool FlaskPickupAllowed => ControlEnabled(ControlBlockerFlags.Interact) && !Seat && !HeldFlask;
-    public bool FlaskPutdownAllowed => ControlEnabled(ControlBlockerFlags.Interact) && !Seat && HeldFlask && HeldFlask.State == Flask.FlaskState.Held;
+    public bool PickupAllowed => ControlEnabled(ControlBlockerFlags.Interact) && !Seat && !HeldObject;
+    public bool PutdownAllowed => ControlEnabled(ControlBlockerFlags.Interact) && !Seat && HeldObject && HeldObject.State == Treasure.HoldableState.Held;
 
     //Set in inspector to true if this player will only exist in cutscenes
     public bool CutscenePlayer;
@@ -161,6 +161,9 @@ public class PlayerController : NetworkBehaviour
     [HideInInspector] public float PuppetGravityMultiplier;
     [HideInInspector] public float PuppetJumpForceMultiplier;
     [HideInInspector] public bool IsPuppet;
+
+    //Shop
+    public Shop ActiveShop; //The shop the player is currently in
     
     public Emoter Emoter { get; private set; }
 
@@ -335,8 +338,8 @@ public class PlayerController : NetworkBehaviour
         _nameplateCanvas.gameObject.SetActive(false);
 
         // Set default highlight states for interactables
-        Highlight.SetHighlightable("Flask", true);
-        Highlight.SetHighlightable("FlaskCarrier", false);
+        Highlight.SetHighlightable("Treasure", true);
+        Highlight.SetHighlightable("ObjectCarrier", false);
 
         // todo this sucks
         // eventually we should just link carts to 2 players so we can have an arbitrary number of carts/players
@@ -376,7 +379,9 @@ public class PlayerController : NetworkBehaviour
 
     private void OnRespawn(Checkpoint checkpoint)
     {
-        if (!authority || Seat) return;
+        if (!authority || Seat) { return; }
+
+        ActiveShop?.LeaveShop();
 
         Transform newTransform = checkpoint.playerRespawnLocalTransforms[PlayerIndex % checkpoint.playerRespawnLocalTransforms.Length];
 
@@ -445,27 +450,27 @@ public class PlayerController : NetworkBehaviour
 
         if (CrosshairDetection.TargetedTransform)
         {
-            if (FlaskPickupAllowed)
+            if (PickupAllowed)
             {
-                if (!CrosshairDetection.TargetedTransform.CompareTag("Flask")) return;
+                if (!CrosshairDetection.TargetedTransform.CompareTag("Treasure") && !CrosshairDetection.TargetedTransform.CompareTag("Item")) { return; }
 
-                Flask newFlask = CrosshairDetection.TargetedTransform.GetComponentInParent<Flask>();
-                if (newFlask.State != Flask.FlaskState.Idle) return;
+                Holdable holdable = CrosshairDetection.TargetedTransform.GetComponentInParent<Holdable>();
+                if (holdable.State != Treasure.HoldableState.Idle) return;
 
                 if (InteractAction.action.WasPressedThisFrame())
                 {
-                    newFlask.CmdTryPickup();
+                    holdable.CmdTryPickup();
                 }
             }
-            else if (FlaskPutdownAllowed)
+            else if (PutdownAllowed)
             {
-                if (!CrosshairDetection.TargetedTransform.CompareTag("FlaskCarrier")) return;
+                if (!CrosshairDetection.TargetedTransform.CompareTag("ObjectCarrier")) return;
 
-                FlaskPutdownTarget carrierTarget = CrosshairDetection.TargetedTransform.GetComponentInChildren<FlaskPutdownTarget>();
+                HeldObjectPutdownTarget carrierTarget = CrosshairDetection.TargetedTransform.GetComponentInChildren<HeldObjectPutdownTarget>();
                 if (InteractAction.action.WasPressedThisFrame())
                 {
-                    HeldFlask.CmdTryPutdown(carrierTarget);
-                    FlaskPickupFX.Post(gameObject);
+                    HeldObject.CmdTryPutdown(carrierTarget);
+                    TreasurePickupFX.Post(gameObject);
                 }
             }
         }

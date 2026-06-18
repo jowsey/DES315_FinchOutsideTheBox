@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2138672055308217698}
   - component: {fileID: -2873459827256007788}
   m_Layer: 5
-  m_Name: LowFlasksWarning
+  m_Name: LowTreasuresWarning
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -110,7 +110,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UI.WorldFollowUI
   TrackingTarget: {fileID: 0}
   TrackingOffset: {x: 0, y: 0, z: 0}
-  ApplyOffsetLocally: 0
+  ApplyTrackingOffsetLocally: 0
+  UIPositionOffset: {x: 0, y: 0}
 --- !u!1 &3832260365312532590
 GameObject:
   m_ObjectHideFlags: 0
@@ -176,7 +177,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Flasks
+  m_text: 'Treasures
 
     low!'
   m_isRightToLeft: 0
@@ -205,8 +206,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 20.38
+  m_fontSizeBase: 20.38
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

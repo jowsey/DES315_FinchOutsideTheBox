@@ -72,11 +72,11 @@ namespace Networking
 
         public override void OnServerDisconnect(NetworkConnectionToClient conn)
         {
-            // Make player drop flask if they had one
+            // Make player drop treasure if they had one
             var player = conn.identity?.GetComponent<PlayerController>();
-            if (player && player.HeldFlask)
+            if (player && player.HeldObject)
             {
-                player.HeldFlask.State = Flask.FlaskState.Idle;
+                player.HeldObject.State = Treasure.HoldableState.Idle;
             }
 
             base.OnServerDisconnect(conn);

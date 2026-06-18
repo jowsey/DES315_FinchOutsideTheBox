@@ -16,7 +16,6 @@ public class PillarFall : NetworkBehaviour
             {
                 _animator.SetTrigger("Fall");
                 _activated = true;
-
             }
         }
     }

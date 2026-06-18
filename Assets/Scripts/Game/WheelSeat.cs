@@ -51,7 +51,7 @@ public class WheelSeat : NetworkBehaviour
         if (SeatedPlayer || Time.time < _lastUnsitTime + _sitCooldown) return;
         
         var player = sender!.identity.GetComponent<PlayerController>();
-        if (player.HeldFlask?.State == Flask.FlaskState.Held) return; // dont allow sitting while holding a flask
+        if (player.HeldObject?.State == Treasure.HoldableState.Held) return; // dont allow sitting while holding a treasure
         
         _seatedPlayerIdentity = player.netIdentity; //synced to all clients
     }
@@ -82,7 +82,7 @@ public class WheelSeat : NetworkBehaviour
 
             if (oldPlayer.isLocalPlayer)
             {
-                Highlight.SetHighlightable("Flask", true);
+                Highlight.SetHighlightable("Treasure", true);
             }
         }
 
@@ -97,7 +97,7 @@ public class WheelSeat : NetworkBehaviour
 
             if (SeatedPlayer.isLocalPlayer)
             {
-                Highlight.SetHighlightable("Flask", false);
+                Highlight.SetHighlightable("Treasure", false);
             }
         }
     }
