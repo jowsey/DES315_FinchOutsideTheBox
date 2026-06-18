@@ -28,7 +28,7 @@ public class WheelSeat : NetworkBehaviour
     [SyncVar(hook = nameof(OnSeatedPlayerChanged))]
     [SerializeField] [Sirenix.OdinInspector.ReadOnly] private NetworkIdentity _seatedPlayerIdentity;
 
-    private PlayerController _seatedPlayer;
+    public PlayerController SeatedPlayer { get; private set; }
     
     [SerializeField] [Required] private SphereCollider _sphereCollider;
     
@@ -48,7 +48,7 @@ public class WheelSeat : NetworkBehaviour
     [Command(requiresAuthority = false)]
     public void CmdTrySitPlayer(NetworkConnectionToClient sender = null)
     {
-        if (_seatedPlayer || Time.time < _lastUnsitTime + _sitCooldown) return;
+        if (SeatedPlayer || Time.time < _lastUnsitTime + _sitCooldown) return;
         
         var player = sender!.identity.GetComponent<PlayerController>();
         if (player.HeldFlask?.State == Flask.FlaskState.Held) return; // dont allow sitting while holding a flask
@@ -59,14 +59,14 @@ public class WheelSeat : NetworkBehaviour
     [Command(requiresAuthority = false)]
     public void CmdUnsitPlayer()
     {
-        if (!_seatedPlayer) return;
+        if (!SeatedPlayer) return;
         _seatedPlayerIdentity = null; //synced to all clients
     }
 
     private void OnSeatedPlayerChanged(NetworkIdentity oldValue, NetworkIdentity newValue)
     {
-        PlayerController oldPlayer = _seatedPlayer;
-        _seatedPlayer = newValue ? newValue.GetComponent<PlayerController>() : null;
+        PlayerController oldPlayer = SeatedPlayer;
+        SeatedPlayer = newValue ? newValue.GetComponent<PlayerController>() : null;
 
         if (oldPlayer)
         {
@@ -86,16 +86,16 @@ public class WheelSeat : NetworkBehaviour
             }
         }
 
-        if (_seatedPlayer)
+        if (SeatedPlayer)
         {
             //Player is getting on
-            _seatedPlayer.Rb.isKinematic = true;
-            _seatedPlayer.Rb.excludeLayers |= 1 << gameObject.layer;
-            _seatedPlayer.Seat = this;
+            SeatedPlayer.Rb.isKinematic = true;
+            SeatedPlayer.Rb.excludeLayers |= 1 << gameObject.layer;
+            SeatedPlayer.Seat = this;
 
-            _seatedPlayer.WwiseAnimationEvents.DisableFootsteps = true;
+            SeatedPlayer.WwiseAnimationEvents.DisableFootsteps = true;
 
-            if (_seatedPlayer.isLocalPlayer)
+            if (SeatedPlayer.isLocalPlayer)
             {
                 Highlight.SetHighlightable("Flask", false);
             }
@@ -138,10 +138,10 @@ public class WheelSeat : NetworkBehaviour
     private void FixedUpdate()
     {
         if (!isServer) return;
-        if (!_seatedPlayer) return;
+        if (!SeatedPlayer) return;
         
-        var torqueAxis = Vector3.Cross(Vector3.up, _seatedPlayer.WorldSpaceMoveDir);
-        _wheelRb.AddTorque(torqueAxis * (MoveForce * _seatedPlayer.AnalogueMoveScale));
+        var torqueAxis = Vector3.Cross(Vector3.up, SeatedPlayer.WorldSpaceMoveDir);
+        _wheelRb.AddTorque(torqueAxis * (MoveForce * SeatedPlayer.AnalogueMoveScale));
     }
 
     private void OnDrawGizmosSelected()
