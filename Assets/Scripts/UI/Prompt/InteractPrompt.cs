@@ -10,7 +10,8 @@ namespace UI
         public enum InteractionType
         {
             PickUp,
-            PutDown
+            PutDown,
+            EnterShop
         }
 
         [field: SerializeField] public WorldFollowUI WorldFollowUI { get; private set; }
@@ -20,6 +21,7 @@ namespace UI
 
         [SerializeField] private string _pickUpText = "Pick up";
         [SerializeField] private string _putDownText = "Put down";
+        [SerializeField] private string _enterShopText = "Enter shop";
 
         private void OnValidate()
         {
@@ -35,6 +37,7 @@ namespace UI
             {
                 InteractionType.PickUp => _pickUpText,
                 InteractionType.PutDown => _putDownText,
+                InteractionType.EnterShop => _enterShopText,
                 _ => throw new ArgumentOutOfRangeException(nameof(interactionType), interactionType, null)
             };
 

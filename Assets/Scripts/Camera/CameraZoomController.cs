@@ -29,8 +29,9 @@ public class CameraZoomController : MonoBehaviour
 
     [SerializeField] private PlayableDirector _director;
     
-    //Used for tracking and restoring state for cutscenes and emotes (guaranteed to be identical if both are needed at the same time)
+    //Used for tracking and restoring state for cutscenes, emotes, and shops (all guaranteed to be identical if needed at the same time)
     private bool _firstPersonBeforeAction;
+    private float _targetRadiusBeforeAction;
 
     public static bool FirstPerson { get; private set; }
 
@@ -92,7 +93,7 @@ public class CameraZoomController : MonoBehaviour
         }
 
         var zoom = _zoomAction.action.ReadValue<float>();
-        if (PlayerController.ControlEnabled(PlayerController.ControlBlockerFlags.ChangePerspective) && zoom != 0)
+        if (PlayerController.ControlEnabled(PlayerController.ControlBlockerFlags.CameraZoom) && zoom != 0)
         {
             // mouse scroll isn't continuous so it shouldn't be deltaTime'd
             var isDeviceMouse = _zoomAction.action.activeControl?.device is Mouse;
@@ -119,16 +120,32 @@ public class CameraZoomController : MonoBehaviour
         _director.stopped += OnRestorePreActionFirstPersonState;
     }
 
-    //Called by CutsceneStart and Emoter
+
+    //todo: i feel like there's a proper dsa for all this stuff below
+
+    //Called by CutsceneStart, Emoter, and Shop
     public void OnForceThirdPersonActionStarted()
     {
         _firstPersonBeforeAction = FirstPerson;
         if (FirstPerson) { ToggleFirstPerson(!FirstPerson); }
     }
 
-    //Called by Emoter and callback from director
+    //Called by Emoter and Shop, and callback from director
     public void OnRestorePreActionFirstPersonState(PlayableDirector _ = null)
     {
         if (FirstPerson != _firstPersonBeforeAction) { ToggleFirstPerson(!FirstPerson); }
+    }
+
+    //Called by Shop
+    public void OnForceMinThirdPersonRadiusActionStarted()
+    {
+        _targetRadiusBeforeAction = _targetRadius;
+        _targetRadius = _minThirdPersonRadius;
+    }
+
+    //Called by Shop
+    public void OnRestorePreActionThirdPersonRadiusState(PlayableDirector _ = null)
+    {
+        _targetRadius = _targetRadiusBeforeAction;
     }
 }

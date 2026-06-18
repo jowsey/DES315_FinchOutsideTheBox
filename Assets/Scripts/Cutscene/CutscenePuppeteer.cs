@@ -22,7 +22,7 @@ public class CutscenePuppeteer : MonoBehaviour
     [SerializeField] private Transform[] _playerRunTargets;
 
     private Dictionary<ConfigurableJoint, (ConfigurableJointMotion x, ConfigurableJointMotion y, ConfigurableJointMotion z, ConfigurableJointMotion angX, ConfigurableJointMotion angY, ConfigurableJointMotion angZ)> _savedJointMotions = new();
-    private List<(Flask flask, Transform originalParent)> _parentedFlasks = new();
+    private List<(Treasure treasure, Transform originalParent)> _parentedTreasures = new();
 
     [SerializeField] [Required] private Credits _creditsPrefab;
 
@@ -62,7 +62,7 @@ public class CutscenePuppeteer : MonoBehaviour
 
         foreach (Rigidbody rb in _cart.GetComponentsInChildren<Rigidbody>())
         {
-            if (rb.gameObject.CompareTag("Flask")) { continue; }
+            if (rb.gameObject.CompareTag("Treasure")) { continue; }
 
             rb.interpolation = RigidbodyInterpolation.None;
             rb.position = rb.transform.position;
@@ -149,7 +149,7 @@ public class CutscenePuppeteer : MonoBehaviour
 
         foreach (Rigidbody rb in _cart.GetComponentsInChildren<Rigidbody>())
         {
-            if (rb.gameObject.CompareTag("Flask")) { continue; }
+            if (rb.gameObject.CompareTag("Treasure")) { continue; }
             rb.position = rb.transform.position;
             rb.rotation = rb.transform.rotation;
             rb.isKinematic = false;

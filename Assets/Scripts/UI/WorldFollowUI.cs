@@ -11,10 +11,12 @@ namespace UI
         public Vector2 UIPositionOffset;
 
         private Camera _camera;
+        private CanvasRenderer[] _canvasRenderers;
 
         private void Awake()
         {
             _camera = Camera.main;
+            FindRenderers();
         }
 
         private void Start()
@@ -31,12 +33,22 @@ namespace UI
                 : TrackingTarget.position + TrackingOffset;
 
             transform.position = _camera.WorldToScreenPoint(trackingPosition) + (Vector3)UIPositionOffset;
-            transform.localScale = transform.position.z >= 0 ? Vector3.one : Vector3.zero;
+
+            var visible = transform.position.z >= 0;
+            foreach (var canvasRenderer in _canvasRenderers)
+            {
+                canvasRenderer.cull = !visible;
+            }
         }
 
         private void LateUpdate()
         {
             UpdatePosition();
+        }
+
+        public void FindRenderers()
+        {
+            _canvasRenderers = GetComponentsInChildren<CanvasRenderer>();
         }
     }
 }
