@@ -251,7 +251,7 @@ public class PlayerController : NetworkBehaviour
 
     private void Start()
     {
-        // doesn't work in Awake on non-host. "huh?" don't worry about it
+        // can't be in awake because camera has a NetworkIdentity meaning it's inactive until network ready
         _camera = Camera.main;
 
         PlayableDirector director = FindAnyObjectByType<PlayableDirector>();
