@@ -25,7 +25,7 @@ public class CrosshairDetection : MonoBehaviour
 
     private void CleanupInteractPrompt()
     {
-        Destroy(_interactPromptInstance.gameObject);
+        _interactPromptInstance.Destroy();
         _interactPromptInstance = null;
     }
 

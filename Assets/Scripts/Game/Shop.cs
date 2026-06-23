@@ -112,7 +112,7 @@ public class Shop : NetworkBehaviour
     {
         if (_enterPromptInstance && _interactAction.action.WasPressedThisFrame())
         {
-            Destroy(_enterPromptInstance.gameObject);
+            _enterPromptInstance.Destroy();
             _enterPromptInstance = null;
             
             EnterShop();
