@@ -88,15 +88,6 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "TogglePauseMenu",
-                    "type": "Button",
-                    "id": "7dce86b0-9c49-42e7-9c98-2e8c1ea5611a",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "CameraZoom",
                     "type": "Value",
                     "id": "15d26273-420f-474b-99da-b7d9d8df295b",
@@ -133,9 +124,27 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "BackUI",
+                    "type": "Button",
+                    "id": "7dce86b0-9c49-42e7-9c98-2e8c1ea5611a",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "OpenTextChat",
                     "type": "Button",
                     "id": "eca1d4e4-8d59-4475-bd6d-b1c3aee0464e",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SubmitTextChat",
+                    "type": "Button",
+                    "id": "dce89c5c-f79c-4c88-bc0f-11bcd6e62365",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -509,7 +518,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "TogglePauseMenu",
+                    "action": "BackUI",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -520,7 +529,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Gamepad",
-                    "action": "TogglePauseMenu",
+                    "action": "BackUI",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -664,6 +673,17 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "SelectEmote",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e2de4c64-85e2-47ca-b44f-ee38a6f9ec2c",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "SubmitTextChat",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
