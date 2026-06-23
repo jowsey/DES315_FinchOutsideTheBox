@@ -157,14 +157,17 @@ public class Cart : NetworkBehaviour
         _cartSpeedRTPC.SetGlobalValue(linearVelocity.magnitude * 20);
 
 #if UNITY_EDITOR
-        var altMove = _alternateWheelMoveAction.action.ReadValue<Vector2>();
-        if (altMove.sqrMagnitude > 0)
+        if (PlayerController.ControlEnabled(PlayerController.ControlBlockerFlags.Move))
         {
-            var worldSpaceMoveDir = PlayerController.LocalPlayer.InputToWorldDir(altMove);
-            foreach (var wheelSeat in _wheelSeats)
+            var altMove = _alternateWheelMoveAction.action.ReadValue<Vector2>();
+            if (altMove.sqrMagnitude > 0)
             {
-                if (wheelSeat.SeatedPlayer) continue;
-                wheelSeat.ApplyDrive(worldSpaceMoveDir, worldSpaceMoveDir.magnitude);
+                var worldSpaceMoveDir = PlayerController.LocalPlayer.InputToWorldDir(altMove);
+                foreach (var wheelSeat in _wheelSeats)
+                {
+                    if (wheelSeat.SeatedPlayer) continue;
+                    wheelSeat.ApplyDrive(worldSpaceMoveDir, worldSpaceMoveDir.magnitude);
+                }
             }
         }
 #endif
