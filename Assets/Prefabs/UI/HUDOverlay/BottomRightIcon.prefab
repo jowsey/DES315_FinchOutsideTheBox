@@ -35,7 +35,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -11, y: -11}
+  m_AnchoredPosition: {x: -10, y: -10}
   m_SizeDelta: {x: 36, y: 36}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3290761433953403181
@@ -162,18 +162,19 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
+  _smoothing: 0.6
   _bottomLeft:
-    Radius: 20
-    TriangleCount: 8
+    Radius: 40
+    TriangleCount: 32
   _topLeft:
-    Radius: 20
-    TriangleCount: 8
+    Radius: 40
+    TriangleCount: 32
   _topRight:
-    Radius: 20
-    TriangleCount: 8
+    Radius: 40
+    TriangleCount: 32
   _bottomRight:
-    Radius: 20
-    TriangleCount: 8
+    Radius: 40
+    TriangleCount: 32
 --- !u!114 &1378774664885096846
 MonoBehaviour:
   m_ObjectHideFlags: 0

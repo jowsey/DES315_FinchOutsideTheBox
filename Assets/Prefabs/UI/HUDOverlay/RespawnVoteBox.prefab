@@ -422,18 +422,19 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
+  _smoothing: 0.6
   _bottomLeft:
-    Radius: 16
-    TriangleCount: 8
+    Radius: 32
+    TriangleCount: 32
   _topLeft:
-    Radius: 16
-    TriangleCount: 8
+    Radius: 32
+    TriangleCount: 32
   _topRight:
-    Radius: 16
-    TriangleCount: 8
+    Radius: 32
+    TriangleCount: 32
   _bottomRight:
-    Radius: 16
-    TriangleCount: 8
+    Radius: 32
+    TriangleCount: 32
 --- !u!114 &2966337509316409415
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -503,7 +504,7 @@ MonoBehaviour:
   _countText: {fileID: 9058618167817766001}
   _chargeImage: {fileID: 4899004990996187399}
   _keyPrompt: {fileID: 2730365782155389244}
-  _flaskCountOnRespawnText: {fileID: 6173622897030789030}
+  _treasureCountOnRespawnText: {fileID: 0}
   _chargeSpeed: 0.6666667
   _activityCloseCooldown: 5
   _chargeUndoCooldown: 1.5
@@ -653,6 +654,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
+  _smoothing: 0
   _bottomLeft:
     Radius: 8
     TriangleCount: 8
