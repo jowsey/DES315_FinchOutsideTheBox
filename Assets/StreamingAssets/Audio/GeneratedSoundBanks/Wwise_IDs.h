@@ -23,9 +23,12 @@ namespace AK
         static const AkUniqueID CHECKPOINTDRUMS = 2509294038U;
         static const AkUniqueID DOORSMOVING = 758278606U;
         static const AkUniqueID FOOTSTEPS = 2385628198U;
+        static const AkUniqueID FRONTFLIP = 3219038647U;
         static const AkUniqueID GLASSINVEHILCE = 2158283652U;
         static const AkUniqueID GLASSPICKUP = 1188386847U;
         static const AkUniqueID GLASSSHATTER = 206611762U;
+        static const AkUniqueID HEADNOD = 1700926558U;
+        static const AkUniqueID HEADSHAKE = 139704087U;
         static const AkUniqueID HOVERTICK = 2670946266U;
         static const AkUniqueID LEVERSOUND = 512917032U;
         static const AkUniqueID LEVERUP = 1662764780U;
@@ -48,8 +51,8 @@ namespace AK
         static const AkUniqueID PUSHERMOVING16S = 3652695426U;
         static const AkUniqueID RESPAWNPING = 814740291U;
         static const AkUniqueID SIDESWEEPER = 988175737U;
+        static const AkUniqueID SPIN = 823131329U;
         static const AkUniqueID SPINNERMOVING = 3496537566U;
-        static const AkUniqueID STOP = 788884573U;
         static const AkUniqueID TAPESTRYSFX = 3446999052U;
         static const AkUniqueID TESTSOUJD1 = 1035878255U;
         static const AkUniqueID VERTSPINMOVING = 2481782438U;

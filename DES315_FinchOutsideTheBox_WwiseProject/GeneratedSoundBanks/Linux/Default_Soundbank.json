@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{46173D95-DFFE-4BE9-8209-57EB1CFCE1F7}",
     "Language": "SFX",
-    "Hash": "{8C97BA56-888E-DBA2-AA33-F295836C6EC5}",
+    "Hash": "{BF6231C9-1682-E8F0-7B22-3C1A70ADB2F9}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Default_Soundbank",
     "ShortName": "Default_Soundbank",
     "Path": "Default_Soundbank.bnk",
@@ -94,6 +94,14 @@
       "Location": "Memory",
       "ShortName": "cat ping meow-004.wav",
       "CachePath": "73/{731D4D9A-243E-80CC-8E31-694A52522425}.wem"
+     },
+     {
+      "Id": "103207217",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "flip test2.wav",
+      "CachePath": "04/{04A76D20-903F-EAF3-EE56-7F3F2AD8DC95}.wem"
      },
      {
       "Id": "105321291",
@@ -326,6 +334,14 @@
       "Location": "Memory",
       "ShortName": "WoodFts-006.wav",
       "CachePath": "1E/{1E61DFE2-8E1A-EAAF-2FF7-B3022E8CDBDB}.wem"
+     },
+     {
+      "Id": "348971917",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "headshake test5.wav",
+      "CachePath": "97/{974BAD44-097B-DA11-1666-F4F24A935D1E}.wem"
      },
      {
       "Id": "350426967",
@@ -656,6 +672,14 @@
       "CachePath": "0D/{0D8A5930-2574-5603-C6CB-486075F00BBE}.wem"
      },
      {
+      "Id": "750344895",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "spin test3.wav",
+      "CachePath": "A1/{A1D60CC9-0FBD-03C7-98E4-51F5CEDA7EDB}.wem"
+     },
+     {
       "Id": "757128725",
       "Language": "SFX",
       "Streaming": "false",
@@ -870,6 +894,14 @@
       "Location": "Memory",
       "ShortName": "cloth flap in wind.wav",
       "CachePath": "3E/{3E0D891B-EB8D-F458-6A0E-B41682EE3451}.wem"
+     },
+     {
+      "Id": "937319340",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "headnod test3.wav",
+      "CachePath": "40/{40929848-7BFF-093A-EB8A-BC5ECC984E9E}.wem"
      },
      {
       "Id": "938969266",
@@ -1442,6 +1474,21 @@
       ]
      },
      {
+      "Id": "3219038647",
+      "Name": "FrontFlip",
+      "ObjectPath": "\\Events\\Default Work Unit\\Player\\FrontFlip",
+      "GUID": "{02C72BB2-9832-4DFD-9D91-4352CA775810}",
+      "MaxAttenuation": "15",
+      "DurationType": "OneShot",
+      "DurationMin": "2.19175",
+      "DurationMax": "2.19175",
+      "MediaRefs": [
+       {
+        "Id": "103207217"
+       }
+      ]
+     },
+     {
       "Id": "2158283652",
       "Name": "GlassinVehilce",
       "ObjectPath": "\\Events\\Default Work Unit\\Car\\GlassinVehilce",
@@ -1502,6 +1549,36 @@
        },
        {
         "Id": "916349021"
+       }
+      ]
+     },
+     {
+      "Id": "1700926558",
+      "Name": "HeadNod",
+      "ObjectPath": "\\Events\\Default Work Unit\\Player\\HeadNod",
+      "GUID": "{332E44E6-F556-45BC-B649-763319827B70}",
+      "MaxAttenuation": "15",
+      "DurationType": "OneShot",
+      "DurationMin": "0.859375",
+      "DurationMax": "0.859375",
+      "MediaRefs": [
+       {
+        "Id": "937319340"
+       }
+      ]
+     },
+     {
+      "Id": "139704087",
+      "Name": "HeadShake",
+      "ObjectPath": "\\Events\\Default Work Unit\\Player\\HeadShake",
+      "GUID": "{AC8554BD-62F8-4562-B751-8D1CD440BFEA}",
+      "MaxAttenuation": "15",
+      "DurationType": "OneShot",
+      "DurationMin": "0.9000625",
+      "DurationMax": "0.9000625",
+      "MediaRefs": [
+       {
+        "Id": "348971917"
        }
       ]
      },
@@ -2000,6 +2077,21 @@
       "MediaRefs": [
        {
         "Id": "83499910"
+       }
+      ]
+     },
+     {
+      "Id": "823131329",
+      "Name": "Spin",
+      "ObjectPath": "\\Events\\Default Work Unit\\Player\\Spin",
+      "GUID": "{3BA5E4B2-A4F3-4405-B916-73651D98AEEB}",
+      "MaxAttenuation": "15",
+      "DurationType": "OneShot",
+      "DurationMin": "1.3474375",
+      "DurationMax": "1.3474375",
+      "MediaRefs": [
+       {
+        "Id": "750344895"
        }
       ]
      },
@@ -2564,6 +2656,6 @@
     ]
    }
   ],
-  "FileHash": "{29257CCD-FAD2-89F2-4EFD-B0B4D1D32A9F}"
+  "FileHash": "{7AE804D6-92B9-9E7C-1F32-B328DF7D1E72}"
  }
 }
