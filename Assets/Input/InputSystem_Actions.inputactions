@@ -176,6 +176,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "ToggleCaravanSupport",
+                    "type": "Button",
+                    "id": "89da3d87-2915-4a19-bcf0-2c12fca68336",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -759,6 +768,17 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "SelectEmote",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "14d8f3ea-967d-4a54-8a76-2f0849eb6f5a",
+                    "path": "<Keyboard>/b",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "ToggleCaravanSupport",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
