@@ -57,7 +57,7 @@ namespace UI
             {
                 _text.color = _highlightColor;
                 _text.fontStyle |= FontStyles.Bold;
-                buttonSfx.Post(gameObject);
+                
             }
         }
         private void Unhighlight()
@@ -74,6 +74,7 @@ namespace UI
             EventSystem.current.SetSelectedGameObject(gameObject);
             Cursor.SetCursor(_highlightCursor, new Vector2(_highlightCursor.width / 2f, _highlightCursor.height / 2f), CursorMode.Auto);
             Highlight();
+            buttonSfx.Post(gameObject);
         }
 
         public void OnPointerExit(PointerEventData eventData)
