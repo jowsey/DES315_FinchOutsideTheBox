@@ -17,6 +17,7 @@ namespace UI
 
         [SerializeField] [Required] private InputActionReference _activateInputAction;
         [SerializeField] [Required] private InputActionReference _closeInputAction;
+        [SerializeField] [Required] private InputActionReference _submitInputAction;
 
         private bool _inputFieldActive;
         private bool _closedThisFrame; // workaround to the fact that our close and open buttons are the same
@@ -31,7 +32,8 @@ namespace UI
 
         public void DisplayLocalMessage(PlayerController player, string message)
         {
-            if (player == null) return;
+            if (!player) return;
+
             var item = Instantiate(_textChatItemPrefab, transform);
             item.Build(player, message);
 
@@ -48,7 +50,6 @@ namespace UI
 
         private void OnEnable()
         {
-            _inputField.onSubmit.AddListener(OnSubmit);
             _inputField.onDeselect.AddListener(OnDeselect);
             _inputFieldCanvasGroup.alpha = 0;
 
@@ -57,19 +58,7 @@ namespace UI
 
         private void OnDisable()
         {
-            _inputField.onSubmit.RemoveListener(OnSubmit);
             _inputField.onDeselect.RemoveListener(OnDeselect);
-        }
-
-        private void OnSubmit(string message)
-        {
-            if (!_inputFieldActive) return;
-            Toggle(false);
-
-            if (string.IsNullOrWhiteSpace(message)) return;
-            CmdSendMessage(message);
-
-            _inputField.text = "";
         }
 
         private void OnDeselect(string _)
@@ -80,36 +69,64 @@ namespace UI
 
         private void Update()
         {
-            if (PlayerController.ControlEnabled(PlayerController.ControlBlockerFlags.ToggleTextChat) && !_inputFieldActive && !_closedThisFrame && _activateInputAction.action.WasPressedThisFrame())
+            // Open
+            if (PlayerController.ControlEnabled(PlayerController.ControlBlockerFlags.ToggleTextChat) &&
+                !_inputFieldActive &&
+                !_closedThisFrame &&
+                _activateInputAction.action.WasPressedThisFrame())
             {
                 Toggle(true);
-            }
-            else if (_inputFieldActive && _closeInputAction.action.WasPressedThisFrame())
-            {
-                Toggle(false);
+                return;
             }
 
             _closedThisFrame = false;
+
+            // Close on exit, or when submitting with empty message
+            if (_inputFieldActive &&
+                (_closeInputAction.action.WasPressedThisFrame() ||
+                 (_submitInputAction.action.WasPressedThisFrame() && string.IsNullOrWhiteSpace(_inputField.text))))
+            {
+                Toggle(false);
+                return;
+            }
+
+            // Submit
+            // Message is guarded as non-empty by this point
+            if (_inputFieldActive && _submitInputAction.action.WasPressedThisFrame())
+            {
+                CmdSendMessage(_inputField.text);
+
+                _inputField.text = "";
+                Toggle(false);
+                return;
+            }
+
+            // Patch default Unity behaviour
+            if (_inputFieldActive && !_inputField.isFocused && _submitInputAction.action.IsPressed())
+            {
+                _inputField.ActivateInputField();
+                return;
+            }
         }
 
-        private void Toggle(bool active)
+        private void Toggle(bool toggle)
         {
             Tween.CompleteAll(_inputFieldCanvasGroup);
 
-            _inputFieldCanvasGroup.interactable = active;
-            _inputFieldCanvasGroup.blocksRaycasts = active;
+            _inputFieldCanvasGroup.interactable = toggle;
+            _inputFieldCanvasGroup.blocksRaycasts = toggle;
 
-            _inputFieldActive = active;
+            _inputFieldActive = toggle;
 
-            if (active)
+            if (toggle)
             {
                 if (_inputFieldCanvasGroup.alpha < 1)
                     Tween.Alpha(_inputFieldCanvasGroup, 1f, 0.1f, Ease.OutCubic);
 
-                _inputField.ActivateInputField();
-                PlayerController.ControlBlockerFlags controllerBlockerFlags = PlayerController.ControlBlockerFlags.All;
-                controllerBlockerFlags &= ~PlayerController.ControlBlockerFlags.Pause;
+                const PlayerController.ControlBlockerFlags controllerBlockerFlags = PlayerController.ControlBlockerFlags.All;
                 PlayerController.AddControlBlockerFlags(this, controllerBlockerFlags);
+
+                _inputField.ActivateInputField();
                 Cursor.lockState = CursorLockMode.None;
             }
             else
@@ -117,8 +134,9 @@ namespace UI
                 if (_inputFieldCanvasGroup.alpha > 0)
                     Tween.Alpha(_inputFieldCanvasGroup, 0f, 0.1f, Ease.InCubic);
 
-                _inputField.DeactivateInputField();
                 PlayerController.RemoveAllControlBlockerFlags(this);
+
+                _inputField.DeactivateInputField();
                 Cursor.lockState = CursorLockMode.Locked;
 
                 _closedThisFrame = true;

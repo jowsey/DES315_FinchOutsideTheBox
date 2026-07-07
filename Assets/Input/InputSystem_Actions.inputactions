@@ -34,15 +34,6 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Attack",
-                    "type": "Button",
-                    "id": "6c2ab1b8-8984-453a-af3d-a3c78ae1679a",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Interact",
                     "type": "Button",
                     "id": "852140f2-7766-474d-8707-702459ba45f3",
@@ -88,27 +79,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "JumpAlt",
-                    "type": "Button",
-                    "id": "fb9f4a8e-def1-4cd6-a537-3354bfa9be24",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "PushToTalk",
                     "type": "Button",
                     "id": "9212eaef-7251-41ba-ad35-52df874750e1",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "TogglePauseMenu",
-                    "type": "Button",
-                    "id": "7dce86b0-9c49-42e7-9c98-2e8c1ea5611a",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -151,9 +124,27 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "BackUI",
+                    "type": "Button",
+                    "id": "7dce86b0-9c49-42e7-9c98-2e8c1ea5611a",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "OpenTextChat",
                     "type": "Button",
                     "id": "eca1d4e4-8d59-4475-bd6d-b1c3aee0464e",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SubmitTextChat",
+                    "type": "Button",
+                    "id": "dce89c5c-f79c-4c88-bc0f-11bcd6e62365",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -172,15 +163,6 @@
                     "name": "SelectEmote",
                     "type": "Button",
                     "id": "c379ea09-c935-4baa-9462-69628f7d8386",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "ToggleCaravanSupport",
-                    "type": "Button",
-                    "id": "89da3d87-2915-4a19-bcf0-2c12fca68336",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -410,72 +392,6 @@
                 },
                 {
                     "name": "",
-                    "id": "143bb1cd-cc10-4eca-a2f0-a3664166fe91",
-                    "path": "<Gamepad>/buttonWest",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Gamepad",
-                    "action": "Attack",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "05f6913d-c316-48b2-a6bb-e225f14c7960",
-                    "path": "<Mouse>/leftButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Keyboard&Mouse",
-                    "action": "Attack",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "886e731e-7071-4ae4-95c0-e61739dad6fd",
-                    "path": "<Touchscreen>/primaryTouch/tap",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Touch",
-                    "action": "Attack",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "ee3d0cd2-254e-47a7-a8cb-bc94d9658c54",
-                    "path": "<Joystick>/trigger",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Joystick",
-                    "action": "Attack",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "8255d333-5683-4943-a58a-ccb207ff1dce",
-                    "path": "<XRController>/{PrimaryAction}",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "XR",
-                    "action": "Attack",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "b3c1c7f0-bd20-4ee7-a0f1-899b24bca6d7",
-                    "path": "<Keyboard>/enter",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "Attack",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "eb40bb66-4559-4dfa-9a2f-820438abb426",
                     "path": "<Keyboard>/space",
                     "interactions": "",
@@ -504,17 +420,6 @@
                     "processors": "",
                     "groups": "XR",
                     "action": "Jump",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "4d88276e-dd3b-4e00-bb0b-4d0b9ab864c9",
-                    "path": "<Keyboard>/period",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "JumpAlt",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -613,7 +518,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "TogglePauseMenu",
+                    "action": "BackUI",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -624,7 +529,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Gamepad",
-                    "action": "TogglePauseMenu",
+                    "action": "BackUI",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -773,12 +678,12 @@
                 },
                 {
                     "name": "",
-                    "id": "14d8f3ea-967d-4a54-8a76-2f0849eb6f5a",
-                    "path": "<Keyboard>/b",
+                    "id": "e2de4c64-85e2-47ca-b44f-ee38a6f9ec2c",
+                    "path": "<Keyboard>/enter",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "ToggleCaravanSupport",
+                    "action": "SubmitTextChat",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

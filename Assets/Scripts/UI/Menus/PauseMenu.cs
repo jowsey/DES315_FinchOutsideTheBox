@@ -43,7 +43,7 @@ namespace UI
                     ? joinCode
                     : new string('*', joinCode.Length);
 
-                _lobbyIdText.text = $"<b>Lobby ID</b>: {formattedJoinCode}\n" +
+                _lobbyIdText.text = $"<b>Join code</b>: {formattedJoinCode}\n" +
                                     $"This lobby is <b>{visibility}</b>.";
             }
         }
