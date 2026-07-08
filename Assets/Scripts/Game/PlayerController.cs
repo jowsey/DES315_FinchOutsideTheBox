@@ -664,7 +664,7 @@ public class PlayerController : NetworkBehaviour
         }
 
         //Jumping
-        if ((ControlEnabled(ControlBlockerFlags.Jump) || IsPuppet) && (_jumpPressed || PuppetRequestJump) && (grounded || groundedOnBumpy))
+        if (((ControlEnabled(ControlBlockerFlags.Jump) && _jumpPressed) || (IsPuppet && PuppetRequestJump)) && (grounded || groundedOnBumpy))
         {
             _networkAnimator.animator.SetTrigger(JumpTrigger);
             float jumpMultiplier = IsPuppet ? PuppetJumpForceMultiplier : 1f;
