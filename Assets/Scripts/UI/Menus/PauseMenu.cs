@@ -13,8 +13,6 @@ namespace UI
         [SerializeField] private RectTransform _hostLeaveDisbandWarning;
         [SerializeField] private TextMeshProUGUI _lobbyIdText;
 
-        [SerializeField] private EnsureSelection _ensureSelection;
-
         private bool _isActive;
         private CanvasGroup _canvasGroup;
 
@@ -78,7 +76,6 @@ namespace UI
         private void OnOpen(bool active)
         {
             _isActive = active;
-            if(_ensureSelection) _ensureSelection.enabled = active; // no need to ensure a UI selection if no main UI is open
 
             Cursor.lockState = active ? CursorLockMode.None : CursorLockMode.Locked;
             if (active)
