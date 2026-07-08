@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{46173D95-DFFE-4BE9-8209-57EB1CFCE1F7}",
     "Language": "SFX",
-    "Hash": "{370CAE8C-3D63-744D-56EB-7AB9D8C3085E}",
+    "Hash": "{A5194761-B664-8160-339C-A1A73BF5ED02}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Default_Soundbank",
     "ShortName": "Default_Soundbank",
     "Path": "Default_Soundbank.bnk",
@@ -38,6 +38,14 @@
       "Location": "Memory",
       "ShortName": "CarOverStone - Light.wav",
       "CachePath": "BC/{BC6601FE-2934-4836-6D52-08DA2DF9342F}.wem"
+     },
+     {
+      "Id": "39909234",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "textblip.wav",
+      "CachePath": "A3/{A371DC97-00B2-FAD2-AB9C-EAA635FCFC11}.wem"
      },
      {
       "Id": "45237936",
@@ -86,6 +94,14 @@
       "Location": "Memory",
       "ShortName": "Cat Jump-012.wav",
       "CachePath": "16/{16935FF0-6D70-F0F3-9DC2-5822F6EF8137}.wem"
+     },
+     {
+      "Id": "94600850",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "sandsfx.wav",
+      "CachePath": "C4/{C4F2FCFF-84D5-E1CD-0A0D-633BD8A41D0F}.wem"
      },
      {
       "Id": "98700581",
@@ -182,6 +198,14 @@
       "Location": "Memory",
       "ShortName": "Sand Fts-025.wav",
       "CachePath": "45/{45B4A181-284C-4ACB-A06F-EEE2C155267E}.wem"
+     },
+     {
+      "Id": "161924512",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "PtT blip-002.wav",
+      "CachePath": "D5/{D593E1E6-7DA6-2D43-6A1F-4F661A1E0454}.wem"
      },
      {
       "Id": "184010131",
@@ -464,6 +488,14 @@
       "CachePath": "57/{5759BAF3-382B-33F2-E705-2A7BC67A9D56}.wem"
      },
      {
+      "Id": "453281573",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "PtT blip-001.wav",
+      "CachePath": "95/{95B68AC6-93B0-A088-CA35-5192B90A8C9A}.wem"
+     },
+     {
       "Id": "462717108",
       "Language": "SFX",
       "Streaming": "false",
@@ -662,6 +694,14 @@
       "Location": "Memory",
       "ShortName": "WoodFts-007.wav",
       "CachePath": "96/{96A0026F-D63F-4555-E137-4D605046B466}.wem"
+     },
+     {
+      "Id": "679979793",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "wind n sand 2.wav",
+      "CachePath": "E1/{E1C4E266-84B0-383E-3371-443170685334}.wem"
      },
      {
       "Id": "681258764",
@@ -1074,6 +1114,16 @@
        "LibName": "Wwise Compressor",
        "LibId": "7077891"
       }
+     ],
+     "ShareSets": [
+      {
+       "Id": "2874569289",
+       "Name": "CaveEcho",
+       "ObjectPath": "\\Effects\\Default Work Unit\\CaveEcho",
+       "GUID": "{4DF17D43-BADB-4FFA-89C4-133790CB3DD5}",
+       "LibName": "Wwise RoomVerb",
+       "LibId": "7733251"
+      }
      ]
     },
     "Events": [
@@ -1274,7 +1324,14 @@
        {
         "Id": "1024932459"
        }
-      ]
+      ],
+      "PluginRefs": {
+       "ShareSets": [
+        {
+         "Id": "2874569289"
+        }
+       ]
+      }
      },
      {
       "Id": "1950057143",
@@ -1430,7 +1487,14 @@
          {
           "Id": "1032855642"
          }
-        ]
+        ],
+        "PluginRefs": {
+         "ShareSets": [
+          {
+           "Id": "2874569289"
+          }
+         ]
+        }
        },
        {
         "SwitchValue": {
@@ -1482,7 +1546,14 @@
          {
           "Id": "1054373189"
          }
-        ]
+        ],
+        "PluginRefs": {
+         "ShareSets": [
+          {
+           "Id": "2874569289"
+          }
+         ]
+        }
        },
        {
         "SwitchValue": {
@@ -1526,7 +1597,14 @@
          {
           "Id": "982450700"
          }
-        ]
+        ],
+        "PluginRefs": {
+         "ShareSets": [
+          {
+           "Id": "2874569289"
+          }
+         ]
+        }
        }
       ]
      },
@@ -1968,6 +2046,34 @@
       ]
      },
      {
+      "Id": "3485553859",
+      "Name": "PtT_In",
+      "ObjectPath": "\\Events\\Default Work Unit\\PushToTalk\\PtT_In",
+      "GUID": "{661BAFA4-9452-43F5-8D76-B1E03EF8FBD7}",
+      "DurationType": "OneShot",
+      "DurationMin": "0.084875",
+      "DurationMax": "0.084875",
+      "MediaRefs": [
+       {
+        "Id": "161924512"
+       }
+      ]
+     },
+     {
+      "Id": "3913911230",
+      "Name": "PtT_Out",
+      "ObjectPath": "\\Events\\Default Work Unit\\PushToTalk\\PtT_Out",
+      "GUID": "{94C0830C-BC09-4EB2-A7F8-9264B264135D}",
+      "DurationType": "OneShot",
+      "DurationMin": "0.0964375",
+      "DurationMax": "0.0964375",
+      "MediaRefs": [
+       {
+        "Id": "453281573"
+       }
+      ]
+     },
+     {
       "Id": "3686250852",
       "Name": "PusherMoving10s",
       "ObjectPath": "\\Events\\Default Work Unit\\Obstacle\\Pusher\\PusherMoving10s",
@@ -2125,6 +2231,31 @@
       ]
      },
      {
+      "Id": "3076940544",
+      "Name": "SandFall",
+      "ObjectPath": "\\Events\\Default Work Unit\\Environment\\SandFall",
+      "GUID": "{1EC371E6-2B8C-400D-80FC-0518E6820669}",
+      "MaxAttenuation": "10",
+      "DurationType": "Infinite",
+      "MediaRefs": [
+       {
+        "Id": "94600850"
+       }
+      ]
+     },
+     {
+      "Id": "264448505",
+      "Name": "SandNWind",
+      "ObjectPath": "\\Events\\Default Work Unit\\Environment\\SandNWind",
+      "GUID": "{006E6C76-5F72-4B3A-AC1B-4FCD9E3E88AB}",
+      "DurationType": "Infinite",
+      "MediaRefs": [
+       {
+        "Id": "679979793"
+       }
+      ]
+     },
+     {
       "Id": "1153606107",
       "Name": "ShopBuy",
       "ObjectPath": "\\Events\\Default Work Unit\\Shop\\ShopBuy",
@@ -2208,6 +2339,20 @@
       "MediaRefs": [
        {
         "Id": "857854777"
+       }
+      ]
+     },
+     {
+      "Id": "1387752797",
+      "Name": "TextBlip",
+      "ObjectPath": "\\Events\\Default Work Unit\\TextBlip",
+      "GUID": "{FBE1DD01-9342-4588-890D-226BAA1DD61D}",
+      "DurationType": "OneShot",
+      "DurationMin": "0.109291665",
+      "DurationMax": "0.109291665",
+      "MediaRefs": [
+       {
+        "Id": "39909234"
        }
       ]
      },
@@ -2406,6 +2551,12 @@
       "GUID": "{BA643473-C61D-4731-AE64-D4A9B606F533}"
      },
      {
+      "Id": "91271595",
+      "Name": "InCave",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\InCave",
+      "GUID": "{438222D9-B4B8-4B73-A173-786F7088256B}"
+     },
+     {
       "Id": "988175737",
       "Name": "SideSweeper",
       "ObjectPath": "\\Game Parameters\\Default Work Unit\\Obstacles\\SideSweeper",
@@ -2560,6 +2711,12 @@
       "Name": "MusicVolume",
       "ObjectPath": "\\Game Parameters\\Default Work Unit\\SettingsVolume\\MusicVolume",
       "GUID": "{2C00F143-0CFC-4664-8B6A-E0DF59F14DBF}"
+     },
+     {
+      "Id": "2786792591",
+      "Name": "PtTOnOff",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\PtTOnOff",
+      "GUID": "{F12A7C10-D14A-4A30-B996-C8CA3EE0D185}"
      },
      {
       "Id": "3054124956",
@@ -2744,6 +2901,6 @@
     ]
    }
   ],
-  "FileHash": "{E4087D74-FF5E-F36F-EDB1-E0B471FF745B}"
+  "FileHash": "{32F9A8D9-7072-AA93-292D-449D9DD6DF9F}"
  }
 }

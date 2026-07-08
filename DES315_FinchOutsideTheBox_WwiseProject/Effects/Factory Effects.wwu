@@ -128,20 +128,31 @@
 								<Property Name="DelayTime" Type="Real32" Value="1"/>
 							</PropertyList>
 						</Effect>
-						<Effect Name="Echoes_Linear" ID="{D20F3717-EBA2-4E3A-84F8-C8BD431563FB}" PluginName="Wwise Delay" CompanyID="0" PluginID="106" PluginType="3"/>
+						<Effect Name="Echoes_Linear" ID="{D20F3717-EBA2-4E3A-84F8-C8BD431563FB}" PluginName="Wwise Delay" CompanyID="0" PluginID="106" PluginType="3">
+							<PropertyList>
+								<Property Name="DelayTime" Type="Real32" Value="0.17"/>
+								<Property Name="Feedback" Type="Real32" Value="5.5"/>
+								<Property Name="WetDryMix" Type="Real32" Value="60"/>
+							</PropertyList>
+						</Effect>
 						<Effect Name="One_Tap_Half_Second" ID="{B8FE0D3B-7AAB-4344-89FE-177602B7BF19}" PluginName="Wwise Delay" CompanyID="0" PluginID="106" PluginType="3"/>
 						<Effect Name="One_Tap_Quarter_Second" ID="{6BD2D67D-601A-45A6-AD4C-2C089078EBED}" PluginName="Wwise Delay" CompanyID="0" PluginID="106" PluginType="3">
 							<PropertyList>
-								<Property Name="DelayTime" Type="Real32" Value="0.25"/>
+								<Property Name="DelayTime" Type="Real32" Value="0.18"/>
+								<Property Name="OutputLevel" Type="Real32" Value="-10.9"/>
+								<Property Name="WetDryMix" Type="Real32" Value="35"/>
 							</PropertyList>
 						</Effect>
 						<Effect Name="Nearly_Forever" ID="{38550FDA-9236-4FC5-8AE0-68DB08164B25}" PluginName="Wwise Delay" CompanyID="0" PluginID="106" PluginType="3">
 							<PropertyList>
-								<Property Name="DelayTime" Type="Real32" Value="0.6"/>
+								<Property Name="DelayTime" Type="Real32" Value="0.23"/>
 								<Property Name="Feedback" Type="Real32" Value="80"/>
-								<Property Name="WetDryMix" Type="Real32" Value="30"/>
+								<Property Name="OutputLevel" Type="Real32" Value="-16.2"/>
+								<Property Name="ProcessLFE" Type="bool" Value="False"/>
+								<Property Name="WetDryMix" Type="Real32" Value="18.5"/>
 							</PropertyList>
 						</Effect>
+						<Effect Name="New_Delay" ID="{6D6112BF-8E97-45EE-AEF2-CAA963BBBFA4}" PluginName="Wwise Delay" CompanyID="0" PluginID="106" PluginType="3"/>
 					</ChildrenList>
 				</Folder>
 				<Folder Name="Peak Limiter" ID="{836AD450-C7A2-4D04-B731-35228C434FD4}" ShortID="766653803">
@@ -1003,22 +1014,22 @@
 							<ChildrenList>
 								<Effect Name="Not_A_Yellow_Submarine" ID="{B5719071-C58D-49FA-8766-B1D986D017EC}" PluginName="Wwise RoomVerb" CompanyID="0" PluginID="118" PluginType="3">
 									<PropertyList>
-										<Property Name="DecayTime" Type="Real32" Value="1.3"/>
+										<Property Name="DecayTime" Type="Real32" Value="0.6"/>
 										<Property Name="Density" Type="Real32" Value="32"/>
 										<Property Name="ERLevel" Type="Real32" Value="-16"/>
-										<Property Name="ERPattern" Type="int32" Value="27"/>
+										<Property Name="ERPattern" Type="int32" Value="26"/>
 										<Property Name="Filter1Freq" Type="Real32" Value="590"/>
 										<Property Name="Filter1Gain" Type="Real32" Value="-5"/>
 										<Property Name="Filter2Freq" Type="Real32" Value="7020"/>
 										<Property Name="Filter2Gain" Type="Real32" Value="-6"/>
 										<Property Name="Filter3Freq" Type="Real32" Value="8440"/>
 										<Property Name="Filter3Gain" Type="Real32" Value="1"/>
-										<Property Name="HFDamping" Type="Real32" Value="1.5"/>
+										<Property Name="HFDamping" Type="Real32" Value="1.35"/>
 										<Property Name="PreDelay" Type="Real32" Value="42"/>
 										<Property Name="Quality" Type="int32" Value="6"/>
 										<Property Name="ReverbLevel" Type="Real32" Value="-15"/>
 										<Property Name="RoomShape" Type="Real32" Value="36"/>
-										<Property Name="RoomSize" Type="Real32" Value="-24"/>
+										<Property Name="RoomSize" Type="Real32" Value="-26"/>
 										<Property Name="StereoWidth" Type="Real32" Value="90"/>
 									</PropertyList>
 								</Effect>
