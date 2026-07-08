@@ -12,6 +12,10 @@ namespace Util
         public float Duration = 1f;
         public Ease Ease = Ease.Linear;
         public int Spins = 1;
+
+        public bool Move = false;
+        [EnableIf("Move")] public Vector3 MoveVec = Vector3.zero;
+        [EnableIf("Move")] public Ease MoveEase = Ease.Linear;
     }
 
     [InfoBox("Makes an object spin when you click it. Built for the main menu easter egg.")]
@@ -37,6 +41,11 @@ namespace Util
                 info.Duration,
                 info.Ease
             );
+
+            if (info.Move)
+            {
+                Tween.LocalPosition(transform, transform.localPosition, transform.localPosition + info.MoveVec, info.Duration, info.MoveEase);
+            }
         }
     }
 }
