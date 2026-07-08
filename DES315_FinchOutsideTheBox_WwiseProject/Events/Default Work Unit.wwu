@@ -636,6 +636,69 @@
 						</Event>
 					</ChildrenList>
 				</Folder>
+				<Folder Name="Shop" ID="{1D9AF5CF-7626-4A39-8824-7C17134AA3C0}" ShortID="747366435">
+					<ChildrenList>
+						<Event Name="CatShopEnter" ID="{DDFB4EE5-5AF9-488F-9E75-D5C1F3FC1211}">
+							<ChildrenList>
+								<Action Name="" ID="{6C963709-3A27-4976-B969-4323BAF096A4}" ShortID="789869734">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="CatShopEnter" ID="{C505FF42-74DD-4D7B-B3F0-1687AC51FE79}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="ShopBuy" ID="{18CE8F50-7A9F-43F7-96F2-5213BA7E010B}">
+							<ChildrenList>
+								<Action Name="" ID="{C8E19651-952D-43A1-90CC-1DF98EEE534B}" ShortID="724232520">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="ShopBuy" ID="{C8E4A8A8-AF54-4E20-A154-30D024F6380B}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="TipJar" ID="{AB188537-5FA2-4DC3-AB67-E0B666EA6D1F}">
+							<ChildrenList>
+								<Action Name="" ID="{BE619029-702C-429E-905F-CFB31BB3CE88}" ShortID="239680855">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="TipJar" ID="{7F9EF39D-E971-45F6-8061-67416C84516C}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+					</ChildrenList>
+				</Folder>
+				<Folder Name="PushToTalk" ID="{BAA9D189-BC42-4623-928F-E256A4436F93}" ShortID="568184641">
+					<ChildrenList>
+						<Event Name="PtT_In" ID="{661BAFA4-9452-43F5-8D76-B1E03EF8FBD7}">
+							<ChildrenList>
+								<Action Name="" ID="{0D31E55E-06B0-4028-81BC-7A4161863B65}" ShortID="156549275">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="PtT-In" ID="{77750AC0-7940-438E-AA79-4BD7809535DA}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="PtT_Out" ID="{94C0830C-BC09-4EB2-A7F8-9264B264135D}">
+							<ChildrenList>
+								<Action Name="" ID="{4EEF4E3F-281C-42EE-8736-48113CA22C41}" ShortID="38449120">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="PtT-Out" ID="{F63618C5-CF28-47B4-8941-21A3D12993F9}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+					</ChildrenList>
+				</Folder>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>
