@@ -2,6 +2,7 @@ using Mirror;
 using UnityEngine;
 using UnityEngine.Playables;
 using System.Collections.Generic;
+using UI;
 
 public class CutsceneStart : NetworkBehaviour
 {
@@ -72,9 +73,8 @@ public class CutsceneStart : NetworkBehaviour
         Camera.main.GetComponent<ObstructionDitherer>().enabled = false;
         Camera.main.GetComponent<CrosshairDetection>().enabled = false;
         Camera.main.GetComponent<AkAudioListener>().enabled = true;
-        PlayerController.ControlBlockerFlags flags = PlayerController.ControlBlockerFlags.All;
-        flags &= ~PlayerController.ControlBlockerFlags.Pause;
-        PlayerController.AddControlBlockerFlags(this, flags);
+        
+        PlayerController.AddControlBlockerFlags(this, PlayerController.ControlBlockerFlags.All);
     }
     
     private void OnCutsceneStopped(PlayableDirector _)
@@ -85,6 +85,8 @@ public class CutsceneStart : NetworkBehaviour
         Camera.main.GetComponent<ObstructionDitherer>().enabled = true;
         Camera.main.GetComponent<CrosshairDetection>().enabled = true;
         Camera.main.GetComponent<AkAudioListener>().enabled = false;
+
+        PlayerController.RemoveAllControlBlockerFlags(this);
 
         if (isServer)
         {
