@@ -27,7 +27,6 @@ namespace UI
         private void Awake()
         {
             _rt = (RectTransform)transform;
-            _nextStep?.gameObject.SetActive(false);
         }
 
         private void Update()
@@ -42,8 +41,8 @@ namespace UI
                 Tween.Delay(_transitionDuration * 2f).OnComplete(() =>
                 {
                     if (_nextStep) _nextStep.gameObject.SetActive(true);
-                });
-            });
+                }, warnIfTargetDestroyed: false);
+            }, warnIfTargetDestroyed: false);
         }
 
         public void OnEnable()
@@ -58,7 +57,7 @@ namespace UI
 
             Tween.Alpha(_canvasGroup, 1f, 0f, _transitionDuration, Ease.InBack);
             Tween.UIAnchoredPosition(_rt, _rt.anchoredPosition - _rt.sizeDelta * Vector2.up, _transitionDuration, Ease.InBack)
-                .OnComplete(() => gameObject.SetActive(false));
+                .OnComplete(() => gameObject.SetActive(false), warnIfTargetDestroyed: false);
         }
     }
 }
