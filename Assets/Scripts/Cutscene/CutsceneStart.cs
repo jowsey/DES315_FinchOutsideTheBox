@@ -2,19 +2,21 @@ using Mirror;
 using UnityEngine;
 using UnityEngine.Playables;
 using System.Collections.Generic;
+using UI;
 
 public class CutsceneStart : NetworkBehaviour
 {
+    public static bool CutsceneActive { get; private set; }
+
     [SerializeField] private PlayableDirector _director;
     [SerializeField] private Cart _cart;
     [SerializeField] private GameObject _crosshair;
     [SerializeField] private Transform _cartStartTransform;
-    
+
     [SerializeField] private GameObject[] _disabledWhilePlaying;
-    
+
     //todo: maybe remove if we decide to have the cutscene triggered by button prompt instead? so that players can watch it multiple times
     private bool _played;
-
 
     private void Awake()
     {
@@ -39,6 +41,7 @@ public class CutsceneStart : NetworkBehaviour
             {
                 ObjectSnapshots[treasure] = (_cart.transform.InverseTransformPoint(treasure.transform.position), treasure.transform.rotation);
             }
+
             _cart.transform.position = _cartStartTransform.position;
             _cart.transform.rotation = _cartStartTransform.rotation;
             _cart.Rb.position = _cartStartTransform.position;
@@ -54,6 +57,7 @@ public class CutsceneStart : NetworkBehaviour
                 rb.position = worldPos;
                 rb.rotation = worldRot;
             }
+
             Physics.SyncTransforms();
 
             Camera.main.GetComponent<CameraZoomController>().OnForceThirdPersonActionStarted();
@@ -66,17 +70,17 @@ public class CutsceneStart : NetworkBehaviour
     //Wasn't sure where to chuck these
     private void OnCutsceneStarted(PlayableDirector _)
     {
+        CutsceneActive = true;
         foreach (GameObject obj in _disabledWhilePlaying) obj.SetActive(false);
 
         _crosshair.SetActive(false);
         Camera.main.GetComponent<ObstructionDitherer>().enabled = false;
         Camera.main.GetComponent<CrosshairDetection>().enabled = false;
         Camera.main.GetComponent<AkAudioListener>().enabled = true;
-        PlayerController.ControlBlockerFlags flags = PlayerController.ControlBlockerFlags.All;
-        flags &= ~PlayerController.ControlBlockerFlags.Pause;
-        PlayerController.AddControlBlockerFlags(this, flags);
+
+        PlayerController.AddControlBlockerFlags(this, PlayerController.ControlBlockerFlags.All);
     }
-    
+
     private void OnCutsceneStopped(PlayableDirector _)
     {
         foreach (GameObject obj in _disabledWhilePlaying) obj.SetActive(true);
@@ -86,9 +90,13 @@ public class CutsceneStart : NetworkBehaviour
         Camera.main.GetComponent<CrosshairDetection>().enabled = true;
         Camera.main.GetComponent<AkAudioListener>().enabled = false;
 
+        PlayerController.RemoveAllControlBlockerFlags(this);
+
         if (isServer)
         {
             _cart.CmdInvokeRespawnEvent(_cart.CurrentCheckpointIndex);
         }
+
+        CutsceneActive = false;
     }
 }

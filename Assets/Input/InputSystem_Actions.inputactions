@@ -79,6 +79,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "GlideHold",
+                    "type": "Button",
+                    "id": "8c28f794-3b21-4dbb-b86b-272ff4e26ab1",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Hold",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "PushToTalk",
                     "type": "Button",
                     "id": "9212eaef-7251-41ba-ad35-52df874750e1",
@@ -684,6 +693,28 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "SubmitTextChat",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f62a8290-6d51-4b64-b69c-90877e0c0c78",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "GlideHold",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fc928270-e80e-4fb9-ab2c-0e6b6c6a73d0",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "GlideHold",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

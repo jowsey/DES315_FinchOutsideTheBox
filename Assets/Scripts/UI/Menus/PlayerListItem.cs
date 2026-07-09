@@ -35,7 +35,8 @@ namespace UI
             }
             else
             {
-                _kickButton.interactable = false;
+                // _kickButton.interactable = false;
+                _kickButton.gameObject.SetActive(false);
             }
             
             PlayerPresenceFeed.OnPlayerLeave.AddListener(OnPlayerLeave);

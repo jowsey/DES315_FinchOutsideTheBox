@@ -258,11 +258,7 @@
 													<Reference>
 														<Local>
 															<EffectSlot Name="" ID="{2DA34324-8296-4822-8B00-CFD3A1FDDB94}" ShortID="696552360">
-																<ReferenceList>
-																	<Reference Name="Effect" PluginName="Wwise Parametric EQ" CompanyID="0" PluginID="105" PluginType="3">
-																		<ObjectRef Name="New_Parametric_EQ" ID="{3ABAFE3E-AE23-4434-A688-C915E3621DE7}" WorkUnitID="{9B700CA5-7BEA-4900-A170-C56D65C7C0BF}"/>
-																	</Reference>
-																</ReferenceList>
+																<ReferenceList/>
 															</EffectSlot>
 														</Local>
 													</Reference>
@@ -879,11 +875,6 @@
 										<Value>1</Value>
 									</ValueList>
 								</Property>
-								<Property Name="UseMaxSoundPerInstance" Type="bool">
-									<ValueList>
-										<Value>True</Value>
-									</ValueList>
-								</Property>
 								<Property Name="Volume" Type="Real64">
 									<ValueList>
 										<Value>-20</Value>
@@ -1255,7 +1246,7 @@
 										<Property Name="RandomAvoidRepeatingCount" Type="int32" Value="5"/>
 										<Property Name="Volume" Type="Real64">
 											<ValueList>
-												<Value>2</Value>
+												<Value>-2</Value>
 											</ValueList>
 										</Property>
 									</PropertyList>
@@ -2471,6 +2462,63 @@
 								</RandomSequenceContainer>
 							</ChildrenList>
 							<ObjectLists>
+								<ObjectList Name="Effects">
+									<Reference>
+										<Local>
+											<EffectSlot Name="" ID="{1054AFF0-73C7-4A63-9827-9C7D0A2AB07D}" ShortID="115608214">
+												<ReferenceList>
+													<Reference Name="Effect" PluginName="Wwise RoomVerb" CompanyID="0" PluginID="118" PluginType="3">
+														<ObjectRef Name="CaveEcho" ID="{4DF17D43-BADB-4FFA-89C4-133790CB3DD5}" WorkUnitID="{9B700CA5-7BEA-4900-A170-C56D65C7C0BF}"/>
+													</Reference>
+												</ReferenceList>
+												<ObjectLists>
+													<ObjectList Name="RTPC">
+														<Reference>
+															<Local>
+																<RTPC Name="" ID="{D94417C5-28AE-49E9-8C02-440847BD5B52}" ShortID="692733595">
+																	<PropertyList>
+																		<Property Name="PropertyName" Type="string" Value="Bypass"/>
+																	</PropertyList>
+																	<ReferenceList>
+																		<Reference Name="ControlInput">
+																			<ObjectRef Name="InCave" ID="{438222D9-B4B8-4B73-A173-786F7088256B}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																		</Reference>
+																		<Reference Name="Curve">
+																			<Custom>
+																				<Curve Name="" ID="{D1E2B7D2-36F0-413A-9E69-5ECC506C7E7A}">
+																					<PropertyList>
+																						<Property Name="Flags" Type="int32" Value="65537"/>
+																					</PropertyList>
+																					<PointList>
+																						<Point>
+																							<XPos>0</XPos>
+																							<YPos>1</YPos>
+																							<Flags>5</Flags>
+																						</Point>
+																						<Point>
+																							<XPos>0.49816</XPos>
+																							<YPos>0</YPos>
+																							<Flags>0</Flags>
+																						</Point>
+																						<Point>
+																							<XPos>1</XPos>
+																							<YPos>0</YPos>
+																							<Flags>37</Flags>
+																						</Point>
+																					</PointList>
+																				</Curve>
+																			</Custom>
+																		</Reference>
+																	</ReferenceList>
+																</RTPC>
+															</Local>
+														</Reference>
+													</ObjectList>
+												</ObjectLists>
+											</EffectSlot>
+										</Local>
+									</Reference>
+								</ObjectList>
 								<ObjectList Name="RTPC">
 									<Reference>
 										<Local>
@@ -2497,6 +2545,41 @@
 																	<Point>
 																		<XPos>30</XPos>
 																		<YPos>6</YPos>
+																		<Flags>37</Flags>
+																	</Point>
+																</PointList>
+															</Curve>
+														</Custom>
+													</Reference>
+												</ReferenceList>
+											</RTPC>
+										</Local>
+									</Reference>
+									<Reference>
+										<Local>
+											<RTPC Name="" ID="{6FAC41D3-C664-4806-8266-5385FCC1D074}" ShortID="378822902">
+												<PropertyList>
+													<Property Name="PropertyName" Type="string" Value="MakeUpGain"/>
+												</PropertyList>
+												<ReferenceList>
+													<Reference Name="ControlInput">
+														<ObjectRef Name="InCave" ID="{438222D9-B4B8-4B73-A173-786F7088256B}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+													</Reference>
+													<Reference Name="Curve">
+														<Custom>
+															<Curve Name="" ID="{758F0D22-F74F-43AD-9538-EF980AD91A42}">
+																<PropertyList>
+																	<Property Name="Flags" Type="int32" Value="3"/>
+																</PropertyList>
+																<PointList>
+																	<Point>
+																		<XPos>0</XPos>
+																		<YPos>0</YPos>
+																		<Flags>5</Flags>
+																	</Point>
+																	<Point>
+																		<XPos>1</XPos>
+																		<YPos>7.6467</YPos>
 																		<Flags>37</Flags>
 																	</Point>
 																</PointList>
@@ -2578,12 +2661,14 @@
 					<ChildrenList>
 						<SourcePlugin Name="Soundseed Air Wind" ID="{E7118BEA-5598-494A-8E92-E1B3DCF30936}" ShortID="90448540" PluginName="SoundSeed Air Wind" CompanyID="0" PluginID="119">
 							<PropertyList>
-								<Property Name="AverageVelocity" Type="Real32" Value="-1550"/>
-								<Property Name="AverageVelocityRandom" Type="Real32" Value="1150"/>
-								<Property Name="Duration" Type="Real64" Value="11"/>
-								<Property Name="FrequencyScale" Type="Real32" Value="0.17"/>
-								<Property Name="Gustiness" Type="Real32" Value="0"/>
-								<Property Name="Variability" Type="Real32" Value="0"/>
+								<Property Name="AverageVelocity" Type="Real32" Value="-410"/>
+								<Property Name="Direction" Type="Real32" Value="-45"/>
+								<Property Name="Duration" Type="Real64" Value="2.9"/>
+								<Property Name="FrequencyScale" Type="Real32" Value="-2.66"/>
+								<Property Name="Gustiness" Type="Real32" Value="0.25"/>
+								<Property Name="PlaybackRate" Type="Real32" Value="2"/>
+								<Property Name="QFactorScale" Type="Real32" Value="-4"/>
+								<Property Name="Variability" Type="Real32" Value="1"/>
 							</PropertyList>
 							<Language>SFX</Language>
 							<PluginData>
@@ -2600,28 +2685,91 @@
 						<Flags>5</Flags>
 					</Point>
 					<Point>
-						<XPos>1.59474</XPos>
+						<XPos>0.420431454545455</XPos>
 						<YPos>1164.49704</YPos>
 						<Flags>0</Flags>
 					</Point>
 					<Point>
-						<XPos>3.99998</XPos>
+						<XPos>1.05454018181818</XPos>
 						<YPos>-397.63313</YPos>
 						<Flags>0</Flags>
 					</Point>
 					<Point>
-						<XPos>7.54001</XPos>
+						<XPos>1.98782081818182</XPos>
 						<YPos>426.0355</YPos>
 						<Flags>0</Flags>
 					</Point>
 					<Point>
-						<XPos>9.27999</XPos>
+						<XPos>2.44654281818182</XPos>
 						<YPos>766.86391</YPos>
 						<Flags>0</Flags>
 					</Point>
 					<Point>
-						<XPos>11</XPos>
+						<XPos>2.9</XPos>
 						<YPos>766.86391</YPos>
+						<Flags>37</Flags>
+					</Point>
+				</PointList>
+			</Curve>
+		</CurveInfo>
+		<CurveInfo Name="FrequencyScale">
+			<Curve Name="" ID="{DE3E9908-24F5-4994-9B62-72B966816BF7}">
+				<PropertyList>
+					<Property Name="Flags" Type="int32" Value="1"/>
+				</PropertyList>
+				<PointList>
+					<Point>
+						<XPos>0</XPos>
+						<YPos>0</YPos>
+						<Flags>5</Flags>
+					</Point>
+					<Point>
+						<XPos>0.5847125</XPos>
+						<YPos>2.24852</YPos>
+						<Flags>0</Flags>
+					</Point>
+					<Point>
+						<XPos>1.362768</XPos>
+						<YPos>-1.06509</YPos>
+						<Flags>0</Flags>
+					</Point>
+					<Point>
+						<XPos>1.692846</XPos>
+						<YPos>-0.35503</YPos>
+						<Flags>0</Flags>
+					</Point>
+					<Point>
+						<XPos>1.872037</XPos>
+						<YPos>0.87574</YPos>
+						<Flags>0</Flags>
+					</Point>
+					<Point>
+						<XPos>2.2917105</XPos>
+						<YPos>-2.01183</YPos>
+						<Flags>0</Flags>
+					</Point>
+					<Point>
+						<XPos>2.9</XPos>
+						<YPos>0</YPos>
+						<Flags>37</Flags>
+					</Point>
+				</PointList>
+			</Curve>
+		</CurveInfo>
+		<CurveInfo Name="Gustiness">
+			<Curve Name="" ID="{D913B6F4-03F5-4CA0-837C-8317F48E34AB}">
+				<PropertyList>
+					<Property Name="Flags" Type="int32" Value="1"/>
+				</PropertyList>
+				<PointList>
+					<Point>
+						<XPos>0</XPos>
+						<YPos>0</YPos>
+						<Flags>5</Flags>
+					</Point>
+					<Point>
+						<XPos>2.9</XPos>
+						<YPos>0</YPos>
 						<Flags>37</Flags>
 					</Point>
 				</PointList>
@@ -2633,14 +2781,29 @@
 								<List Name="Deflectors">
 									<PluginInnerObject Name="" ID="{B6DE8D39-A9C4-4791-99B8-9E1F0CF7F78D}" PluginName="Deflector" CompanyID="0" PluginID="121">
 										<PropertyList>
-											<Property Name="PanX" Type="Real64" Value="-1.03896103896104"/>
-											<Property Name="PanY" Type="Real64" Value="-0.584795321637431"/>
+											<Property Name="PanX" Type="Real64" Value="-0.51948051948053"/>
+											<Property Name="PanY" Type="Real64" Value="66.0818713450292"/>
 										</PropertyList>
 									</PluginInnerObject>
 								</List>
 							</PluginInnerObjectList>
 						</SourcePlugin>
 					</ChildrenList>
+					<ObjectLists>
+						<ObjectList Name="Effects">
+							<Reference>
+								<Local>
+									<EffectSlot Name="" ID="{C350AB01-EABE-4DBB-A54F-697FBF2AFB14}" ShortID="633893128">
+										<ReferenceList>
+											<Reference Name="Effect" PluginName="Wwise Compressor" CompanyID="0" PluginID="108" PluginType="3">
+												<ObjectRef Name="wind_compressor" ID="{44178556-2BE6-4946-948D-1FE37709C355}" WorkUnitID="{9B700CA5-7BEA-4900-A170-C56D65C7C0BF}"/>
+											</Reference>
+										</ReferenceList>
+									</EffectSlot>
+								</Local>
+							</Reference>
+						</ObjectList>
+					</ObjectLists>
 					<ActiveSourceList>
 						<ActiveSource Name="Soundseed Air Wind" ID="{E7118BEA-5598-494A-8E92-E1B3DCF30936}" Platform="Linked"/>
 					</ActiveSourceList>
@@ -3893,7 +4056,7 @@
 								</Property>
 								<Property Name="Volume" Type="Real64">
 									<ValueList>
-										<Value>-13</Value>
+										<Value>-11</Value>
 									</ValueList>
 								</Property>
 							</PropertyList>
@@ -4124,7 +4287,7 @@
 										</Property>
 										<Property Name="Weight" Type="Real64">
 											<ValueList>
-												<Value>5</Value>
+												<Value>1</Value>
 											</ValueList>
 										</Property>
 									</PropertyList>
@@ -4156,6 +4319,19 @@
 								</Sound>
 							</ChildrenList>
 							<ObjectLists>
+								<ObjectList Name="Effects">
+									<Reference>
+										<Local>
+											<EffectSlot Name="" ID="{6A25D78B-D303-40F5-8207-36C59DB701D9}" ShortID="95991831">
+												<ReferenceList>
+													<Reference Name="Effect" PluginName="Wwise RoomVerb" CompanyID="0" PluginID="118" PluginType="3">
+														<ObjectRef Name="CaveEcho" ID="{4DF17D43-BADB-4FFA-89C4-133790CB3DD5}" WorkUnitID="{9B700CA5-7BEA-4900-A170-C56D65C7C0BF}"/>
+													</Reference>
+												</ReferenceList>
+											</EffectSlot>
+										</Local>
+									</Reference>
+								</ObjectList>
 								<ObjectList Name="RTPC">
 									<Reference>
 										<Local>
@@ -9456,6 +9632,45 @@
 											</MediaIDList>
 										</AudioFileSource>
 									</ChildrenList>
+									<ObjectLists>
+										<ObjectList Name="RTPC">
+											<Reference>
+												<Local>
+													<RTPC Name="" ID="{8583A519-74A9-4344-A67A-2950365A4651}" ShortID="952192992">
+														<PropertyList>
+															<Property Name="PropertyName" Type="string" Value="Volume"/>
+														</PropertyList>
+														<ReferenceList>
+															<Reference Name="ControlInput">
+																<ObjectRef Name="PtTOnOff" ID="{F12A7C10-D14A-4A30-B996-C8CA3EE0D185}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+															</Reference>
+															<Reference Name="Curve">
+																<Custom>
+																	<Curve Name="" ID="{DF039A68-C333-4A0A-A49C-F1DAACFBA02E}">
+																		<PropertyList>
+																			<Property Name="Flags" Type="int32" Value="3"/>
+																		</PropertyList>
+																		<PointList>
+																			<Point>
+																				<XPos>0</XPos>
+																				<YPos>-200</YPos>
+																				<Flags>5</Flags>
+																			</Point>
+																			<Point>
+																				<XPos>1</XPos>
+																				<YPos>0</YPos>
+																				<Flags>37</Flags>
+																			</Point>
+																		</PointList>
+																	</Curve>
+																</Custom>
+															</Reference>
+														</ReferenceList>
+													</RTPC>
+												</Local>
+											</Reference>
+										</ObjectList>
+									</ObjectLists>
 									<ActiveSourceList>
 										<ActiveSource Name="PtT blip-002" ID="{12DD0413-2344-44B8-804A-0E9CF2F78069}" Platform="Linked"/>
 									</ActiveSourceList>
@@ -9485,6 +9700,45 @@
 											</MediaIDList>
 										</AudioFileSource>
 									</ChildrenList>
+									<ObjectLists>
+										<ObjectList Name="RTPC">
+											<Reference>
+												<Local>
+													<RTPC Name="" ID="{CC46C218-6449-468C-BA72-982495B5BA36}" ShortID="1037081511">
+														<PropertyList>
+															<Property Name="PropertyName" Type="string" Value="Volume"/>
+														</PropertyList>
+														<ReferenceList>
+															<Reference Name="ControlInput">
+																<ObjectRef Name="PtTOnOff" ID="{F12A7C10-D14A-4A30-B996-C8CA3EE0D185}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+															</Reference>
+															<Reference Name="Curve">
+																<Custom>
+																	<Curve Name="" ID="{FFCFEF23-1401-41B4-8C24-47F4DFDEFF97}">
+																		<PropertyList>
+																			<Property Name="Flags" Type="int32" Value="3"/>
+																		</PropertyList>
+																		<PointList>
+																			<Point>
+																				<XPos>0</XPos>
+																				<YPos>-200</YPos>
+																				<Flags>5</Flags>
+																			</Point>
+																			<Point>
+																				<XPos>1</XPos>
+																				<YPos>0</YPos>
+																				<Flags>37</Flags>
+																			</Point>
+																		</PointList>
+																	</Curve>
+																</Custom>
+															</Reference>
+														</ReferenceList>
+													</RTPC>
+												</Local>
+											</Reference>
+										</ObjectList>
+									</ObjectLists>
 									<ActiveSourceList>
 										<ActiveSource Name="PtT blip-001" ID="{130FC178-57BC-42A2-9F95-7247A2DE5329}" Platform="Linked"/>
 									</ActiveSourceList>

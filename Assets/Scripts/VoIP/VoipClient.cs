@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using VoIP.Util;
+using Event = AK.Wwise.Event;
 
 namespace VoIP
 {
@@ -55,6 +56,9 @@ namespace VoIP
 
         [SerializeField] private PlayerController _player;
 
+        [SerializeField] private Event _pushToTalkPressSfx;
+        [SerializeField] private Event _pushToTalkReleaseSfx;
+        
         //Mic clip
         private AudioClip _micClip;
         private int _micReadPos;
@@ -290,12 +294,25 @@ namespace VoIP
             {
                 Muted = !_pushToTalkAction.action.IsPressed();
 
-                //When starting a new PTT block, reset reading state
                 if (_pushToTalkAction.action.WasPressedThisFrame())
                 {
+                    // Push to talk started
+                    if (SettingsManager.ActiveSettings.PushToTalkSfx)
+                    {
+                        _pushToTalkPressSfx?.Post(gameObject);
+                    }
+
+                    //When starting a new PTT block, reset reading state
                     _micReadPos = micWritePos;
                     _sendAccumulationBuffer.Clear();
                     _opus.ResetEncoderState();
+                }
+                else if (_pushToTalkAction.action.WasReleasedThisFrame())
+                {
+                    if (SettingsManager.ActiveSettings.PushToTalkSfx)
+                    {
+                        _pushToTalkReleaseSfx?.Post(gameObject);
+                    }
                 }
             }
             else

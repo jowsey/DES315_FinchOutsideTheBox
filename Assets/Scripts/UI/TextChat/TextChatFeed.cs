@@ -19,6 +19,8 @@ namespace UI
         [SerializeField] [Required] private InputActionReference _closeInputAction;
         [SerializeField] [Required] private InputActionReference _submitInputAction;
 
+        [SerializeField][Required] public AK.Wwise.Event TextNotif;
+
         private bool _inputFieldActive;
         private bool _closedThisFrame; // workaround to the fact that our close and open buttons are the same
 
@@ -39,6 +41,8 @@ namespace UI
 
             var rt = (RectTransform)transform;
             LayoutRebuilder.ForceRebuildLayoutImmediate(rt);
+
+            TextNotif.Post(gameObject);
         }
 
         [ClientRpc]

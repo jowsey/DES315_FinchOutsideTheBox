@@ -11,7 +11,8 @@ namespace UI
         [SerializeField] private float _warningDistance = 50f;
         [SerializeField] private float _iconAnimationScale = 1.05f;
 
-        [SerializeField] [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)] private Transform _cart;
+        [SerializeField] [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)]
+        private Transform _cart;
 
         private bool _active;
 
@@ -30,11 +31,11 @@ namespace UI
             if (!PlayerController.LocalPlayer) return;
 
             var distance = Vector3.Distance(PlayerController.LocalPlayer.transform.position, _cart.position);
-            if (!_active && distance > _warningDistance)
+            if (!_active && !CutsceneStart.CutsceneActive && distance > _warningDistance)
             {
                 Toggle(true);
             }
-            else if (_active && distance < _warningDistance)
+            else if (_active && (CutsceneStart.CutsceneActive || distance < _warningDistance))
             {
                 Toggle(false);
             }

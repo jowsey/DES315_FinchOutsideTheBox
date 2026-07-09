@@ -104,7 +104,8 @@ public class PlayerController : NetworkBehaviour
     private List<Vector3> _contactNormals = new();
 
     [SerializeField] private ActionCurveLine _actionCurveLinePrefab;
-
+    private ActionCurveLine _onboardingLineInstance;
+    
     [field: SerializeField] public Transform HeldObjectPickupTarget { get; private set; }
 
     // Called when a player object is done being initially setup
@@ -271,7 +272,7 @@ public class PlayerController : NetworkBehaviour
                 puppeteer.SetPlayer1Name(PlayerName);
 
                 //Default (in case you somehow beat the game by yourself without anybody else joining?)
-                puppeteer.SetPlayer2Name("DefaultCat");
+                puppeteer.SetPlayer2Name("Cat");
                 puppeteer.SetPlayer2SkinIndex(1);
             }
             else if (NetworkServer.connections.Count == 2)
@@ -346,14 +347,14 @@ public class PlayerController : NetworkBehaviour
         var wheels = FindObjectsByType<WheelSeat>(FindObjectsSortMode.InstanceID);
         var assignedWheel = wheels[PlayerIndex % wheels.Length];
 
-        var onboardingJumpLine = Instantiate(_actionCurveLinePrefab, null);
-        onboardingJumpLine.StartFollowTarget = transform;
-        onboardingJumpLine.StartTrackingOffset = Vector3.up * 0.5f;
-        onboardingJumpLine.EndFollowTarget = assignedWheel.transform;
-        onboardingJumpLine.EndTrackingOffset = assignedWheel.transform.InverseTransformPoint(assignedWheel.SeatedPosition);
-        onboardingJumpLine.PromptLabel = "Hop on with";
-        onboardingJumpLine.ShouldDestroy = () => Seat; // if we're sat, job's done
-
+        _onboardingLineInstance = Instantiate(_actionCurveLinePrefab, null);
+        _onboardingLineInstance.StartFollowTarget = transform;
+        _onboardingLineInstance.StartTrackingOffset = Vector3.up * 0.5f;
+        _onboardingLineInstance.EndFollowTarget = assignedWheel.transform;
+        _onboardingLineInstance.EndTrackingOffset = assignedWheel.transform.InverseTransformPoint(assignedWheel.SeatedPosition);
+        _onboardingLineInstance.PromptLabel = "Hop on with";
+        _onboardingLineInstance.ShouldDestroy = () => Seat; // if we're sat, job's done
+        
         // Only local player gets a Wwise audio listener
         gameObject.AddComponent<AkAudioListener>();
 
@@ -663,7 +664,7 @@ public class PlayerController : NetworkBehaviour
         }
 
         //Jumping
-        if ((ControlEnabled(ControlBlockerFlags.Jump) || IsPuppet) && (_jumpPressed || PuppetRequestJump) && (grounded || groundedOnBumpy))
+        if (((ControlEnabled(ControlBlockerFlags.Jump) && _jumpPressed) || (IsPuppet && PuppetRequestJump)) && (grounded || groundedOnBumpy))
         {
             _networkAnimator.animator.SetTrigger(JumpTrigger);
             float jumpMultiplier = IsPuppet ? PuppetJumpForceMultiplier : 1f;
@@ -742,28 +743,20 @@ public class PlayerController : NetworkBehaviour
 
     private void OnCutsceneStarted(PlayableDirector _)
     {
-        foreach (SkinnedMeshRenderer renderer in SkinnedRenderers)
-        {
-            renderer.enabled = CutscenePlayer;
-        }
-        foreach (Collider collider in GetComponentsInChildren<Collider>())
-        {
-            collider.enabled = CutscenePlayer;
-        }
+        foreach (SkinnedMeshRenderer smr in SkinnedRenderers) smr.enabled = CutscenePlayer;
+        foreach (Collider col in GetComponentsInChildren<Collider>()) col.enabled = CutscenePlayer;
+
+        if (_onboardingLineInstance) Destroy(_onboardingLineInstance.gameObject);
+        
         _nameplateCanvas.enabled = CutscenePlayer;
         Rb.isKinematic = !CutscenePlayer;
     }
 
     private void OnCutsceneStopped(PlayableDirector _)
     {
-        foreach (SkinnedMeshRenderer renderer in SkinnedRenderers)
-        {
-            renderer.enabled = !CutscenePlayer;
-        }
-        foreach (Collider collider in GetComponentsInChildren<Collider>())
-        {
-            collider.enabled = !CutscenePlayer;
-        }
+        foreach (SkinnedMeshRenderer smr in SkinnedRenderers) smr.enabled = !CutscenePlayer;
+        foreach (Collider col in GetComponentsInChildren<Collider>()) col.enabled = !CutscenePlayer;
+        
         _nameplateCanvas.enabled = !CutscenePlayer;
         Rb.isKinematic = CutscenePlayer;
     }
