@@ -1,4 +1,5 @@
-﻿using PrimeTween;
+﻿using Game.Items;
+using PrimeTween;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -42,12 +43,12 @@ namespace UI
 
         public void Build(Item item, int index, Shop shop)
         {
-            var stylisedName = item.Type.ToString(); // todo actual name
+            var stylisedName = item.Data.Type.ToString(); // todo actual name
             name = $"ItemCard: {stylisedName}";
 
             _itemNameText.text = stylisedName;
-            _itemDescriptionText.text = $"This is a {item.Type.ToString().ToLower()}. Here is a placeholder description."; // todo actual description
-            _itemPriceText.text = $"Purchase for <b>{shop.EconomySettings.ItemBuyPrices[item.Type]}</b> coins";
+            _itemDescriptionText.text = $"This is a {item.Data.Type.ToString().ToLower()}. Here is a placeholder description."; // todo actual description
+            _itemPriceText.text = $"Purchase for <b>{item.Data.BuyPrice}</b> coins";
 
             _shop = shop;
             _shopIndex = index;

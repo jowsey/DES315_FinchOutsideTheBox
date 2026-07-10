@@ -1,4 +1,3 @@
-using Game.Treasure;
 using Mirror;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -6,11 +5,11 @@ using Util;
 using Event = AK.Wwise.Event;
 using ReadOnlyAttribute = Sirenix.OdinInspector.ReadOnlyAttribute;
 
-namespace Game
+namespace Game.Items
 {
-    public abstract class Holdable : NetworkBehaviour
+    public abstract class Item : NetworkBehaviour
     {
-        public enum HoldableState
+        public enum ItemState
         {
             Idle,
             Held,
@@ -28,8 +27,8 @@ namespace Game
         protected Renderer[] _renderers;
         protected Light[] _lights;
 
-        [field: SerializeField] [field: Required] public HoldableData Data { get; protected set; }
-        
+        [field: SerializeField] [field: Required] public ItemData Data { get; protected set; }
+
         [SerializeField] protected float _movementSpeed;
 
         [SyncVar(hook = nameof(OnHolderIdentityChanged))]
@@ -38,7 +37,7 @@ namespace Game
         protected PlayerController _holder;
 
         [SyncVar(hook = nameof(OnStateChanged))]
-        [ReadOnly] public HoldableState State;
+        [ReadOnly] public ItemState State;
 
         [SyncVar(hook = nameof(OnPickuppableChanged))]
         public bool Pickuppable = true;
@@ -67,11 +66,27 @@ namespace Game
             }
         }
 
-        protected virtual void OnStateChanged(HoldableState oldState, HoldableState newState)
+        protected virtual void OnStateChanged(ItemState oldState, ItemState newState)
         {
+            // Transition out
+            switch (oldState)
+            {
+                case ItemState.Held:
+                {
+                    if (_holder.isLocalPlayer)
+                    {
+                        Highlight.SetHighlightable("Treasure", true);
+                        Highlight.SetHighlightable("Item", true);
+                    }
+
+                    break;
+                }
+            }
+
+            // Transition in
             switch (newState)
             {
-                case HoldableState.Idle:
+                case ItemState.Idle:
                 {
                     if (isServer)
                     {
@@ -84,16 +99,22 @@ namespace Game
                     foreach (Collider col in _colliders) col.enabled = true;
                     foreach (Renderer rend in _renderers) rend.enabled = true;
                     foreach (Light l in _lights) l.enabled = true;
-
+                    
                     if (_holder)
                     {
+                        if (_holder.isLocalPlayer)
+                        {
+                            Highlight.SetHighlightable("Treasure", false);
+                            Highlight.SetHighlightable("Item", false);
+                        }
+                        
                         _holder.HeldObject = null;
                         _holder = null;
                     }
 
                     break;
                 }
-                case HoldableState.Held:
+                case ItemState.Held:
                 {
                     if (isServer)
                     {
@@ -112,7 +133,7 @@ namespace Game
 
                     break;
                 }
-                case HoldableState.PuttingDown:
+                case ItemState.PuttingDown:
                 {
                     if (isServer)
                     {
@@ -127,8 +148,8 @@ namespace Game
 
                     break;
                 }
-                case HoldableState.Smashed:
-                case HoldableState.Inactive:
+                case ItemState.Smashed:
+                case ItemState.Inactive:
                 {
                     if (isServer)
                     {
@@ -161,7 +182,7 @@ namespace Game
         [Server]
         public void ServerTryPickup(PlayerController player)
         {
-            if (State != HoldableState.Idle) return;
+            if (State != ItemState.Idle) return;
             if (!Pickuppable)
             {
                 return;
@@ -170,31 +191,31 @@ namespace Game
             if (player.HeldObject) return;
 
             _holderIdentity = player.netIdentity;
-            State = HoldableState.Held;
+            State = ItemState.Held;
         }
 
         [Command(requiresAuthority = false)]
         public void CmdTryPutdown(HeldObjectPutdownTarget target, NetworkConnectionToClient sender = null)
         {
-            if (State != HoldableState.Held) return;
+            if (State != ItemState.Held) return;
 
             var player = sender!.identity.GetComponent<PlayerController>();
             if (player != _holder) return;
 
             _moveTarget = target.transform;
 
-            State = HoldableState.PuttingDown;
+            State = ItemState.PuttingDown;
         }
 
         [Command(requiresAuthority = false)]
         public void CmdTryDrop(NetworkConnectionToClient sender = null)
         {
-            if (State != HoldableState.Held) return;
+            if (State != ItemState.Held) return;
 
             var player = sender!.identity.GetComponent<PlayerController>();
             if (player != _holder) return;
 
-            State = HoldableState.Idle;
+            State = ItemState.Idle;
             _holderIdentity = null;
         }
 
@@ -202,9 +223,9 @@ namespace Game
         {
             if (!isServer) return;
 
-            if (State == HoldableState.Held) return;
+            if (State == ItemState.Held) return;
 
-            if (State == HoldableState.PuttingDown)
+            if (State == ItemState.PuttingDown)
             {
                 Vector3 targetVec = _moveTarget.position - Rb.position;
                 Vector3 delta = targetVec.normalized * (Time.fixedDeltaTime * _movementSpeed);
@@ -212,7 +233,7 @@ namespace Game
 
                 if (targetVec.sqrMagnitude < 0.025f)
                 {
-                    State = HoldableState.Idle;
+                    State = ItemState.Idle;
                     _holderIdentity = null;
                 }
             }
@@ -220,7 +241,7 @@ namespace Game
 
         private void LateUpdate()
         {
-            if (State == HoldableState.Held)
+            if (State == ItemState.Held)
             {
                 transform.position = _holder.HeldObjectPickupTarget.position;
                 // todo this follows body which is updated in physics, not camera which is updated every frame - if on local player and first-person, it jitters on rotate specifically 

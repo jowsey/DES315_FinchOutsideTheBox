@@ -1,27 +1,25 @@
 using UnityEngine;
 
-namespace Game.Treasure
+namespace Game.Items
 {
     [RequireComponent(typeof(Rigidbody))]
-    public class Treasure : Holdable
+    public class Treasure : Item
     {
-        public TreasureType Type;
         public bool Smashable;
 
         [SerializeField] private GameObject _smashedTreasurePrefab;
         [SerializeField] private AK.Wwise.Event _breakSfx;
 
-        protected override void OnStateChanged(HoldableState oldState, HoldableState newState)
+        protected override void OnStateChanged(ItemState oldState, ItemState newState)
         {
             // Transition out
             switch (oldState)
             {
-                // No longer being held
-                case HoldableState.Held:
+                // No longer holding
+                case ItemState.Held:
                 {
                     if (_holder.isLocalPlayer)
                     {
-                        Highlight.SetHighlightable("Treasure", true);
                         Highlight.SetHighlightable("ObjectCarrier", false);
                     }
 
@@ -32,7 +30,7 @@ namespace Game.Treasure
             // Transition in
             switch (newState)
             {
-                case HoldableState.Held:
+                case ItemState.Held:
                 {
                     if (isServer)
                     {
@@ -41,13 +39,12 @@ namespace Game.Treasure
 
                     if (_holder.isLocalPlayer)
                     {
-                        Highlight.SetHighlightable("Treasure", false);
                         Highlight.SetHighlightable("ObjectCarrier", true);
                     }
 
                     break;
                 }
-                case HoldableState.PuttingDown:
+                case ItemState.PuttingDown:
                 {
                     if (isServer)
                     {
@@ -56,7 +53,7 @@ namespace Game.Treasure
 
                     break;
                 }
-                case HoldableState.Smashed:
+                case ItemState.Smashed:
                 {
                     Instantiate(_smashedTreasurePrefab, transform.position, transform.rotation);
                     if (_hasInitialised)
@@ -83,7 +80,7 @@ namespace Game.Treasure
             {
                 if (Smashable)
                 {
-                    State = HoldableState.Smashed;
+                    State = ItemState.Smashed;
                 }
             }
         }
@@ -98,7 +95,7 @@ namespace Game.Treasure
             if (other.CompareTag("ObjectCarrier"))
             {
                 Cart cart = other.GetComponentInParent<Cart>();
-                cart.AddCarriedTreasure(this);
+                cart.AddCarriedItem(this);
                 Smashable = true;
             }
         }
@@ -113,7 +110,7 @@ namespace Game.Treasure
             if (other.CompareTag("ObjectCarrier"))
             {
                 Cart cart = other.GetComponentInParent<Cart>();
-                cart.RemoveCarriedTreasure(this);
+                cart.RemoveCarriedItem(this);
             }
         }
     }

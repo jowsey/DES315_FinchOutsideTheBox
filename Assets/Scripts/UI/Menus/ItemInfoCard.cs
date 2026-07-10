@@ -1,4 +1,4 @@
-﻿using Game.Treasure;
+﻿using Game.Items;
 using PrimeTween;
 using TMPro;
 using UnityEngine;
@@ -7,7 +7,7 @@ using UnityEngine.UI;
 namespace UI
 {
     [RequireComponent(typeof(WorldFollowUI))]
-    public class HoldableInfoCard : MonoBehaviour
+    public class ItemInfoCard : MonoBehaviour
     {
         [field: SerializeField] public WorldFollowUI WorldFollowUI { get; private set; }
 
@@ -30,7 +30,7 @@ namespace UI
             Tween.Scale(transform, Vector3.one, _transitionDuration, Ease.OutCubic);
         }
 
-        public void Build(HoldableData data)
+        public void Build(ItemData data)
         {
             _nameText.text = data.ItemName;
             _descriptionText.text = data.Description;
@@ -42,12 +42,14 @@ namespace UI
 
                 if (i > (int)data.Rarity) continue;
 
+                PrimeTweenConfig.warnZeroDuration = false;
                 Tween.Delay(_rarityIconTransitionDurationPerTier * 0.5f * i).OnComplete(() =>
                 {
                     icon.enabled = true;
                     Tween.Alpha(icon, 0f, 1f, _rarityIconTransitionDurationPerTier, Ease.OutCubic);
                     Tween.Scale(icon.transform, Vector3.one * 1.5f, Vector3.one, _rarityIconTransitionDurationPerTier, Ease.OutCubic);
                 });
+                PrimeTweenConfig.warnZeroDuration = true;
             }
         }
 
