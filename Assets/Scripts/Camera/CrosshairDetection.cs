@@ -74,6 +74,7 @@ public class CrosshairDetection : MonoBehaviour
         var validPickupTarget = hit.distance <= _maxPickupDistance
                                 && PlayerController.LocalPlayer.PickupAllowed
                                 && interactedTransform.TryGetComponent(out item)
+                                && item.Pickuppable
                                 && item.State == Item.ItemState.Idle;
         var validPutdownTarget = hit.distance <= _maxPutdownDistance
                                  && PlayerController.LocalPlayer.PutdownAllowed
