@@ -1,3 +1,4 @@
+using Game.Treasure;
 using Sirenix.OdinInspector;
 using UI;
 using UnityEngine;
