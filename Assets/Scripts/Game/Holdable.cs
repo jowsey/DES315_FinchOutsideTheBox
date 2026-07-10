@@ -62,7 +62,7 @@ namespace Game
             }
         }
 
-        protected virtual void OnStateChanged(HoldableState _, HoldableState newState)
+        protected virtual void OnStateChanged(HoldableState oldState, HoldableState newState)
         {
             switch (newState)
             {
@@ -179,6 +179,18 @@ namespace Game
             _moveTarget = target.transform;
 
             State = HoldableState.PuttingDown;
+        }
+
+        [Command(requiresAuthority = false)]
+        public void CmdTryDrop(NetworkConnectionToClient sender = null)
+        {
+            if (State != HoldableState.Held) return;
+
+            var player = sender!.identity.GetComponent<PlayerController>();
+            if (player != _holder) return;
+
+            State = HoldableState.Idle;
+            _holderIdentity = null;
         }
 
         private void FixedUpdate()
