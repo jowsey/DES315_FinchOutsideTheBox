@@ -1,7 +1,10 @@
+using Game.Treasure;
 using Mirror;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using Util;
 using Event = AK.Wwise.Event;
+using ReadOnlyAttribute = Sirenix.OdinInspector.ReadOnlyAttribute;
 
 namespace Game
 {
@@ -25,6 +28,8 @@ namespace Game
         protected Renderer[] _renderers;
         protected Light[] _lights;
 
+        [field: SerializeField] [field: Required] public HoldableData Data { get; protected set; }
+        
         [SerializeField] protected float _movementSpeed;
 
         [SyncVar(hook = nameof(OnHolderIdentityChanged))]
