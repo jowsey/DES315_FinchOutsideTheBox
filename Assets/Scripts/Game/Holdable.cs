@@ -141,15 +141,8 @@ namespace Game
 
         private void OnPickuppableChanged(bool _, bool newState)
         {
-            if (TryGetComponent<Highlight>(out Highlight h))
-            {
-                h.enabled = newState;
-            }
-
-            if (TryGetComponent<PlayerImmovable>(out PlayerImmovable pi))
-            {
-                pi.enabled = !newState;
-            }
+            if (TryGetComponent<Highlight>(out var h)) h.enabled = newState;
+            if (TryGetComponent<PlayerImmovable>(out var pi)) pi.enabled = !newState;
         }
 
         [Command(requiresAuthority = false)]
@@ -185,13 +178,7 @@ namespace Game
 
             _moveTarget = target.transform;
 
-            OnBaseClassPutdown();
-
             State = HoldableState.PuttingDown;
-        }
-
-        protected virtual void OnBaseClassPutdown()
-        {
         }
 
         private void FixedUpdate()
