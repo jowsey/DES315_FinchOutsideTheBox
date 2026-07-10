@@ -1,8 +1,7 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
-
 #if UNITY_EDITOR
-    using Sirenix.Utilities.Editor;
+using Sirenix.Utilities.Editor;
 #endif
 
 public class Pusher : Mirror.NetworkBehaviour

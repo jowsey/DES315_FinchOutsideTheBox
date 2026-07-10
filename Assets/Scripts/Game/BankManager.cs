@@ -1,6 +1,6 @@
+using System.Collections.Generic;
 using Mirror;
 using Sirenix.OdinInspector;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BankManager : NetworkBehaviour

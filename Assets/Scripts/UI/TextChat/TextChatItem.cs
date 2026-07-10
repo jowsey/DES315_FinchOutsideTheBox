@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using Gilzoide.RoundedCorners;
-using Mirror;
 using PrimeTween;
 using Sirenix.OdinInspector;
 using TMPro;
