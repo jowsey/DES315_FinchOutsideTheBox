@@ -13,12 +13,32 @@ namespace Game.Treasure
 
         protected override void OnStateChanged(HoldableState oldState, HoldableState newState)
         {
-            base.OnStateChanged(oldState, newState);
+            // Transition out
+            switch (oldState)
+            {
+                // No longer being held
+                case HoldableState.Held:
+                {
+                    if (_holder.isLocalPlayer)
+                    {
+                        Highlight.SetHighlightable("Treasure", true);
+                        Highlight.SetHighlightable("ObjectCarrier", false);
+                    }
 
+                    break;
+                }
+            }
+
+            // Transition in
             switch (newState)
             {
                 case HoldableState.Held:
                 {
+                    if (isServer)
+                    {
+                        Smashable = false;
+                    }
+
                     if (_holder.isLocalPlayer)
                     {
                         Highlight.SetHighlightable("Treasure", false);
@@ -33,13 +53,7 @@ namespace Game.Treasure
                     {
                         Smashable = true;
                     }
-                    
-                    if (_holder?.isLocalPlayer == true)
-                    {
-                        Highlight.SetHighlightable("Treasure", true);
-                        Highlight.SetHighlightable("ObjectCarrier", false);
-                    }
-                    
+
                     break;
                 }
                 case HoldableState.Smashed:
@@ -53,6 +67,9 @@ namespace Game.Treasure
                     break;
                 }
             }
+
+            // base clears references, cleans up etc, so call last
+            base.OnStateChanged(oldState, newState);
         }
 
         private void OnCollisionEnter(Collision col)
@@ -60,8 +77,8 @@ namespace Game.Treasure
             if (!isServer) return;
 
             if (!col.collider.CompareTag("Treasure") &&
-                !col.collider.CompareTag("ObjectCarrier") &&
                 !col.collider.CompareTag("Item") &&
+                !col.collider.CompareTag("ObjectCarrier") &&
                 LayerMask.LayerToName(col.collider.gameObject.layer) != "Cart")
             {
                 if (Smashable)

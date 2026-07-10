@@ -449,36 +449,29 @@ public class PlayerController : NetworkBehaviour
 
         _jumpPressed |= JumpAction.action.WasPressedThisFrame();
 
-        if (CrosshairDetection.TargetedTransform)
+        if (PickupAllowed && CrosshairDetection.TargetedTransform)
         {
-            if (PickupAllowed)
+            if (!CrosshairDetection.TargetedTransform.CompareTag("Treasure") &&
+                !CrosshairDetection.TargetedTransform.CompareTag("Item")) return;
+
+            Holdable holdable = CrosshairDetection.TargetedTransform.GetComponentInParent<Holdable>();
+            if (holdable.State != Treasure.HoldableState.Idle) return;
+
+            if (InteractAction.action.WasPressedThisFrame())
             {
-                if (!CrosshairDetection.TargetedTransform.CompareTag("Treasure") && !CrosshairDetection.TargetedTransform.CompareTag("Item")) { return; }
-
-                Holdable holdable = CrosshairDetection.TargetedTransform.GetComponentInParent<Holdable>();
-                if (holdable.State != Treasure.HoldableState.Idle) return;
-
-                if (InteractAction.action.WasPressedThisFrame())
-                {
-                    holdable.CmdTryPickup();
-                }
+                holdable.CmdTryPickup();
             }
-            else if (PutdownAllowed)
+        }
+        else if (PutdownAllowed && InteractAction.action.WasPressedThisFrame())
+        {
+            if (CrosshairDetection.TargetedTransform && CrosshairDetection.TargetedTransform.CompareTag("ObjectCarrier"))
             {
-                if (InteractAction.action.WasPressedThisFrame())
-                {
-                    if (CrosshairDetection.TargetedTransform.CompareTag("ObjectCarrier"))
-                    {
-                        // Putdown
-                        HeldObjectPutdownTarget carrierTarget = CrosshairDetection.TargetedTransform.GetComponentInChildren<HeldObjectPutdownTarget>();
-                        HeldObject.CmdTryPutdown(carrierTarget);
-                    }
-                    else
-                    { 
-                        // Drop
-                        // HeldObject.CmdTryDrop();
-                    }
-                }
+                HeldObjectPutdownTarget carrierTarget = CrosshairDetection.TargetedTransform.GetComponentInChildren<HeldObjectPutdownTarget>();
+                HeldObject.CmdTryPutdown(carrierTarget);
+            }
+            else
+            {
+                HeldObject.CmdTryDrop();
             }
         }
     }
