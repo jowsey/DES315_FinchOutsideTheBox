@@ -2,9 +2,8 @@ using Mirror;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Splines;
-
 #if UNITY_EDITOR
-    using Sirenix.Utilities.Editor;
+using Sirenix.Utilities.Editor;
 #endif
 
 [InfoBox("When designing: SCALE the Arch object inside the Platform, and MOVE the top-level MovingPlatform object.")]
