@@ -7,6 +7,6 @@ public class Interactable : MonoBehaviour
 
     private void OnValidate()
     {
-        if (InteractedTransform == null) { InteractedTransform = transform; }
+        if (!InteractedTransform) { InteractedTransform = transform; }
     }
 }
