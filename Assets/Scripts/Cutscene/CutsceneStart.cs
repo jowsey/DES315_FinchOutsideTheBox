@@ -2,6 +2,7 @@ using Mirror;
 using UnityEngine;
 using UnityEngine.Playables;
 using System.Collections.Generic;
+using Game.Treasure;
 using UI;
 
 public class CutsceneStart : NetworkBehaviour

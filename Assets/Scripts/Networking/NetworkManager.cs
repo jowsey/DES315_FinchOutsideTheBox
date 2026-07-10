@@ -1,5 +1,6 @@
 using System.Linq;
 using Epic.OnlineServices.Lobby;
+using Game.Treasure;
 using Mirror;
 using UI;
 using UnityEngine;

@@ -2,6 +2,8 @@ using Mirror;
 using Sirenix.OdinInspector;
 using System;
 using System.Collections.Generic;
+using Game;
+using Game.Treasure;
 using TMPro;
 using UI;
 using Unity.Cinemachine;
@@ -60,8 +62,6 @@ public class PlayerController : NetworkBehaviour
     private bool _jumpPressed;
 
     public WwiseAnimationEvents WwiseAnimationEvents { get; private set; }
-
-    public AK.Wwise.Event TreasurePickupFX;
 
     [Tooltip("Percentage of gravity to negate when gliding")]
     [SerializeField] [Range(0, 100)] private float _gravityNegationPercentage;
@@ -465,13 +465,19 @@ public class PlayerController : NetworkBehaviour
             }
             else if (PutdownAllowed)
             {
-                if (!CrosshairDetection.TargetedTransform.CompareTag("ObjectCarrier")) return;
-
-                HeldObjectPutdownTarget carrierTarget = CrosshairDetection.TargetedTransform.GetComponentInChildren<HeldObjectPutdownTarget>();
                 if (InteractAction.action.WasPressedThisFrame())
                 {
-                    HeldObject.CmdTryPutdown(carrierTarget);
-                    TreasurePickupFX.Post(gameObject);
+                    if (CrosshairDetection.TargetedTransform.CompareTag("ObjectCarrier"))
+                    {
+                        // Putdown
+                        HeldObjectPutdownTarget carrierTarget = CrosshairDetection.TargetedTransform.GetComponentInChildren<HeldObjectPutdownTarget>();
+                        HeldObject.CmdTryPutdown(carrierTarget);
+                    }
+                    else
+                    { 
+                        // Drop
+                        // HeldObject.CmdTryDrop();
+                    }
                 }
             }
         }

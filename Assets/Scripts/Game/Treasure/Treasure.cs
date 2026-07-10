@@ -1,96 +1,104 @@
-using Mirror;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
-public class Treasure : Holdable
+namespace Game.Treasure
 {
-    public TreasureType Type;
-    public bool Smashable;
-
-    [SerializeField] private GameObject _smashedTreasurePrefab;
-    [SerializeField] private AK.Wwise.Event _treasureSmashFx;
-
-    //Gets called by base class right before switching to HoldableState.PuttingDown state
-    protected override void OnBaseClassPutdown()
+    [RequireComponent(typeof(Rigidbody))]
+    public class Treasure : Holdable
     {
-        Smashable = true;
-    }
+        public TreasureType Type;
+        public bool Smashable;
 
-    protected override void OnStateChanged(HoldableState oldState, HoldableState newState)
-    {
-        //chat yo shit base class
-        base.OnStateChanged(oldState, newState);
+        [SerializeField] private GameObject _smashedTreasurePrefab;
+        [SerializeField] private AK.Wwise.Event _breakSfx;
 
-        switch (newState)
+        //Gets called by base class right before switching to HoldableState.PuttingDown state
+        protected override void OnBaseClassPutdown()
         {
-            case HoldableState.Held:
-            {
-                if (_holder.isLocalPlayer)
-                {
-                    Highlight.SetHighlightable("Treasure", false);
-                    Highlight.SetHighlightable("ObjectCarrier", true);
-                }
-                if (_hasInitialised)
-                {
-                    _holder.TreasurePickupFX.Post(gameObject);
-                }
-                break;
-            }
-            case HoldableState.PuttingDown:
-            {
-                if (_holder?.isLocalPlayer == true)
-                {
-                    Highlight.SetHighlightable("Treasure", true);
-                    Highlight.SetHighlightable("ObjectCarrier", false);
-                }
-                break;
-            }
-            case HoldableState.Smashed:
-            {
-                Instantiate(_smashedTreasurePrefab, transform.position, transform.rotation);
-                if (_hasInitialised)
-                {
-                    _treasureSmashFx.Post(gameObject);
-                }
-                break;
-            }
-        }
-    }
-
-    private void OnCollisionEnter(Collision col)
-    {
-        if (!isServer) return;
-
-        if (!col.collider.CompareTag("Treasure") &&
-            !col.collider.CompareTag("ObjectCarrier") &&
-            !col.collider.CompareTag("Item") &&
-            LayerMask.LayerToName(col.collider.gameObject.layer) != "Cart")
-        {
-            if (Smashable)
-            {
-                State = HoldableState.Smashed;
-            }
-        }
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (!isServer) { return; }
-        if (other.CompareTag("ObjectCarrier"))
-        {
-            Cart cart = other.GetComponentInParent<Cart>();
-            cart.AddCarriedTreasure(this);
             Smashable = true;
         }
-    }
 
-    private void OnTriggerExit(Collider other)
-    {
-        if (!isServer) { return; }
-        if (other.CompareTag("ObjectCarrier"))
+        protected override void OnStateChanged(HoldableState oldState, HoldableState newState)
         {
-            Cart cart = other.GetComponentInParent<Cart>();
-            cart.RemoveCarriedTreasure(this);
+            base.OnStateChanged(oldState, newState);
+
+            switch (newState)
+            {
+                case HoldableState.Held:
+                {
+                    if (_holder.isLocalPlayer)
+                    {
+                        Highlight.SetHighlightable("Treasure", false);
+                        Highlight.SetHighlightable("ObjectCarrier", true);
+                    }
+
+                    break;
+                }
+                case HoldableState.PuttingDown:
+                {
+                    if (_holder?.isLocalPlayer == true)
+                    {
+                        Highlight.SetHighlightable("Treasure", true);
+                        Highlight.SetHighlightable("ObjectCarrier", false);
+                    }
+
+                    break;
+                }
+                case HoldableState.Smashed:
+                {
+                    Instantiate(_smashedTreasurePrefab, transform.position, transform.rotation);
+                    if (_hasInitialised)
+                    {
+                        _breakSfx.Post(gameObject);
+                    }
+
+                    break;
+                }
+            }
+        }
+
+        private void OnCollisionEnter(Collision col)
+        {
+            if (!isServer) return;
+
+            if (!col.collider.CompareTag("Treasure") &&
+                !col.collider.CompareTag("ObjectCarrier") &&
+                !col.collider.CompareTag("Item") &&
+                LayerMask.LayerToName(col.collider.gameObject.layer) != "Cart")
+            {
+                if (Smashable)
+                {
+                    State = HoldableState.Smashed;
+                }
+            }
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (!isServer)
+            {
+                return;
+            }
+
+            if (other.CompareTag("ObjectCarrier"))
+            {
+                Cart cart = other.GetComponentInParent<Cart>();
+                cart.AddCarriedTreasure(this);
+                Smashable = true;
+            }
+        }
+
+        private void OnTriggerExit(Collider other)
+        {
+            if (!isServer)
+            {
+                return;
+            }
+
+            if (other.CompareTag("ObjectCarrier"))
+            {
+                Cart cart = other.GetComponentInParent<Cart>();
+                cart.RemoveCarriedTreasure(this);
+            }
         }
     }
 }
