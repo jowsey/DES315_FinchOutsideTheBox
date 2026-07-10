@@ -11,12 +11,6 @@ namespace Game.Treasure
         [SerializeField] private GameObject _smashedTreasurePrefab;
         [SerializeField] private AK.Wwise.Event _breakSfx;
 
-        //Gets called by base class right before switching to HoldableState.PuttingDown state
-        protected override void OnBaseClassPutdown()
-        {
-            Smashable = true;
-        }
-
         protected override void OnStateChanged(HoldableState oldState, HoldableState newState)
         {
             base.OnStateChanged(oldState, newState);
@@ -35,12 +29,17 @@ namespace Game.Treasure
                 }
                 case HoldableState.PuttingDown:
                 {
+                    if (isServer)
+                    {
+                        Smashable = true;
+                    }
+                    
                     if (_holder?.isLocalPlayer == true)
                     {
                         Highlight.SetHighlightable("Treasure", true);
                         Highlight.SetHighlightable("ObjectCarrier", false);
                     }
-
+                    
                     break;
                 }
                 case HoldableState.Smashed:
