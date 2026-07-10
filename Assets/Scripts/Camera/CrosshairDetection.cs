@@ -1,4 +1,4 @@
-using Game.Treasure;
+using Game;
 using Sirenix.OdinInspector;
 using UI;
 using UnityEngine;
@@ -13,7 +13,10 @@ public class CrosshairDetection : MonoBehaviour
     [Header("UI")]
     [SerializeField] [Required] private InteractPrompt _interactPromptPrefab;
 
+    [SerializeField] [Required] private HoldableInfoCard _holdableInfoCardPrefab;
+
     private InteractPrompt _interactPromptInstance;
+    private HoldableInfoCard _holdableInfoCardInstance;
 
     //The transform of the object currently being looked at
     public static Transform TargetedTransform { get; private set; }
@@ -28,6 +31,18 @@ public class CrosshairDetection : MonoBehaviour
     {
         _interactPromptInstance.Destroy();
         _interactPromptInstance = null;
+    }
+
+    private void CleanupHoldablePrompt()
+    {
+        _holdableInfoCardInstance.Destroy();
+        _holdableInfoCardInstance = null;
+    }
+
+    private void CleanupPrompts()
+    {
+        if (_interactPromptInstance) CleanupInteractPrompt();
+        if (_holdableInfoCardInstance) CleanupHoldablePrompt();
     }
 
     //LateUpdate so that it's after Cinemachine updates the camera
@@ -47,9 +62,7 @@ public class CrosshairDetection : MonoBehaviour
         if (!hitWithinDistance || !hit.transform.TryGetComponent(out Interactable interactable))
         {
             TargetedTransform = null;
-
-            if (_interactPromptInstance) CleanupInteractPrompt();
-
+            CleanupPrompts();
             return;
         }
 
@@ -59,25 +72,33 @@ public class CrosshairDetection : MonoBehaviour
         TargetedTransform = interactable.InteractedTransform;
 
         // Interaction UI
-        var viewingTreasure = PlayerController.LocalPlayer.PickupAllowed && TargetedTransform.TryGetComponent(out Treasure treasure) && treasure.State == Treasure.HoldableState.Idle;
+        Holdable holdable = null;
+        var viewingHoldable = PlayerController.LocalPlayer.PickupAllowed
+                              && TargetedTransform.TryGetComponent(out holdable)
+                              && holdable.State == Holdable.HoldableState.Idle;
         var viewingPutdownTarget = PlayerController.LocalPlayer.PutdownAllowed && TargetedTransform.CompareTag("ObjectCarrier");
 
-        var showPrompt = viewingTreasure || viewingPutdownTarget;
+        var showPrompt = viewingHoldable || viewingPutdownTarget;
         if (showPrompt)
         {
-            if (!_interactPromptInstance)
-            {
-                _interactPromptInstance = Instantiate(_interactPromptPrefab, _uiCanvas);
-            }
+            if (!_interactPromptInstance) _interactPromptInstance = Instantiate(_interactPromptPrefab, _uiCanvas);
 
-            if (viewingTreasure)
+            if (viewingHoldable)
             {
+                if (!_holdableInfoCardInstance) _holdableInfoCardInstance = Instantiate(_holdableInfoCardPrefab, _uiCanvas);
+
                 _interactPromptInstance.Build(InteractPrompt.InteractionType.PickUp);
+                _holdableInfoCardInstance.Build(holdable.Data);
 
-                // Position to right of treasure
+                // Position interact prompt to right
                 _interactPromptInstance.WorldFollowUI.TrackingTarget = TargetedTransform;
                 ((RectTransform)_interactPromptInstance.transform).pivot = new Vector2(0, 0.5f);
                 _interactPromptInstance.WorldFollowUI.UIPositionOffset = new Vector2(32, 0);
+
+                // Position holdable info card below it
+                _holdableInfoCardInstance.WorldFollowUI.TrackingTarget = TargetedTransform;
+                ((RectTransform)_holdableInfoCardInstance.transform).pivot = new Vector2(0, 1.0f);
+                _holdableInfoCardInstance.WorldFollowUI.UIPositionOffset = new Vector2(32, -32);
             }
             else if (viewingPutdownTarget)
             {
@@ -91,7 +112,7 @@ public class CrosshairDetection : MonoBehaviour
         }
         else
         {
-            if (_interactPromptInstance) CleanupInteractPrompt();
+            CleanupPrompts();
         }
     }
 }
