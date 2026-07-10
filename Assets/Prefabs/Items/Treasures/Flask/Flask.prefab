@@ -466,7 +466,6 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: fb4eeb34be92fdc47ab02109d737e816, type: 2}
-  Type: 0
   Smashable: 0
   _smashedTreasurePrefab: {fileID: 8121012120109722422, guid: 05ec8daeb1916d64cb76ff281b17a95c, type: 3}
   _breakSfx:
@@ -750,7 +749,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 72dff2bb4237a7e45a0ed9965cfedfd8, type: 2}
     - target: {fileID: 919132149155446097, guid: b5ea9efc5e464924b817fdcc4c75c863, type: 3}
       propertyPath: m_Name
-      value: Flask_Mesh_01 (1)
+      value: Flask_Mesh_01
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: b5ea9efc5e464924b817fdcc4c75c863, type: 3}
       propertyPath: m_TagString
@@ -781,12 +780,13 @@ PrefabInstance:
       value: Treasure
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: -2557005202217389605, guid: b5ea9efc5e464924b817fdcc4c75c863, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: -7441197143744424489, guid: b5ea9efc5e464924b817fdcc4c75c863, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 6322872921503828627}
+      addedObject: {fileID: 8691105728226901316}
   m_SourcePrefab: {fileID: 100100000, guid: b5ea9efc5e464924b817fdcc4c75c863, type: 3}
 --- !u!4 &2842290618864401119 stripped
 Transform:
@@ -798,8 +798,8 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: -7441197143744424489, guid: b5ea9efc5e464924b817fdcc4c75c863, type: 3}
   m_PrefabInstance: {fileID: 2376600152709995828}
   m_PrefabAsset: {fileID: 0}
---- !u!64 &6322872921503828627
-MeshCollider:
+--- !u!135 &8691105728226901316
+SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -816,7 +816,6 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -7353910727717245673, guid: b5ea9efc5e464924b817fdcc4c75c863, type: 3}
+  serializedVersion: 3
+  m_Radius: 0.9
+  m_Center: {x: 0, y: 0.015, z: 0}

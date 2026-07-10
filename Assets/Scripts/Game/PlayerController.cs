@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Game;
-using Game.Treasure;
+using Game.Items;
 using Mirror;
 using Sirenix.OdinInspector;
 using TMPro;
@@ -93,7 +93,7 @@ public class PlayerController : NetworkBehaviour
     [Header("State")]
     [ReadOnly] public WheelSeat Seat;
 
-    [ReadOnly] public Holdable HeldObject;
+    [ReadOnly] public Item HeldObject;
 
     [field: SyncVar] [field: ShowInInspector] [field: ReadOnly] public Vector3 WorldSpaceMoveDir { get; private set; }
     [SyncVar] public float AnalogueMoveScale;
@@ -151,7 +151,7 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private Transform _cameraObstructionDithererRayEndPosition;
 
     public bool PickupAllowed => ControlEnabled(ControlBlockerFlags.Interact) && !Seat && !HeldObject;
-    public bool PutdownAllowed => ControlEnabled(ControlBlockerFlags.Interact) && !Seat && HeldObject && HeldObject.State == Treasure.HoldableState.Held;
+    public bool PutdownAllowed => ControlEnabled(ControlBlockerFlags.Interact) && !Seat && HeldObject && HeldObject.State == Item.ItemState.Held;
 
     //Set in inspector to true if this player will only exist in cutscenes
     public bool CutscenePlayer;
@@ -454,12 +454,12 @@ public class PlayerController : NetworkBehaviour
             if (!CrosshairDetection.TargetedTransform.CompareTag("Treasure") &&
                 !CrosshairDetection.TargetedTransform.CompareTag("Item")) return;
 
-            Holdable holdable = CrosshairDetection.TargetedTransform.GetComponentInParent<Holdable>();
-            if (holdable.State != Treasure.HoldableState.Idle) return;
+            Item item = CrosshairDetection.TargetedTransform.GetComponentInParent<Item>();
+            if (item.State != Item.ItemState.Idle) return;
 
             if (InteractAction.action.WasPressedThisFrame())
             {
-                holdable.CmdTryPickup();
+                item.CmdTryPickup();
             }
         }
         else if (PutdownAllowed && InteractAction.action.WasPressedThisFrame())

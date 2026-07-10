@@ -1,6 +1,6 @@
 using System.Linq;
 using Epic.OnlineServices.Lobby;
-using Game.Treasure;
+using Game.Items;
 using Mirror;
 using UI;
 using UnityEngine;
@@ -77,7 +77,7 @@ namespace Networking
             var player = conn.identity?.GetComponent<PlayerController>();
             if (player && player.HeldObject)
             {
-                player.HeldObject.State = Treasure.HoldableState.Idle;
+                player.HeldObject.State = Item.ItemState.Idle;
             }
 
             base.OnServerDisconnect(conn);
