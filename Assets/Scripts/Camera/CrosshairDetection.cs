@@ -1,4 +1,4 @@
-using Game;
+using Game.Items;
 using Sirenix.OdinInspector;
 using UI;
 using UnityEngine;
@@ -8,15 +8,16 @@ public class CrosshairDetection : MonoBehaviour
     private Camera _camera;
     private Transform _uiCanvas;
 
-    [SerializeField] private float _maxDistance;
+    [SerializeField] private float _maxPickupDistance = 4.0f;
+    [SerializeField] private float _maxPutdownDistance = 8.0f;
 
     [Header("UI")]
     [SerializeField] [Required] private InteractPrompt _interactPromptPrefab;
 
-    [SerializeField] [Required] private HoldableInfoCard _holdableInfoCardPrefab;
+    [SerializeField] [Required] private ItemInfoCard _itemInfoCardPrefab;
 
     private InteractPrompt _interactPromptInstance;
-    private HoldableInfoCard _holdableInfoCardInstance;
+    private ItemInfoCard _itemInfoCardInstance;
 
     //The transform of the object currently being looked at
     public static Transform TargetedTransform { get; private set; }
@@ -33,16 +34,16 @@ public class CrosshairDetection : MonoBehaviour
         _interactPromptInstance = null;
     }
 
-    private void CleanupHoldablePrompt()
+    private void CleanupItemInfoPrompt()
     {
-        _holdableInfoCardInstance.Destroy();
-        _holdableInfoCardInstance = null;
+        _itemInfoCardInstance.Destroy();
+        _itemInfoCardInstance = null;
     }
 
     private void CleanupPrompts()
     {
         if (_interactPromptInstance) CleanupInteractPrompt();
-        if (_holdableInfoCardInstance) CleanupHoldablePrompt();
+        if (_itemInfoCardInstance) CleanupItemInfoPrompt();
     }
 
     //LateUpdate so that it's after Cinemachine updates the camera
@@ -50,57 +51,63 @@ public class CrosshairDetection : MonoBehaviour
     {
         if (!PlayerController.LocalPlayer) return;
 
+        var maxReach = Mathf.Max(_maxPickupDistance, _maxPutdownDistance);
+
         // todo it would be nice if players could pick stuff up through (dithered) walls
         // presumably this means doing a RaycastAll, filtering out non-interactable stuff, and
         // then doing a line-of-sight raycast from the player to the final interactable target?
-        Ray ray = _camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
-        var didHit = Physics.Raycast(ray, out RaycastHit hit, 1000f, ~LayerMask.GetMask("Player"), QueryTriggerInteraction.Ignore);
-
-        var hitWithinDistance = didHit && Vector3.Distance(PlayerController.LocalPlayer.transform.position, hit.point) <= _maxDistance;
+        var ray = _camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+        var didHit = Physics.Raycast(ray, out var hit, maxReach, ~LayerMask.GetMask("Player"), QueryTriggerInteraction.Ignore);
 
         // If no hit, cleanup old target
-        if (!hitWithinDistance || !hit.transform.TryGetComponent(out Interactable interactable))
+        if (!didHit || !hit.transform.TryGetComponent(out Interactable interactable))
         {
             TargetedTransform = null;
             CleanupPrompts();
             return;
         }
 
-        if (hit.transform == TargetedTransform) return;
+        var interactedTransform = interactable.InteractedTransform;
 
         // New target
-        TargetedTransform = interactable.InteractedTransform;
+        Item item = null;
+        var validPickupTarget = hit.distance <= _maxPickupDistance
+                                && PlayerController.LocalPlayer.PickupAllowed
+                                && interactedTransform.TryGetComponent(out item)
+                                && item.State == Item.ItemState.Idle;
+        var validPutdownTarget = hit.distance <= _maxPutdownDistance
+                                 && PlayerController.LocalPlayer.PutdownAllowed
+                                 && interactedTransform.CompareTag("ObjectCarrier");
 
-        // Interaction UI
-        Holdable holdable = null;
-        var viewingHoldable = PlayerController.LocalPlayer.PickupAllowed
-                              && TargetedTransform.TryGetComponent(out holdable)
-                              && holdable.State == Holdable.HoldableState.Idle;
-        var viewingPutdownTarget = PlayerController.LocalPlayer.PutdownAllowed && TargetedTransform.CompareTag("ObjectCarrier");
-
-        var showPrompt = viewingHoldable || viewingPutdownTarget;
-        if (showPrompt)
+        var validTarget = validPickupTarget || validPutdownTarget;
+        if (!validTarget)
         {
+            CleanupPrompts();
+        }
+        else if (interactedTransform != TargetedTransform)
+        {
+            TargetedTransform = interactable.InteractedTransform;
+
             if (!_interactPromptInstance) _interactPromptInstance = Instantiate(_interactPromptPrefab, _uiCanvas);
 
-            if (viewingHoldable)
+            if (validPickupTarget)
             {
-                if (!_holdableInfoCardInstance) _holdableInfoCardInstance = Instantiate(_holdableInfoCardPrefab, _uiCanvas);
+                if (!_itemInfoCardInstance) _itemInfoCardInstance = Instantiate(_itemInfoCardPrefab, _uiCanvas);
 
                 _interactPromptInstance.Build(InteractPrompt.InteractionType.PickUp);
-                _holdableInfoCardInstance.Build(holdable.Data);
+                _itemInfoCardInstance.Build(item.Data);
 
                 // Position interact prompt to right
                 _interactPromptInstance.WorldFollowUI.TrackingTarget = TargetedTransform;
                 ((RectTransform)_interactPromptInstance.transform).pivot = new Vector2(0, 0.5f);
                 _interactPromptInstance.WorldFollowUI.UIPositionOffset = new Vector2(32, 0);
 
-                // Position holdable info card below it
-                _holdableInfoCardInstance.WorldFollowUI.TrackingTarget = TargetedTransform;
-                ((RectTransform)_holdableInfoCardInstance.transform).pivot = new Vector2(0, 1.0f);
-                _holdableInfoCardInstance.WorldFollowUI.UIPositionOffset = new Vector2(32, -32);
+                // Position item info card below it
+                _itemInfoCardInstance.WorldFollowUI.TrackingTarget = TargetedTransform;
+                ((RectTransform)_itemInfoCardInstance.transform).pivot = new Vector2(0, 1.0f);
+                _itemInfoCardInstance.WorldFollowUI.UIPositionOffset = new Vector2(32, -32);
             }
-            else if (viewingPutdownTarget)
+            else if (validPutdownTarget)
             {
                 _interactPromptInstance.Build(InteractPrompt.InteractionType.PutDown);
 
@@ -109,10 +116,6 @@ public class CrosshairDetection : MonoBehaviour
                 ((RectTransform)_interactPromptInstance.transform).pivot = new Vector2(0.5f, 0);
                 _interactPromptInstance.WorldFollowUI.UIPositionOffset = new Vector2(0, -32);
             }
-        }
-        else
-        {
-            CleanupPrompts();
         }
     }
 }
