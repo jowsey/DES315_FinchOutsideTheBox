@@ -43,11 +43,10 @@ namespace UI
 
         public void Build(Item item, int index, Shop shop)
         {
-            var stylisedName = item.Data.Type.ToString(); // todo actual name
-            name = $"ItemCard: {stylisedName}";
+            name = $"ItemCard: {item.Data.ItemName}";
 
-            _itemNameText.text = stylisedName;
-            _itemDescriptionText.text = $"This is a {item.Data.Type.ToString().ToLower()}. Here is a placeholder description."; // todo actual description
+            _itemNameText.text = item.Data.ItemName;
+            _itemDescriptionText.text = item.Data.Description;
             _itemPriceText.text = $"Purchase for <b>{item.Data.BuyPrice}</b> coins";
 
             _shop = shop;

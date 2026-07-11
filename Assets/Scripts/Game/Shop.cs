@@ -93,6 +93,7 @@ public class Shop : NetworkBehaviour
         Checkpoint.RespawnEvent.AddListener(RestoreShopState);
         SpawnPhysicalItems();
 
+        _telescope.localRotation = Quaternion.Euler(0, Random.Range(0, 360f), 0);
         RunNextTelescopeTween();
     }
 
