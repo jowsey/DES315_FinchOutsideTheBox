@@ -44,22 +44,22 @@ public class Shop : NetworkBehaviour
     [SerializeField] private Transform _hatchRight;
     [SerializeField] private float _tipJarDescendDuration = 0.75f;
     [SerializeField] private float _tipJarDescendHeight = 1.0f;
-    [SerializeField, SuffixLabel("degs/s")] private float _telescopeRotateSpeed = 45f;
+    [SerializeField, SuffixLabel("degs/s")] private float _telescopeRotateSpeed = 55f;
     [SerializeField] private float _hatchOpenDuration = 1.0f;
     [SerializeField] private float _hatchOpenAngle = 135f;
 
     private Tween _telescopeRotationTween;
     private bool _hasOpened;
-    
+
     [Header("Visual Spawning")]
     [SerializeField] private Transform _itemSpawnStart;
 
     [SerializeField] private Transform _itemSpawnEnd;
-    
+
     private Transform _uiCanvas;
 
     [SerializeField] private CanvasGroup[] _hiddenUIElements;
-    
+
     [SerializeField] private int _numPurchasableItems;
     public List<Item> PurchasableItems { get; private set; } = new();
     
@@ -68,7 +68,7 @@ public class Shop : NetworkBehaviour
 
     //For restoring bought items upon respawn
     private Dictionary<Checkpoint, List<Item>> _shopStateAtCheckpoint = new();
-    
+
     public UnityEvent<Item, PurchaseError> OnReceiveBuyResult { get; private set; } = new();
 
     private void Awake()
@@ -92,6 +92,8 @@ public class Shop : NetworkBehaviour
         Cart.OnReachCheckpoint.AddListener(SaveShopState);
         Checkpoint.RespawnEvent.AddListener(RestoreShopState);
         SpawnPhysicalItems();
+
+        RunNextTelescopeTween();
     }
 
     public override void OnStopServer()
@@ -100,26 +102,30 @@ public class Shop : NetworkBehaviour
         Checkpoint.RespawnEvent.RemoveListener(RestoreShopState);
     }
 
+    [Server]
+    private void RunNextTelescopeTween()
+    {
+        Tween.CompleteAll(_telescopeRotationTween);
+
+        var absRot = Random.Range(45f, 180f);
+        var sign = Mathf.Sign(Random.Range(-1f, 1f));
+        
+        _telescopeRotationTween = Tween.RotationAtSpeed(
+            _telescope,
+            _telescope.eulerAngles,
+            _telescope.eulerAngles + new Vector3(0, sign * absRot, 0),
+            _telescopeRotateSpeed,
+            Ease.InOutCubic,
+            endDelay: Random.Range(1f, 3f)
+        ).OnComplete(RunNextTelescopeTween);
+    }
+
     private void Update()
     {
+        // Existence of enter prompt implies we're within range, saves a distance check
         if (_enterPromptInstance && _interactAction.action.WasPressedThisFrame())
         {
-            _enterPromptInstance.Destroy();
-            _enterPromptInstance = null;
-            
             EnterShop();
-        }
-
-        if (!_telescopeRotationTween.isAlive && isServer)
-        {
-            _telescopeRotationTween = Tween.RotationAtSpeed(
-                _telescope,
-                _telescope.eulerAngles,
-                _telescope.eulerAngles + new Vector3(0, Random.Range(-180f, 180f), 0),
-                _telescopeRotateSpeed,
-                Ease.InOutCubic,
-                endDelay: Random.Range(2f, 3.5f)
-            );
         }
     }
 
@@ -172,6 +178,7 @@ public class Shop : NetworkBehaviour
                     item.Pickuppable = false;
                 }
             }
+
             Debug.Log($"Shop restored: display rack reverted at {checkpoint.AreaName}");
         }
     }
@@ -180,7 +187,10 @@ public class Shop : NetworkBehaviour
     public void EnterShop()
     {
         //Don't let the player enter the shop if they're on the cart
-        if (PlayerController.LocalPlayer.Seat) { return; }
+        if (PlayerController.LocalPlayer.Seat)
+        {
+            return;
+        }
 
         //Move camera
         _zoomController.OnForceThirdPersonActionStarted();
@@ -198,19 +208,21 @@ public class Shop : NetworkBehaviour
         PlayerController.AddControlBlockerFlags(this, flags);
         Cursor.lockState = CursorLockMode.None;
         PlayerController.LocalPlayer.ActiveShop = this;
-        
+
         //Show UI
         if (!_shopUIInstance)
         {
             _shopUIInstance = Instantiate(_shopUIPrefab, _uiCanvas);
             _shopUIInstance.Build(this);
         }
-        
-        //Hide action UIs
+
+        //Hide action UIs & enter prompt
         foreach (CanvasGroup uiElement in _hiddenUIElements)
         {
             Tween.Alpha(uiElement, 0, 0.25f, Ease.OutCubic);
         }
+
+        if (_enterPromptInstance) _enterPromptInstance.gameObject.SetActive(false);
     }
 
     [Button, DisableInEditorMode]
@@ -228,19 +240,21 @@ public class Shop : NetworkBehaviour
         Cursor.lockState = CursorLockMode.Locked;
 
         PlayerController.LocalPlayer.ActiveShop = null;
-        
+
         //Destroy UI
         if (_shopUIInstance)
         {
             Destroy(_shopUIInstance.gameObject);
             _shopUIInstance = null;
         }
-        
-        //Show action UIs
+
+        //Show action UIs & enter prompt
         foreach (CanvasGroup uiElement in _hiddenUIElements)
         {
             Tween.Alpha(uiElement, 1, 0.25f, Ease.OutCubic);
         }
+
+        if (_enterPromptInstance) _enterPromptInstance.gameObject.SetActive(true);
     }
 
     [Command(requiresAuthority = false)]
@@ -252,19 +266,20 @@ public class Shop : NetworkBehaviour
             Debug.LogError("Shop.TryBuy() called with index " + index + " which was out of range (_purchasableItems.Count = " + PurchasableItems.Count + ")");
             return;
         }
+
         if (!PurchasableItems[index])
         {
             Debug.LogError("Shop.TryBuy() called with index " + index + " which was null (has the item already been bought?)");
             return;
         }
-        
+
         Item itemToBuy = PurchasableItems[index];
         if (!itemToBuy || itemToBuy.State != Item.ItemState.Idle)
         {
             Debug.LogError("Shop.TryBuy() called with index " + index + " which returned a " + (itemToBuy == null ? "null item" : "non-idle item (name = " + itemToBuy.name + ")"));
             return;
         }
-        
+
         PlayerController buyer = sender.identity.GetComponent<PlayerController>();
         if (buyer.HeldObject)
         {
@@ -291,7 +306,7 @@ public class Shop : NetworkBehaviour
     private void TargetBuyResult(NetworkConnection target, PurchaseError err, Item item, int price)
     {
         OnReceiveBuyResult.Invoke(item, err);
-        
+
         switch (err)
         {
             case PurchaseError.None:
@@ -355,7 +370,7 @@ public class Shop : NetworkBehaviour
                 Ease.OutBack
             );
         }
-        
+
         if (NetworkClient.localPlayer?.gameObject == other.attachedRigidbody?.gameObject && !_enterPromptInstance)
         {
             //Don't show players Enter prompt if they're on the cart
@@ -371,7 +386,7 @@ public class Shop : NetworkBehaviour
     {
         if (NetworkClient.localPlayer?.gameObject == other.attachedRigidbody?.gameObject && _enterPromptInstance)
         {
-            Destroy(_enterPromptInstance.gameObject);
+            _enterPromptInstance.Destroy();
             _enterPromptInstance = null;
         }
     }
