@@ -50,17 +50,19 @@ public class CrosshairDetection : MonoBehaviour
     private void LateUpdate()
     {
         if (!PlayerController.LocalPlayer) return;
-
-        var maxReach = Mathf.Max(_maxPickupDistance, _maxPutdownDistance);
-
+        
         // todo it would be nice if players could pick stuff up through (dithered) walls
         // presumably this means doing a RaycastAll, filtering out non-interactable stuff, and
         // then doing a line-of-sight raycast from the player to the final interactable target?
         var ray = _camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
-        var didHit = Physics.Raycast(ray, out var hit, maxReach, ~LayerMask.GetMask("Player"), QueryTriggerInteraction.Ignore);
-
+        var didHit = Physics.Raycast(ray, out var hit, 100f, ~LayerMask.GetMask("Player"), QueryTriggerInteraction.Ignore);
+        
+        var maxReach = Mathf.Max(_maxPickupDistance, _maxPutdownDistance);
+        
+        var playerDistance = Vector3.Distance(hit.point, PlayerController.LocalPlayer.transform.position);
+        
         // If no hit, cleanup old target
-        if (!didHit || !hit.transform.TryGetComponent(out Interactable interactable))
+        if (!didHit || !hit.transform.TryGetComponent(out Interactable interactable) || playerDistance > maxReach)
         {
             TargetedTransform = null;
             CleanupPrompts();
@@ -71,12 +73,12 @@ public class CrosshairDetection : MonoBehaviour
 
         // New target
         Item item = null;
-        var validPickupTarget = hit.distance <= _maxPickupDistance
+        var validPickupTarget = playerDistance <= _maxPickupDistance
                                 && PlayerController.LocalPlayer.PickupAllowed
                                 && interactedTransform.TryGetComponent(out item)
                                 && item.Pickuppable
                                 && item.State == Item.ItemState.Idle;
-        var validPutdownTarget = hit.distance <= _maxPutdownDistance
+        var validPutdownTarget = playerDistance <= _maxPutdownDistance
                                  && PlayerController.LocalPlayer.PutdownAllowed
                                  && interactedTransform.CompareTag("ObjectCarrier");
 
