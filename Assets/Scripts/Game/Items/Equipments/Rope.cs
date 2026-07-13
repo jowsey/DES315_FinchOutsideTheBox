@@ -1,4 +1,5 @@
 ﻿using Mirror;
+using PrimeTween;
 using UnityEngine;
 
 namespace Game.Items.Equipments
@@ -13,27 +14,38 @@ namespace Game.Items.Equipments
         {
             base.OnServerUse();
 
-            var anchorPosition = _holder.transform.TransformPoint(1f, 0f, -1f);
+            var anchorPosition = _holder.transform.TransformPoint(-0.5f, 0f, 1f);
+            var segmentLength = _ropeSegmentPrefab.connectedAnchor.z;
 
             // todo have them place it on the ground themselves?
             const float groundSeekDepth = 2.5f;
-            var anchorGroundPosition = anchorPosition;
             var ray = new Ray(anchorPosition + Vector3.up * groundSeekDepth, Vector3.down);
-            if (Physics.Raycast(ray, out var hit, groundSeekDepth * 2, ~LayerMask.GetMask("Player"), QueryTriggerInteraction.Ignore))
+            if (Physics.Raycast(ray, out var hit, groundSeekDepth * 2, ~LayerMask.GetMask("Player", "Rope"), QueryTriggerInteraction.Ignore))
             {
-                anchorGroundPosition = hit.point;
+                anchorPosition = hit.point;
             }
-            
-            var anchor = Instantiate(_ropeAnchorPrefab, anchorGroundPosition, Quaternion.identity);
+
+
+            var anchor = Instantiate(_ropeAnchorPrefab, anchorPosition, Quaternion.Euler(0f, _holder.transform.localEulerAngles.y, 0f));
+            var anchorCollider = anchor.GetComponentInChildren<Collider>();
             NetworkServer.Spawn(anchor);
 
             var previousBody = anchor.GetComponent<Rigidbody>();
 
             for (var i = 0; i < _numSegments; i++)
             {
-                var offset = i == 0 ? Vector3.zero : _holder.transform.forward * 0.5f;
-                var segment = Instantiate(_ropeSegmentPrefab, previousBody.position + offset, _holder.transform.rotation);
+                var offset = i == 0 ? Vector3.zero : previousBody.transform.forward * segmentLength;
+                var segment = Instantiate(
+                    _ropeSegmentPrefab,
+                    previousBody.position + offset,
+                    Quaternion.Euler(-0.5f, previousBody.transform.localEulerAngles.y + Random.Range(30f, 75f), 0f)
+                );
                 NetworkServer.Spawn(segment.gameObject);
+
+                if (anchorCollider)
+                {
+                    Physics.IgnoreCollision(segment.GetComponentInChildren<Collider>(), anchorCollider);
+                }
 
                 if (i == 0)
                 {
@@ -44,6 +56,8 @@ namespace Game.Items.Equipments
                 segment.connectedBody = previousBody;
                 previousBody = segment.GetComponent<Rigidbody>();
             }
+
+            Tween.Delay(2f).OnComplete(() => previousBody.AddForce(anchor.transform.forward * 250f, ForceMode.Impulse));
         }
     }
 }
