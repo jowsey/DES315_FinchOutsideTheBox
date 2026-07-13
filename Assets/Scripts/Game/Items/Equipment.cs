@@ -1,18 +1,21 @@
-using UnityEngine;
+using Mirror;
 
 namespace Game.Items
 {
     public class Equipment : Item
     {
-        public virtual void Use()
+        [Command(requiresAuthority = false)]
+        public void CmdTryUse(NetworkConnectionToClient sender = null)
         {
-            if (!_holder || !isServer)
-            {
-                Debug.LogWarning($"Tried using {name} but holder {_holder}, isServer {isServer}");
-                return;
-            }
-            
-            // todo rotate holder to face camera dir i think?
+            if (State != ItemState.Held) return;
+            var player = sender!.identity.GetComponent<PlayerController>();
+            if (player != _holder) return;
+
+            OnServerUse();
+        }
+
+        protected virtual void OnServerUse()
+        {
         }
 
         protected override void OnStateChanged(ItemState oldState, ItemState newState)

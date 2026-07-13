@@ -99,14 +99,14 @@ namespace Game.Items
                     foreach (Collider col in _colliders) col.enabled = true;
                     foreach (Renderer rend in _renderers) rend.enabled = true;
                     foreach (Light l in _lights) l.enabled = true;
-                    
+
                     if (_holder)
                     {
                         if (_holder.isLocalPlayer)
                         {
                             Highlight.SetHighlightable("Item", false);
                         }
-                        
+
                         _holder.HeldObject = null;
                         _holder = null;
                     }

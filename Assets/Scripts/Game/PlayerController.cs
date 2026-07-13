@@ -450,30 +450,35 @@ public class PlayerController : NetworkBehaviour
 
         _jumpPressed |= JumpAction.action.WasPressedThisFrame();
 
-        if (PickupAllowed && CrosshairDetection.TargetedTransform)
+        if (InteractAction.action.WasPressedThisFrame())
         {
-            if (!CrosshairDetection.TargetedTransform.CompareTag("Item")) return;
-
-            Item item = CrosshairDetection.TargetedTransform.GetComponentInParent<Item>();
-            if (item.State != Item.ItemState.Idle) return;
-
-            if (InteractAction.action.WasPressedThisFrame())
+            if (PickupAllowed && CrosshairDetection.TargetedTransform)
             {
+                if (!CrosshairDetection.TargetedTransform.CompareTag("Item")) return;
+
+                Item item = CrosshairDetection.TargetedTransform.GetComponentInParent<Item>();
+                if (item.State != Item.ItemState.Idle) return;
+
                 item.CmdTryPickup();
             }
-        }
-        else if (PutdownAllowed && InteractAction.action.WasPressedThisFrame())
-        {
-            if (CrosshairDetection.TargetedTransform && CrosshairDetection.TargetedTransform.CompareTag("TreasureCarrier"))
+            else if (UseAllowed && HeldObject is Equipment equipment)
             {
-                HeldObjectPutdownTarget carrierTarget = CrosshairDetection.TargetedTransform.GetComponentInChildren<HeldObjectPutdownTarget>();
-                HeldObject.CmdTryPutdown(carrierTarget);
+                equipment.CmdTryUse();
             }
-            else
+            else if (PutdownAllowed)
             {
-                HeldObject.CmdTryDrop();
+                if (CrosshairDetection.TargetedTransform && CrosshairDetection.TargetedTransform.CompareTag("TreasureCarrier"))
+                {
+                    HeldObjectPutdownTarget carrierTarget = CrosshairDetection.TargetedTransform.GetComponentInChildren<HeldObjectPutdownTarget>();
+                    HeldObject.CmdTryPutdown(carrierTarget);
+                }
+                else
+                {
+                    HeldObject.CmdTryDrop();
+                }
             }
         }
+        
     }
 
     private void LateUpdate()
