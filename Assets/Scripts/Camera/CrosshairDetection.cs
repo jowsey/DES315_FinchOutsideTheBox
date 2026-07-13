@@ -80,7 +80,7 @@ public class CrosshairDetection : MonoBehaviour
                                 && item.State == Item.ItemState.Idle;
         var validPutdownTarget = playerDistance <= _maxPutdownDistance
                                  && PlayerController.LocalPlayer.PutdownAllowed
-                                 && interactedTransform.CompareTag("ObjectCarrier");
+                                 && interactedTransform.CompareTag("TreasureCarrier");
 
         var validTarget = validPickupTarget || validPutdownTarget;
         if (!validTarget)

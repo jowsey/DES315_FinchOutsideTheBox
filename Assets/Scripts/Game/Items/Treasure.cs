@@ -2,7 +2,6 @@ using UnityEngine;
 
 namespace Game.Items
 {
-    [RequireComponent(typeof(Rigidbody))]
     public class Treasure : Item
     {
         public bool Smashable;
@@ -20,7 +19,7 @@ namespace Game.Items
                 {
                     if (_holder.isLocalPlayer)
                     {
-                        Highlight.SetHighlightable("ObjectCarrier", false);
+                        Highlight.SetHighlightable("TreasureCarrier", false);
                     }
 
                     break;
@@ -39,7 +38,7 @@ namespace Game.Items
 
                     if (_holder.isLocalPlayer)
                     {
-                        Highlight.SetHighlightable("ObjectCarrier", true);
+                        Highlight.SetHighlightable("TreasureCarrier", true);
                     }
 
                     break;
@@ -73,9 +72,8 @@ namespace Game.Items
         {
             if (!isServer) return;
 
-            if (!col.collider.CompareTag("Treasure") &&
-                !col.collider.CompareTag("Item") &&
-                !col.collider.CompareTag("ObjectCarrier") &&
+            if (!col.collider.CompareTag("Item") &&
+                !col.collider.CompareTag("TreasureCarrier") &&
                 LayerMask.LayerToName(col.collider.gameObject.layer) != "Cart")
             {
                 if (Smashable)
@@ -92,7 +90,7 @@ namespace Game.Items
                 return;
             }
 
-            if (other.CompareTag("ObjectCarrier"))
+            if (other.CompareTag("TreasureCarrier"))
             {
                 Cart cart = other.GetComponentInParent<Cart>();
                 cart.AddCarriedItem(this);
@@ -107,7 +105,7 @@ namespace Game.Items
                 return;
             }
 
-            if (other.CompareTag("ObjectCarrier"))
+            if (other.CompareTag("TreasureCarrier"))
             {
                 Cart cart = other.GetComponentInParent<Cart>();
                 cart.RemoveCarriedItem(this);

@@ -83,7 +83,7 @@ public class WheelSeat : NetworkBehaviour
 
             if (oldPlayer.isLocalPlayer)
             {
-                Highlight.SetHighlightable("Treasure", true);
+                Highlight.SetHighlightable("Item", true);
             }
         }
 
@@ -98,7 +98,7 @@ public class WheelSeat : NetworkBehaviour
 
             if (SeatedPlayer.isLocalPlayer)
             {
-                Highlight.SetHighlightable("Treasure", false);
+                Highlight.SetHighlightable("Item", false);
             }
         }
     }

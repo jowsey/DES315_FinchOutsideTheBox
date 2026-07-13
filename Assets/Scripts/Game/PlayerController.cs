@@ -151,8 +151,9 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private Transform _cameraObstructionDithererRayEndPosition;
 
     public bool PickupAllowed => ControlEnabled(ControlBlockerFlags.Interact) && !Seat && !HeldObject;
-    public bool PutdownAllowed => ControlEnabled(ControlBlockerFlags.Interact) && !Seat && HeldObject && HeldObject.State == Item.ItemState.Held;
-
+    public bool PutdownAllowed => ControlEnabled(ControlBlockerFlags.Interact) && !Seat && HeldObject?.State == Item.ItemState.Held;
+    public bool UseAllowed => ControlEnabled(ControlBlockerFlags.Interact) && !Seat && HeldObject?.State == Item.ItemState.Held && HeldObject is Equipment;
+    
     //Set in inspector to true if this player will only exist in cutscenes
     public bool CutscenePlayer;
 
@@ -339,8 +340,8 @@ public class PlayerController : NetworkBehaviour
         _nameplateCanvas.gameObject.SetActive(false);
 
         // Set default highlight states for interactables
-        Highlight.SetHighlightable("Treasure", true);
-        Highlight.SetHighlightable("ObjectCarrier", false);
+        Highlight.SetHighlightable("Item", true);
+        Highlight.SetHighlightable("TreasureCarrier", false);
 
         // todo this sucks
         // eventually we should just link carts to 2 players so we can have an arbitrary number of carts/players
@@ -451,8 +452,7 @@ public class PlayerController : NetworkBehaviour
 
         if (PickupAllowed && CrosshairDetection.TargetedTransform)
         {
-            if (!CrosshairDetection.TargetedTransform.CompareTag("Treasure") &&
-                !CrosshairDetection.TargetedTransform.CompareTag("Item")) return;
+            if (!CrosshairDetection.TargetedTransform.CompareTag("Item")) return;
 
             Item item = CrosshairDetection.TargetedTransform.GetComponentInParent<Item>();
             if (item.State != Item.ItemState.Idle) return;
@@ -464,7 +464,7 @@ public class PlayerController : NetworkBehaviour
         }
         else if (PutdownAllowed && InteractAction.action.WasPressedThisFrame())
         {
-            if (CrosshairDetection.TargetedTransform && CrosshairDetection.TargetedTransform.CompareTag("ObjectCarrier"))
+            if (CrosshairDetection.TargetedTransform && CrosshairDetection.TargetedTransform.CompareTag("TreasureCarrier"))
             {
                 HeldObjectPutdownTarget carrierTarget = CrosshairDetection.TargetedTransform.GetComponentInChildren<HeldObjectPutdownTarget>();
                 HeldObject.CmdTryPutdown(carrierTarget);

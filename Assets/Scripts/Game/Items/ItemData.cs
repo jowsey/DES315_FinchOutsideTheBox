@@ -13,7 +13,7 @@ namespace Game.Items
     {
         Common,
         Rare,
-        Mythic
+        SuperRare
     }
 
     [CreateAssetMenu(fileName = "NewItem", menuName = "Game/Item Data")]

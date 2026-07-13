@@ -41,7 +41,7 @@ public class Cart : NetworkBehaviour
     private Transform _uiCanvas;
 
     // Treasure carrying
-    [FormerlySerializedAs("_treasureBounds")] [SerializeField] [Required] private Collider _carryBounds;
+    [SerializeField] [Required] private Collider _carryBounds;
 
     // Populated on server, unnecessary on clients
     private Dictionary<Item, ObjectSnapshot>[] _checkpointSnapshots;
