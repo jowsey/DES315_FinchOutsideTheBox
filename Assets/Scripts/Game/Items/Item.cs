@@ -7,6 +7,7 @@ using ReadOnlyAttribute = Sirenix.OdinInspector.ReadOnlyAttribute;
 
 namespace Game.Items
 {
+    [RequireComponent(typeof(Rigidbody), typeof(Highlight), typeof(Interactable))]
     public abstract class Item : NetworkBehaviour
     {
         public enum ItemState
@@ -75,7 +76,6 @@ namespace Game.Items
                 {
                     if (_holder.isLocalPlayer)
                     {
-                        Highlight.SetHighlightable("Treasure", true);
                         Highlight.SetHighlightable("Item", true);
                     }
 
@@ -104,7 +104,6 @@ namespace Game.Items
                     {
                         if (_holder.isLocalPlayer)
                         {
-                            Highlight.SetHighlightable("Treasure", false);
                             Highlight.SetHighlightable("Item", false);
                         }
                         

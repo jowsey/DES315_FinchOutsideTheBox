@@ -63,7 +63,7 @@ public class CutscenePuppeteer : MonoBehaviour
 
         foreach (Rigidbody rb in _cart.GetComponentsInChildren<Rigidbody>())
         {
-            if (rb.gameObject.CompareTag("Treasure")) { continue; }
+            if (rb.gameObject.CompareTag("Item")) { continue; }
 
             rb.interpolation = RigidbodyInterpolation.None;
             rb.position = rb.transform.position;
@@ -150,7 +150,7 @@ public class CutscenePuppeteer : MonoBehaviour
 
         foreach (Rigidbody rb in _cart.GetComponentsInChildren<Rigidbody>())
         {
-            if (rb.gameObject.CompareTag("Treasure")) { continue; }
+            if (rb.gameObject.CompareTag("Item")) { continue; }
             rb.position = rb.transform.position;
             rb.rotation = rb.transform.rotation;
             rb.isKinematic = false;
