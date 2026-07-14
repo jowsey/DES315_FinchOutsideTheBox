@@ -118,7 +118,7 @@ public class Shop : NetworkBehaviour
             _telescopeRotateSpeed,
             Ease.InOutCubic,
             endDelay: Random.Range(1f, 3f)
-        ).OnComplete(RunNextTelescopeTween);
+        ).OnComplete(RunNextTelescopeTween, warnIfTargetDestroyed: false);
     }
 
     private void Update()
