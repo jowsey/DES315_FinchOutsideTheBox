@@ -7,7 +7,6 @@ using UI;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
-using UnityEngine.Serialization;
 using ShowInInspector = Sirenix.OdinInspector.ShowInInspectorAttribute;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -67,7 +66,7 @@ public class Cart : NetworkBehaviour
 
     public bool IsPuppet;
 
-#if UNITY_EDITOR
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
     private WheelSeat[] _wheelSeats;
     [SerializeField] private InputActionReference _alternateWheelMoveAction;
 #endif
@@ -133,7 +132,7 @@ public class Cart : NetworkBehaviour
 
     private void Update()
     {
-#if UNITY_EDITOR
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
         if (_devCheckpointBackAction.action.WasPressedThisFrame() && CurrentCheckpointIndex != 0)
         {
             CmdInvokeRespawnEvent(CurrentCheckpointIndex - 1);
@@ -150,7 +149,7 @@ public class Cart : NetworkBehaviour
 
         _cartSpeedRTPC.SetGlobalValue(linearVelocity.magnitude * 20);
 
-#if UNITY_EDITOR
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
         if (PlayerController.ControlEnabled(PlayerController.ControlBlockerFlags.Move))
         {
             var altMove = _alternateWheelMoveAction.action.ReadValue<Vector2>();
@@ -291,7 +290,7 @@ public class Cart : NetworkBehaviour
         _numCarriedTreasuresRTPC.SetGlobalValue(newValue);
     }
 
-#if UNITY_EDITOR
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
     [Command(requiresAuthority = false)]
 #else
     [Command]
