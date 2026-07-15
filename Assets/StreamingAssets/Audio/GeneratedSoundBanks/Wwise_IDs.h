@@ -53,15 +53,13 @@ namespace AK
         static const AkUniqueID PUSHERMOVING14S = 3619140280U;
         static const AkUniqueID PUSHERMOVING16S = 3652695426U;
         static const AkUniqueID RESPAWNPING = 814740291U;
-        static const AkUniqueID SANDFALL = 3076940544U;
-        static const AkUniqueID SANDNWIND = 264448505U;
         static const AkUniqueID SHOPBUY = 1153606107U;
+        static const AkUniqueID SHOPKEEPRADIO = 1903791643U;
         static const AkUniqueID SIDESWEEPER = 988175737U;
         static const AkUniqueID SPIN = 823131329U;
         static const AkUniqueID SPINNERMOVING = 3496537566U;
         static const AkUniqueID TAPESTRYSFX = 3446999052U;
         static const AkUniqueID TESTSOUJD1 = 1035878255U;
-        static const AkUniqueID TEXTBLIP = 1387752797U;
         static const AkUniqueID TIPJAR = 680758647U;
         static const AkUniqueID VERTSPINMOVING = 2481782438U;
         static const AkUniqueID ZIPPER = 1558183U;

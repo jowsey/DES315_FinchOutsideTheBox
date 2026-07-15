@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{46173D95-DFFE-4BE9-8209-57EB1CFCE1F7}",
     "Language": "SFX",
-    "Hash": "{A5194761-B664-8160-339C-A1A73BF5ED02}",
+    "Hash": "{1B0E7E89-D574-162B-FBA1-74E48C7B9E48}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Default_Soundbank",
     "ShortName": "Default_Soundbank",
     "Path": "Default_Soundbank.bnk",
@@ -38,14 +38,6 @@
       "Location": "Memory",
       "ShortName": "CarOverStone - Light.wav",
       "CachePath": "BC/{BC6601FE-2934-4836-6D52-08DA2DF9342F}.wem"
-     },
-     {
-      "Id": "39909234",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Memory",
-      "ShortName": "textblip.wav",
-      "CachePath": "A3/{A371DC97-00B2-FAD2-AB9C-EAA635FCFC11}.wem"
      },
      {
       "Id": "45237936",
@@ -94,14 +86,6 @@
       "Location": "Memory",
       "ShortName": "Cat Jump-012.wav",
       "CachePath": "16/{16935FF0-6D70-F0F3-9DC2-5822F6EF8137}.wem"
-     },
-     {
-      "Id": "94600850",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Memory",
-      "ShortName": "sandsfx.wav",
-      "CachePath": "C4/{C4F2FCFF-84D5-E1CD-0A0D-633BD8A41D0F}.wem"
      },
      {
       "Id": "98700581",
@@ -214,6 +198,14 @@
       "Location": "Memory",
       "ShortName": "Cat Jump-005.wav",
       "CachePath": "74/{74596A81-7F8C-88CA-8864-15F7633CE809}.wem"
+     },
+     {
+      "Id": "188135023",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "Shopkeep Radio Opera.wav",
+      "CachePath": "7B/{7B7DC2BF-B652-D827-7EC9-803B68EA6252}.wem"
      },
      {
       "Id": "200874083",
@@ -334,6 +326,14 @@
       "Location": "Memory",
       "ShortName": "Sand Fts-004.wav",
       "CachePath": "4B/{4B4C456A-D4A9-2D72-DACF-C18E5433F929}.wem"
+     },
+     {
+      "Id": "324644523",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "Shopkeep Radio 3.wav",
+      "CachePath": "52/{528C2D9A-886D-9270-CAD0-1A8F18486A89}.wem"
      },
      {
       "Id": "326997513",
@@ -576,6 +576,14 @@
       "CachePath": "9F/{9F236636-321D-25D2-C804-76063E22CA14}.wem"
      },
      {
+      "Id": "531920403",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "Shopkeep Radio Drums.wav",
+      "CachePath": "C9/{C90FA15F-0A90-1B9A-613C-F7FE3D40AC30}.wem"
+     },
+     {
       "Id": "541621859",
       "Language": "SFX",
       "Streaming": "false",
@@ -694,14 +702,6 @@
       "Location": "Memory",
       "ShortName": "WoodFts-007.wav",
       "CachePath": "96/{96A0026F-D63F-4555-E137-4D605046B466}.wem"
-     },
-     {
-      "Id": "679979793",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Memory",
-      "ShortName": "wind n sand 2.wav",
-      "CachePath": "E1/{E1C4E266-84B0-383E-3371-443170685334}.wem"
      },
      {
       "Id": "681258764",
@@ -1338,6 +1338,7 @@
       "Name": "CatShopEnter",
       "ObjectPath": "\\Events\\Default Work Unit\\Shop\\CatShopEnter",
       "GUID": "{DDFB4EE5-5AF9-488F-9E75-D5C1F3FC1211}",
+      "MaxAttenuation": "15",
       "DurationType": "OneShot",
       "DurationMin": "1.7628447",
       "DurationMax": "1.8676689",
@@ -2231,41 +2232,36 @@
       ]
      },
      {
-      "Id": "3076940544",
-      "Name": "SandFall",
-      "ObjectPath": "\\Events\\Default Work Unit\\Environment\\SandFall",
-      "GUID": "{1EC371E6-2B8C-400D-80FC-0518E6820669}",
-      "MaxAttenuation": "10",
-      "DurationType": "Infinite",
-      "MediaRefs": [
-       {
-        "Id": "94600850"
-       }
-      ]
-     },
-     {
-      "Id": "264448505",
-      "Name": "SandNWind",
-      "ObjectPath": "\\Events\\Default Work Unit\\Environment\\SandNWind",
-      "GUID": "{006E6C76-5F72-4B3A-AC1B-4FCD9E3E88AB}",
-      "DurationType": "Infinite",
-      "MediaRefs": [
-       {
-        "Id": "679979793"
-       }
-      ]
-     },
-     {
       "Id": "1153606107",
       "Name": "ShopBuy",
       "ObjectPath": "\\Events\\Default Work Unit\\Shop\\ShopBuy",
       "GUID": "{18CE8F50-7A9F-43F7-96F2-5213BA7E010B}",
+      "MaxAttenuation": "15",
       "DurationType": "OneShot",
       "DurationMin": "0.9170047",
       "DurationMax": "0.97153264",
       "MediaRefs": [
        {
         "Id": "262045856"
+       }
+      ]
+     },
+     {
+      "Id": "1903791643",
+      "Name": "ShopkeepRadio",
+      "ObjectPath": "\\Events\\Default Work Unit\\Shop\\ShopkeepRadio",
+      "GUID": "{368BF370-EA0E-4697-8C6B-464B59D3E0E7}",
+      "MaxAttenuation": "7",
+      "DurationType": "Infinite",
+      "MediaRefs": [
+       {
+        "Id": "188135023"
+       },
+       {
+        "Id": "324644523"
+       },
+       {
+        "Id": "531920403"
        }
       ]
      },
@@ -2339,20 +2335,6 @@
       "MediaRefs": [
        {
         "Id": "857854777"
-       }
-      ]
-     },
-     {
-      "Id": "1387752797",
-      "Name": "TextBlip",
-      "ObjectPath": "\\Events\\Default Work Unit\\TextBlip",
-      "GUID": "{FBE1DD01-9342-4588-890D-226BAA1DD61D}",
-      "DurationType": "OneShot",
-      "DurationMin": "0.109291665",
-      "DurationMax": "0.109291665",
-      "MediaRefs": [
-       {
-        "Id": "39909234"
        }
       ]
      },
@@ -2901,6 +2883,6 @@
     ]
    }
   ],
-  "FileHash": "{5A9D3528-6CB8-93CC-B02D-F25CFDB6F0AC}"
+  "FileHash": "{1FEB9229-2BC2-0F35-0363-3EF184034F0C}"
  }
 }
