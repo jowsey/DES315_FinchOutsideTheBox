@@ -16,10 +16,12 @@ namespace Util
         public bool Move = false;
         [EnableIf("Move")] public Vector3 MoveVec = Vector3.zero;
         [EnableIf("Move")] public Ease MoveEase = Ease.Linear;
+
+        public bool Shrink = false;
     }
 
     [InfoBox("Makes an object spin when you click it. Built for the main menu easter egg.")]
-    public class ClickToSpin : MonoBehaviour, IPointerClickHandler
+    public class ClickToAnimate : MonoBehaviour, IPointerClickHandler
     {
         [SerializeField] private TweenInfo[] _tweens =
         {
@@ -45,6 +47,11 @@ namespace Util
             if (info.Move)
             {
                 Tween.LocalPosition(transform, transform.localPosition, transform.localPosition + info.MoveVec, info.Duration, info.MoveEase);
+            }
+
+            if (info.Shrink)
+            {
+                Tween.Scale(transform, transform.localScale, Vector3.zero, info.Duration, info.Ease);
             }
         }
     }
