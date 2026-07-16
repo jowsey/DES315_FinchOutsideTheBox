@@ -1,6 +1,5 @@
 using System;
 using System.Reflection;
-using Sirenix.OdinInspector.Editor;
 using UnityEditor;
 using UnityEngine;
 
@@ -8,7 +7,7 @@ namespace Mirror
 {
     [CustomEditor(typeof(NetworkBehaviour), true)]
     [CanEditMultipleObjects]
-    public class NetworkBehaviourInspector : OdinEditor
+    public class NetworkBehaviourInspector : Editor
     {
         Type scriptClass;
         bool syncsAnything;

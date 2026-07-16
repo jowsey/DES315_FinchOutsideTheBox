@@ -511,13 +511,6 @@ namespace Mirror
         // for client's owned ClientToServer components.
         static void OnEntityStateMessageUnreliableDelta(NetworkConnectionToClient connection, EntityStateMessageUnreliableDelta message, int channelId)
         {
-            // safety check: baseline should always arrive over Reliable channel.
-            if (channelId != Channels.Unreliable)
-            {
-                Debug.LogError($"Server OnEntityStateMessageUnreliableDelta arrived on channel {channelId} instead of Unreliable. This should never happen!");
-                return;
-            }
-
             // need to validate permissions carefully.
             // an attacker may attempt to modify a not-owned or not-ClientToServer component.
 
@@ -589,25 +582,22 @@ namespace Mirror
         }
 
         // client sends TimeSnapshotMessage every sendInterval.
-        // batching already includes the remoteTimestamp.
-        // we simply insert it on-message here.
-        // => only for reliable channel. unreliable would always arrive earlier.
-        static void OnTimeSnapshotMessage(NetworkConnectionToClient connection, TimeSnapshotMessage _)
+        // batching already includes the remoteTimestamp (unscaled).
+        // the message also includes scaledTime.
+        // both are stored in a single snapshot for interpolation.
+        static void OnTimeSnapshotMessage(NetworkConnectionToClient connection, TimeSnapshotMessage message)
         {
-            // insert another snapshot for snapshot interpolation.
+            // insert snapshot for snapshot interpolation.
             // before calling OnDeserialize so components can use
-            // NetworkTime.time and NetworkTime.timeStamp.
+            // NetworkTime.time / NetworkTime.unscaledTime.
 
             // TODO validation?
             // maybe we shouldn't allow timeline to deviate more than a certain %.
             // for now, this is only used for client authority movement.
 
-            // Unity 2019 doesn't have Time.timeAsDouble yet
-            //
-            // NetworkTime uses unscaled time and ignores Time.timeScale.
-            // fixes Time.timeScale getting server & client time out of sync:
-            // https://github.com/MirrorNetworking/Mirror/issues/3409
-            connection.OnTimeSnapshot(new TimeSnapshot(connection.remoteTimeStamp, NetworkTime.localTime));
+            // unscaled time: from batch header (remoteTimeStamp)
+            // scaled time: from message body
+            connection.OnTimeSnapshot(new TimeSnapshot(connection.remoteTimeStamp, NetworkTime.localTime, message.scaledTime));
         }
 
         // connections /////////////////////////////////////////////////////////
@@ -950,53 +940,68 @@ namespace Mirror
                 //       would only be processed when OnTransportData is called
                 //       the next time.
                 //       => consider moving processing to NetworkEarlyUpdate.
-                while (!isLoadingScene &&
-                       connection.unbatcher.GetNextMessage(out ArraySegment<byte> message, out double remoteTimestamp))
+                //
+                // GetNextMessage may throw for malformed batches
+                // (invalid varint, message size > remaining bytes).
+                // catch and disconnect to prevent queue growth attacks.
+                try
                 {
-                    using (NetworkReaderPooled reader = NetworkReaderPool.Get(message))
+                    while (!isLoadingScene &&
+                           connection.unbatcher.GetNextMessage(out ArraySegment<byte> message, out double remoteTimestamp))
                     {
-                        // enough to read at least header size?
-                        if (reader.Remaining >= NetworkMessages.IdSize)
+                        using (NetworkReaderPooled reader = NetworkReaderPool.Get(message))
                         {
-                            // make remoteTimeStamp available to the user
-                            connection.remoteTimeStamp = remoteTimestamp;
-
-                            // handle message
-                            if (!UnpackAndInvoke(connection, reader, channelId))
+                            // enough to read at least header size?
+                            if (reader.Remaining >= NetworkMessages.IdSize)
                             {
-                                // warn, disconnect and return if failed
-                                // -> warning because attackers might send random data
-                                // -> messages in a batch aren't length prefixed.
-                                //    failing to read one would cause undefined
-                                //    behaviour for every message afterwards.
-                                //    so we need to disconnect.
-                                // -> return to avoid the below unbatches.count error.
-                                //    we already disconnected and handled it.
+                                // make remoteTimeStamp available to the user
+                                connection.remoteTimeStamp = remoteTimestamp;
+
+                                // handle message
+                                if (!UnpackAndInvoke(connection, reader, channelId))
+                                {
+                                    // warn, disconnect and return if failed
+                                    // -> warning because attackers might send random data
+                                    // -> messages in a batch aren't length prefixed.
+                                    //    failing to read one would cause undefined
+                                    //    behaviour for every message afterwards.
+                                    //    so we need to disconnect.
+                                    // -> return to avoid the below unbatches.count error.
+                                    //    we already disconnected and handled it.
+                                    if (exceptionsDisconnect)
+                                    {
+                                        Debug.LogError($"NetworkServer: failed to unpack and invoke message. Disconnecting {connectionId}.");
+                                        connection.Disconnect();
+                                    }
+                                    else
+                                        Debug.LogWarning($"NetworkServer: failed to unpack and invoke message from connectionId:{connectionId}.");
+
+                                    return;
+                                }
+                            }
+                            // otherwise disconnect
+                            else
+                            {
                                 if (exceptionsDisconnect)
                                 {
-                                    Debug.LogError($"NetworkServer: failed to unpack and invoke message. Disconnecting {connectionId}.");
+                                    Debug.LogError($"NetworkServer: received message from connectionId:{connectionId} was too short (messages should start with message id). Disconnecting.");
                                     connection.Disconnect();
                                 }
                                 else
-                                    Debug.LogWarning($"NetworkServer: failed to unpack and invoke message from connectionId:{connectionId}.");
+                                    Debug.LogWarning($"NetworkServer: received message from connectionId:{connectionId} was too short (messages should start with message id).");
 
                                 return;
                             }
                         }
-                        // otherwise disconnect
-                        else
-                        {
-                            if (exceptionsDisconnect)
-                            {
-                                Debug.LogError($"NetworkServer: received message from connectionId:{connectionId} was too short (messages should start with message id). Disconnecting.");
-                                connection.Disconnect();
-                            }
-                            else
-                                Debug.LogWarning($"NetworkServer: received message from connectionId:{connectionId} was too short (messages should start with message id).");
-
-                            return;
-                        }
                     }
+                }
+                catch (Exception e)
+                {
+                    // malformed batch: invalid varint, message size > remaining, etc.
+                    // unbatcher already cleared batches when it detected the error.
+                    Debug.LogError($"NetworkServer: failed to parse batch from connectionId:{connectionId}: {e.Message}. Disconnecting.");
+                    connection.Disconnect();
+                    return;
                 }
 
                 // if we weren't interrupted by a scene change,
@@ -1017,6 +1022,10 @@ namespace Mirror
                 if (!isLoadingScene && connection.unbatcher.BatchesCount > 0)
                 {
                     Debug.LogError($"Still had {connection.unbatcher.BatchesCount} batches remaining after processing, even though processing was not interrupted by a scene change. This should never happen, as it would cause ever growing batches.\nPossible reasons:\n* A message didn't deserialize as much as it serialized\n*There was no message handler for a message id, so the reader wasn't read until the end.");
+
+                    // disconnect and clear to prevent memory leak / queue growth
+                    connection.unbatcher.Clear();
+                    connection.Disconnect();
                 }
             }
             else Debug.LogError($"HandleData Unknown connectionId:{connectionId}");
@@ -2281,7 +2290,7 @@ namespace Mirror
                     // make sure Broadcast() is only called every sendInterval,
                     // even if targetFrameRate isn't set in host mode (!)
                     // (done via AccurateInterval)
-                    connection.Send(new TimeSnapshotMessage(), Channels.Unreliable);
+                    connection.Send(new TimeSnapshotMessage { scaledTime = NetworkTime.localScaledTime }, Channels.Unreliable);
 
                     // broadcast world state to this connection
                     BroadcastToConnection(connection, unreliableBaselineElapsed);

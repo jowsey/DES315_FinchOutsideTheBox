@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Linq;
 using Epic.OnlineServices.Lobby;
 using Game.Items;
@@ -55,19 +56,45 @@ namespace Networking
 
         public override void OnClientConnect()
         {
-            if (!NetworkClient.ready) NetworkClient.Ready();
+            base.OnClientConnect();
+            OnJoinGame.Invoke();
 
-            NetworkClient.Send(new ClientInfoMessage
+            if (NetworkServer.active)
+            {
+                SendClientInfo();
+            }
+        }
+
+        public override void OnClientSceneChanged()
+        {
+            base.OnClientSceneChanged();
+
+            // give some time for ready to settle?
+            // seems to fix it. todo, figure out what exactly we're racing and explicitly wait for it
+            StartCoroutine(DelaySendClientInfo(0.5f));
+            return;
+
+            IEnumerator DelaySendClientInfo(float delay)
+            {
+                yield return new WaitForSeconds(delay);
+                SendClientInfo();
+            }
+        }
+
+        private void SendClientInfo()
+        {
+            var clientInfoMessage = new ClientInfoMessage
             {
                 PlayerName = SettingsManager.GetSafeName(),
                 PlayerUID = SettingsManager.ActiveSettings.UserID
-            });
+            };
 
-            OnJoinGame.Invoke();
+            NetworkClient.Send(clientInfoMessage);
         }
 
         public override void OnClientDisconnect()
         {
+            base.OnClientDisconnect();
             OnLeaveGame.Invoke();
         }
 
@@ -112,7 +139,7 @@ namespace Networking
 
             NetworkServer.AddPlayerForConnection(conn, player.gameObject);
 
-            NetworkServer.SendToAll(new PresenceJoinMessage
+            NetworkServer.SendToReady(new PresenceJoinMessage
             {
                 PlayerNetId = conn.identity.netId,
             });
