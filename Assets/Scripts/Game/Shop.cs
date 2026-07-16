@@ -312,7 +312,6 @@ public class Shop : NetworkBehaviour
         itemToBuy.Pickuppable = true;
         itemToBuy.ServerTryPickup(buyer);
         TargetBuyResult(sender, PurchaseError.None, itemToBuy, price);
-        _shopBuy.Post(gameObject);
         
     }
 
@@ -326,6 +325,7 @@ public class Shop : NetworkBehaviour
             case PurchaseError.None:
             {
                 Debug.Log($"Successfully purchased {item.name} (price = {price})");
+                _shopBuy.Post(gameObject);
                 break;
             }
             case PurchaseError.NotEnoughMoney:
