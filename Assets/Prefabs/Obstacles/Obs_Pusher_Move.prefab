@@ -171,7 +171,9 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 0}
+  rtpcPlatformFloat: 0
   _duration: 10
+  _autoScaleEditorCurve: 0
   _displacementCurve:
     serializedVersion: 2
     m_Curve:
@@ -206,7 +208,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   _moveByDefault: 1
-  _startT: 0
+  _startTime01: 0
 --- !u!114 &6240907959370784
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -234,7 +236,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7639044903814401847}
   - component: {fileID: 4111271709971970591}
-  - component: {fileID: 556475495054294132}
   m_Layer: 0
   m_Name: Mesh
   m_TagString: Untagged
@@ -285,41 +286,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &556475495054294132
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6595291634175406979}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cb803efbe62c34d7baece46c9ffebad9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Mirror.Components::Mirror.NetworkRigidbodyReliable
-  syncMethod: 0
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  target: {fileID: 7639044903814401847}
-  updateMethod: 0
-  syncPosition: 1
-  syncRotation: 1
-  syncScale: 0
-  onlySyncOnChange: 1
-  compressRotation: 1
-  interpolatePosition: 1
-  interpolateRotation: 1
-  interpolateScale: 1
-  coordinateSpace: 0
-  timelineOffset: 1
-  showGizmos: 0
-  showOverlay: 0
-  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
-  onlySyncOnChangeCorrectionMultiplier: 2
-  rotationSensitivity: 0.01
-  positionPrecision: 0.01
-  scalePrecision: 0.01
 --- !u!1001 &7693938693933119942
 PrefabInstance:
   m_ObjectHideFlags: 0

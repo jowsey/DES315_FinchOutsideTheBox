@@ -5,50 +5,51 @@ using UnityEngine.Splines;
 #if UNITY_EDITOR
 using Sirenix.Utilities.Editor;
 #endif
+using ReadOnlyAttribute = Sirenix.OdinInspector.ReadOnlyAttribute;
+using ShowInInspectorAttribute = Sirenix.OdinInspector.ShowInInspectorAttribute;
 
-[InfoBox("When designing: SCALE the Arch object inside the Platform, and MOVE the top-level MovingPlatform object.")]
+[InfoBox("When designing: SCALE the object inside the Platform, and MOVE the top-level MovingPlatform object.")]
 public class MovingPlatform : NetworkBehaviour
 {
     private Rigidbody _rb;
-    private SplineContainer _container;
+    private SplineContainer _splineContainer;
 
     public AK.Wwise.Event PlatformSound = new();
     public AK.Wwise.RTPC RTPCPlatform;
-    public float rtpcPlatformFloat = 0f;
+    public float rtpcPlatformFloat;
 
     [SerializeField] private float _duration;
+
     [Tooltip("If enabled, changing the Duration will automatically call ScaleEditorAnimationCurve, scaling all keys in the Displacement Curve to fit the new Duration.")]
     [SerializeField] private bool _autoScaleEditorCurve;
+
     [SerializeField] private AnimationCurve _displacementCurve;
+
     [SerializeField] private bool _moveByDefault;
-    [SerializeField] private float _startTime01;
-    private bool _isMoving;
-    private double _timeElapsed; //Tracks the passing Time.fixedDeltaTime but only when _isMoving is true
+    [SerializeField, Range(0f, 1f)] private float _startTime01;
 
-    private bool _useTargetSplineVal;
-    private float _targetSplineVal;
-    private float _splineValLastTick;
+    [ShowInInspector, ReadOnly, ProgressBar(0, 1)] private float _currentSplineT;
 
-    private bool _useTargetTime;
-    private float _targetTime;
-    private float _timeLastTick;
+    [SyncVar] private double? _moveStartTime;
+    [SyncVar] private double _pausedElapsedTime;
+
+    [SyncVar] private bool _useTargetTime;
+    [SyncVar] private float _targetTime;
 
 #if UNITY_EDITOR
-    [Sirenix.OdinInspector.ShowInInspector, Sirenix.OdinInspector.ReadOnly, ProgressBar(0, 1)] private float _currentSplineVal;
-
     //Used to detect changes in _duration for calling ScaleEditorAnimationCurve
     private float _oldDuration = -1.0f;
-#else
-        private float _currentSplineVal;
 #endif
-    
+
     private void Awake()
     {
         _rb = GetComponentInChildren<Rigidbody>(true);
-        _container = GetComponentInChildren<SplineContainer>(true);
-        _isMoving = _moveByDefault;
-        _timeElapsed = _startTime01 * _duration;
-        _currentSplineVal = _displacementCurve.Evaluate(_startTime01);
+        _splineContainer = GetComponentInChildren<SplineContainer>(true);
+
+        _pausedElapsedTime = _startTime01 * _duration;
+        _moveStartTime = _moveByDefault ? NetworkTime.time - _pausedElapsedTime : null;
+
+        _currentSplineT = _displacementCurve.Evaluate(_startTime01);
     }
 
     private void Start()
@@ -57,106 +58,57 @@ public class MovingPlatform : NetworkBehaviour
         PlatformSound.Post(_rb.gameObject);
     }
 
+    [Server]
     public void StartMoving()
     {
-        _isMoving = true;
-        _useTargetSplineVal = false;
+        if (!_moveStartTime.HasValue)
+        {
+            _moveStartTime = NetworkTime.time - _pausedElapsedTime;
+        }
+
         _useTargetTime = false;
     }
 
+    [Server]
     public void StopMoving()
     {
-        _isMoving = false;
-        _useTargetSplineVal = false;
+        if (_moveStartTime.HasValue)
+        {
+            _pausedElapsedTime = NetworkTime.time - _moveStartTime.Value;
+        }
+
+        _moveStartTime = null;
         _useTargetTime = false;
     }
 
-    public void SetTargetSplineVal(float val)
-    {
-        _useTargetSplineVal = true;
-        _useTargetTime = false;
-        _targetSplineVal = val;
-    }
-
-    public void SetTargetTime(float time)
-    {
-        _useTargetTime = true;
-        _useTargetSplineVal = false;
-        _targetTime = time;
-    }
-
+    [Server]
     public void SetTargetTime01(float time01)
     {
-        float time = time01 * _duration;
         _useTargetTime = true;
-        _useTargetSplineVal = false;
-        _targetTime = time;
+        _targetTime = time01 * _duration;
     }
 
+    [Server]
     public void ResetIfNotMoving()
     {
-        if (!_isMoving)
+        if (!_moveStartTime.HasValue)
         {
-            _timeElapsed = 0.0f;
+            _pausedElapsedTime = 0;
         }
     }
 
     private void FixedUpdate()
     {
-        //Used Later in here
-        rtpcPlatformFloat = Mathf.Clamp(rtpcPlatformFloat, 0, 10);
+        var timeElapsed = NetworkTime.time - _moveStartTime + _pausedElapsedTime;
 
-        // band-aid fix for network syncing. todo needs proper re-think
-        if (!authority) return;
-
-        if (_isMoving)
+        // Move if there is time elapsed
+        if (timeElapsed.HasValue)
         {
-            _splineValLastTick = _currentSplineVal;
-            _timeLastTick = (float)_timeElapsed;
-            _timeElapsed += Time.fixedDeltaTime;
-        }
+            var currentTime = _useTargetTime ? timeElapsed.Value : timeElapsed.Value % _duration;
 
-        if (_useTargetSplineVal)
-        {
-            _isMoving = (Mathf.Abs(_currentSplineVal - _targetSplineVal) > 0.001f);
-            if (_isMoving && Mathf.Abs(_targetSplineVal - 1.0f) < 0.01f)
-            {
-                //_targetSplineVal is 1, need to handle special case where spline val wraps around from 1 to 0
-                if (_splineValLastTick > _currentSplineVal)
-                {
-                    //spline val has wrapped around from 1 to 0 and so has hit the target spline val
-                    _isMoving = false;
-                }
-            }
-
-            //Just for cleanliness sake
-            if (!_isMoving)
-            {
-                _currentSplineVal = _targetSplineVal;
-            }
-        }
-        else if (_useTargetTime)
-        {
-            _isMoving = (float)_timeElapsed < _targetTime;
-
-            //Just for cleanliness sake
-            if (!_isMoving)
-            {
-                _timeElapsed = _targetTime;
-            }
-        }
-
-        if (_isMoving)
-        {
-            //Range [0, _duration]
-            float currentTime = _useTargetTime ? (float)_timeElapsed : (float)(_timeElapsed % _duration);
-
-            //Map the current time to the splinal t value shaped by the _displacementCurve
-            //Range [0, 1]
-            _currentSplineVal = _displacementCurve.Evaluate(currentTime);
-            //Evaluate spline
-            Vector3 localPos = _container.Splines[0].EvaluatePosition(_currentSplineVal);
-            Vector3 worldPos = _container.transform.TransformPoint(localPos);
+            _currentSplineT = _displacementCurve.Evaluate((float)currentTime);
+            Vector3 localPos = _splineContainer.Splines[0].EvaluatePosition(_currentSplineT);
+            Vector3 worldPos = _splineContainer.transform.TransformPoint(localPos);
             _rb.MovePosition(worldPos);
 
             rtpcPlatformFloat += 1;
@@ -166,55 +118,62 @@ public class MovingPlatform : NetworkBehaviour
             rtpcPlatformFloat -= 0.5f;
         }
 
-        if (_currentSplineVal <= 0 || Mathf.Approximately(_currentSplineVal, 0.5f) || _currentSplineVal >= 1)
+        if (_currentSplineT <= 0 || Mathf.Approximately(_currentSplineT, 0.5f) || _currentSplineT >= 1)
         {
             rtpcPlatformFloat = 0;
         }
 
+        // Check if reached target time
+        if (_useTargetTime && timeElapsed >= _targetTime)
+        {
+            _moveStartTime = null;
+            _pausedElapsedTime = _targetTime;
+        }
+
         //Sets RTPC value
+        rtpcPlatformFloat = Mathf.Clamp(rtpcPlatformFloat, 0, 10);
         RTPCPlatform.SetGlobalValue(rtpcPlatformFloat);
     }
 
-    #if UNITY_EDITOR
-        [OnInspectorGUI]
-        private void RepaintConstantly()
+#if UNITY_EDITOR
+    [OnInspectorGUI]
+    private void RepaintConstantly()
+    {
+        if (Application.isPlaying)
         {
-            if (Application.isPlaying)
+            GUIHelper.RequestRepaint();
+        }
+    }
+
+    private new void OnValidate()
+    {
+        if (_duration != _oldDuration)
+        {
+            if (_oldDuration > 0.0f && _autoScaleEditorCurve)
             {
-                GUIHelper.RequestRepaint();
+                ScaleEditorAnimationCurve();
             }
+
+            _oldDuration = _duration;
+        }
+    }
+
+    //Called whenever _duration is changed
+    private void ScaleEditorAnimationCurve()
+    {
+        //Animation curve needs to be scaled from [0, 1] (default) to [0, duration]
+        float timeScaleFactor = _duration / _oldDuration;
+        Keyframe[] keys = _displacementCurve.keys;
+        for (int i = 0; i < _displacementCurve.length; ++i)
+        {
+            keys[i].time *= timeScaleFactor;
+
+            //tangent = ds/dt, stretching t (time) by a factor, k, means tangent = ds/kdt, which means tangent needs to be divided by k
+            keys[i].inTangent /= timeScaleFactor;
+            keys[i].outTangent /= timeScaleFactor;
         }
 
-        private void OnValidate()
-        {
-            if (_duration != _oldDuration)
-            {
-                if (_oldDuration > 0.0f)
-                {
-                    if (_autoScaleEditorCurve)
-                    {
-                        ScaleEditorAnimationCurve();
-                    }
-                }
-                _oldDuration = _duration;
-            }
-        }
-
-        //Called whenever _duration is changed
-        private void ScaleEditorAnimationCurve()
-        {
-            //Animation curve needs to be scaled from [0, 1] (default) to [0, duration]
-            float timeScaleFactor = _duration / _oldDuration;
-            Keyframe[] keys = _displacementCurve.keys;
-            for (int i = 0; i < _displacementCurve.length; ++i)
-            {
-                keys[i].time *= timeScaleFactor;
-
-                //tangent = ds/dt, stretching t (time) by a factor, k, means tangent = ds/kdt, which means tangent needs to be divided by k
-                keys[i].inTangent /= timeScaleFactor;
-                keys[i].outTangent /= timeScaleFactor;
-            }
-            _displacementCurve.keys = keys;
-        }
-    #endif
+        _displacementCurve.keys = keys;
+    }
+#endif
 }
