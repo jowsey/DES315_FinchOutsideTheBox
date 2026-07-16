@@ -26,6 +26,8 @@ namespace UI
 
         [SerializeField] [Min(0)] private float _transitionDuration = 0.25f;
 
+        [SerializeField] private AK.Wwise.Event _hoverSfx;
+
         private Shop _shop;
         private int _shopIndex;
 
@@ -66,6 +68,8 @@ namespace UI
             Tween.Alpha(_hoverCta, 0, _transitionDuration, Ease.OutCubic);
 
             _outline.effectColor = _hoveredOutline;
+
+            _hoverSfx.Post(gameObject);
         }
 
         public void OnPointerExit(PointerEventData eventData)

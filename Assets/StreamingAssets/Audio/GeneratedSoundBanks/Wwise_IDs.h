@@ -33,6 +33,8 @@ namespace AK
         static const AkUniqueID HOVERTICK = 2670946266U;
         static const AkUniqueID LEVERSOUND = 512917032U;
         static const AkUniqueID LEVERUP = 1662764780U;
+        static const AkUniqueID MOUSEDEAD = 4030886720U;
+        static const AkUniqueID MOUSEMOVEMENT = 909133465U;
         static const AkUniqueID MUSIC = 3991942870U;
         static const AkUniqueID PILLAR1 = 2931961686U;
         static const AkUniqueID PILLAR2 = 2931961685U;
@@ -54,8 +56,9 @@ namespace AK
         static const AkUniqueID PUSHERMOVING16S = 3652695426U;
         static const AkUniqueID RESPAWNPING = 814740291U;
         static const AkUniqueID SANDFALL = 3076940544U;
-        static const AkUniqueID SANDNWIND = 264448505U;
         static const AkUniqueID SHOPBUY = 1153606107U;
+        static const AkUniqueID SHOPKEEPERINQUISITIVE = 1947196283U;
+        static const AkUniqueID SHOPKEEPRADIO = 1903791643U;
         static const AkUniqueID SIDESWEEPER = 988175737U;
         static const AkUniqueID SPIN = 823131329U;
         static const AkUniqueID SPINNERMOVING = 3496537566U;
@@ -64,6 +67,7 @@ namespace AK
         static const AkUniqueID TEXTBLIP = 1387752797U;
         static const AkUniqueID TIPJAR = 680758647U;
         static const AkUniqueID VERTSPINMOVING = 2481782438U;
+        static const AkUniqueID WINDNSAND = 3811731857U;
         static const AkUniqueID ZIPPER = 1558183U;
         static const AkUniqueID ZIPPER_01 = 1618850795U;
         static const AkUniqueID ZIPPER_02 = 1618850792U;

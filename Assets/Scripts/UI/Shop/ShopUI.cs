@@ -16,6 +16,8 @@ namespace UI
 
         [SerializeField] private ItemCard _itemCardPrefab;
 
+        [SerializeField] private AK.Wwise.Event _sellSfx;
+
         private List<ItemCard> _itemCards = new();
 
         private Cart _cachedCart;
@@ -76,6 +78,14 @@ namespace UI
         }
 
         public void Leave() => _shop.LeaveShop();
-        public void SellAll() => _shop.SellAll();
+
+        public void SellAll()
+        {
+            if (_cachedCart.CarriedItems.Count > 0)
+            {
+                _sellSfx.Post(gameObject);
+                _shop.SellAll();
+            }
+        }
     }
 }

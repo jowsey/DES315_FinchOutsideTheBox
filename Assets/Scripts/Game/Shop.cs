@@ -60,9 +60,15 @@ public class Shop : NetworkBehaviour
 
     [SerializeField] private CanvasGroup[] _hiddenUIElements;
 
+    //Wwise Thangs
+    [SerializeField] private AK.Wwise.Event _shopEnter;
+    [SerializeField] private AK.Wwise.Event _shopBuy;
+    [SerializeField] private AK.Wwise.Event _shopTipJar;
+    [SerializeField] private AK.Wwise.Event _shopkeepRadio;
+
     [SerializeField] private int _numPurchasableItems;
     public List<Item> PurchasableItems { get; private set; } = new();
-    
+
     // todo maybe pull from Addressables or something
     [SerializeField] private List<ItemData> _itemRegistry = new();
 
@@ -110,7 +116,7 @@ public class Shop : NetworkBehaviour
 
         var absRot = Random.Range(45f, 180f);
         var sign = Mathf.Sign(Random.Range(-1f, 1f));
-        
+
         _telescopeRotationTween = Tween.RotationAtSpeed(
             _telescope,
             _telescope.eulerAngles,
@@ -215,8 +221,9 @@ public class Shop : NetworkBehaviour
         {
             _shopUIInstance = Instantiate(_shopUIPrefab, _uiCanvas);
             _shopUIInstance.Build(this);
+            _shopEnter.Post(gameObject);
         }
-
+        
         //Hide action UIs & enter prompt
         foreach (CanvasGroup uiElement in _hiddenUIElements)
         {
@@ -224,6 +231,8 @@ public class Shop : NetworkBehaviour
         }
 
         if (_enterPromptInstance) _enterPromptInstance.gameObject.SetActive(false);
+
+        _shopkeepRadio.Post(gameObject);
     }
 
     [Button, DisableInEditorMode]
@@ -256,6 +265,9 @@ public class Shop : NetworkBehaviour
         }
 
         if (_enterPromptInstance) _enterPromptInstance.gameObject.SetActive(true);
+        
+        //Fade out radio over 500ms
+        _shopkeepRadio.Stop(gameObject, 500);
     }
 
     [Command(requiresAuthority = false)]
@@ -313,6 +325,7 @@ public class Shop : NetworkBehaviour
             case PurchaseError.None:
             {
                 Debug.Log($"Successfully purchased {item.name} (price = {price})");
+                _shopBuy.Post(gameObject);
                 break;
             }
             case PurchaseError.NotEnoughMoney:

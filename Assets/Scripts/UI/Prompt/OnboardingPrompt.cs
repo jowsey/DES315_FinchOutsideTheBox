@@ -13,7 +13,9 @@ namespace UI
         [SerializeField] private CanvasGroup _canvasGroup;
 
         [SerializeField] private float _transitionDuration = 0.75f;
+
         [SerializeField] private Event _satisfySfx;
+        [SerializeField] private Event _appearSfx;
 
         private RectTransform _rt;
 
@@ -27,6 +29,14 @@ namespace UI
         private void Awake()
         {
             _rt = (RectTransform)transform;
+        }
+
+        public void Start()
+        {
+            _appearSfx?.Post(gameObject);
+
+            Tween.Alpha(_canvasGroup, 0f, 1f, _transitionDuration, Ease.OutBack);
+            Tween.UIAnchoredPosition(_rt, _rt.anchoredPosition - _rt.sizeDelta * Vector2.up, _rt.anchoredPosition, _transitionDuration, Ease.OutBack);
         }
 
         private void Update()
@@ -43,12 +53,6 @@ namespace UI
                     if (_nextStep) _nextStep.gameObject.SetActive(true);
                 }, warnIfTargetDestroyed: false);
             }, warnIfTargetDestroyed: false);
-        }
-
-        public void OnEnable()
-        {
-            Tween.Alpha(_canvasGroup, 0f, 1f, _transitionDuration, Ease.OutBack);
-            Tween.UIAnchoredPosition(_rt, _rt.anchoredPosition - _rt.sizeDelta * Vector2.up, _rt.anchoredPosition, _transitionDuration, Ease.OutBack);
         }
 
         private void Complete()
