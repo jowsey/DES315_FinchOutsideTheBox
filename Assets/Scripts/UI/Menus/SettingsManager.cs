@@ -48,6 +48,7 @@ namespace UI
             "Avocado", "Kato", // Paolo's
             "Marley", "Mittens", "Chez", "Batman", "Bella", // Jowsey's
             "Felix", "Mollie", "Luna", "Kylo", "Padmé", "Clyde", "Julita", // Ellis'
+            "Zak", // Zo's
         };
 
         public static string GetRandomName() => DefaultPlayerNames[Random.Range(0, DefaultPlayerNames.Length)];
