@@ -43,6 +43,24 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "DropItem",
+                    "type": "Button",
+                    "id": "2474afc2-c4d9-4ada-8ad5-f81d5ff0f073",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "UseItem",
+                    "type": "Button",
+                    "id": "2a39796d-df12-4b39-aadd-2fd1fdd64121",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Respawn",
                     "type": "Button",
                     "id": "d4953504-fb00-48f1-9246-da2428bec63a",
@@ -715,6 +733,28 @@
                     "processors": "",
                     "groups": "Gamepad",
                     "action": "GlideHold",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c1002966-4e40-440b-874a-a986e99926a2",
+                    "path": "<Keyboard>/x",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "DropItem",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "312a92d3-63d8-460d-ba6b-458778fc901d",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "UseItem",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

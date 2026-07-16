@@ -54,13 +54,14 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private float _fallAnimationMinDownardsVelocity;
 
     [Header("Input")]
+    private bool _jumpPressed;
+    
     public InputActionReference MoveAction;
-
     public InputActionReference JumpAction;
     public InputActionReference InteractAction;
-
-    private bool _jumpPressed;
-
+    public InputActionReference DropItemAction;
+    public InputActionReference UseItemAction;
+    
     public WwiseAnimationEvents WwiseAnimationEvents { get; private set; }
 
     [Tooltip("Percentage of gravity to negate when gliding")]
@@ -461,24 +462,26 @@ public class PlayerController : NetworkBehaviour
 
                 item.CmdTryPickup();
             }
-            else if (UseAllowed && HeldObject is Equipment equipment)
+            else if (PutdownAllowed && CrosshairDetection.TargetedTransform && CrosshairDetection.TargetedTransform.CompareTag("TreasureCarrier"))
+            {
+                HeldObjectPutdownTarget carrierTarget = CrosshairDetection.TargetedTransform.GetComponentInChildren<HeldObjectPutdownTarget>();
+                HeldObject.CmdTryPutdown(carrierTarget);
+            }
+        }
+        else if (UseItemAction.action.WasPressedThisFrame())
+        {
+            if (UseAllowed && HeldObject is Equipment equipment)
             {
                 equipment.CmdTryUse();
             }
-            else if (PutdownAllowed)
+        }
+        else if (DropItemAction.action.WasPressedThisFrame())
+        {
+            if (PutdownAllowed)
             {
-                if (CrosshairDetection.TargetedTransform && CrosshairDetection.TargetedTransform.CompareTag("TreasureCarrier"))
-                {
-                    HeldObjectPutdownTarget carrierTarget = CrosshairDetection.TargetedTransform.GetComponentInChildren<HeldObjectPutdownTarget>();
-                    HeldObject.CmdTryPutdown(carrierTarget);
-                }
-                else
-                {
-                    HeldObject.CmdTryDrop();
-                }
+                HeldObject.CmdTryDrop();
             }
         }
-        
     }
 
     private void LateUpdate()

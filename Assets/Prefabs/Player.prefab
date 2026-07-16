@@ -100,10 +100,8 @@ MonoBehaviour:
   MoveAction: {fileID: -1680190386980627800, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
   JumpAction: {fileID: -2099379676528639254, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
   InteractAction: {fileID: 1781555164194001046, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
-  TreasurePickupFX:
-    idInternal: 0
-    valueGuidInternal: 
-    WwiseObjectReference: {fileID: 11400000, guid: fb4eeb34be92fdc47ab02109d737e816, type: 2}
+  DropItemAction: {fileID: 5042379338498899005, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
+  UseItemAction: {fileID: -4055770583918083563, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
   _gravityNegationPercentage: 60
   _rotationSmoothingSpeed: 8
   _firstPersonCameraViewPosition: {fileID: 4262451585859541057}
@@ -445,6 +443,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35ea3a2916ab3c441a91dcc9ff31e5fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Emoter
+  syncMethod: 0
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
 --- !u!1 &172664933246562798
 GameObject:
   m_ObjectHideFlags: 0
