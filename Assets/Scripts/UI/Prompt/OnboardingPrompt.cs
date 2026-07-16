@@ -49,6 +49,7 @@ namespace UI
         {
             Tween.Alpha(_canvasGroup, 0f, 1f, _transitionDuration, Ease.OutBack);
             Tween.UIAnchoredPosition(_rt, _rt.anchoredPosition - _rt.sizeDelta * Vector2.up, _rt.anchoredPosition, _transitionDuration, Ease.OutBack);
+            _satisfySfx?.Post(gameObject);
         }
 
         private void Complete()
