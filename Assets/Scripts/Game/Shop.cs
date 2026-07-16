@@ -103,6 +103,11 @@ public class Shop : NetworkBehaviour
         RunNextTelescopeTween();
     }
 
+    public override void OnStartClient()
+    {
+        _shopkeepRadio.Post(gameObject);
+    }
+
     public override void OnStopServer()
     {
         Cart.OnReachCheckpoint.RemoveListener(SaveShopState);
@@ -231,8 +236,6 @@ public class Shop : NetworkBehaviour
         }
 
         if (_enterPromptInstance) _enterPromptInstance.gameObject.SetActive(false);
-
-        _shopkeepRadio.Post(gameObject);
     }
 
     [Button, DisableInEditorMode]
@@ -265,9 +268,6 @@ public class Shop : NetworkBehaviour
         }
 
         if (_enterPromptInstance) _enterPromptInstance.gameObject.SetActive(true);
-        
-        //Fade out radio over 500ms
-        _shopkeepRadio.Stop(gameObject, 500);
     }
 
     [Command(requiresAuthority = false)]
