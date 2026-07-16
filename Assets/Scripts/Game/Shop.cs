@@ -372,10 +372,10 @@ public class Shop : NetworkBehaviour
             );
         }
 
-        if (NetworkClient.localPlayer?.gameObject == other.attachedRigidbody?.gameObject && !_enterPromptInstance)
+        if (!_enterPromptInstance && NetworkClient.localPlayer?.gameObject == other.attachedRigidbody?.gameObject)
         {
             //Don't show players Enter prompt if they're on the cart
-            if (PlayerController.LocalPlayer.Seat) return;
+            if (PlayerController.LocalPlayer?.Seat) return;
 
             _enterPromptInstance = Instantiate(_enterPromptPrefab, _uiCanvas);
             _enterPromptInstance.Build(InteractPrompt.InteractionType.EnterShop);
