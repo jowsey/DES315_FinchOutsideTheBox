@@ -91,8 +91,6 @@ public class Shop : NetworkBehaviour
 
         _zoomController = Camera.main.GetComponent<CameraZoomController>();
         _uiCanvas = GameObject.FindGameObjectWithTag("UICanvas").transform;
-
-        _shopkeepRadio.Post(gameObject);
     }
 
     public override void OnStartServer()
@@ -234,6 +232,8 @@ public class Shop : NetworkBehaviour
         }
 
         if (_enterPromptInstance) _enterPromptInstance.gameObject.SetActive(false);
+
+        _shopkeepRadio.Post(gameObject);
     }
 
     [Button, DisableInEditorMode]
@@ -263,10 +263,12 @@ public class Shop : NetworkBehaviour
         foreach (CanvasGroup uiElement in _hiddenUIElements)
         {
             Tween.Alpha(uiElement, 1, 0.25f, Ease.OutCubic);
-            _shopkeepRadio.Post(gameObject);
         }
 
         if (_enterPromptInstance) _enterPromptInstance.gameObject.SetActive(true);
+        
+        //Fade out radio over 500ms
+        _shopkeepRadio.Stop(gameObject, 500);
     }
 
     [Command(requiresAuthority = false)]
