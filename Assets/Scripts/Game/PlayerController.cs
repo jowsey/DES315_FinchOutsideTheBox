@@ -722,6 +722,8 @@ public class PlayerController : NetworkBehaviour
             return;
         }
 
+        if (HeldObject) HeldObject.CmdTryDrop();
+
         var newRotation = Quaternion.LookRotation(cart.transform.position - newPosition, Vector3.up);
         newRotation = Quaternion.Euler(0, newRotation.eulerAngles.y, 0); // flatten angle
         GetComponent<NetworkTransformBase>().CmdTeleport(newPosition, newRotation);
