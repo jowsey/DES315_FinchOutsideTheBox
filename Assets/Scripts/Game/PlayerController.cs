@@ -382,18 +382,18 @@ public class PlayerController : NetworkBehaviour
 
     private void OnRespawn(Checkpoint checkpoint)
     {
-        if (!authority || Seat) { return; }
-
+        if (!authority) return;
+        _cinemachineCamera.PreviousStateIsValid = false;
         ActiveShop?.LeaveShop();
 
-        Transform newTransform = checkpoint.playerRespawnLocalTransforms[PlayerIndex % checkpoint.playerRespawnLocalTransforms.Length];
+        // Cart will take us with it
+        if (Seat) return;
 
+        Transform newTransform = checkpoint.playerRespawnLocalTransforms[PlayerIndex % checkpoint.playerRespawnLocalTransforms.Length];
         Rb.position = newTransform.position;
         Rb.rotation = newTransform.rotation;
         Rb.linearVelocity = Vector3.zero;
         Rb.angularVelocity = Vector3.zero;
-
-        _cinemachineCamera.PreviousStateIsValid = false;
     }
 
     private void OnEnable()
