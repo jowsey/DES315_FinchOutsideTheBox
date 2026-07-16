@@ -61,14 +61,14 @@ public class Shop : NetworkBehaviour
     [SerializeField] private CanvasGroup[] _hiddenUIElements;
 
     //Wwise Thangs
-    [SerializeField] public AK.Wwise.Event _shopEnter;
-    [SerializeField] public AK.Wwise.Event _shopBuy;
-    [SerializeField] public AK.Wwise.Event _shopTipJar;
-    [SerializeField] public AK.Wwise.Event _shopkeepRadio;
+    [SerializeField] private AK.Wwise.Event _shopEnter;
+    [SerializeField] private AK.Wwise.Event _shopBuy;
+    [SerializeField] private AK.Wwise.Event _shopTipJar;
+    [SerializeField] private AK.Wwise.Event _shopkeepRadio;
 
     [SerializeField] private int _numPurchasableItems;
     public List<Item> PurchasableItems { get; private set; } = new();
-    
+
     // todo maybe pull from Addressables or something
     [SerializeField] private List<ItemData> _itemRegistry = new();
 
@@ -116,7 +116,7 @@ public class Shop : NetworkBehaviour
 
         var absRot = Random.Range(45f, 180f);
         var sign = Mathf.Sign(Random.Range(-1f, 1f));
-        
+
         _telescopeRotationTween = Tween.RotationAtSpeed(
             _telescope,
             _telescope.eulerAngles,
@@ -207,7 +207,6 @@ public class Shop : NetworkBehaviour
         _orbitalFollow.HorizontalAxis.Value = _cameraLockLocation.eulerAngles.y;
         _orbitalFollow.VerticalAxis.Value = 20; // todo figure out correct dynamic values here
 
-
         //Add control blockers
         PlayerController.ControlBlockerFlags flags = PlayerController.ControlBlockerFlags.All;
         flags &= ~PlayerController.ControlBlockerFlags.Pause;
@@ -224,7 +223,7 @@ public class Shop : NetworkBehaviour
             _shopUIInstance.Build(this);
             _shopEnter.Post(gameObject);
         }
-
+        
         //Hide action UIs & enter prompt
         foreach (CanvasGroup uiElement in _hiddenUIElements)
         {
@@ -314,7 +313,6 @@ public class Shop : NetworkBehaviour
         itemToBuy.Pickuppable = true;
         itemToBuy.ServerTryPickup(buyer);
         TargetBuyResult(sender, PurchaseError.None, itemToBuy, price);
-        
     }
 
     [TargetRpc]
@@ -385,8 +383,6 @@ public class Shop : NetworkBehaviour
                 _hatchOpenDuration,
                 Ease.OutBack
             );
-
-            
         }
 
         if (!_enterPromptInstance && NetworkClient.localPlayer?.gameObject == other.attachedRigidbody?.gameObject)

@@ -26,7 +26,7 @@ namespace UI
 
         [SerializeField] [Min(0)] private float _transitionDuration = 0.25f;
 
-        [SerializeField] public AK.Wwise.Event _shopHoverItem;
+        [SerializeField] private AK.Wwise.Event _hoverSfx;
 
         private Shop _shop;
         private int _shopIndex;
@@ -69,7 +69,7 @@ namespace UI
 
             _outline.effectColor = _hoveredOutline;
 
-            _shopHoverItem.Post(gameObject);
+            _hoverSfx.Post(gameObject);
         }
 
         public void OnPointerExit(PointerEventData eventData)
