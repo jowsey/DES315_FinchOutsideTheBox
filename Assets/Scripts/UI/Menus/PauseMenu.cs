@@ -101,10 +101,7 @@ namespace UI
             RTPCMenuOnOff.SetGlobalValue(active ? 1 : 0);
         }
 
-        public void ReturnToCart()
-        {
-            PlayerController.LocalPlayer.CmdReturnToCart();
-        }
+        public void ReturnToCart() => PlayerController.LocalPlayer.CmdReturnToCart();
 
         public void QuitToMenu()
         {
