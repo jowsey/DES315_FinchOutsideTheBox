@@ -1,5 +1,6 @@
 ﻿using PrimeTween;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Playables;
 using UnityEngine.UI;
 
@@ -8,7 +9,12 @@ namespace UI
     public class Credits : MonoBehaviour
     {
         [SerializeField] private float _pixelsPerSecond = 100;
+        [SerializeField] private InputActionReference _speedUpAction;
 
+        private Tween _scrollTween;
+
+        [SerializeField] private float _speedUpMultiplier = 3.5f;
+        
         private void Start()
         {
             var director = FindAnyObjectByType<PlayableDirector>();
@@ -23,12 +29,24 @@ namespace UI
             var canvasHeight = canvasScaler.referenceResolution.y;
             var totalHeight = contentHeight + canvasHeight;
 
-            Tween.UIAnchoredPositionY(rt, 0, totalHeight, totalHeight / _pixelsPerSecond, Ease.Linear)
+            _scrollTween = Tween.UIAnchoredPositionY(rt, 0, totalHeight, totalHeight / _pixelsPerSecond, Ease.Linear)
                 .OnComplete(() =>
                 {
                     director.Resume();
                     Destroy(gameObject);
                 });
+        }
+
+        private void Update()
+        {
+            if (_speedUpAction.action.WasPressedThisFrame())
+            {
+                _scrollTween.timeScale = _speedUpMultiplier;
+            }
+            else if (_speedUpAction.action.WasReleasedThisFrame())
+            {
+                _scrollTween.timeScale = 1f;
+            }
         }
 
         private static void FullRebuildBottomUp(RectTransform rt)
