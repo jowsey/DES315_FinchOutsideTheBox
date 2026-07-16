@@ -446,9 +446,7 @@ public class PlayerController : NetworkBehaviour
             _cameraPitch = Mathf.Clamp(_cameraPitch - scaledMouseDelta.y, -89.0f, 89.0f);
             _cameraYawAccumulator += scaledMouseDelta.x;
         }
-
-        _contactNormals.Clear();
-
+        
         _jumpPressed |= JumpAction.action.WasPressedThisFrame();
 
         if (InteractAction.action.WasPressedThisFrame())
@@ -737,6 +735,8 @@ public class PlayerController : NetworkBehaviour
         _jumpPressed = false;
         _cameraYawAccumulator = 0.0f;
         PuppetRequestJump = false;
+        
+        _contactNormals.Clear();
     }
 
     private void OnTriggerEnter(Collider other)
