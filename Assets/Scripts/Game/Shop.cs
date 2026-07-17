@@ -214,8 +214,6 @@ public class Shop : NetworkBehaviour
 
         //Add control blockers
         PlayerController.ControlBlockerFlags flags = PlayerController.ControlBlockerFlags.All;
-        flags &= ~PlayerController.ControlBlockerFlags.Pause;
-        flags &= ~PlayerController.ControlBlockerFlags.ToggleTextChat;
         flags &= ~PlayerController.ControlBlockerFlags.Respawn;
         PlayerController.AddControlBlockerFlags(this, flags);
         Cursor.lockState = CursorLockMode.None;
