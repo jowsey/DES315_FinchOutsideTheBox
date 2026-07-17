@@ -7,6 +7,7 @@ using Sirenix.OdinInspector;
 using UI;
 using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using Random = UnityEngine.Random;
@@ -20,6 +21,8 @@ public enum PurchaseError
 
 public class Shop : NetworkBehaviour
 {
+    private static List<ItemData> _itemRegistry;
+
     private CinemachineCamera _cinemachineCamera;
     private CinemachineOrbitalFollow _orbitalFollow;
     private CameraZoomController _zoomController;
@@ -67,15 +70,23 @@ public class Shop : NetworkBehaviour
     [SerializeField] private AK.Wwise.Event _shopkeepRadio;
 
     [SerializeField] private int _numPurchasableItems;
-    public List<Item> PurchasableItems { get; private set; } = new();
 
-    // todo maybe pull from Addressables or something
-    [SerializeField] private List<ItemData> _itemRegistry = new();
+    public SyncList<NetworkIdentity> AvailableItemIdentities = new();
 
     //For restoring bought items upon respawn
-    private Dictionary<Checkpoint, List<Item>> _shopStateAtCheckpoint = new();
+    private Dictionary<Checkpoint, List<NetworkIdentity>> _shopStateAtCheckpoint = new();
 
     public UnityEvent<Item, PurchaseError> OnReceiveBuyResult { get; private set; } = new();
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    private static void LoadAllItems()
+    {
+        var handle = Addressables.LoadAssetsAsync<ItemData>("Item");
+        var items = handle.WaitForCompletion();
+        _itemRegistry = items.ToList();
+
+        Debug.Log($"Loaded {_itemRegistry.Count} shop items");
+    }
 
     private void Awake()
     {
@@ -144,7 +155,7 @@ public class Shop : NetworkBehaviour
     [Server]
     private void SpawnPhysicalItems()
     {
-        PurchasableItems.Clear();
+        AvailableItemIdentities.Clear();
         for (int i = 0; i < _numPurchasableItems; ++i)
         {
             ItemData itemToSpawn = _itemRegistry[Random.Range(0, _itemRegistry.Count)];
@@ -158,30 +169,32 @@ public class Shop : NetworkBehaviour
             Item newItem = Instantiate(itemToSpawn.Prefab, spawnPos, _itemSpawnStart.rotation);
             NetworkServer.Spawn(newItem.gameObject);
             newItem.Pickuppable = false;
-            PurchasableItems.Add(newItem);
+            AvailableItemIdentities.Add(newItem.netIdentity);
         }
     }
 
     [Server]
     private void SaveShopState(Checkpoint checkpoint)
     {
-        _shopStateAtCheckpoint[checkpoint] = new List<Item>(PurchasableItems);
+        _shopStateAtCheckpoint[checkpoint] = new List<NetworkIdentity>(AvailableItemIdentities);
     }
 
     [Server]
     private void RestoreShopState(Checkpoint checkpoint)
     {
-        if (_shopStateAtCheckpoint.TryGetValue(checkpoint, out List<Item> savedItems))
+        if (_shopStateAtCheckpoint.TryGetValue(checkpoint, out var savedItems))
         {
-            PurchasableItems = new List<Item>(savedItems); //deep copy (todo maybe not necessary ?)
+            AvailableItemIdentities = new SyncList<NetworkIdentity>(savedItems); //deep copy (todo maybe not necessary ?)
 
             //Put the items back on the display rack
-            int count = PurchasableItems.Count;
+            int count = AvailableItemIdentities.Count;
             for (int i = 0; i < count; ++i)
             {
-                Item item = PurchasableItems[i];
-                if (item)
+                NetworkIdentity itemIdentity = AvailableItemIdentities[i];
+                if (itemIdentity)
                 {
+                    var item = itemIdentity.GetComponent<Item>();
+
                     float t = (count == 1) ? 0.5f : (float)i / (count - 1);
                     item.Rb.position = Vector3.Lerp(_itemSpawnStart.position, _itemSpawnEnd.position, t);
                     item.Rb.rotation = _itemSpawnStart.rotation;
@@ -226,7 +239,7 @@ public class Shop : NetworkBehaviour
             _shopUIInstance.Build(this);
             _shopEnter.Post(gameObject);
         }
-        
+
         //Hide action UIs & enter prompt
         foreach (CanvasGroup uiElement in _hiddenUIElements)
         {
@@ -272,26 +285,26 @@ public class Shop : NetworkBehaviour
     public void CmdTryBuy(int index, NetworkConnectionToClient sender = null)
     {
         //Buncha input validation
-        if (index < 0 || index >= PurchasableItems.Count)
+        if (index < 0 || index >= AvailableItemIdentities.Count)
         {
-            Debug.LogError("Shop.TryBuy() called with index " + index + " which was out of range (_purchasableItems.Count = " + PurchasableItems.Count + ")");
+            Debug.LogError("Shop.TryBuy() called with index " + index + " which was out of range (_purchasableItems.Count = " + AvailableItemIdentities.Count + ")");
             return;
         }
 
-        if (!PurchasableItems[index])
+        if (!AvailableItemIdentities[index])
         {
             Debug.LogError("Shop.TryBuy() called with index " + index + " which was null (has the item already been bought?)");
             return;
         }
 
-        Item itemToBuy = PurchasableItems[index];
+        Item itemToBuy = AvailableItemIdentities[index].GetComponent<Item>();
         if (!itemToBuy || itemToBuy.State != Item.ItemState.Idle)
         {
             Debug.LogError("Shop.TryBuy() called with index " + index + " which returned a " + (itemToBuy == null ? "null item" : "non-idle item (name = " + itemToBuy.name + ")"));
             return;
         }
 
-        PlayerController buyer = sender.identity.GetComponent<PlayerController>();
+        PlayerController buyer = sender!.identity.GetComponent<PlayerController>();
         if (buyer.HeldObject)
         {
             TargetBuyResult(sender, PurchaseError.AlreadyHoldingObject, itemToBuy, -1);
@@ -307,7 +320,7 @@ public class Shop : NetworkBehaviour
 
         //Take the money, remove from the display rack, and put it in the player's hands
         BankManager.Instance.Balance -= price;
-        PurchasableItems[index] = null;
+        AvailableItemIdentities[index] = null;
         itemToBuy.Pickuppable = true;
         itemToBuy.ServerTryPickup(buyer);
         TargetBuyResult(sender, PurchaseError.None, itemToBuy, price);
