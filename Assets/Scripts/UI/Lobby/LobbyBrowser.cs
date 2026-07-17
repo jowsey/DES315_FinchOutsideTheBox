@@ -221,7 +221,7 @@ namespace UI
 
         private void CreateLobbySucceeded(List<Attribute> attributes)
         {
-            NetworkManager.singleton.StartHost();
+            NetworkManager.singleton.StartHostLoading();
 
             GloballyLockedButton.RemoveLockSource(this); // paired with TryCreateLobby
         }
@@ -326,8 +326,8 @@ namespace UI
             var hostAddress = hostAttribute.Data?.Value.AsUtf8;
 
             NetworkManager.singleton.networkAddress = hostAddress;
-            NetworkManager.singleton.StartClient();
-
+            NetworkManager.singleton.StartClientLoading();
+            
             if (_activeJoinAttempt)
             {
                 _activeJoinAttempt.JoinButton.SetLoading(false);

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Linq;
 using Epic.OnlineServices.Lobby;
@@ -29,6 +30,9 @@ namespace Networking
 
         private int _nextPlayerIndex;
 
+        [SerializeField] private LoadingScreen _loadingScreenPrefab;
+        private LoadingScreen _loadingScreenInstance;
+
         public EOSLobby EosLobby { get; private set; }
 
         public override void Start()
@@ -53,6 +57,24 @@ namespace Networking
 
             NetworkClient.RegisterHandler<PresenceJoinMessage>(OnPresenceJoinMessage);
         }
+
+        public void AnimateLoadInto(Action afterAnimateIn, Func<bool> animateOutPredicate)
+        {
+            _loadingScreenInstance = Instantiate(_loadingScreenPrefab);
+            _loadingScreenInstance.OnFinishAnimateIn.AddListener(afterAnimateIn.Invoke);
+
+            StartCoroutine(WaitForAnimateOut());
+            return;
+
+            IEnumerator WaitForAnimateOut()
+            {
+                yield return new WaitUntil(animateOutPredicate);
+                _loadingScreenInstance.Animate(LoadingScreen.AnimateDirection.Out);
+            }
+        }
+
+        public void StartHostLoading() => AnimateLoadInto(StartHost, () => PlayerController.LocalPlayer);
+        public void StartClientLoading() => AnimateLoadInto(StartClient, () => PlayerController.LocalPlayer);
 
         public override void OnClientConnect()
         {
