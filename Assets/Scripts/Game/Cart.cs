@@ -48,6 +48,8 @@ public class Cart : NetworkBehaviour
     public readonly SyncList<int> NumItemsAtCheckpoint = new();
     [field: SyncVar(hook = nameof(OnTotalCarriedItemsChanged))] public int TotalCarriedItems { get; private set; }
 
+    [SyncVar] public int ExpectedTotalItemSellPrice;
+    
     //Sound effects
     [SerializeField] [Required] private AK.Wwise.Event _carSound;
     [SerializeField] [Required] private AK.Wwise.Event _carOnSurface;
@@ -273,17 +275,27 @@ public class Cart : NetworkBehaviour
         }
     }
 
+    [Server]
     public void AddCarriedItem(Item item)
     {
         CarriedItems.Add(item);
         TotalCarriedItems = CarriedItems.Count;
+
+        // we sync this since we don't sync individual items
+        ExpectedTotalItemSellPrice = EvaluateTotalItemSellPrice();
     }
 
+    [Server]
     public void RemoveCarriedItem(Item item)
     {
         CarriedItems.Remove(item);
         TotalCarriedItems = CarriedItems.Count;
+
+        ExpectedTotalItemSellPrice = EvaluateTotalItemSellPrice();
     }
+
+    [Server]
+    public int EvaluateTotalItemSellPrice() => CarriedItems.Sum(item => item.Data.SellPrice);
 
     private void OnTotalCarriedItemsChanged(int oldValue, int newValue)
     {

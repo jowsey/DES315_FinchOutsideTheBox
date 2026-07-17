@@ -74,7 +74,7 @@ namespace UI
         private void Update()
         {
             // todo event for when estimate changes so we don't have to compute every frame
-            _sellAllEstimateText.text = $"You will receive <b>{_shop.EvaluateSellAllPrice(_cachedCart)}</b> coins.";
+            _sellAllEstimateText.text = $"You will receive <b>{_cachedCart.ExpectedTotalItemSellPrice}</b> coins.";
             _balanceText.text = BankManager.Instance.Balance.ToString();
         }
 
@@ -82,10 +82,10 @@ namespace UI
 
         public void SellAll()
         {
-            if (_cachedCart.CarriedItems.Count > 0)
+            if (_cachedCart.ExpectedTotalItemSellPrice > 0)
             {
                 _sellSfx.Post(gameObject);
-                _shop.SellAll();
+                _shop.CmdSellAll(_cachedCart);
             }
         }
     }

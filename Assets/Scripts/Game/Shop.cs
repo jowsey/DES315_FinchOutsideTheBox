@@ -69,7 +69,7 @@ public class Shop : NetworkBehaviour
     [SerializeField] private AK.Wwise.Event _shopTipJar;
     [SerializeField] private AK.Wwise.Event _shopkeepRadio;
 
-    [SerializeField] private int _numPurchasableItems;
+    [SerializeField] private int _maxAvailableItems;
 
     public readonly SyncList<NetworkIdentity> AvailableItemIdentities = new();
 
@@ -161,19 +161,27 @@ public class Shop : NetworkBehaviour
     private void SpawnPhysicalItems()
     {
         AvailableItemIdentities.Clear();
-        for (int i = 0; i < _numPurchasableItems; ++i)
+
+        int numItems = Mathf.Min(_maxAvailableItems, _itemRegistry.Count);
+        for (int i = 0; i < numItems; ++i)
         {
-            ItemData itemToSpawn = _itemRegistry[Random.Range(0, _itemRegistry.Count)];
+            //If we can fit the entire registry, deterministically spawn one of each, else pick them at random
+            ItemData itemToSpawn = numItems <= _itemRegistry.Count
+                ? _itemRegistry[i]
+                : _itemRegistry[Random.Range(0, _itemRegistry.Count)];
 
             //Calculate position along the line
             //If there's only one item, stick it in the middle. Otherwise, space em out evenly
-            float t = (_numPurchasableItems == 1) ? 0.5f : (float)i / (_numPurchasableItems - 1);
+            float t = (numItems == 1) ? 0.5f : (float)i / (numItems - 1);
             Vector3 spawnPos = Vector3.Lerp(_itemSpawnStart.position, _itemSpawnEnd.position, t);
 
             //Spawn the networked object and track it
             Item newItem = Instantiate(itemToSpawn.Prefab, spawnPos, _itemSpawnStart.rotation);
-            NetworkServer.Spawn(newItem.gameObject);
             newItem.Pickuppable = false;
+            newItem.transform.localScale = Vector3.one * 0.5f;
+            newItem.State = Item.ItemState.Frozen;
+
+            NetworkServer.Spawn(newItem.gameObject);
             AvailableItemIdentities.Add(newItem.netIdentity);
         }
     }
@@ -208,6 +216,8 @@ public class Shop : NetworkBehaviour
                     Physics.SyncTransforms();
                     item.State = Item.ItemState.Idle;
                     item.Pickuppable = false;
+                    item.transform.localScale = Vector3.one * 0.5f;
+                    item.State = Item.ItemState.Frozen;
                 }
             }
 
@@ -309,9 +319,9 @@ public class Shop : NetworkBehaviour
         }
 
         Item itemToBuy = AvailableItemIdentities[index].GetComponent<Item>();
-        if (!itemToBuy || itemToBuy.State != Item.ItemState.Idle)
+        if (!itemToBuy || itemToBuy.State != Item.ItemState.Frozen)
         {
-            Debug.LogError("Shop.TryBuy() called with index " + index + " which returned a " + (itemToBuy == null ? "null item" : "non-idle item (name = " + itemToBuy.name + ")"));
+            Debug.LogError("Shop.TryBuy() called with index " + index + " which returned a " + (!itemToBuy ? "null item" : "non-frozen item (name = " + itemToBuy.name + ")"));
             return;
         }
 
@@ -333,6 +343,8 @@ public class Shop : NetworkBehaviour
         BankManager.Instance.Balance -= price;
         AvailableItemIdentities[index] = null;
         itemToBuy.Pickuppable = true;
+        itemToBuy.transform.localScale = Vector3.one;
+        itemToBuy.State = Item.ItemState.Idle;
         itemToBuy.ServerTryPickup(buyer);
         TargetBuyResult(sender, PurchaseError.None, itemToBuy, price);
     }
@@ -348,6 +360,7 @@ public class Shop : NetworkBehaviour
             {
                 Debug.Log($"Successfully purchased {item.name} (price = {price})");
                 _shopBuy.Post(gameObject);
+                LeaveShop();
                 break;
             }
             case PurchaseError.NotEnoughMoney:
@@ -363,16 +376,10 @@ public class Shop : NetworkBehaviour
         }
     }
 
-    //Returns the sell price of all treasures in the cart (abstracted out of SellAll() for ui purposes) (@jowsey lmk if u need smth different here)
-    public int EvaluateSellAllPrice(Cart cart)
-    {
-        // todo maybe * difficulty multiplier
-        return cart.CarriedItems.Sum(item => item.Data.SellPrice);
-    }
-
+    [Command(requiresAuthority = false)]
     public void CmdSellAll(Cart cart)
     {
-        BankManager.Instance.Balance += EvaluateSellAllPrice(cart); //must be done before removing all the treasure, obviously
+        BankManager.Instance.Balance += cart.EvaluateTotalItemSellPrice(); //must be done before removing all the treasure, obviously
         cart.RemoveAllTreasures();
     }
 
@@ -426,11 +433,4 @@ public class Shop : NetworkBehaviour
             _enterPromptInstance = null;
         }
     }
-
-    [Button, DisableInEditorMode] public void BuyIndex0() => CmdTryBuy(0);
-    [Button, DisableInEditorMode] public void BuyIndex1() => CmdTryBuy(1);
-    [Button, DisableInEditorMode] public void BuyIndex2() => CmdTryBuy(2);
-    [Button, DisableInEditorMode] public void DebugSellAllPrice() => Debug.Log("Current sell all price: " + EvaluateSellAllPrice(FindAnyObjectByType<Cart>()) + " juice coins");
-    [Button, DisableInEditorMode] public void SellAll() => CmdSellAll(FindAnyObjectByType<Cart>());
-    [Button, DisableInEditorMode] public void DebugBalance() => Debug.Log("Balance: " + BankManager.Instance.Balance + " juice coins");
 }

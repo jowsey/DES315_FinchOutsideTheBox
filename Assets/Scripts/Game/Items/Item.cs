@@ -16,7 +16,8 @@ namespace Game.Items
             Held,
             PuttingDown,
             Smashed,
-            Inactive
+            Inactive,
+            Frozen
         }
 
         protected bool _hasInitialised;
@@ -158,6 +159,17 @@ namespace Game.Items
                     foreach (Collider col in _colliders) col.enabled = false;
                     foreach (Renderer rend in _renderers) rend.enabled = false;
                     foreach (Light l in _lights) l.enabled = false;
+
+                    break;
+                }
+                case ItemState.Frozen:
+                {
+                    if (isServer)
+                    {
+                        Rb.isKinematic = true;
+                    }
+
+                    foreach (Collider col in _colliders) col.enabled = false;
 
                     break;
                 }
