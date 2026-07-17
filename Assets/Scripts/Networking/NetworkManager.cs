@@ -61,9 +61,12 @@ namespace Networking
         public void AnimateLoadInto(Action afterAnimateIn, Func<bool> animateOutPredicate)
         {
             _loadingScreenInstance = Instantiate(_loadingScreenPrefab);
-            _loadingScreenInstance.OnFinishAnimateIn.AddListener(afterAnimateIn.Invoke);
+            _loadingScreenInstance.OnFinishAnimateIn.AddListener(() =>
+            {
+                afterAnimateIn.Invoke();
+                StartCoroutine(WaitForAnimateOut());
+            });
 
-            StartCoroutine(WaitForAnimateOut());
             return;
 
             IEnumerator WaitForAnimateOut()
@@ -73,8 +76,8 @@ namespace Networking
             }
         }
 
-        public void StartHostLoading() => AnimateLoadInto(StartHost, () => PlayerController.LocalPlayer);
-        public void StartClientLoading() => AnimateLoadInto(StartClient, () => PlayerController.LocalPlayer);
+        public void StartHostLoading() => AnimateLoadInto(StartHost, () => PlayerController.LocalPlayer || !NetworkServer.active);
+        public void StartClientLoading() => AnimateLoadInto(StartClient, () => PlayerController.LocalPlayer || !NetworkClient.active);
 
         public override void OnClientConnect()
         {
