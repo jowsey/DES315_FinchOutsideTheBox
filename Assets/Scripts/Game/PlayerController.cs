@@ -224,6 +224,16 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
+    public static void ClearAllControlBlockerFlags()
+    {
+        foreach (var blocker in _controlBlockers.Keys)
+        {
+            RemoveAllControlBlockerFlags(blocker);
+        }
+
+        _controlBlockers.Clear();
+    }
+
     private void Awake()
     {
         LoadedSkins ??= Resources.LoadAll<SkinData>("PlayerSkins");

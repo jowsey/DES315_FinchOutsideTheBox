@@ -53,6 +53,7 @@ namespace UI
         private void Awake()
         {
             Cursor.lockState = CursorLockMode.None;
+            PlayerController.ClearAllControlBlockerFlags();
 
             // Clean up previously-used transport if we're coming back from the game
             ResetTransports();
