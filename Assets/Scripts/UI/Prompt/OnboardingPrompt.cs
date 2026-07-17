@@ -17,6 +17,8 @@ namespace UI
         [SerializeField] private Event _satisfySfx;
         [SerializeField] private Event _appearSfx;
 
+        public static bool EnableDetection = true;
+        
         private RectTransform _rt;
 
         private bool _satisfied;
@@ -41,7 +43,7 @@ namespace UI
 
         private void Update()
         {
-            if (_satisfied || !_satisfyAction.action.WasPerformedThisFrame()) return;
+            if (_satisfied || !EnableDetection || !_satisfyAction.action.WasPerformedThisFrame()) return;
             _satisfied = true;
 
             Tween.Delay(1.5f).OnComplete(() =>

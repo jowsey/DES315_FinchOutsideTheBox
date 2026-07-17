@@ -125,6 +125,11 @@ public class Shop : NetworkBehaviour
         Checkpoint.RespawnEvent.RemoveListener(RestoreShopState);
     }
 
+    public override void OnStopClient()
+    {
+        _shopkeepRadio.Stop(gameObject);
+    }
+
     [Server]
     private void RunNextTelescopeTween()
     {
@@ -187,7 +192,7 @@ public class Shop : NetworkBehaviour
             // AvailableItemIdentities = new SyncList<NetworkIdentity>(savedItems); //deep copy (todo maybe not necessary ?)
             AvailableItemIdentities.Clear();
             AvailableItemIdentities.AddRange(savedItems);
-            
+
             //Put the items back on the display rack
             int count = AvailableItemIdentities.Count;
             for (int i = 0; i < count; ++i)
@@ -248,6 +253,8 @@ public class Shop : NetworkBehaviour
             Tween.Alpha(uiElement, 0, 0.25f, Ease.OutCubic);
         }
 
+        OnboardingPrompt.EnableDetection = false;
+
         if (_enterPromptInstance) _enterPromptInstance.gameObject.SetActive(false);
     }
 
@@ -279,6 +286,8 @@ public class Shop : NetworkBehaviour
         {
             Tween.Alpha(uiElement, 1, 0.25f, Ease.OutCubic);
         }
+
+        OnboardingPrompt.EnableDetection = true;
 
         if (_enterPromptInstance) _enterPromptInstance.gameObject.SetActive(true);
     }

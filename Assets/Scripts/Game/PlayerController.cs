@@ -374,6 +374,7 @@ public class PlayerController : NetworkBehaviour
 
     public override void OnStopLocalPlayer()
     {
+        ActiveShop?.LeaveShop();
         Cursor.lockState = CursorLockMode.None;
     }
 
