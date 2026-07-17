@@ -317,8 +317,7 @@ public class PlayerController : NetworkBehaviour
 
     public override void OnStopClient()
     {
-        if (isLocalPlayer) return;
-        PlayerPresenceFeed.OnPlayerLeave.Invoke(this);
+        if (!isLocalPlayer && !CutscenePlayer) PlayerPresenceFeed.OnPlayerLeave.Invoke(this);
     }
 
     public override void OnStartLocalPlayer()
