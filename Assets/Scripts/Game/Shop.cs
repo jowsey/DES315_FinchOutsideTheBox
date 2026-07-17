@@ -71,7 +71,7 @@ public class Shop : NetworkBehaviour
 
     [SerializeField] private int _numPurchasableItems;
 
-    public SyncList<NetworkIdentity> AvailableItemIdentities = new();
+    public readonly SyncList<NetworkIdentity> AvailableItemIdentities = new();
 
     //For restoring bought items upon respawn
     private Dictionary<Checkpoint, List<NetworkIdentity>> _shopStateAtCheckpoint = new();
@@ -184,8 +184,10 @@ public class Shop : NetworkBehaviour
     {
         if (_shopStateAtCheckpoint.TryGetValue(checkpoint, out var savedItems))
         {
-            AvailableItemIdentities = new SyncList<NetworkIdentity>(savedItems); //deep copy (todo maybe not necessary ?)
-
+            // AvailableItemIdentities = new SyncList<NetworkIdentity>(savedItems); //deep copy (todo maybe not necessary ?)
+            AvailableItemIdentities.Clear();
+            AvailableItemIdentities.AddRange(savedItems);
+            
             //Put the items back on the display rack
             int count = AvailableItemIdentities.Count;
             for (int i = 0; i < count; ++i)
