@@ -363,7 +363,7 @@ public class PlayerController : NetworkBehaviour
         _onboardingLineInstance.StartTrackingOffset = Vector3.up * 0.5f;
         _onboardingLineInstance.EndFollowTarget = assignedWheel.transform;
         _onboardingLineInstance.EndTrackingOffset = assignedWheel.transform.InverseTransformPoint(assignedWheel.SeatedPosition);
-        _onboardingLineInstance.PromptLabel = "Hop on with";
+        _onboardingLineInstance.PromptLabel = "Jump on!";
         _onboardingLineInstance.ShouldDestroy = () => Seat; // if we're sat, job's done
         
         // Only local player gets a Wwise audio listener
