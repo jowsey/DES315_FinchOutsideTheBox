@@ -11,11 +11,14 @@ namespace Obstacles
 
         private Rigidbody _rb;
 
+        private void Awake()
+        {
+            _rb = GetComponent<Rigidbody>();
+        }
+        
         public override void OnStartClient()
         {
             base.OnStartClient();
-            _rb = GetComponent<Rigidbody>();
-
             Quaternion elapsedRotation = Quaternion.Euler(0, 0, (float)(NetworkTime.time * _spinSpeed));
             _rb.MoveRotation(_rb.rotation * elapsedRotation);
         }
