@@ -8,12 +8,12 @@ public class BankManager : NetworkBehaviour
     public static BankManager Instance { get; private set; }
 
     [field: SyncVar] public int Balance;
-    private Dictionary<Checkpoint, int> _balanceAtCheckpoint = new Dictionary<Checkpoint, int>();
+    private Dictionary<Checkpoint, int> _balanceAtCheckpoint = new();
 
     private void Awake()
     {
-        if (Instance == null) { Instance = this; }
-        else { Destroy(gameObject); }
+        if (!Instance) Instance = this;
+        else Destroy(gameObject);
     }
 
     public override void OnStartServer()
@@ -46,4 +46,11 @@ public class BankManager : NetworkBehaviour
     }
 
     [Button] public void DebugBalance() => Debug.Log(Balance);
+
+    [Button, DisableInEditorMode]
+    private void DebugGiveMoney()
+    {
+        if (!isServer) return;
+        Balance += 10;
+    }
 }
