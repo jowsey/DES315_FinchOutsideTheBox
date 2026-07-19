@@ -79,7 +79,7 @@ public class Cart : NetworkBehaviour
         _uiCanvas = GameObject.FindGameObjectWithTag("UICanvas").transform;
         IsPuppet = false;
 
-#if UNITY_EDITOR
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
         _wheelSeats = GetComponentsInChildren<WheelSeat>();
 #endif
     }
