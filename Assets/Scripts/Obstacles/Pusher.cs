@@ -1,221 +1,205 @@
+using Mirror;
 using Sirenix.OdinInspector;
 using UnityEngine;
 #if UNITY_EDITOR
 using Sirenix.Utilities.Editor;
 #endif
+using ReadOnlyAttribute = Sirenix.OdinInspector.ReadOnlyAttribute;
+using ShowInInspectorAttribute = Sirenix.OdinInspector.ShowInInspectorAttribute;
 
-public class Pusher : Mirror.NetworkBehaviour
+public class Pusher : NetworkBehaviour
 {
-    [SerializeField] private float _duration;
-    [Tooltip("If enabled, changing the Duration will automatically call ScaleEditorAnimationCurve, scaling all keys in the Scale Curve to fit the new Duration.")]
-    [SerializeField] private bool _autoScaleEditorCurve;
-    [SerializeField] private AnimationCurve _scaleCurve;
-    [SerializeField] private bool _moveByDefault;
-    [SerializeField] private float _startTime01;
-    private bool _isMoving;
-    [ShowInInspector] [ReadOnly] private double _timeElapsed; //Tracks the passing Time.fixedDeltaTime but only when _isMoving is true
-    
-    private bool _useTargetScale;
-    private float _targetScale;
-    private float _scaleLastTick;
-
-    private bool _useTargetTime;
-    private float _targetTime;
-    private float _timeLastTick;
-
-    [ShowInInspector] [ReadOnly] private float _currentScale;
-
     //Wwise Stuff
     public AK.Wwise.Event PlatformSound = new();
     public AK.Wwise.RTPC RTPCPlatform;
-    public float rtpcPlatformFloat = 0f;
+    public float rtpcPlatformFloat;
+
+    [SerializeField] private float _duration;
+
+    [Tooltip("If enabled, changing the Duration will automatically call ScaleEditorAnimationCurve, scaling all keys in the Scale Curve to fit the new Duration.")]
+    [SerializeField] private bool _autoScaleEditorCurve;
+
+    [SerializeField] private AnimationCurve _scaleCurve;
+
+    [SerializeField] private bool _moveByDefault;
+    [SerializeField] private float _startTime01;
+
+    [ShowInInspector] [ReadOnly] private float _currentScale;
+
+    [SyncVar] private double? _moveStartTime;
+    [SyncVar] private double _pausedElapsedTime;
+
+    [SyncVar] private bool _useTargetTime;
+    [SyncVar] private float _targetTime;
 
 #if UNITY_EDITOR
     //Used to detect changes in _duration for calling ScaleEditorAnimationCurve
     private float _oldDuration = -1.0f;
 
-        //Used to detect changes in _scaleCurve for calling UpdateCurveMinMax
-        private AnimationCurve _oldScaleCurve;
+    //Used to detect changes in _scaleCurve for calling UpdateCurveMinMax
+    private AnimationCurve _oldScaleCurve;
 
-        //Used just for updating _currentScale's progress bar
-        private float _minScale = -1.0f;
-        private float _maxScale = -1.0f;
-    #endif
-
+    //Used just for updating _currentScale's progress bar
+    private float _minScale = -1.0f;
+    private float _maxScale = -1.0f;
+#endif
 
     private void Awake()
     {
-        _isMoving = _moveByDefault;
-        _timeElapsed = _startTime01 * _duration;
+        _pausedElapsedTime = _startTime01 * _duration;
+        _moveStartTime = _moveByDefault ? NetworkTime.time - _pausedElapsedTime : null;
+
         _currentScale = _scaleCurve.Evaluate(_startTime01);
     }
 
     private void Start()
     {
-        _currentScale = _scaleCurve.Evaluate((float)_timeElapsed % _duration);
-        transform.localScale = new Vector3(_currentScale, transform.localScale.y, transform.localScale.z);
-        
         RTPCPlatform.SetGlobalValue(rtpcPlatformFloat);
         PlatformSound.Post(gameObject);
     }
 
+    [Server]
     public void StartMoving()
     {
-        _isMoving = true;
-        _useTargetScale = false;
+        if (!_moveStartTime.HasValue)
+        {
+            _moveStartTime = NetworkTime.time - _pausedElapsedTime;
+        }
+
         _useTargetTime = false;
     }
 
+    [Server]
     public void StopMoving()
     {
-        _isMoving = false;
-        _useTargetScale = false;
+        if (_moveStartTime.HasValue)
+        {
+            _pausedElapsedTime = NetworkTime.time - _moveStartTime.Value;
+        }
+
+        _moveStartTime = null;
         _useTargetTime = false;
     }
 
-    public void SetTargetScale(float val)
-    {
-        _useTargetScale = true;
-        _useTargetTime = false;
-        _targetScale = val;
-    }
-
-    public void SetTargetTime(float time)
-    {
-        _useTargetTime = true;
-        _useTargetScale = false;
-        _targetTime = time;
-    }
-
+    [Server]
     public void SetTargetTime01(float time01)
     {
-        float time = time01 * _duration;
         _useTargetTime = true;
-        _useTargetScale = false;
-        _targetTime = time;
+        _targetTime = time01 * _duration;
     }
 
+    [Server]
     public void ResetIfNotMoving()
     {
-        if (!_isMoving)
+        if (!_moveStartTime.HasValue)
         {
-            _timeElapsed = 0.0f;
+            _pausedElapsedTime = 0;
         }
     }
 
     void FixedUpdate()
     {
-        if (!isServer) { return; }
+        var timeElapsed = NetworkTime.time - _moveStartTime + _pausedElapsedTime;
 
-        if (_isMoving)
+        if (timeElapsed.HasValue)
         {
-            _scaleLastTick = _currentScale;
-            _timeLastTick = (float)_timeElapsed;
-            _timeElapsed += Time.fixedDeltaTime;
-        }
+            var currentTime = _useTargetTime ? timeElapsed.Value : timeElapsed.Value % _duration;
 
-        if (_useTargetScale)
-        {
-            _isMoving = (Mathf.Abs(_currentScale - _targetScale) > 0.01f);
-
-            //Just for cleanliness sake
-            if (!_isMoving)
-            {
-                _currentScale = _targetScale;
-            }
-        }
-        else if (_useTargetTime)
-        {
-            _isMoving = (float)_timeElapsed < _targetTime;
-
-            //Just for cleanliness sake
-            if (!_isMoving)
-            {
-                _timeElapsed = _targetTime;
-            }
-        }
-
-        if (_isMoving)
-        {
-            //Range [0, _duration]
-            float currentTime = _useTargetTime ? (float)_timeElapsed : (float)(_timeElapsed % _duration);
-
-            //Map the current time to the scale shaped by the _scaleCurve
-            _currentScale = _scaleCurve.Evaluate(currentTime);
+            _currentScale = _scaleCurve.Evaluate((float)currentTime);
             transform.localScale = new Vector3(_currentScale, transform.localScale.y, transform.localScale.z);
 
             RTPCPlatform.SetGlobalValue(_currentScale);
             rtpcPlatformFloat = _currentScale;
         }
+
+        // Check if reached target time
+        if (_useTargetTime && timeElapsed >= _targetTime)
+        {
+            _moveStartTime = null;
+            _pausedElapsedTime = _targetTime;
+        }
     }
 
 
 #if UNITY_EDITOR
-        [OnInspectorGUI]
-        private void RepaintConstantly()
+    [OnInspectorGUI]
+    private void RepaintConstantly()
+    {
+        if (Application.isPlaying)
         {
-            if (Application.isPlaying)
-            {
-                GUIHelper.RequestRepaint();
-            }
+            GUIHelper.RequestRepaint();
         }
+    }
 
-        protected override void OnValidate()
+    protected override void OnValidate()
+    {
+        base.OnValidate(); //NetworkBehaviour has its own OnValidate() apparently
+
+        if (_duration != _oldDuration)
         {
-            base.OnValidate(); //NetworkBehaviour has its own OnValidate() apparently
-
-            if (_duration != _oldDuration)
+            if (_oldDuration > 0.0f)
             {
-                if (_oldDuration > 0.0f)
+                if (_autoScaleEditorCurve)
                 {
-                    if (_autoScaleEditorCurve)
-                    {
-                        ScaleEditorAnimationCurve();
-                    }
+                    ScaleEditorAnimationCurve();
                 }
-                _oldDuration = _duration;
             }
 
-            if (_scaleCurve != _oldScaleCurve)
-            {
-                UpdateCurveMinMax();
-                _oldScaleCurve = _scaleCurve;
-            }
+            _oldDuration = _duration;
         }
 
-        //Called whenever _duration is changed
-        private void ScaleEditorAnimationCurve()
+        if (_scaleCurve != _oldScaleCurve)
         {
-            //Animation curve needs to be scaled from [0, 1] (default) to [0, duration]
-            float timeScaleFactor = _duration / _oldDuration;
-            Keyframe[] keys = _scaleCurve.keys;
-            for (int i = 0; i < _scaleCurve.length; ++i)
-            {
-                keys[i].time *= timeScaleFactor;
-
-                //tangent = ds/dt, stretching t (time) by a factor, k, means tangent = ds/kdt, which means tangent needs to be divided by k
-                keys[i].inTangent /= timeScaleFactor;
-                keys[i].outTangent /= timeScaleFactor;
-            }
-            _scaleCurve.keys = keys;
+            UpdateCurveMinMax();
+            _oldScaleCurve = _scaleCurve;
         }
+    }
 
-        //Called whenever _scaleCurve is changed
-        private void UpdateCurveMinMax()
+    //Called whenever _duration is changed
+    private void ScaleEditorAnimationCurve()
+    {
+        //Animation curve needs to be scaled from [0, 1] (default) to [0, duration]
+        float timeScaleFactor = _duration / _oldDuration;
+        Keyframe[] keys = _scaleCurve.keys;
+        for (int i = 0; i < _scaleCurve.length; ++i)
         {
-            if (_scaleCurve == null || _scaleCurve.length == 0) { return; }
-            _minScale = float.MaxValue;
-            _maxScale = float.MinValue;
+            keys[i].time *= timeScaleFactor;
 
-            //Can't just loop through all keyframes because tangents push intermediate values outside of discrete keyframe range
-            //Take samples instead
-            int samples = 50;
-            for (int i = 0; i < samples; ++i)
+            //tangent = ds/dt, stretching t (time) by a factor, k, means tangent = ds/kdt, which means tangent needs to be divided by k
+            keys[i].inTangent /= timeScaleFactor;
+            keys[i].outTangent /= timeScaleFactor;
+        }
+
+        _scaleCurve.keys = keys;
+    }
+
+    //Called whenever _scaleCurve is changed
+    private void UpdateCurveMinMax()
+    {
+        if (_scaleCurve == null || _scaleCurve.length == 0)
+        {
+            return;
+        }
+
+        _minScale = float.MaxValue;
+        _maxScale = float.MinValue;
+
+        //Can't just loop through all keyframes because tangents push intermediate values outside of discrete keyframe range
+        //Take samples instead
+        int samples = 50;
+        for (int i = 0; i < samples; ++i)
+        {
+            float val = _scaleCurve.Evaluate(_duration / samples * i);
+            if (val < _minScale)
             {
-                float val = _scaleCurve.Evaluate(_duration / samples * i);
-                if (val < _minScale) { _minScale = val; }
-                if (val > _maxScale) { _maxScale = val; }
+                _minScale = val;
+            }
+
+            if (val > _maxScale)
+            {
+                _maxScale = val;
             }
         }
+    }
 #endif
 }
