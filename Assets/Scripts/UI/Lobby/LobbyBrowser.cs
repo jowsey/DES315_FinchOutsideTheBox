@@ -260,14 +260,21 @@ namespace UI
                 _activeSearchAttemptCode = null;
             }
 
-            var lobbiesNameSorted = lobbies.OrderBy(lobbyDetails =>
-            {
-                var lobbyNameOptions = new LobbyDetailsCopyAttributeByKeyOptions { AttrKey = LobbyNameKey };
-                lobbyDetails.CopyAttributeByKey(ref lobbyNameOptions, out var lobbyNameAttribute);
-                return lobbyNameAttribute.HasValue ? lobbyNameAttribute.Value.Data?.Value.AsUtf8.ToString() : DefaultLobbyName;
-            });
+            var lobbiesFilteredSorted = lobbies
+                .Where(lobbyDetails =>
+                {
+                    var memberCountOptions = new LobbyDetailsGetMemberCountOptions();
+                    return lobbyDetails.GetMemberCount(ref memberCountOptions) >= 1;
+                })
+                .OrderBy(lobbyDetails =>
+                {
+                    var lobbyNameOptions = new LobbyDetailsCopyAttributeByKeyOptions { AttrKey = LobbyNameKey };
+                    lobbyDetails.CopyAttributeByKey(ref lobbyNameOptions, out var lobbyNameAttribute);
+                    return lobbyNameAttribute.HasValue ? lobbyNameAttribute.Value.Data?.Value.AsUtf8.ToString() : DefaultLobbyName;
+                })
+                .ToList();
 
-            foreach (var lobbyDetails in lobbiesNameSorted)
+            foreach (var lobbyDetails in lobbiesFilteredSorted)
             {
                 var listing = Instantiate(_lobbyListingPrefab, _lobbyListContainer);
 
@@ -306,7 +313,7 @@ namespace UI
                 });
             }
 
-            _emptyListNotice.SetActive(lobbies.Count == 0);
+            _emptyListNotice.SetActive(lobbiesFilteredSorted.Count == 0);
             _refreshNotice.transform.SetAsLastSibling();
         }
 
@@ -327,7 +334,7 @@ namespace UI
 
             NetworkManager.singleton.networkAddress = hostAddress;
             NetworkManager.singleton.StartClientLoading();
-            
+
             if (_activeJoinAttempt)
             {
                 _activeJoinAttempt.JoinButton.SetLoading(false);
