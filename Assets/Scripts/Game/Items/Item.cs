@@ -221,11 +221,11 @@ namespace Game.Items
 
             var player = sender!.identity.GetComponent<PlayerController>();
             if (player != _holder) return;
-            ServerDrop();
+            ServerSetIdle();
         }
 
         [Server]
-        public void ServerDrop()
+        public void ServerSetIdle()
         {
             State = ItemState.Idle;
             _holderIdentity = null;
@@ -245,8 +245,7 @@ namespace Game.Items
 
                 if (targetVec.sqrMagnitude < 0.025f)
                 {
-                    State = ItemState.Idle;
-                    _holderIdentity = null;
+                    ServerSetIdle();
                 }
             }
         }

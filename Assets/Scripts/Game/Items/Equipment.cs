@@ -11,11 +11,17 @@ namespace Game.Items
             var player = sender!.identity.GetComponent<PlayerController>();
             if (player != _holder) return;
 
-            OnServerUse();
+            if (OnServerUse())
+            {
+                // unequip on successful use
+                ServerSetIdle();
+                State = ItemState.Inactive;
+            }
         }
 
-        protected virtual void OnServerUse()
+        protected virtual bool OnServerUse()
         {
+            return true;
         }
 
         protected override void OnStateChanged(ItemState oldState, ItemState newState)

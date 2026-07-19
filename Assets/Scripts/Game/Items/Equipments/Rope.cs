@@ -10,22 +10,24 @@ namespace Game.Items.Equipments
         [SerializeField] private ConfigurableJoint _ropeSegmentPrefab;
         [SerializeField, Min(1)] private int _numSegments = 25;
 
-        protected override void OnServerUse()
+        protected override bool OnServerUse()
         {
-            base.OnServerUse();
+            if (!base.OnServerUse()) return false;
 
             var anchorPosition = _holder.transform.TransformPoint(-0.5f, 0f, 1f);
             var segmentLength = _ropeSegmentPrefab.connectedAnchor.z;
 
-            // todo have them place it on the ground themselves?
             const float groundSeekDepth = 2.5f;
             var ray = new Ray(anchorPosition + Vector3.up * groundSeekDepth, Vector3.down);
             if (Physics.Raycast(ray, out var hit, groundSeekDepth * 2, ~LayerMask.GetMask("Player", "Rope"), QueryTriggerInteraction.Ignore))
             {
                 anchorPosition = hit.point;
             }
-
-
+            else
+            {
+                return false;
+            }
+            
             var anchor = Instantiate(_ropeAnchorPrefab, anchorPosition, Quaternion.Euler(0f, _holder.transform.localEulerAngles.y, 0f));
             var anchorCollider = anchor.GetComponentInChildren<Collider>();
             NetworkServer.Spawn(anchor);
@@ -58,6 +60,7 @@ namespace Game.Items.Equipments
             }
 
             Tween.Delay(2f).OnComplete(() => previousBody.AddForce(anchor.transform.forward * 250f, ForceMode.Impulse));
+            return true;
         }
     }
 }
