@@ -194,11 +194,7 @@ namespace Game.Items
         public void ServerTryPickup(PlayerController player)
         {
             if (State != ItemState.Idle) return;
-            if (!Pickuppable)
-            {
-                return;
-            }
-
+            if (!Pickuppable) return;
             if (player.HeldObject) return;
 
             _holderIdentity = player.netIdentity;
@@ -225,7 +221,12 @@ namespace Game.Items
 
             var player = sender!.identity.GetComponent<PlayerController>();
             if (player != _holder) return;
+            ServerDrop();
+        }
 
+        [Server]
+        public void ServerDrop()
+        {
             State = ItemState.Idle;
             _holderIdentity = null;
         }
