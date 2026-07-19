@@ -59,6 +59,8 @@ namespace UI
 
             for (var i = 0; i < shop.AvailableItemIdentities.Count; i++)
             {
+                if (!shop.AvailableItemIdentities[i]) continue;
+                
                 var item = shop.AvailableItemIdentities[i].GetComponent<Item>();
                 
                 ItemCard itemCard = Instantiate(_itemCardPrefab, transform);
