@@ -1,21 +1,29 @@
+using Mirror;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-public class SpinningCylinder : MonoBehaviour
+namespace Obstacles
 {
-    [SuffixLabel("deg/s")]
-    [SerializeField] private float _spinSpeed;
-
-    private Rigidbody rb;
-
-    private void Start()
+    public class SpinningCylinder : NetworkBehaviour
     {
-        rb = GetComponent<Rigidbody>();
-    }
+        [SuffixLabel("deg/s")]
+        [SerializeField] private float _spinSpeed;
 
-    void FixedUpdate()
-    {
-        Quaternion turnOffset = Quaternion.Euler(0, 0, _spinSpeed * Time.fixedDeltaTime);
-        rb.MoveRotation(rb.rotation * turnOffset);
+        private Rigidbody _rb;
+
+        public override void OnStartClient()
+        {
+            base.OnStartClient();
+            _rb = GetComponent<Rigidbody>();
+
+            Quaternion elapsedRotation = Quaternion.Euler(0, 0, (float)(NetworkTime.time * _spinSpeed));
+            _rb.MoveRotation(_rb.rotation * elapsedRotation);
+        }
+
+        private void FixedUpdate()
+        {
+            Quaternion totalRotation = Quaternion.Euler(0, 0, _spinSpeed * Time.fixedDeltaTime);
+            _rb.MoveRotation(_rb.rotation * totalRotation);
+        }
     }
 }
