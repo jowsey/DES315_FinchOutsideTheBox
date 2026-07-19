@@ -82,39 +82,14 @@ namespace Networking
         public override void OnClientConnect()
         {
             base.OnClientConnect();
-            OnJoinGame.Invoke();
 
-            if (NetworkServer.active)
-            {
-                SendClientInfo();
-            }
-        }
-
-        public override void OnClientSceneChanged()
-        {
-            base.OnClientSceneChanged();
-
-            // give some time for ready to settle?
-            // seems to fix it. todo, figure out what exactly we're racing and explicitly wait for it
-            StartCoroutine(DelaySendClientInfo(0.5f));
-            return;
-
-            IEnumerator DelaySendClientInfo(float delay)
-            {
-                yield return new WaitForSeconds(delay);
-                SendClientInfo();
-            }
-        }
-
-        private void SendClientInfo()
-        {
-            var clientInfoMessage = new ClientInfoMessage
+            NetworkClient.Send(new ClientInfoMessage
             {
                 PlayerName = SettingsManager.GetSafeName(),
                 PlayerUID = SettingsManager.ActiveSettings.UserID
-            };
+            });
 
-            NetworkClient.Send(clientInfoMessage);
+            OnJoinGame.Invoke();
         }
 
         public override void OnClientDisconnect()
