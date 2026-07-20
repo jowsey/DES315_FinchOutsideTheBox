@@ -77,8 +77,6 @@ public class WheelSeat : NetworkBehaviour
             oldPlayer.Rb.excludeLayers &= ~(1 << gameObject.layer);
             oldPlayer.Seat = null;
 
-            oldPlayer.WwiseAnimationEvents.DisableFootsteps = false;
-
             _lastUnsitTime = Time.time;
 
             if (oldPlayer.isLocalPlayer)
@@ -93,8 +91,6 @@ public class WheelSeat : NetworkBehaviour
             SeatedPlayer.Rb.isKinematic = true;
             SeatedPlayer.Rb.excludeLayers |= 1 << gameObject.layer;
             SeatedPlayer.Seat = this;
-
-            SeatedPlayer.WwiseAnimationEvents.DisableFootsteps = true;
 
             if (SeatedPlayer.isLocalPlayer)
             {

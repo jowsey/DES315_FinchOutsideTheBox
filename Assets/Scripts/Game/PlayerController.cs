@@ -553,6 +553,38 @@ public class PlayerController : NetworkBehaviour
             WwiseAnimationEvents.ResetGlideTrigger();
         }
 
+        //Grounded
+        int groundedHits = Physics.OverlapSphereNonAlloc(Rb.position, _groundedSphereRadius, _groundedCheckColliderBuffer, ~0, QueryTriggerInteraction.Ignore);
+        bool grounded = false;
+        for (int i = 0; i < groundedHits; i++)
+        {
+            // ignore self but *do* find other players
+            //Check all parents
+            bool self = false;
+            Transform t = _groundedCheckColliderBuffer[i].transform;
+            do
+            {
+                if (t == transform)
+                {
+                    self = true;
+                    break;
+                }
+
+                t = t.parent;
+            } while (t);
+
+            if (!self)
+            {
+                //Player has collided with something other than themselves
+                grounded = true;
+                break;
+            }
+        }
+
+        bool groundedOnBumpy = Physics.CheckSphere(Rb.position, _groundedSphereRadius, LayerMask.GetMask("Bumpy"), QueryTriggerInteraction.Ignore);
+
+        WwiseAnimationEvents.EnableFootsteps = !Seat && (grounded || groundedOnBumpy);
+
         if (!authority && !IsPuppet) return;
 
         //Movement input
@@ -599,34 +631,6 @@ public class PlayerController : NetworkBehaviour
             return;
         }
 
-        //Grounded
-        int groundedHits = Physics.OverlapSphereNonAlloc(Rb.position, _groundedSphereRadius, _groundedCheckColliderBuffer, ~0, QueryTriggerInteraction.Ignore);
-        bool grounded = false;
-        for (int i = 0; i < groundedHits; i++)
-        {
-            // ignore self but *do* find other players
-            //Check all parents
-            bool self = false;
-            Transform t = _groundedCheckColliderBuffer[i].transform;
-            do
-            {
-                if (t == transform)
-                {
-                    self = true;
-                    break;
-                }
-                t = t.parent;
-            } while (t != null);
-
-            if (!self)
-            {
-                //Player has collided with something other than themself
-                grounded = true;
-                break;
-            }
-        }
-
-        bool groundedOnBumpy = Physics.CheckSphere(Rb.position, _groundedSphereRadius, LayerMask.GetMask("Bumpy"), QueryTriggerInteraction.Ignore);
         Rb.useGravity = !groundedOnBumpy;
         _networkAnimator.animator.SetBool(GroundedState, grounded || groundedOnBumpy);
         if (IsPuppet && !grounded && !groundedOnBumpy && PuppetGravityMultiplier > 1f)
@@ -659,8 +663,8 @@ public class PlayerController : NetworkBehaviour
         if (ControlEnabled(ControlBlockerFlags.Glide) && isFalling && JumpAction.action.IsPressed())
         {
             //Player is gliding
-            float _gravityNegationPercentage01 = _gravityNegationPercentage / 100.0f;
-            Rb.AddForce(-Physics.gravity * _gravityNegationPercentage01, ForceMode.Acceleration);
+            float gravityNegationPercentage01 = _gravityNegationPercentage / 100.0f;
+            Rb.AddForce(-Physics.gravity * gravityNegationPercentage01, ForceMode.Acceleration);
 
             _networkAnimator.animator.SetBool(FallState, false);
             _networkAnimator.animator.SetBool(GlideState, true);
@@ -685,11 +689,6 @@ public class PlayerController : NetworkBehaviour
             float jumpMultiplier = IsPuppet ? PuppetJumpForceMultiplier : 1f;
             Rb.AddForce(Vector3.up * (_jumpForce * jumpMultiplier), ForceMode.Impulse);
         }
-
-        //if (ControlEnabled(ControlBlockerFlags.Emote) && InteractAction.action.WasPressedThisFrame())
-        //{
-        //    _emoter.PlayEmote("Emote_Spin");
-        //}
 
         CleanupFixedUpdate();
     }

@@ -1,3 +1,4 @@
+using System;
 using JetBrains.Annotations;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -12,9 +13,9 @@ public class WwiseAnimationEvents : MonoBehaviour
     [Required] public AK.Wwise.Event spin; 
     [Required] public AK.Wwise.Event Frontflip;
 
-    [ReadOnly] public bool GlideTriggered;
-    [ReadOnly] public bool DisableFootsteps;
-
+    [NonSerialized, ShowInInspector, ReadOnly] public bool GlideTriggered;
+    [NonSerialized, ShowInInspector, ReadOnly] public bool EnableFootsteps = true;
+    
     public void ResetGlideTrigger()
     {
         GlideTriggered = false;
@@ -23,7 +24,7 @@ public class WwiseAnimationEvents : MonoBehaviour
     [UsedImplicitly]
     public void PlayFootstepSound()
     {
-        if (DisableFootsteps) return;
+        if (!EnableFootsteps) return;
         Footstep.Post(gameObject);
     }
 
