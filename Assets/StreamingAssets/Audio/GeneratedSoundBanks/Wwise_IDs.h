@@ -23,6 +23,7 @@ namespace AK
         static const AkUniqueID CATSHOPENTER = 1950057143U;
         static const AkUniqueID CHECKPOINTDRUMS = 2509294038U;
         static const AkUniqueID DOORSMOVING = 758278606U;
+        static const AkUniqueID EMOTEHOVERTICK = 151557060U;
         static const AkUniqueID FOOTSTEPS = 2385628198U;
         static const AkUniqueID FRONTFLIP = 3219038647U;
         static const AkUniqueID GLASSINVEHILCE = 2158283652U;
@@ -174,6 +175,7 @@ namespace AK
         static const AkUniqueID SIDESWEEPER = 988175737U;
         static const AkUniqueID VERTSPINNYONOFF = 1139057927U;
         static const AkUniqueID WHEELSMOVING = 1023454587U;
+        static const AkUniqueID WINDONOFF = 1102041347U;
         static const AkUniqueID ZIPPER = 1558183U;
         static const AkUniqueID ZIPPER_01 = 1618850795U;
         static const AkUniqueID ZIPPER_02 = 1618850792U;
