@@ -18,7 +18,7 @@ namespace UI
         [SerializeField] private CanvasGroup _canvasGroup;
         [SerializeField] private EmoteWheelItem _itemPrefab;
 
-        [SerializeField] private AK.Wwise.Event EmoteWheelHoverSfx;
+        [SerializeField] private AK.Wwise.Event _hoverSfx;
 
         private List<EmoteWheelItem> _activeItems = new();
         private EmoteWheelItem _hoveredItem;
@@ -85,14 +85,14 @@ namespace UI
                             _hoveredItem?.SetSelected(false);
                             _hoveredItem = _activeItems[selectedIndex];
                             _hoveredItem.SetSelected(true);
-                                EmoteWheelHoverSfx.Post(gameObject);
-                            }
+                            
+                            _hoverSfx.Post(gameObject);
+                        }
                     }
                     else if (_hoveredItem)
                     {
                         _hoveredItem.SetSelected(false);
                         _hoveredItem = null;
-
                     }
 
                     if (!_openEmoteWheelAction.action.IsPressed() || _explicitSelectAction.action.WasPressedThisFrame())
@@ -109,7 +109,7 @@ namespace UI
 
                         if (_hoveredItem)
                         {
-                                PlayerController.LocalPlayer.Emoter.PlayEmote(_hoveredItem.Emote.TriggerName);
+                            PlayerController.LocalPlayer.Emoter.PlayEmote(_hoveredItem.Emote.TriggerName);
 
                             // push outward in direction. first attempt at making it more obvious which item was selected. needs work
                             var itemRect = (RectTransform)_hoveredItem.transform;
