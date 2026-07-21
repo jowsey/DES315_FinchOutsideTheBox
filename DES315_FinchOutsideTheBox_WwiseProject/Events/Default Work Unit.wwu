@@ -780,6 +780,17 @@
 						</Event>
 					</ChildrenList>
 				</Folder>
+				<Event Name="EmoteHoverTick" ID="{E925E8AA-1064-42E4-ABBA-A944A12BC08A}">
+					<ChildrenList>
+						<Action Name="" ID="{67C32F0D-D420-41C8-82B9-364974A586CC}" ShortID="514258992">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="HoverTickForEmotes" ID="{E548C099-70D3-4E7F-B980-D6C10B13CBAB}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>
