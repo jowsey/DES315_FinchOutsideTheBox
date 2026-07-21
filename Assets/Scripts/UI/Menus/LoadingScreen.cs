@@ -41,6 +41,8 @@ namespace UI
         public void OnEnable()
         {
             DontDestroyOnLoad(gameObject);
+            
+            GloballyLockedButton.AddLockSource(this);
 
             // prioritise smooth frames over i/o speed
             Application.backgroundLoadingPriority = ThreadPriority.Low;
@@ -51,6 +53,11 @@ namespace UI
             Tween.Scale(_artworkGroup.transform, Vector3.one, Vector3.one * 1.05f, 5f);
             
             Animate(AnimateDirection.In);
+        }
+
+        private void OnDisable()
+        {
+            GloballyLockedButton.RemoveLockSource(this);
         }
     }
 }
