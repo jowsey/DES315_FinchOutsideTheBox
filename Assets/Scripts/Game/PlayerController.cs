@@ -461,18 +461,18 @@ public class PlayerController : NetworkBehaviour
 
         if (InteractAction.action.WasPressedThisFrame())
         {
-            if (PickupAllowed && CrosshairDetection.TargetedTransform)
+            if (PickupAllowed && InteractDetection.TargetedTransform)
             {
-                if (!CrosshairDetection.TargetedTransform.CompareTag("Item")) return;
+                if (!InteractDetection.TargetedTransform.CompareTag("Item")) return;
 
-                Item item = CrosshairDetection.TargetedTransform.GetComponentInParent<Item>();
+                Item item = InteractDetection.TargetedTransform.GetComponentInParent<Item>();
                 if (item.State != Item.ItemState.Idle) return;
 
                 item.CmdTryPickup();
             }
-            else if (PutdownAllowed && CrosshairDetection.TargetedTransform && CrosshairDetection.TargetedTransform.CompareTag("TreasureCarrier"))
+            else if (PutdownAllowed && InteractDetection.TargetedTransform && InteractDetection.TargetedTransform.CompareTag("TreasureCarrier"))
             {
-                HeldObjectPutdownTarget carrierTarget = CrosshairDetection.TargetedTransform.GetComponentInChildren<HeldObjectPutdownTarget>();
+                HeldObjectPutdownTarget carrierTarget = InteractDetection.TargetedTransform.GetComponentInChildren<HeldObjectPutdownTarget>();
                 HeldObject.CmdTryPutdown(carrierTarget);
             }
         }

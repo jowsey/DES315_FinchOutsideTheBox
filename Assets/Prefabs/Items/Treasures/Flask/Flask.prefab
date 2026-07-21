@@ -708,6 +708,10 @@ PrefabInstance:
       value: Treasure
       objectReference: {fileID: 0}
     - target: {fileID: -7441197143744424489, guid: b5ea9efc5e464924b817fdcc4c75c863, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -7441197143744424489, guid: b5ea9efc5e464924b817fdcc4c75c863, type: 3}
       propertyPath: m_TagString
       value: Item
       objectReference: {fileID: 0}
@@ -787,6 +791,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -7441197143744424489, guid: b5ea9efc5e464924b817fdcc4c75c863, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4785554424625269083}
+    - targetCorrespondingSourceObject: {fileID: -7441197143744424489, guid: b5ea9efc5e464924b817fdcc4c75c863, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6358569425574371000}
   m_SourcePrefab: {fileID: 100100000, guid: b5ea9efc5e464924b817fdcc4c75c863, type: 3}
 --- !u!4 &2842290618864401119 stripped
 Transform:
@@ -820,3 +827,16 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -7353910727717245673, guid: b5ea9efc5e464924b817fdcc4c75c863, type: 3}
+--- !u!114 &6358569425574371000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4053503135981586659}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a4c0a2cc04197f4c87580b54c1d9b7f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Interactable
+  <InteractedTransform>k__BackingField: {fileID: 7788027509240571938}

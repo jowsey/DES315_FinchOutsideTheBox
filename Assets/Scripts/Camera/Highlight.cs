@@ -69,7 +69,7 @@ public class Highlight : MonoBehaviour
 
     private void Update()
     {
-        bool beingLookedAt = CrosshairDetection.TargetedTransform && CrosshairDetection.TargetedTransform.IsChildOf(transform);
+        bool beingLookedAt = InteractDetection.TargetedTransform && InteractDetection.TargetedTransform.IsChildOf(transform);
 
         if (beingLookedAt && !_highlighted && _isTagHighlightable[tag])
         {

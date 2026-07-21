@@ -75,7 +75,7 @@ public class CutsceneStart : NetworkBehaviour
 
         _crosshair.SetActive(false);
         Camera.main.GetComponent<ObstructionDitherer>().enabled = false;
-        Camera.main.GetComponent<CrosshairDetection>().enabled = false;
+        Camera.main.GetComponent<InteractDetection>().enabled = false;
         Camera.main.GetComponent<AkAudioListener>().enabled = true;
 
         PlayerController.AddControlBlockerFlags(this, PlayerController.ControlBlockerFlags.All);
@@ -87,7 +87,7 @@ public class CutsceneStart : NetworkBehaviour
 
         _crosshair.SetActive(true);
         Camera.main.GetComponent<ObstructionDitherer>().enabled = true;
-        Camera.main.GetComponent<CrosshairDetection>().enabled = true;
+        Camera.main.GetComponent<InteractDetection>().enabled = true;
         Camera.main.GetComponent<AkAudioListener>().enabled = false;
 
         PlayerController.RemoveAllControlBlockerFlags(this);

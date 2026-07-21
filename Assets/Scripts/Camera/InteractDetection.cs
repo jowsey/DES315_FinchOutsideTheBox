@@ -3,7 +3,7 @@ using Sirenix.OdinInspector;
 using UI;
 using UnityEngine;
 
-public class CrosshairDetection : MonoBehaviour
+public class InteractDetection : MonoBehaviour
 {
     private Camera _camera;
     private Transform _uiCanvas;
@@ -11,13 +11,15 @@ public class CrosshairDetection : MonoBehaviour
     [SerializeField] private float _maxPickupDistance = 4.0f;
     [SerializeField] private float _maxPutdownDistance = 8.0f;
 
-    [Header("UI")]
-    [SerializeField] [Required] private InteractPrompt _interactPromptPrefab;
+    [Header("UI")] [SerializeField] [Required]
+    private InteractPrompt _interactPromptPrefab;
 
     [SerializeField] [Required] private ItemInfoCard _itemInfoCardPrefab;
 
     private InteractPrompt _interactPromptInstance;
     private ItemInfoCard _itemInfoCardInstance;
+
+    private readonly Collider[] _nearbyHits = new Collider[64];
 
     //The transform of the object currently being looked at
     public static Transform TargetedTransform { get; private set; }
@@ -42,6 +44,7 @@ public class CrosshairDetection : MonoBehaviour
 
     private void CleanupPrompts()
     {
+        TargetedTransform = null;
         if (_interactPromptInstance) CleanupInteractPrompt();
         if (_itemInfoCardInstance) CleanupItemInfoPrompt();
     }
@@ -50,40 +53,61 @@ public class CrosshairDetection : MonoBehaviour
     private void LateUpdate()
     {
         if (!PlayerController.LocalPlayer) return;
-        
-        // todo it would be nice if players could pick stuff up through (dithered) walls
-        // presumably this means doing a RaycastAll, filtering out non-interactable stuff, and
-        // then doing a line-of-sight raycast from the player to the final interactable target?
-        var ray = _camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
-        var didHit = Physics.Raycast(ray, out var hit, 100f, ~LayerMask.GetMask("Player"), QueryTriggerInteraction.Ignore);
-        
+
+        var detectMask = LayerMask.GetMask("Item", "Cart");
         var maxReach = Mathf.Max(_maxPickupDistance, _maxPutdownDistance);
-        
-        var playerDistance = Vector3.Distance(hit.point, PlayerController.LocalPlayer.transform.position);
-        
-        // If no hit, cleanup old target
-        if (!didHit || !hit.transform.TryGetComponent(out Interactable interactable) || playerDistance > maxReach)
+
+        var ray = _camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+        var didRayHit = Physics.SphereCast(ray, 0.25f, out var rayHit, 100f, detectMask, QueryTriggerInteraction.Ignore);
+
+        Interactable interactable = null;
+        var playerPos = PlayerController.LocalPlayer.transform.position;
+        var distanceToPlayer = Vector3.Distance(rayHit.point, playerPos);
+
+        // Check if spherecast hit
+        if (!didRayHit || distanceToPlayer > maxReach || !rayHit.transform.TryGetComponent(out interactable))
         {
-            TargetedTransform = null;
-            CleanupPrompts();
-            return;
+            // If not, check nearby
+            var hits = Physics.OverlapSphereNonAlloc(playerPos, maxReach / 2f, _nearbyHits, detectMask, QueryTriggerInteraction.Ignore);
+
+            var closest = float.MaxValue;
+            for (var i = 0; i < hits; i++)
+            {
+                var hitTransform = _nearbyHits[i].transform;
+                if (!hitTransform.TryGetComponent(out Interactable nearbyInteractable)) continue;
+                var distance = Vector3.Distance(hitTransform.position, playerPos);
+
+                if (distance >= closest) continue;
+                closest = distance;
+                interactable = nearbyInteractable;
+            }
+
+            if (interactable)
+            {
+                distanceToPlayer = closest;
+                Debug.Log($"Found in radius at distance {distanceToPlayer}");
+            }
+            else
+            {
+                CleanupPrompts();
+                return;
+            }
         }
 
         var interactedTransform = interactable.InteractedTransform;
 
         // New target
         Item item = null;
-        var validPickupTarget = playerDistance <= _maxPickupDistance
+        var validPickupTarget = distanceToPlayer <= _maxPickupDistance
                                 && PlayerController.LocalPlayer.PickupAllowed
                                 && interactedTransform.TryGetComponent(out item)
                                 && item.Pickuppable
                                 && item.State == Item.ItemState.Idle;
-        var validPutdownTarget = playerDistance <= _maxPutdownDistance
+        var validPutdownTarget = distanceToPlayer <= _maxPutdownDistance
                                  && PlayerController.LocalPlayer.PutdownAllowed
                                  && interactedTransform.CompareTag("TreasureCarrier");
 
-        var validTarget = validPickupTarget || validPutdownTarget;
-        if (!validTarget)
+        if (!(validPickupTarget || validPutdownTarget))
         {
             CleanupPrompts();
         }
