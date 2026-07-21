@@ -13,6 +13,8 @@ namespace UI
         private Camera _camera;
         private Canvas _parentCanvas;
         private CanvasRenderer[] _canvasRenderers;
+
+        private float _followSpeed = 50f;
         
         private void Awake()
         {
@@ -33,8 +35,9 @@ namespace UI
             var trackingPosition = ApplyTrackingOffsetLocally
                 ? TrackingTarget.TransformPoint(TrackingOffset)
                 : TrackingTarget.position + TrackingOffset;
-            
-            transform.position = _camera.WorldToScreenPoint(trackingPosition) + (Vector3)UIPositionOffset * _parentCanvas.scaleFactor;
+
+            var newPos = _camera.WorldToScreenPoint(trackingPosition) + (Vector3)UIPositionOffset * _parentCanvas.scaleFactor;
+            transform.position = Vector3.Lerp(transform.position, newPos, 1 - Mathf.Exp(-_followSpeed * Time.deltaTime));
 
             var visible = transform.position.z >= 0;
             foreach (var canvasRenderer in _canvasRenderers)

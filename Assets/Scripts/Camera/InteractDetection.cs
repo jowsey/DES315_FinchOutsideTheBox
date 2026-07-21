@@ -85,7 +85,6 @@ public class InteractDetection : MonoBehaviour
             if (interactable)
             {
                 distanceToPlayer = closest;
-                Debug.Log($"Found in radius at distance {distanceToPlayer}");
             }
             else
             {
