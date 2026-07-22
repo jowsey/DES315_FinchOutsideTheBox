@@ -14,7 +14,8 @@ namespace Obstacles
 
         [SerializeField] private Event _bounceSfx;
 
-        private Sequence _bounceTween;
+        private float _lastBounceTime;
+        private float _bounceCooldown = 0.35f;
 
         private void OnEnable()
         {
@@ -35,23 +36,31 @@ namespace Obstacles
             Gizmos.DrawLine(transform.position, transform.position + transform.up * _jumpForce * 0.01f);
         }
 
-        private void OnCollisionEnter(Collision collision)
+        private void OnCollisionStay(Collision collision)
         {
-            if (_bounceTween.isAlive) return;
+            if (Time.time - _lastBounceTime < _bounceCooldown) return;
+            _lastBounceTime = Time.time;
 
-            _bounceTween = Sequence.Create()
+            PlayerController.LocalPlayer.Rb.AddForce(transform.up * _jumpForce, ForceMode.Impulse);
+
+            CmdReportBounce();
+        }
+
+        [Command(requiresAuthority = false)]
+        private void CmdReportBounce()
+        {
+            // todo this really really sucks
+            RpcPlayerBounce();
+        }
+
+        [ClientRpc]
+        private void RpcPlayerBounce()
+        {
+            Sequence.Create()
                 .Chain(Tween.ScaleY(transform, 1.35f, 0.18f, Ease.InOutBack))
                 .Chain(Tween.ScaleY(transform, 1f, 0.16f, Ease.OutBack));
 
             _bounceSfx?.Post(gameObject);
-
-            // Only apply forces if we have authority over the body
-            // Nice easy way to check this is whether it's kinematic on our client
-            var body = collision.collider.attachedRigidbody;
-            if (!body.isKinematic)
-            {
-                body.AddForce(transform.up * _jumpForce, ForceMode.Impulse);
-            }
         }
     }
 }
