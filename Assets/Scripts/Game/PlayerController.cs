@@ -152,8 +152,9 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private Transform _cameraObstructionDithererRayEndPosition;
 
     public bool PickupAllowed => ControlEnabled(ControlBlockerFlags.Interact) && !Seat && !HeldObject;
-    public bool PutdownAllowed => ControlEnabled(ControlBlockerFlags.Interact) && !Seat && HeldObject?.State == Item.ItemState.Held;
+    public bool PutdownAllowed => ControlEnabled(ControlBlockerFlags.Interact) && HeldObject?.State == Item.ItemState.Held && HeldObject is Treasure;
     public bool UseAllowed => ControlEnabled(ControlBlockerFlags.Interact) && !Seat && HeldObject?.State == Item.ItemState.Held && HeldObject is Equipment;
+    public bool DropAllowed => ControlEnabled(ControlBlockerFlags.Interact) && HeldObject?.State == Item.ItemState.Held;
     
     //Set in inspector to true if this player will only exist in cutscenes
     public bool CutscenePlayer;
@@ -480,12 +481,12 @@ public class PlayerController : NetworkBehaviour
         {
             if (UseAllowed && HeldObject is Equipment equipment)
             {
-                equipment.CmdTryUse();
+                equipment.TryUse();
             }
         }
         else if (DropItemAction.action.WasPressedThisFrame())
         {
-            if (PutdownAllowed)
+            if (DropAllowed)
             {
                 HeldObject.CmdTryDrop();
             }

@@ -16,13 +16,14 @@ public class Highlight : MonoBehaviour
     private bool _highlighted;
     private Renderer[] _renderers;
 
-    private MaterialPropertyBlock _mpb;
+    private static MaterialPropertyBlock _mpb;
 
     private void Awake()
     {
         _highlighted = false;
         _renderers = GetComponentsInChildren<Renderer>();
-        _mpb = new MaterialPropertyBlock();
+        
+        _mpb ??= new MaterialPropertyBlock();
     }
 
     private void OnEnable()
@@ -81,8 +82,8 @@ public class Highlight : MonoBehaviour
                 //is it worth it to maintain british loyalty? yes
                 if (rend.sharedMaterial.HasProperty(BaseColour))
                 {
-                    var baseColor = rend.sharedMaterial.GetColor(BaseColour);
-                    _mpb.SetColor(BaseColour, baseColor * HighlightedColour);
+                    var baseColour = rend.sharedMaterial.GetColor(BaseColour);
+                    _mpb.SetColor(BaseColour, baseColour * HighlightedColour);
                 }
                 else if (rend.sharedMaterial.HasProperty(BaseColor))
                 {

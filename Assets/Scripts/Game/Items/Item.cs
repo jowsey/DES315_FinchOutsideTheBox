@@ -103,11 +103,6 @@ namespace Game.Items
 
                     if (_holder)
                     {
-                        if (_holder.isLocalPlayer)
-                        {
-                            Highlight.SetHighlightable("Item", false);
-                        }
-
                         _holder.HeldObject = null;
                         _holder = null;
                     }
@@ -126,6 +121,11 @@ namespace Game.Items
 
                     _holder.HeldObject = this;
 
+                    if (_holder.isLocalPlayer)
+                    {
+                        Highlight.SetHighlightable("Item", false);
+                    }
+                    
                     if (_hasInitialised)
                     {
                         _pickupSfx.Post(gameObject);
@@ -250,7 +250,7 @@ namespace Game.Items
             }
         }
 
-        private void LateUpdate()
+        protected virtual void LateUpdate()
         {
             if (State == ItemState.Held)
             {

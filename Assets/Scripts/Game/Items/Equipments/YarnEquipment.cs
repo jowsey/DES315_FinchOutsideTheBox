@@ -1,0 +1,61 @@
+﻿using System.Collections;
+using Mirror;
+using PrimeTween;
+using UnityEngine;
+using UnityEngine.Serialization;
+
+namespace Game.Items.Equipments
+{
+    public class YarnEquipment : PlaceableEquipment
+    {
+        [FormerlySerializedAs("_ropeSegmentPrefab")] [SerializeField] private ConfigurableJoint _yarnSegmentPrefab;
+        [SerializeField, Min(1)] private int _numSegments = 25;
+
+        protected override void OnServerPlace(GameObject instance)
+        {
+            base.OnServerPlace(instance);
+            StartCoroutine(BuildSegments());
+            return;
+
+            IEnumerator BuildSegments()
+            {
+                var segmentLength = _yarnSegmentPrefab.connectedAnchor.z;
+
+                var anchor = instance;
+                var anchorCollider = anchor.GetComponentInChildren<Collider>();
+                var previousBody = anchor.GetComponent<Rigidbody>();
+
+                const float startingDelay = 0.15f;
+                
+                for (var i = 0; i < _numSegments; i++)
+                {
+                    yield return new WaitForSecondsRealtime(Mathf.Lerp(startingDelay, 0, (float)i / _numSegments));
+
+                    var offset = i == 0 ? Vector3.zero : previousBody.transform.forward * segmentLength;
+                    var segment = Instantiate(
+                        _yarnSegmentPrefab,
+                        previousBody.position + offset,
+                        Quaternion.Euler(-0.5f, previousBody.transform.localEulerAngles.y + Random.Range(30f, 75f), 0f)
+                    );
+                    NetworkServer.Spawn(segment.gameObject);
+
+                    if (anchorCollider)
+                    {
+                        Physics.IgnoreCollision(segment.GetComponentInChildren<Collider>(), anchorCollider);
+                    }
+
+                    if (i == 0)
+                    {
+                        // connection to ground anchor is unique
+                        segment.connectedAnchor = new Vector3(0f, 0.1f, 0f);
+                    }
+
+                    segment.connectedBody = previousBody;
+                    previousBody = segment.GetComponent<Rigidbody>();
+                }
+
+                Tween.Delay(1f).OnComplete(() => previousBody.AddForce(anchor.transform.forward * 250f, ForceMode.Impulse));
+            }
+        }
+    }
+}

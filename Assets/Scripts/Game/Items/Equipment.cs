@@ -1,51 +1,31 @@
 using Mirror;
+using UnityEngine;
+using Event = AK.Wwise.Event;
 
 namespace Game.Items
 {
-    public class Equipment : Item
+    public abstract class Equipment : Item
     {
-        [Command(requiresAuthority = false)]
-        public void CmdTryUse(NetworkConnectionToClient sender = null)
-        {
-            if (State != ItemState.Held) return;
-            var player = sender!.identity.GetComponent<PlayerController>();
-            if (player != _holder) return;
+        [SerializeField] private Event _useSfx;
 
-            if (OnServerUse())
-            {
-                // unequip on successful use
-                ServerSetIdle();
-                State = ItemState.Inactive;
-            }
+        public virtual void TryUse()
+        {
         }
 
-        protected virtual bool OnServerUse()
+        protected virtual void OnServerSuccessfulUse()
         {
-            return true;
+            var cachedClient = _holder.connectionToClient;
+
+            ServerSetIdle();
+            State = ItemState.Inactive;
+
+            TargetOnSuccessfulUse(cachedClient);
         }
 
-        protected override void OnStateChanged(ItemState oldState, ItemState newState)
+        [TargetRpc]
+        protected void TargetOnSuccessfulUse(NetworkConnectionToClient target)
         {
-            switch (oldState)
-            {
-                default:
-                    break;
-            }
-
-            switch (newState)
-            {
-                case ItemState.Held:
-                {
-                    if (_holder && _holder.isLocalPlayer)
-                    {
-                        Highlight.SetHighlightable("Item", false);
-                    }
-
-                    break;
-                }
-            }
-
-            base.OnStateChanged(oldState, newState);
+            _useSfx.Post(gameObject);
         }
     }
 }
