@@ -1,5 +1,8 @@
+using System;
+using System.Collections;
 using System.Linq;
 using Epic.OnlineServices.Lobby;
+using Game.Items;
 using Mirror;
 using UI;
 using UnityEngine;
@@ -27,6 +30,9 @@ namespace Networking
 
         private int _nextPlayerIndex;
 
+        [SerializeField] private LoadingScreen _loadingScreenPrefab;
+        private LoadingScreen _loadingScreenInstance;
+
         public EOSLobby EosLobby { get; private set; }
 
         public override void Start()
@@ -52,9 +58,30 @@ namespace Networking
             NetworkClient.RegisterHandler<PresenceJoinMessage>(OnPresenceJoinMessage);
         }
 
+        public void AnimateLoadInto(Action afterAnimateIn, Func<bool> animateOutPredicate)
+        {
+            _loadingScreenInstance = Instantiate(_loadingScreenPrefab);
+            _loadingScreenInstance.OnFinishAnimateIn.AddListener(() =>
+            {
+                afterAnimateIn.Invoke();
+                StartCoroutine(WaitForAnimateOut());
+            });
+
+            return;
+
+            IEnumerator WaitForAnimateOut()
+            {
+                yield return new WaitUntil(animateOutPredicate);
+                _loadingScreenInstance.Animate(LoadingScreen.AnimateDirection.Out);
+            }
+        }
+
+        public void StartHostLoading() => AnimateLoadInto(StartHost, () => PlayerController.LocalPlayer || !NetworkServer.active);
+        public void StartClientLoading() => AnimateLoadInto(StartClient, () => PlayerController.LocalPlayer || !NetworkClient.active);
+
         public override void OnClientConnect()
         {
-            if (!NetworkClient.ready) NetworkClient.Ready();
+            base.OnClientConnect();
 
             NetworkClient.Send(new ClientInfoMessage
             {
@@ -67,6 +94,7 @@ namespace Networking
 
         public override void OnClientDisconnect()
         {
+            base.OnClientDisconnect();
             OnLeaveGame.Invoke();
         }
 
@@ -76,7 +104,7 @@ namespace Networking
             var player = conn.identity?.GetComponent<PlayerController>();
             if (player && player.HeldObject)
             {
-                player.HeldObject.State = Treasure.HoldableState.Idle;
+                player.HeldObject.State = Item.ItemState.Idle;
             }
 
             base.OnServerDisconnect(conn);
@@ -111,7 +139,7 @@ namespace Networking
 
             NetworkServer.AddPlayerForConnection(conn, player.gameObject);
 
-            NetworkServer.SendToAll(new PresenceJoinMessage
+            NetworkServer.SendToReady(new PresenceJoinMessage
             {
                 PlayerNetId = conn.identity.netId,
             });

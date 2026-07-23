@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8508637779909130599}
+  - component: {fileID: 868258822789041178}
   - component: {fileID: 3651112640451839684}
   - component: {fileID: 8201337549711320784}
   - component: {fileID: 7890951352138290464}
@@ -39,6 +40,23 @@ Transform:
   - {fileID: 8996966659225285958}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &868258822789041178
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8045263741201490426}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 0
+  _assetId: 2275447048
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!114 &3651112640451839684
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -51,6 +69,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a2505ae44851174cae71d9fcc66b38e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  syncMethod: 0
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _spinSpeed: 360
 --- !u!54 &8201337549711320784
 Rigidbody:
@@ -3091,7 +3113,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 442
+  m_VersionIndex: 445
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []

@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 7294525134081226135}
   m_Layer: 11
   m_Name: Flask
-  m_TagString: Treasure
+  m_TagString: Item
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -217,13 +217,17 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  <Data>k__BackingField: {fileID: 0}
   _movementSpeed: 12
   State: 0
   Pickuppable: 0
-  Type: 0
+  _pickupSfx:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
   Smashable: 0
   _smashedTreasurePrefab: {fileID: 0}
-  _treasureSmashFx:
+  _breakSfx:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 0}

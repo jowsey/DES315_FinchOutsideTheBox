@@ -13,8 +13,12 @@ namespace UI
         [SerializeField] private CanvasGroup _canvasGroup;
 
         [SerializeField] private float _transitionDuration = 0.75f;
-        [SerializeField] private Event _satisfySfx;
 
+        [SerializeField] private Event _satisfySfx;
+        [SerializeField] private Event _appearSfx;
+
+        public static bool EnableDetection = true;
+        
         private RectTransform _rt;
 
         private bool _satisfied;
@@ -29,9 +33,17 @@ namespace UI
             _rt = (RectTransform)transform;
         }
 
+        public void Start()
+        {
+            _appearSfx?.Post(gameObject);
+
+            Tween.Alpha(_canvasGroup, 0f, 1f, _transitionDuration, Ease.OutBack);
+            Tween.UIAnchoredPosition(_rt, _rt.anchoredPosition - _rt.sizeDelta * Vector2.up, _rt.anchoredPosition, _transitionDuration, Ease.OutBack);
+        }
+
         private void Update()
         {
-            if (_satisfied || !_satisfyAction.action.WasPerformedThisFrame()) return;
+            if (_satisfied || !EnableDetection || !_satisfyAction.action.WasPerformedThisFrame()) return;
             _satisfied = true;
 
             Tween.Delay(1.5f).OnComplete(() =>
@@ -43,12 +55,6 @@ namespace UI
                     if (_nextStep) _nextStep.gameObject.SetActive(true);
                 }, warnIfTargetDestroyed: false);
             }, warnIfTargetDestroyed: false);
-        }
-
-        public void OnEnable()
-        {
-            Tween.Alpha(_canvasGroup, 0f, 1f, _transitionDuration, Ease.OutBack);
-            Tween.UIAnchoredPosition(_rt, _rt.anchoredPosition - _rt.sizeDelta * Vector2.up, _rt.anchoredPosition, _transitionDuration, Ease.OutBack);
         }
 
         private void Complete()

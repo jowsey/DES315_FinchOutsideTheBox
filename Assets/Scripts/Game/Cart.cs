@@ -1,7 +1,8 @@
-using Mirror;
-using Sirenix.OdinInspector;
 using System.Collections.Generic;
 using System.Linq;
+using Game.Items;
+using Mirror;
+using Sirenix.OdinInspector;
 using UI;
 using UnityEngine;
 using UnityEngine.Events;
@@ -35,24 +36,20 @@ public class Cart : NetworkBehaviour
     [Tooltip("Exponent for how much the amount of tilt-correction increases in response to tilting. 1 means consistent, higher makes it kick in far more when tilting more.")]
     [SerializeField] private float _tiltCorrectionScaling = 2f;
 
-    [SerializeField] private int _lowTreasuresThreshold = 3;
-
     // UI
     private Transform _uiCanvas;
 
     // Treasure carrying
-    [SerializeField] [Required] private Collider _treasureBounds;
+    [SerializeField] [Required] private Collider _carryBounds;
 
     // Populated on server, unnecessary on clients
-    //todo: a lot of the treasure and item separation can probs be consolidated into structures for the Holdable base class, ive just kept it separate for now because we have a lot of treasure specific logic
-    private Dictionary<Treasure, ObjectSnapshot>[] _treasuresAtCheckpoint;
-    public readonly HashSet<Treasure> CarriedTreasures = new();
-    public readonly SyncDictionary<TreasureType, int> CarriedTreasureCounts = new SyncDictionary<TreasureType, int>(); //todo: this is maybe unnecessary, i just added it in case u (@jowsey) wanted to have some ui for the specific set of treasures the cart has
-    [field: SyncVar(hook = nameof(OnTotalCarriedTreasuresChanged))] public int TotalCarriedTreasures { get; private set; }
-    public readonly SyncList<int> CheckpointTotalTreasures = new();
-    private Dictionary<Item, ObjectSnapshot>[] _itemsAtCheckpoint;
+    private Dictionary<Item, ObjectSnapshot>[] _checkpointSnapshots;
     public readonly HashSet<Item> CarriedItems = new();
+    public readonly SyncList<int> NumItemsAtCheckpoint = new();
+    [field: SyncVar(hook = nameof(OnTotalCarriedItemsChanged))] public int TotalCarriedItems { get; private set; }
 
+    [SyncVar] public int ExpectedTotalItemSellPrice;
+    
     //Sound effects
     [SerializeField] [Required] private AK.Wwise.Event _carSound;
     [SerializeField] [Required] private AK.Wwise.Event _carOnSurface;
@@ -71,7 +68,7 @@ public class Cart : NetworkBehaviour
 
     public bool IsPuppet;
 
-#if UNITY_EDITOR
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
     private WheelSeat[] _wheelSeats;
     [SerializeField] private InputActionReference _alternateWheelMoveAction;
 #endif
@@ -82,7 +79,7 @@ public class Cart : NetworkBehaviour
         _uiCanvas = GameObject.FindGameObjectWithTag("UICanvas").transform;
         IsPuppet = false;
 
-#if UNITY_EDITOR
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
         _wheelSeats = GetComponentsInChildren<WheelSeat>();
 #endif
     }
@@ -91,26 +88,24 @@ public class Cart : NetworkBehaviour
     {
         Checkpoint.RespawnEvent.AddListener(OnRespawn);
 
-        _treasuresAtCheckpoint = new Dictionary<Treasure, ObjectSnapshot>[Checkpoints.Count];
-        _itemsAtCheckpoint = new Dictionary<Item, ObjectSnapshot>[Checkpoints.Count];
-        for (int i = 0; i < _treasuresAtCheckpoint.Length; ++i)
+        _checkpointSnapshots = new Dictionary<Item, ObjectSnapshot>[Checkpoints.Count];
+        for (int i = 0; i < _checkpointSnapshots.Length; ++i)
         {
-            _treasuresAtCheckpoint[i] = new Dictionary<Treasure, ObjectSnapshot>();
-            _itemsAtCheckpoint[i] = new Dictionary<Item, ObjectSnapshot>();
+            _checkpointSnapshots[i] = new Dictionary<Item, ObjectSnapshot>();
         }
 
-        CheckpointTotalTreasures.AddRange(Enumerable.Repeat(-1, Checkpoints.Count).ToArray());
+        NumItemsAtCheckpoint.AddRange(Enumerable.Repeat(-1, Checkpoints.Count).ToArray());
 
         // First checkpoint runs on Frame 0 before treasures run OnTriggerEnter so we need to manually init
         // - Bounds check isn't perfectly accurate, but we can reasonably assume
         // there won't be treasures in the level that are both within the bounds of
         // the treasure carrier on scene start yet not meant to be in the treasure
-        var allTreasures = FindObjectsByType<Treasure>(FindObjectsSortMode.None);
-        foreach (var treasure in allTreasures)
+        var allItems = FindObjectsByType<Item>(FindObjectsSortMode.None);
+        foreach (var item in allItems)
         {
-            if (_treasureBounds.bounds.Contains(treasure.transform.position))
+            if (_carryBounds.bounds.Contains(item.transform.position))
             {
-                AddCarriedTreasure(treasure);
+                AddCarriedItem(item);
             }
         }
 
@@ -139,7 +134,7 @@ public class Cart : NetworkBehaviour
 
     private void Update()
     {
-#if UNITY_EDITOR
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
         if (_devCheckpointBackAction.action.WasPressedThisFrame() && CurrentCheckpointIndex != 0)
         {
             CmdInvokeRespawnEvent(CurrentCheckpointIndex - 1);
@@ -156,7 +151,7 @@ public class Cart : NetworkBehaviour
 
         _cartSpeedRTPC.SetGlobalValue(linearVelocity.magnitude * 20);
 
-#if UNITY_EDITOR
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
         if (PlayerController.ControlEnabled(PlayerController.ControlBlockerFlags.Move))
         {
             var altMove = _alternateWheelMoveAction.action.ReadValue<Vector2>();
@@ -183,29 +178,21 @@ public class Cart : NetworkBehaviour
         Rb.AddTorque(_tiltCorrection * rotExp * transform.forward);
     }
 
-    // Records the local positions of all CarriedTreasures and CarriedItems and writes them to the current checkpoint's snapshot
+    // Records the local positions of all CarriedItems and writes them to the current checkpoint's snapshot
     private void CaptureCheckpointSnapshot()
     {
         Physics.SyncTransforms();
-        
-        foreach (Treasure treasure in CarriedTreasures)
-        {
-            _treasuresAtCheckpoint[CurrentCheckpointIndex][treasure] = new ObjectSnapshot
-            {
-                LocalPosition = transform.InverseTransformPoint(treasure.transform.position),
-                Rotation = treasure.transform.rotation
-            };
-        }
-        CheckpointTotalTreasures[CurrentCheckpointIndex] = TotalCarriedTreasures;
 
         foreach (Item item in CarriedItems)
         {
-            _itemsAtCheckpoint[CurrentCheckpointIndex][item] = new ObjectSnapshot
+            _checkpointSnapshots[CurrentCheckpointIndex][item] = new ObjectSnapshot
             {
                 LocalPosition = transform.InverseTransformPoint(item.transform.position),
                 Rotation = item.transform.rotation
             };
         }
+
+        NumItemsAtCheckpoint[CurrentCheckpointIndex] = TotalCarriedItems;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -262,100 +249,60 @@ public class Cart : NetworkBehaviour
             rb.angularVelocity = Vector3.zero;
         }
 
-        ResetObjects();
+        RevertItemsToCurrentSnapshot();
     }
 
-    public void ResetObjects()
+    public void RevertItemsToCurrentSnapshot()
     {
         if (!isServer) return;
-
-        List<Treasure> treasuresToDrop = CarriedTreasures.ToList();
-        foreach (Treasure treasure in treasuresToDrop)
-        {
-            if (!_treasuresAtCheckpoint[CurrentCheckpointIndex].ContainsKey(treasure))
-            {
-                treasure.State = Holdable.HoldableState.Inactive;
-                RemoveCarriedTreasure(treasure);
-            }
-        }
-
-        foreach (KeyValuePair<Treasure, ObjectSnapshot> HoldableState in _treasuresAtCheckpoint[CurrentCheckpointIndex])
-        {
-            HoldableState.Key.transform.position = transform.TransformPoint(HoldableState.Value.LocalPosition);
-            HoldableState.Key.transform.rotation = HoldableState.Value.Rotation;
-            Physics.SyncTransforms();
-            HoldableState.Key.State = Treasure.HoldableState.Idle;
-        }
 
         List<Item> itemsToDrop = CarriedItems.ToList();
         foreach (Item item in itemsToDrop)
         {
-            if (!_itemsAtCheckpoint[CurrentCheckpointIndex].ContainsKey(item))
+            if (!_checkpointSnapshots[CurrentCheckpointIndex].ContainsKey(item))
             {
-                //Don't need to set it to inactive as the shop will move it back to its correct place
+                item.State = Item.ItemState.Inactive;
                 RemoveCarriedItem(item);
             }
         }
 
-        foreach (KeyValuePair<Item, ObjectSnapshot> state in _itemsAtCheckpoint[CurrentCheckpointIndex])
+        foreach (var (item, snapshot) in _checkpointSnapshots[CurrentCheckpointIndex])
         {
-            state.Key.transform.position = transform.TransformPoint(state.Value.LocalPosition);
-            state.Key.transform.rotation = state.Value.Rotation;
+            item.transform.position = transform.TransformPoint(snapshot.LocalPosition);
+            item.transform.rotation = snapshot.Rotation;
             Physics.SyncTransforms();
-            state.Key.State = Holdable.HoldableState.Idle;
+            item.State = Item.ItemState.Idle;
         }
     }
 
-    public void AddCarriedTreasure(Treasure treasure)
-    {
-        CarriedTreasures.Add(treasure);
-        TotalCarriedTreasures = CarriedTreasures.Count;
-        if (CarriedTreasureCounts.ContainsKey(treasure.Type)) { CarriedTreasureCounts[treasure.Type]++; }
-        else { CarriedTreasureCounts.Add(treasure.Type, 1); }
-    }
-
-    public void RemoveCarriedTreasure(Treasure treasure)
-    {
-        //Put behind if statement in case of double subtraction with CmdRemoveAllTreasures() setting the state which removes the collider which triggers the OnTriggerExit which calls this?
-        if (CarriedTreasures.Remove(treasure))
-        {
-            TotalCarriedTreasures = CarriedTreasures.Count;
-            if (CarriedTreasureCounts.ContainsKey(treasure.Type)) { CarriedTreasureCounts[treasure.Type]--; }
-            if (CarriedTreasureCounts.ContainsKey(treasure.Type) && CarriedTreasureCounts[treasure.Type] <= 0) { CarriedTreasureCounts.Remove(treasure.Type); }
-        }
-    }
-
-    private void OnTotalCarriedTreasuresChanged(int oldValue, int newValue)
-    {
-        if (newValue <= _lowTreasuresThreshold && !_lowTreasureWarningUI)
-        {
-            //_lowTreasureWarningUI = Instantiate(_lowTreasureWarningPrefab, _uiCanvas);
-            //_lowTreasureWarningUI.TrackingTarget = transform;
-            //_lowTreasureWarningUI.TrackingOffset = new Vector3(0, 5.5f, 0);
-            //_lowTreasureWarningUI.ApplyOffsetLocally = true;
-            
-            //_lowTreasureWarningUI.transform.SetAsFirstSibling(); // send to back layer
-        }
-        else if (newValue > _lowTreasuresThreshold && _lowTreasureWarningUI)
-        {
-            Destroy(_lowTreasureWarningUI.gameObject);
-            _lowTreasureWarningUI = null;
-        }
-
-        _numCarriedTreasuresRTPC.SetGlobalValue(newValue);
-    }
-
+    [Server]
     public void AddCarriedItem(Item item)
     {
         CarriedItems.Add(item);
+        TotalCarriedItems = CarriedItems.Count;
+
+        // we sync this since we don't sync individual items
+        ExpectedTotalItemSellPrice = EvaluateTotalItemSellPrice();
     }
 
+    [Server]
     public void RemoveCarriedItem(Item item)
     {
         CarriedItems.Remove(item);
+        TotalCarriedItems = CarriedItems.Count;
+
+        ExpectedTotalItemSellPrice = EvaluateTotalItemSellPrice();
     }
 
-#if UNITY_EDITOR
+    [Server]
+    public int EvaluateTotalItemSellPrice() => CarriedItems.Sum(item => item.Data.SellPrice);
+
+    private void OnTotalCarriedItemsChanged(int oldValue, int newValue)
+    {
+        _numCarriedTreasuresRTPC.SetGlobalValue(newValue);
+    }
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
     [Command(requiresAuthority = false)]
 #else
     [Command]
@@ -385,7 +332,7 @@ public class Cart : NetworkBehaviour
         CurrentCheckpointIndex = newCheckpointIndex;
 
         // fallback for dev hotkeys, otherwise will naturally be populated
-        if (isServer && CheckpointTotalTreasures[CurrentCheckpointIndex] == -1)
+        if (isServer && NumItemsAtCheckpoint[CurrentCheckpointIndex] == -1)
         {
             CaptureCheckpointSnapshot();
         }
@@ -397,12 +344,12 @@ public class Cart : NetworkBehaviour
     public void RemoveAllTreasures()
     {
         //To prevent iterator invalidation from setting the state (which disables collider which runs OnTriggerExit which removes the treasure from Cart.CarriedTreasures)
-        List<Treasure> treasuresToRemove = CarriedTreasures.ToList();
+        List<Treasure> treasuresToRemove = CarriedItems.OfType<Treasure>().ToList();
         foreach (Treasure treasure in treasuresToRemove)
         {
             //SyncVar hook hides the mesh, make it kinematic, and disable the collider
-            treasure.State = Treasure.HoldableState.Inactive;
-            RemoveCarriedTreasure(treasure);
+            treasure.State = Item.ItemState.Inactive;
+            RemoveCarriedItem(treasure);
         }
     }
 }

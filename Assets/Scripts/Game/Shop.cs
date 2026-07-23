@@ -1,14 +1,16 @@
-using Mirror;
-using Sirenix.OdinInspector;
 using System.Collections.Generic;
+using System.Linq;
+using Game.Items;
+using Mirror;
 using PrimeTween;
+using Sirenix.OdinInspector;
 using UI;
 using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using Random = UnityEngine.Random;
-using System;
 
 public enum PurchaseError
 {
@@ -19,6 +21,8 @@ public enum PurchaseError
 
 public class Shop : NetworkBehaviour
 {
+    private static List<ItemData> _itemRegistry;
+
     private CinemachineCamera _cinemachineCamera;
     private CinemachineOrbitalFollow _orbitalFollow;
     private CameraZoomController _zoomController;
@@ -35,52 +39,57 @@ public class Shop : NetworkBehaviour
     [SerializeField] private ShopUI _shopUIPrefab;
     private ShopUI _shopUIInstance;
 
+    [Header("Animation")]
+    [SerializeField] private Transform _tipJar;
+
+    [SerializeField] private Transform _telescope;
+    [SerializeField] private Transform _hatchLeft;
+    [SerializeField] private Transform _hatchRight;
+    [SerializeField] private float _tipJarDescendDuration = 0.75f;
+    [SerializeField] private float _tipJarDescendHeight = 1.0f;
+    [SerializeField, SuffixLabel("degs/s")] private float _telescopeRotateSpeed = 55f;
+    [SerializeField] private float _hatchOpenDuration = 1.0f;
+    [SerializeField] private float _hatchOpenAngle = 135f;
+
+    private Tween _telescopeRotationTween;
+    private bool _hasOpened;
+
     [Header("Visual Spawning")]
     [SerializeField] private Transform _itemSpawnStart;
 
     [SerializeField] private Transform _itemSpawnEnd;
-    
+
     private Transform _uiCanvas;
 
     [SerializeField] private CanvasGroup[] _hiddenUIElements;
 
-    //Because Dictionary isn't serialisable by default (and we can't inherit from SerializedMonoBehaviour since we're inheriting from NetworkBehaviour) (@jowsey is there a better way of doing this ?)
-    [System.Serializable]
-    private struct ItemPrefabMapping
-    {
-        public ItemType ItemType;
-        public GameObject Prefab;
-    }
-    
-    [Tooltip("Map from each ItemType to the visual prefab that will be spawned")]
-    [SerializeField] private List<ItemPrefabMapping> _itemPrefabsList = new();
-    [SerializeField] private Dictionary<ItemType, GameObject> _itemPrefabs = new();
+    //Wwise Thangs
+    [SerializeField] private AK.Wwise.Event _shopEnter;
+    [SerializeField] private AK.Wwise.Event _shopBuy;
+    [SerializeField] private AK.Wwise.Event _shopTipJar;
+    [SerializeField] private AK.Wwise.Event _shopkeepRadio;
 
-    [SerializeField] private int _numPurchasableItems;
-    public List<Item> PurchasableItems { get; private set; } = new();
-    [field: SerializeField] public EconomySettings EconomySettings { get; private set; }
+    [SerializeField] private int _maxAvailableItems;
 
-    [Tooltip("The types of items that will be spawned on the shelf when the game starts.")]
-    [SerializeField] private List<ItemType> _plannedItemTypes = new List<ItemType>();
+    public readonly SyncList<NetworkIdentity> AvailableItemIdentities = new();
 
     //For restoring bought items upon respawn
-    private Dictionary<Checkpoint, List<Item>> _shopStateAtCheckpoint = new();
-    
+    private Dictionary<Checkpoint, List<NetworkIdentity>> _shopStateAtCheckpoint = new();
+
     public UnityEvent<Item, PurchaseError> OnReceiveBuyResult { get; private set; } = new();
-    
-    private void SyncItemPrefabsDictionary()
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    private static void LoadAllItems()
     {
-        _itemPrefabs.Clear();
-        if (_itemPrefabsList == null) { return; }
-        foreach (ItemPrefabMapping mapping in _itemPrefabsList)
-        {
-            _itemPrefabs[mapping.ItemType] = mapping.Prefab;
-        }
+        var handle = Addressables.LoadAssetsAsync<ItemData>("Item");
+        var items = handle.WaitForCompletion();
+        _itemRegistry = items.ToList();
+
+        Debug.Log($"Loaded {_itemRegistry.Count} shop items");
     }
 
-    void Awake()
+    private void Awake()
     {
-        SyncItemPrefabsDictionary();
         foreach (CinemachineCamera cam in FindObjectsByType<CinemachineCamera>(FindObjectsInactive.Include, FindObjectsSortMode.None))
         {
             if (cam.CompareTag("FreeLookCam"))
@@ -100,6 +109,14 @@ public class Shop : NetworkBehaviour
         Cart.OnReachCheckpoint.AddListener(SaveShopState);
         Checkpoint.RespawnEvent.AddListener(RestoreShopState);
         SpawnPhysicalItems();
+
+        _telescope.localRotation = Quaternion.Euler(0, Random.Range(0, 360f), 0);
+        RunNextTelescopeTween();
+    }
+
+    public override void OnStartClient()
+    {
+        _shopkeepRadio.Post(gameObject);
     }
 
     public override void OnStopServer()
@@ -108,13 +125,34 @@ public class Shop : NetworkBehaviour
         Checkpoint.RespawnEvent.RemoveListener(RestoreShopState);
     }
 
+    public override void OnStopClient()
+    {
+        _shopkeepRadio.Stop(gameObject);
+    }
+
+    [Server]
+    private void RunNextTelescopeTween()
+    {
+        Tween.CompleteAll(_telescopeRotationTween);
+
+        var absRot = Random.Range(45f, 180f);
+        var sign = Mathf.Sign(Random.Range(-1f, 1f));
+
+        _telescopeRotationTween = Tween.RotationAtSpeed(
+            _telescope,
+            _telescope.eulerAngles,
+            _telescope.eulerAngles + new Vector3(0, sign * absRot, 0),
+            _telescopeRotateSpeed,
+            Ease.InOutCubic,
+            endDelay: Random.Range(1f, 3f)
+        ).OnComplete(RunNextTelescopeTween, warnIfTargetDestroyed: false);
+    }
+
     private void Update()
     {
+        // Existence of enter prompt implies we're within range, saves a distance check
         if (_enterPromptInstance && _interactAction.action.WasPressedThisFrame())
         {
-            _enterPromptInstance.Destroy();
-            _enterPromptInstance = null;
-            
             EnterShop();
         }
     }
@@ -122,95 +160,79 @@ public class Shop : NetworkBehaviour
     [Server]
     private void SpawnPhysicalItems()
     {
-        PurchasableItems.Clear();
-        int count = _plannedItemTypes.Count;
-        for (int i = 0; i < count; ++i)
-        {
-            ItemType itemToSpawn = _plannedItemTypes[i];
-            if (_itemPrefabs.TryGetValue(itemToSpawn, out GameObject prefab))
-            {
-                //Calculate position along the line
-                //If there's only one item, stick it in the middle. Otherwise, space em out evenly
-                float t = (count == 1) ? 0.5f : (float)i / (count - 1);
-                Vector3 spawnPos = Vector3.Lerp(_itemSpawnStart.position, _itemSpawnEnd.position, t);
+        AvailableItemIdentities.Clear();
 
-                //Spawn the networked object and track it
-                GameObject newVisual = Instantiate(prefab, spawnPos, _itemSpawnStart.rotation);
-                NetworkServer.Spawn(newVisual);
-                Item item = newVisual.GetComponent<Item>();
-                item.Pickuppable = false;
-                PurchasableItems.Add(item);
-            }
-            else
-            {
-                Debug.LogWarning($"Shop is trying to spawn {itemToSpawn} but it's not set in _itemPrefabsList");
-            }
+        int numItems = Mathf.Min(_maxAvailableItems, _itemRegistry.Count);
+        for (int i = 0; i < numItems; ++i)
+        {
+            //If we can fit the entire registry, deterministically spawn one of each, else pick them at random
+            ItemData itemToSpawn = numItems <= _itemRegistry.Count
+                ? _itemRegistry[i]
+                : _itemRegistry[Random.Range(0, _itemRegistry.Count)];
+
+            //Calculate position along the line
+            //If there's only one item, stick it in the middle. Otherwise, space em out evenly
+            float t = (numItems == 1) ? 0.5f : (float)i / (numItems - 1);
+            Vector3 spawnPos = Vector3.Lerp(_itemSpawnStart.position, _itemSpawnEnd.position, t);
+
+            //Spawn the networked object and track it
+            Item newItem = Instantiate(itemToSpawn.Prefab, spawnPos, _itemSpawnStart.rotation);
+            newItem.Pickuppable = false;
+            newItem.transform.localScale = Vector3.one * 0.5f;
+            newItem.State = Item.ItemState.Frozen;
+
+            NetworkServer.Spawn(newItem.gameObject);
+            AvailableItemIdentities.Add(newItem.netIdentity);
         }
     }
 
     [Server]
     private void SaveShopState(Checkpoint checkpoint)
     {
-        _shopStateAtCheckpoint[checkpoint] = new List<Item>(PurchasableItems);
+        _shopStateAtCheckpoint[checkpoint] = new List<NetworkIdentity>(AvailableItemIdentities);
     }
 
     [Server]
     private void RestoreShopState(Checkpoint checkpoint)
     {
-        if (_shopStateAtCheckpoint.TryGetValue(checkpoint, out List<Item> savedItems))
+        if (_shopStateAtCheckpoint.TryGetValue(checkpoint, out var savedItems))
         {
-            PurchasableItems = new List<Item>(savedItems); //deep copy (todo maybe not necessary ?)
+            // AvailableItemIdentities = new SyncList<NetworkIdentity>(savedItems); //deep copy (todo maybe not necessary ?)
+            AvailableItemIdentities.Clear();
+            AvailableItemIdentities.AddRange(savedItems);
 
             //Put the items back on the display rack
-            int count = PurchasableItems.Count;
+            int count = AvailableItemIdentities.Count;
             for (int i = 0; i < count; ++i)
             {
-                Item item = PurchasableItems[i];
-                if (item != null)
+                NetworkIdentity itemIdentity = AvailableItemIdentities[i];
+                if (itemIdentity)
                 {
+                    var item = itemIdentity.GetComponent<Item>();
+
                     float t = (count == 1) ? 0.5f : (float)i / (count - 1);
                     item.Rb.position = Vector3.Lerp(_itemSpawnStart.position, _itemSpawnEnd.position, t);
                     item.Rb.rotation = _itemSpawnStart.rotation;
                     Physics.SyncTransforms();
-                    item.State = Holdable.HoldableState.Idle;
+                    item.State = Item.ItemState.Idle;
                     item.Pickuppable = false;
+                    item.transform.localScale = Vector3.one * 0.5f;
+                    item.State = Item.ItemState.Frozen;
                 }
             }
+
             Debug.Log($"Shop restored: display rack reverted at {checkpoint.AreaName}");
         }
     }
 
-    private void OnValidate()
-    {
-        SyncItemPrefabsDictionary();
-        _numPurchasableItems = Mathf.Clamp(_numPurchasableItems, 0, Enum.GetNames(typeof(ItemType)).Length);
-        if (_plannedItemTypes.Count != _numPurchasableItems)
-        {
-            RandomisePlannedItems();
-        }
-    }
-
-    [Button]
-    private void RandomisePlannedItems()
-    {
-        List<ItemType> newItems = new List<ItemType>();
-        for (int i = 0; i < _numPurchasableItems; ++i)
-        {
-            ItemType item;
-            do
-            {
-                item = (ItemType)Random.Range(0, Enum.GetNames(typeof(ItemType)).Length);
-            } while (newItems.Contains(item));
-            newItems.Add(item);
-        }
-        _plannedItemTypes = newItems;
-    }
-
-    [Button]
+    [Button, DisableInEditorMode]
     public void EnterShop()
     {
         //Don't let the player enter the shop if they're on the cart
-        if (PlayerController.LocalPlayer.Seat) { return; }
+        if (PlayerController.LocalPlayer.Seat)
+        {
+            return;
+        }
 
         //Move camera
         _zoomController.OnForceThirdPersonActionStarted();
@@ -222,28 +244,31 @@ public class Shop : NetworkBehaviour
 
         //Add control blockers
         PlayerController.ControlBlockerFlags flags = PlayerController.ControlBlockerFlags.All;
-        flags &= ~PlayerController.ControlBlockerFlags.Pause;
-        flags &= ~PlayerController.ControlBlockerFlags.ToggleTextChat;
         flags &= ~PlayerController.ControlBlockerFlags.Respawn;
         PlayerController.AddControlBlockerFlags(this, flags);
         Cursor.lockState = CursorLockMode.None;
         PlayerController.LocalPlayer.ActiveShop = this;
-        
+
         //Show UI
         if (!_shopUIInstance)
         {
             _shopUIInstance = Instantiate(_shopUIPrefab, _uiCanvas);
             _shopUIInstance.Build(this);
+            _shopEnter.Post(gameObject);
         }
-        
-        //Hide action UIs
+
+        //Hide action UIs & enter prompt
         foreach (CanvasGroup uiElement in _hiddenUIElements)
         {
             Tween.Alpha(uiElement, 0, 0.25f, Ease.OutCubic);
         }
+
+        OnboardingPrompt.EnableDetection = false;
+
+        if (_enterPromptInstance) _enterPromptInstance.gameObject.SetActive(false);
     }
 
-    [Button]
+    [Button, DisableInEditorMode]
     public void LeaveShop()
     {
         //Move camera
@@ -258,48 +283,56 @@ public class Shop : NetworkBehaviour
         Cursor.lockState = CursorLockMode.Locked;
 
         PlayerController.LocalPlayer.ActiveShop = null;
-        
+
         //Destroy UI
         if (_shopUIInstance)
         {
             Destroy(_shopUIInstance.gameObject);
             _shopUIInstance = null;
         }
-        
-        //Show action UIs
+
+        //Show action UIs & enter prompt
         foreach (CanvasGroup uiElement in _hiddenUIElements)
         {
             Tween.Alpha(uiElement, 1, 0.25f, Ease.OutCubic);
         }
+
+        OnboardingPrompt.EnableDetection = true;
+
+        if (_enterPromptInstance) _enterPromptInstance.gameObject.SetActive(true);
     }
 
     [Command(requiresAuthority = false)]
     public void CmdTryBuy(int index, NetworkConnectionToClient sender = null)
     {
         //Buncha input validation
-        if (index < 0 || index >= PurchasableItems.Count)
+        if (index < 0 || index >= AvailableItemIdentities.Count)
         {
-            Debug.LogError("Shop.TryBuy() called with index " + index + " which was out of range (_purchasableItems.Count = " + PurchasableItems.Count + ")");
+            Debug.LogError("Shop.TryBuy() called with index " + index + " which was out of range (_purchasableItems.Count = " + AvailableItemIdentities.Count + ")");
             return;
         }
-        if (PurchasableItems[index] == null)
+
+        if (!AvailableItemIdentities[index])
         {
             Debug.LogError("Shop.TryBuy() called with index " + index + " which was null (has the item already been bought?)");
             return;
         }
-        Item itemToBuy = PurchasableItems[index];
-        if (itemToBuy == null || itemToBuy.State != Holdable.HoldableState.Idle)
+
+        Item itemToBuy = AvailableItemIdentities[index].GetComponent<Item>();
+        if (!itemToBuy || itemToBuy.State != Item.ItemState.Frozen)
         {
-            Debug.LogError("Shop.TryBuy() called with index " + index + " which returned a " + (itemToBuy == null ? "null item" : "non-idle item (name = " + itemToBuy.name + ")"));
+            Debug.LogError("Shop.TryBuy() called with index " + index + " which returned a " + (!itemToBuy ? "null item" : "non-frozen item (name = " + itemToBuy.name + ")"));
             return;
         }
-        PlayerController buyer = sender.identity.GetComponent<PlayerController>();
-        if (buyer.HeldObject != null)
+
+        PlayerController buyer = sender!.identity.GetComponent<PlayerController>();
+        if (buyer.HeldObject)
         {
             TargetBuyResult(sender, PurchaseError.AlreadyHoldingObject, itemToBuy, -1);
             return;
         }
-        int price = EconomySettings.ItemBuyPrices[itemToBuy.Type];
+
+        int price = itemToBuy.Data.BuyPrice;
         if (BankManager.Instance.Balance < price)
         {
             TargetBuyResult(sender, PurchaseError.NotEnoughMoney, itemToBuy, price);
@@ -308,8 +341,10 @@ public class Shop : NetworkBehaviour
 
         //Take the money, remove from the display rack, and put it in the player's hands
         BankManager.Instance.Balance -= price;
-        PurchasableItems[index] = null;
+        AvailableItemIdentities[index] = null;
         itemToBuy.Pickuppable = true;
+        itemToBuy.transform.localScale = Vector3.one;
+        itemToBuy.State = Item.ItemState.Idle;
         itemToBuy.ServerTryPickup(buyer);
         TargetBuyResult(sender, PurchaseError.None, itemToBuy, price);
     }
@@ -318,12 +353,14 @@ public class Shop : NetworkBehaviour
     private void TargetBuyResult(NetworkConnection target, PurchaseError err, Item item, int price)
     {
         OnReceiveBuyResult.Invoke(item, err);
-        
+
         switch (err)
         {
             case PurchaseError.None:
             {
                 Debug.Log($"Successfully purchased {item.name} (price = {price})");
+                _shopBuy.Post(gameObject);
+                LeaveShop();
                 break;
             }
             case PurchaseError.NotEnoughMoney:
@@ -339,53 +376,61 @@ public class Shop : NetworkBehaviour
         }
     }
 
-    //Returns the sell price of all treasures in the cart (abstracted out of SellAll() for ui purposes) (@jowsey lmk if u need smth different here)
-    public int EvaluateSellAllPrice(Cart cart)
-    {
-        int sellPrice = 0;
-        for (int type = 0; type < Enum.GetNames(typeof(TreasureType)).Length; ++type)
-        {
-            if (cart.CarriedTreasureCounts.ContainsKey((TreasureType)type))
-            {
-                sellPrice += cart.CarriedTreasureCounts[(TreasureType)type] * EconomySettings.TreasureSellPrices[(TreasureType)type];
-            }
-        }
-        return sellPrice;
-    }
-
+    [Command(requiresAuthority = false)]
     public void CmdSellAll(Cart cart)
     {
-        BankManager.Instance.Balance += EvaluateSellAllPrice(cart); //must be done before removing all the treasure, obviously
+        BankManager.Instance.Balance += cart.EvaluateTotalItemSellPrice(); //must be done before removing all the treasure, obviously
         cart.RemoveAllTreasures();
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (NetworkClient.localPlayer?.gameObject == other.attachedRigidbody?.gameObject && !_enterPromptInstance)
+        // If any player walks in, animate open
+        if (!_hasOpened && other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
-            //Don't show players enter shop ui if they're on the cart
-            if (PlayerController.LocalPlayer.Seat) { return; }
-            
+            _hasOpened = true;
+            _tipJar.localPosition = new Vector3(_tipJar.localPosition.x, _tipJar.localPosition.y + _tipJarDescendHeight, _tipJar.localPosition.z);
+            Tween.LocalPositionY(
+                _tipJar,
+                _tipJar.localPosition.y,
+                _tipJar.localPosition.y - _tipJarDescendHeight,
+                _tipJarDescendDuration,
+                Ease.OutBack
+            );
+
+            Tween.LocalEulerAngles(
+                _hatchLeft,
+                _hatchLeft.localRotation.eulerAngles,
+                _hatchLeft.localRotation.eulerAngles + new Vector3(0, _hatchOpenAngle, 0),
+                _hatchOpenDuration,
+                Ease.OutBack
+            );
+            Tween.LocalEulerAngles(
+                _hatchRight,
+                _hatchRight.localRotation.eulerAngles,
+                _hatchRight.localRotation.eulerAngles - new Vector3(0, _hatchOpenAngle, 0),
+                _hatchOpenDuration,
+                Ease.OutBack
+            );
+        }
+
+        if (!_enterPromptInstance && NetworkClient.localPlayer?.gameObject == other.attachedRigidbody?.gameObject)
+        {
+            //Don't show players Enter prompt if they're on the cart
+            if (PlayerController.LocalPlayer?.Seat) return;
+
             _enterPromptInstance = Instantiate(_enterPromptPrefab, _uiCanvas);
             _enterPromptInstance.Build(InteractPrompt.InteractionType.EnterShop);
             _enterPromptInstance.WorldFollowUI.TrackingTarget = _enterPromptPosition;
         }
     }
-    
+
     private void OnTriggerExit(Collider other)
     {
         if (NetworkClient.localPlayer?.gameObject == other.attachedRigidbody?.gameObject && _enterPromptInstance)
         {
-            Destroy(_enterPromptInstance.gameObject);
+            _enterPromptInstance.Destroy();
             _enterPromptInstance = null;
         }
     }
-
-    //placeholder (@jowsey do yo shit)
-    [Button] public void BuyIndex0() => CmdTryBuy(0);
-    [Button] public void BuyIndex1() => CmdTryBuy(1);
-    [Button] public void BuyIndex2() => CmdTryBuy(2);
-    [Button] public void DebugSellAllPrice() => Debug.Log("Current sell all price: " + EvaluateSellAllPrice(FindAnyObjectByType<Cart>()) + " juice coins");
-    [Button] public void SellAll() => CmdSellAll(FindAnyObjectByType<Cart>());
-    [Button] public void DebugBalance() => Debug.Log("Balance: " + BankManager.Instance.Balance + " juice coins");
 }

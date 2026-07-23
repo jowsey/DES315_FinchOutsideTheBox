@@ -1,3 +1,4 @@
+using Game.Items;
 using Mirror;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -51,7 +52,7 @@ public class WheelSeat : NetworkBehaviour
         if (SeatedPlayer || Time.time < _lastUnsitTime + _sitCooldown) return;
         
         var player = sender!.identity.GetComponent<PlayerController>();
-        if (player.HeldObject?.State == Treasure.HoldableState.Held) return; // dont allow sitting while holding a treasure
+        if (player.HeldObject?.State == Item.ItemState.Held) return; // dont allow sitting while holding an item
         
         _seatedPlayerIdentity = player.netIdentity; //synced to all clients
     }
@@ -76,13 +77,11 @@ public class WheelSeat : NetworkBehaviour
             oldPlayer.Rb.excludeLayers &= ~(1 << gameObject.layer);
             oldPlayer.Seat = null;
 
-            oldPlayer.WwiseAnimationEvents.DisableFootsteps = false;
-
             _lastUnsitTime = Time.time;
 
             if (oldPlayer.isLocalPlayer)
             {
-                Highlight.SetHighlightable("Treasure", true);
+                Highlight.SetHighlightable("Item", true);
             }
         }
 
@@ -93,11 +92,9 @@ public class WheelSeat : NetworkBehaviour
             SeatedPlayer.Rb.excludeLayers |= 1 << gameObject.layer;
             SeatedPlayer.Seat = this;
 
-            SeatedPlayer.WwiseAnimationEvents.DisableFootsteps = true;
-
             if (SeatedPlayer.isLocalPlayer)
             {
-                Highlight.SetHighlightable("Treasure", false);
+                Highlight.SetHighlightable("Item", false);
             }
         }
     }

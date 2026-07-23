@@ -1,4 +1,5 @@
-﻿using PrimeTween;
+﻿using Game.Items;
+using PrimeTween;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -25,6 +26,8 @@ namespace UI
 
         [SerializeField] [Min(0)] private float _transitionDuration = 0.25f;
 
+        [SerializeField] private AK.Wwise.Event _hoverSfx;
+
         private Shop _shop;
         private int _shopIndex;
 
@@ -42,12 +45,11 @@ namespace UI
 
         public void Build(Item item, int index, Shop shop)
         {
-            var stylisedName = item.Type.ToString(); // todo actual name
-            name = $"ItemCard: {stylisedName}";
+            name = $"ItemCard: {item.Data.ItemName}";
 
-            _itemNameText.text = stylisedName;
-            _itemDescriptionText.text = $"This is a {item.Type.ToString().ToLower()}. Here is a placeholder description."; // todo actual description
-            _itemPriceText.text = $"Purchase for <b>{shop.EconomySettings.ItemBuyPrices[item.Type]}</b> coins";
+            _itemNameText.text = item.Data.ItemName;
+            _itemDescriptionText.text = item.Data.Description;
+            _itemPriceText.text = $"Purchase for <b>{item.Data.BuyPrice}</b> coins";
 
             _shop = shop;
             _shopIndex = index;
@@ -66,6 +68,8 @@ namespace UI
             Tween.Alpha(_hoverCta, 0, _transitionDuration, Ease.OutCubic);
 
             _outline.effectColor = _hoveredOutline;
+
+            _hoverSfx.Post(gameObject);
         }
 
         public void OnPointerExit(PointerEventData eventData)

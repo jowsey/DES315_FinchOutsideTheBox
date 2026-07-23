@@ -1,8 +1,8 @@
-using Mirror;
 using System.Collections;
+using Mirror;
 using UnityEngine;
 
-public class Emoter : MonoBehaviour
+public class Emoter : NetworkBehaviour
 {
     private NetworkAnimator anim;
     private Rigidbody _rb;
@@ -25,9 +25,14 @@ public class Emoter : MonoBehaviour
     {
         anim = GetComponent<NetworkAnimator>();
         _rb = GetComponent<Rigidbody>();
-        _zoomController = Camera.main.GetComponent<CameraZoomController>();
         EmoteLayerIndex = anim.animator.GetLayerIndex("EmoteLayer");
-        IsEmoting = false;
+    }
+
+    public override void OnStartLocalPlayer()
+    {
+        // Camera is a network behaviour which means it'll be disabled until we're ready
+        // Not that it really matters, we don't call any of this for a non-local player
+        _zoomController = Camera.main.GetComponent<CameraZoomController>();
     }
 
     //For testing

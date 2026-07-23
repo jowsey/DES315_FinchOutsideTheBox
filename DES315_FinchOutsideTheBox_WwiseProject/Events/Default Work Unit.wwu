@@ -671,6 +671,28 @@
 								</Action>
 							</ChildrenList>
 						</Event>
+						<Event Name="ShopkeepRadio" ID="{368BF370-EA0E-4697-8C6B-464B59D3E0E7}">
+							<ChildrenList>
+								<Action Name="" ID="{7863D910-C357-4480-8230-59EC19578A4C}" ShortID="748268076">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Shopkeep Radio" ID="{40A8A934-EAAB-4A00-8086-76057E1D9849}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="ShopkeeperInquisitive" ID="{D751D746-FC92-4987-8B8A-035316288040}">
+							<ChildrenList>
+								<Action Name="" ID="{28860F60-4A21-445E-89EC-2A024E91A3B7}" ShortID="716906296">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="ShopkeeperInquisitive" ID="{F87E33D7-B2D0-4518-8028-BB897F8C2499}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
 					</ChildrenList>
 				</Folder>
 				<Folder Name="PushToTalk" ID="{BAA9D189-BC42-4623-928F-E256A4436F93}" ShortID="568184641">
@@ -699,6 +721,76 @@
 						</Event>
 					</ChildrenList>
 				</Folder>
+				<Event Name="WindNsand" ID="{158BE1B6-B4C3-4DC0-BC44-542CD96285EB}">
+					<ChildrenList>
+						<Action Name="" ID="{8DC7145E-D3A4-488D-A575-E7ACBDE870A4}" ShortID="421057680">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="WindNsand" ID="{D7F62EDB-04FF-4CBC-ABFB-2DCA27814C8D}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="TextBlip" ID="{FC06DD9E-F794-41FF-934E-81B765DA34BA}">
+					<ChildrenList>
+						<Action Name="" ID="{2BD71DE4-ECC3-4D10-BC14-65A3C28941F4}" ShortID="118179249">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="TextBlip" ID="{A04FCEA4-4CFF-4CE1-AC6E-0D5C8F3EFDCD}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Sandfall" ID="{A75A3C01-D099-409B-89E9-CB3D7755F4AF}">
+					<ChildrenList>
+						<Action Name="" ID="{05A02E39-8C31-4F5C-BE4C-A0DB24BB8A78}" ShortID="771137727">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Sandfall" ID="{F613A01F-B53C-4E10-8333-754B2635CA3E}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Folder Name="Mouse" ID="{DF5E6260-6142-4799-A463-8643E0178723}" ShortID="883292639">
+					<ChildrenList>
+						<Event Name="MouseDead" ID="{D9D5F2D9-3C7A-43E0-9F93-CD1444887392}">
+							<ChildrenList>
+								<Action Name="" ID="{3D589B55-6A86-455E-AD0B-14D38631F509}" ShortID="656226250">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="MouseDead" ID="{1DEFB994-0F35-44BC-B508-0C826E606A89}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="MouseMovement" ID="{F3737593-E4F9-4555-AD32-64E0328F1C8E}">
+							<ChildrenList>
+								<Action Name="" ID="{1FE20677-76B4-49C4-9368-D7688104F5CB}" ShortID="785576086">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="squeakmousemoving" ID="{E86D7EC4-6454-4163-9BF2-5C180D61AC26}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+					</ChildrenList>
+				</Folder>
+				<Event Name="EmoteHoverTick" ID="{E925E8AA-1064-42E4-ABBA-A944A12BC08A}">
+					<ChildrenList>
+						<Action Name="" ID="{67C32F0D-D420-41C8-82B9-364974A586CC}" ShortID="514258992">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="HoverTickForEmotes" ID="{E548C099-70D3-4E7F-B980-D6C10B13CBAB}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>

@@ -43,7 +43,7 @@
 														<PointList>
 															<Point>
 																<XPos>0</XPos>
-																<YPos>-96.3</YPos>
+																<YPos>96.3</YPos>
 																<Flags>5</Flags>
 															</Point>
 															<Point>
@@ -65,6 +65,17 @@
 				<Effect Name="wind_compressor" ID="{44178556-2BE6-4946-948D-1FE37709C355}" PluginName="Wwise Compressor" CompanyID="0" PluginID="108" PluginType="3">
 					<PropertyList>
 						<Property Name="Threshold" Type="Real32" Value="-44.1"/>
+					</PropertyList>
+				</Effect>
+				<Effect Name="New_Parametric_EQ" ID="{4D54822E-EE14-4CF0-B8BE-72200B8AE058}" PluginName="Wwise Parametric EQ" CompanyID="0" PluginID="105" PluginType="3">
+					<PropertyList>
+						<Property Name="FilterTypeBand1" Type="int32" Value="5"/>
+						<Property Name="FilterTypeBand2" Type="int32" Value="0"/>
+						<Property Name="FilterTypeBand3" Type="int32" Value="1"/>
+						<Property Name="FrequencyBand2" Type="Real32" Value="20000"/>
+						<Property Name="FrequencyBand3" Type="Real32" Value="6881"/>
+						<Property Name="GainBand1" Type="Real32" Value="-3"/>
+						<Property Name="GainBand3" Type="Real32" Value="-5.5"/>
 					</PropertyList>
 				</Effect>
 			</ChildrenList>

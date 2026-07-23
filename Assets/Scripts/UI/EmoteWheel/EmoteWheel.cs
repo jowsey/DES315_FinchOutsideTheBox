@@ -18,6 +18,8 @@ namespace UI
         [SerializeField] private CanvasGroup _canvasGroup;
         [SerializeField] private EmoteWheelItem _itemPrefab;
 
+        [SerializeField] private AK.Wwise.Event _hoverSfx;
+
         private List<EmoteWheelItem> _activeItems = new();
         private EmoteWheelItem _hoveredItem;
 
@@ -83,6 +85,8 @@ namespace UI
                             _hoveredItem?.SetSelected(false);
                             _hoveredItem = _activeItems[selectedIndex];
                             _hoveredItem.SetSelected(true);
+                            
+                            _hoverSfx.Post(gameObject);
                         }
                     }
                     else if (_hoveredItem)
