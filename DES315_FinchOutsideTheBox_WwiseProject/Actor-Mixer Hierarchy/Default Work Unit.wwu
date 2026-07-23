@@ -13995,8 +13995,135 @@
 					</ChildrenList>
 				</Folder>
 				<Folder Name="Items" ID="{3243B751-B403-49F6-841F-8BF640A97812}" ShortID="1057878883">
+					<PropertyList>
+						<Property Name="Color" Type="int16" Value="1"/>
+						<Property Name="OverrideColor" Type="bool" Value="True"/>
+					</PropertyList>
 					<ChildrenList>
-						<Folder Name="ItemsPickup" ID="{E0DB4061-E456-46A5-BCCD-145AA45722F8}" ShortID="306221098"/>
+						<Folder Name="ItemsPickup" ID="{E0DB4061-E456-46A5-BCCD-145AA45722F8}" ShortID="306221098">
+							<ChildrenList>
+								<Folder Name="CursedDoll" ID="{7B184356-0A2B-423C-9631-3CC14D7C7043}" ShortID="953118925">
+									<ChildrenList>
+										<Sound Name="LowHum" ID="{4CDD9ECA-720D-4C6A-ADEC-A0EC50EEA090}" ShortID="675919471">
+											<PropertyList>
+												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-18</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Dolls" ID="{8F6764D1-581A-45A6-A8E6-60547C11605D}" WorkUnitID="{0D537A1A-A097-4DE3-A5EA-9723A41B16C7}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="LowHum" ID="{CFF173FB-49D4-4A54-9D4E-B7CB0045848F}">
+													<PropertyList>
+														<Property Name="FadeInDuration" Type="Real64" Value="0.00212601876530452"/>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.00111965613141018"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+													</PropertyList>
+													<Language>SFX</Language>
+													<AudioFile>LowHum.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="323355592"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ObjectLists>
+												<ObjectList Name="RTPC">
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{2B63CC1A-A128-4C76-B7BF-CF785ADCE4AB}" ShortID="378559249">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{9E503776-B25F-4EA7-B25A-53D94CF5CBCE}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>30</XPos>
+																						<YPos>6</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+												</ObjectList>
+											</ObjectLists>
+											<ActiveSourceList>
+												<ActiveSource Name="LowHum" ID="{CFF173FB-49D4-4A54-9D4E-B7CB0045848F}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="BuyDoll" ID="{42E70704-2F88-4340-AEEF-B75F62B1C018}" ShortID="781009134">
+											<PropertyList>
+												<Property Name="Pitch" Type="int32">
+													<ValueList>
+														<Value>-30</Value>
+													</ValueList>
+												</Property>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-8</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="BuyDoll" ID="{BD7071DB-F403-435B-874B-3D4257041836}">
+													<PropertyList>
+														<Property Name="FadeInDuration" Type="Real64" Value="0.540915677269098"/>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.713405815840978"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+													</PropertyList>
+													<Language>SFX</Language>
+													<AudioFile>BuyDoll.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="96185026"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="BuyDoll" ID="{BD7071DB-F403-435B-874B-3D4257041836}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+									</ChildrenList>
+								</Folder>
+							</ChildrenList>
+						</Folder>
 					</ChildrenList>
 				</Folder>
 			</ChildrenList>
