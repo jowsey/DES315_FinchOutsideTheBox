@@ -2,13 +2,13 @@
 using Mirror;
 using PrimeTween;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Game.Items.Equipments
 {
     public class YarnEquipment : PlaceableEquipment
     {
-        [FormerlySerializedAs("_ropeSegmentPrefab")] [SerializeField] private ConfigurableJoint _yarnSegmentPrefab;
+        [SerializeField] private ConfigurableJoint _yarnSegmentPrefab;
+        [SerializeField] private ConfigurableJoint _yarnBallPrefab;
         [SerializeField, Min(1)] private int _numSegments = 25;
 
         protected override void OnServerPlace(GameObject instance)
@@ -25,7 +25,7 @@ namespace Game.Items.Equipments
                 var anchorCollider = anchor.GetComponentInChildren<Collider>();
                 var previousBody = anchor.GetComponent<Rigidbody>();
 
-                const float startingDelay = 0.12f;
+                const float startingDelay = 0.1f;
                 
                 for (var i = 0; i < _numSegments; i++)
                 {
@@ -53,6 +53,15 @@ namespace Game.Items.Equipments
                     segment.connectedBody = previousBody;
                     previousBody = segment.GetComponent<Rigidbody>();
                 }
+                
+                var yarnBall = Instantiate(
+                    _yarnBallPrefab,
+                    previousBody.position + previousBody.transform.forward * segmentLength,
+                    Quaternion.Euler(Random.Range(0f, 360f), Random.Range(0f, 360f), Random.Range(0f, 360f))
+                );
+                NetworkServer.Spawn(yarnBall.gameObject);
+                yarnBall.connectedBody = previousBody;
+                previousBody = yarnBall.GetComponent<Rigidbody>();
 
                 Tween.Delay(1f).OnComplete(() => previousBody.AddForce(anchor.transform.forward * 250f, ForceMode.Impulse));
             }
