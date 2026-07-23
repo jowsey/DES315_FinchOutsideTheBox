@@ -166,38 +166,6 @@
 												</DestinationFadeIn>
 											</TransitionInfo>
 										</MusicTransition>
-										<MusicTransition Name="Transition" ID="{F0E4399E-37C5-4B6C-89CB-8C3F1FEEA97C}">
-											<PropertyList>
-												<Property Name="DestinationContextType" Type="int16" Value="2"/>
-												<Property Name="DestinationJumpPositionPreset" Type="int16" Value="4"/>
-												<Property Name="EnableDestinationFadeIn" Type="bool" Value="True"/>
-												<Property Name="EnableSourceFadeOut" Type="bool" Value="True"/>
-												<Property Name="ExitSourceAt" Type="int16" Value="0"/>
-											</PropertyList>
-											<ReferenceList>
-												<Reference Name="DestinationContextObject">
-													<ObjectRef Name="UpperLvlAmb" ID="{0DEE4ECD-6E94-4360-B903-F94ED68918D5}" WorkUnitID="{81E8AEF2-3E5B-4988-AA2D-27329173BFB3}"/>
-												</Reference>
-											</ReferenceList>
-											<TransitionInfo>
-												<SourceFadeOut>
-													<MusicFade Name="Source Fade-out" ID="{115AEDEB-C336-44F1-8C5C-4B1C15E151CE}">
-														<PropertyList>
-															<Property Name="FadeTime" Type="Real64" Value="0.6"/>
-															<Property Name="FadeType" Type="int16" Value="1"/>
-														</PropertyList>
-													</MusicFade>
-												</SourceFadeOut>
-												<DestinationFadeIn>
-													<MusicFade Name="Destination Fade-in" ID="{DE5853F5-4AEB-48DD-B829-FD1C15BAE3E2}">
-														<PropertyList>
-															<Property Name="FadeOffset" Type="Real64" Value="-0.6"/>
-															<Property Name="FadeTime" Type="Real64" Value="0.6"/>
-														</PropertyList>
-													</MusicFade>
-												</DestinationFadeIn>
-											</TransitionInfo>
-										</MusicTransition>
 									</ChildrenList>
 									<TransitionInfo/>
 								</MusicTransition>
@@ -223,7 +191,7 @@
 								</Property>
 								<Property Name="Volume" Type="Real64">
 									<ValueList>
-										<Value>-16</Value>
+										<Value>-12</Value>
 									</ValueList>
 								</Property>
 							</PropertyList>
@@ -433,7 +401,7 @@
 								</MusicSegment>
 								<MusicSegment Name="LooseJuice - DesertWails (somehighhats) - 130bpm" ID="{2E2079CA-412C-4CFB-BA90-E4A2CDF6F2EF}" ShortID="977879773">
 									<PropertyList>
-										<Property Name="EndPosition" Type="Real64" Value="88607.9991659851"/>
+										<Property Name="EndPosition" Type="Real64" Value="88652.154020597"/>
 										<Property Name="IgnoreParentMaxSoundInstance" Type="bool" Value="True"/>
 										<Property Name="IsGlobalLimit" Type="int16" Value="1"/>
 										<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
@@ -577,7 +545,7 @@
 												<Local>
 													<MusicCue Name="Entry Cue" ID="{A8850BD6-E2DF-4EE8-B4BC-0B007AE10267}">
 														<PropertyList>
-															<Property Name="TimeMs" Type="Real64" Value="18.8913554394834"/>
+															<Property Name="TimeMs" Type="Real64" Value="38.9203616552259"/>
 														</PropertyList>
 													</MusicCue>
 												</Local>
@@ -587,7 +555,7 @@
 													<MusicCue Name="Exit Cue" ID="{59686551-89C6-4642-A292-438376063631}">
 														<PropertyList>
 															<Property Name="CueType" Type="int16" Value="1"/>
-															<Property Name="TimeMs" Type="Real64" Value="88587.3003534218"/>
+															<Property Name="TimeMs" Type="Real64" Value="88587.7555581086"/>
 														</PropertyList>
 													</MusicCue>
 												</Local>
@@ -777,7 +745,7 @@
 								</Property>
 								<Property Name="Volume" Type="Real64">
 									<ValueList>
-										<Value>-13</Value>
+										<Value>-11</Value>
 									</ValueList>
 								</Property>
 							</PropertyList>
@@ -2341,7 +2309,7 @@
 													<MusicCue Name="Exit Cue" ID="{846EEFB8-7343-4EEB-9DDB-54E6BA9B00AC}">
 														<PropertyList>
 															<Property Name="CueType" Type="int16" Value="1"/>
-															<Property Name="TimeMs" Type="Real64" Value="73221.7932565067"/>
+															<Property Name="TimeMs" Type="Real64" Value="73110.8885333274"/>
 														</PropertyList>
 													</MusicCue>
 												</Local>

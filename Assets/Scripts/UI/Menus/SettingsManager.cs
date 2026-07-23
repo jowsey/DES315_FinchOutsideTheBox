@@ -28,6 +28,7 @@ namespace UI
         public float SfxVolumePercent = 75.0f;
         public bool PushToTalk = true;
         public bool NoiseSuppression = true;
+        public bool PushToTalkSfx = true;
         public string InputDevice = null;
 
         public Dictionary<string, float> PlayerVoiceVolumePercents = new();
@@ -47,6 +48,7 @@ namespace UI
             "Avocado", "Kato", // Paolo's
             "Marley", "Mittens", "Chez", "Batman", "Bella", // Jowsey's
             "Felix", "Mollie", "Luna", "Kylo", "Padmé", "Clyde", "Julita", // Ellis'
+            "Zak", // Zo's
         };
 
         public static string GetRandomName() => DefaultPlayerNames[Random.Range(0, DefaultPlayerNames.Length)];
@@ -67,6 +69,7 @@ namespace UI
         [SerializeField] [Required] private Slider _musicVolumeSlider;
         [SerializeField] [Required] private Slider _sfxVolumeSlider;
         [SerializeField] [Required] private Toggle _pttToggle;
+        [SerializeField] [Required] private Toggle _pttSfxToggle;
         [SerializeField] [Required] private Toggle _noiseSuppressionToggle;
         [SerializeField] [Required] private TMP_Dropdown _inputDeviceDropdown;
 
@@ -106,6 +109,7 @@ namespace UI
             _sfxVolumeSlider.onValueChanged.AddListener(OnSfxVolumeChanged);
 
             _pttToggle.onValueChanged.AddListener(OnPttToggleChanged);
+            _pttSfxToggle.onValueChanged.AddListener(OnPttSfxToggleChanged);
             _noiseSuppressionToggle.onValueChanged.AddListener(OnNoiseSuppressionToggleChanged);
             _inputDeviceDropdown.onValueChanged.AddListener(OnInputDeviceChanged);
         }
@@ -125,6 +129,7 @@ namespace UI
             _sfxVolumeSlider.onValueChanged.RemoveListener(OnSfxVolumeChanged);
 
             _pttToggle.onValueChanged.RemoveListener(OnPttToggleChanged);
+            _pttSfxToggle.onValueChanged.RemoveListener(OnPttSfxToggleChanged);
             _noiseSuppressionToggle.onValueChanged.RemoveListener(OnNoiseSuppressionToggleChanged);
             _inputDeviceDropdown.onValueChanged.RemoveListener(OnInputDeviceChanged);
             _inputDeviceDropdown.ClearOptions();
@@ -219,6 +224,12 @@ namespace UI
             SaveToDisk();
         }
 
+        private void OnPttSfxToggleChanged(bool val)
+        {
+            ActiveSettings.PushToTalkSfx = val;
+            SaveToDisk();
+        }
+
         private void OnNoiseSuppressionToggleChanged(bool val)
         {
             ActiveSettings.NoiseSuppression = val;
@@ -293,6 +304,7 @@ namespace UI
 
             _noiseSuppressionToggle.isOn = ActiveSettings.NoiseSuppression;
             _pttToggle.isOn = ActiveSettings.PushToTalk;
+            _pttSfxToggle.isOn = ActiveSettings.PushToTalkSfx;
 
             _inputDeviceDropdown.ClearOptions();
             _inputDeviceDropdown.AddOptions(new List<string> { "None" });

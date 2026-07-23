@@ -1,12 +1,13 @@
-﻿using Sirenix.OdinInspector;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 public class Highlight : MonoBehaviour
 {
     private static readonly int BaseColour = Shader.PropertyToID("_BaseColour");
     private static readonly int BaseColor = Shader.PropertyToID("_BaseColor");
-    
+    private static readonly Color HighlightedColour = new(1.1f, 1.1f, 1.35f, 1f);
+
     //Mapping from tag to whether or not that tag can be highlighted
     private static readonly Dictionary<string, bool> _isTagHighlightable = new();
 
@@ -15,12 +16,14 @@ public class Highlight : MonoBehaviour
     private bool _highlighted;
     private Renderer[] _renderers;
 
-    [SerializeField] [Required] private Color _highlightedColour = new(0x87 / 255f, 0xDF / 255f, 0xFF / 255f, 0f);
+    private static MaterialPropertyBlock _mpb;
 
     private void Awake()
     {
         _highlighted = false;
         _renderers = GetComponentsInChildren<Renderer>();
+        
+        _mpb ??= new MaterialPropertyBlock();
     }
 
     private void OnEnable()
@@ -69,24 +72,26 @@ public class Highlight : MonoBehaviour
 
     private void Update()
     {
-        bool beingLookedAt = CrosshairDetection.TargetedTransform && CrosshairDetection.TargetedTransform.IsChildOf(transform);
+        bool beingLookedAt = InteractDetection.TargetedTransform && InteractDetection.TargetedTransform.IsChildOf(transform);
 
         if (beingLookedAt && !_highlighted && _isTagHighlightable[tag])
         {
             //Object is being looked at and is highlightable, but is not highlighted, highlight it
             foreach (Renderer rend in _renderers)
             {
-                MaterialPropertyBlock mpb = new MaterialPropertyBlock();
                 //is it worth it to maintain british loyalty? yes
-                if (rend.sharedMaterial.shader.name == "Shader Graphs/Dithered" || rend.sharedMaterial.shader.name == "Shader Graphs/DitheredPBR")
+                if (rend.sharedMaterial.HasProperty(BaseColour))
                 {
-                    mpb.SetColor(BaseColour, _highlightedColour);
+                    var baseColour = rend.sharedMaterial.GetColor(BaseColour);
+                    _mpb.SetColor(BaseColour, baseColour * HighlightedColour);
                 }
-                else
+                else if (rend.sharedMaterial.HasProperty(BaseColor))
                 {
-                    mpb.SetColor(BaseColor, _highlightedColour);
+                    var baseColor = rend.sharedMaterial.GetColor(BaseColor);
+                    _mpb.SetColor(BaseColor, baseColor * HighlightedColour);
                 }
-                rend.SetPropertyBlock(mpb);
+
+                rend.SetPropertyBlock(_mpb);
             }
 
             _highlighted = true;

@@ -11,11 +11,15 @@ namespace UI
         public Vector2 UIPositionOffset;
 
         private Camera _camera;
+        private Canvas _parentCanvas;
         private CanvasRenderer[] _canvasRenderers;
 
+        private float _followSpeed = 50f;
+        
         private void Awake()
         {
             _camera = Camera.main;
+            _parentCanvas = GetComponentInParent<Canvas>();
             FindRenderers();
         }
 
@@ -32,7 +36,8 @@ namespace UI
                 ? TrackingTarget.TransformPoint(TrackingOffset)
                 : TrackingTarget.position + TrackingOffset;
 
-            transform.position = _camera.WorldToScreenPoint(trackingPosition) + (Vector3)UIPositionOffset;
+            var newPos = _camera.WorldToScreenPoint(trackingPosition) + (Vector3)UIPositionOffset * _parentCanvas.scaleFactor;
+            transform.position = Vector3.Lerp(transform.position, newPos, 1 - Mathf.Exp(-_followSpeed * Time.deltaTime));
 
             var visible = transform.position.z >= 0;
             foreach (var canvasRenderer in _canvasRenderers)

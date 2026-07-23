@@ -44,6 +44,9 @@ namespace UI
         [Tooltip("How long after a vote is cast should it no longer be valid?")]
         [SerializeField] [SuffixLabel("seconds")] private float _voteExpireCooldown = 15f;
 
+        [Tooltip("Whether to prompt a respawn when all treasures are lost")]
+        [SerializeField] private bool _pingOnAllTreasuresLost = false;
+
         [Mirror.ShowInInspector] [Mirror.ReadOnly] private ShowState _state = ShowState.Closed;
         [Mirror.ShowInInspector] [Mirror.ReadOnly] private bool _keyPromptHidden;
         [Mirror.ShowInInspector] [Mirror.ReadOnly] private float _voteCharge;
@@ -78,7 +81,7 @@ namespace UI
             var rt = (RectTransform)transform;
             _openPosition = rt.anchoredPosition;
             rt.anchoredPosition = _hiddenPosition;
-            
+
             Checkpoint.RespawnEvent.AddListener(OnRespawn);
         }
 
@@ -149,7 +152,7 @@ namespace UI
 
             // Force active if respawn pressed, there are active votes, or we just lost our last treasure
             if (_votesActive > 0 || (PlayerController.ControlEnabled(PlayerController.ControlBlockerFlags.Respawn) && _respawnAction.action.WasPressedThisFrame()) ||
-                (_lastKnownTreasureCount > 0 && _linkedCart.TotalCarriedTreasures == 0))
+                (_lastKnownTreasureCount > 0 && _linkedCart.TotalCarriedItems == 0 && _pingOnAllTreasuresLost))
             {
                 _lastActivityTime = Time.time;
             }
@@ -181,7 +184,7 @@ namespace UI
 
                         var oldCharge = _voteCharge;
                         _voteCharge = Mathf.Min(1, _voteCharge + Time.deltaTime * _chargeSpeed);
-                        
+
                         // Detect passing boundary
                         const int divisions = 4;
                         if (Mathf.FloorToInt(oldCharge * divisions) < Mathf.FloorToInt(_voteCharge * divisions))
@@ -189,7 +192,7 @@ namespace UI
                             // We just passed a boundary, juice tick
                             Tween.Scale(_chargeImage.transform, Vector3.one * 1.2f, 0.12f, Ease.InCubic, 2, CycleMode.Rewind);
                         }
-                        
+
                         if (_voteCharge >= 1 && !_voteLocked)
                         {
                             _voteLocked = true;
@@ -232,10 +235,10 @@ namespace UI
             {
                 _chargeImage.fillAmount = _voteCharge;
                 _countText.text = $"<b>{_votesActive}</b>/{_votesRequired}";
-                _treasureCountOnRespawnText.text = $"You will respawn with <b>???</b> treasures."; //@jowsey maybe we get rid of this now ? or we could tell them the balance they'll have?
+                _treasureCountOnRespawnText.text = $"You will respawn with <b>{_linkedCart.NumItemsAtCheckpoint[_linkedCart.CurrentCheckpointIndex]}</b> treasures.";
             }
 
-            _lastKnownTreasureCount = _linkedCart.TotalCarriedTreasures;
+            _lastKnownTreasureCount = _linkedCart.TotalCarriedItems;
         }
 
         [Command(requiresAuthority = false)]

@@ -221,7 +221,7 @@ namespace UI
 
         private void CreateLobbySucceeded(List<Attribute> attributes)
         {
-            NetworkManager.singleton.StartHost();
+            NetworkManager.singleton.StartHostLoading();
 
             GloballyLockedButton.RemoveLockSource(this); // paired with TryCreateLobby
         }
@@ -260,14 +260,21 @@ namespace UI
                 _activeSearchAttemptCode = null;
             }
 
-            var lobbiesNameSorted = lobbies.OrderBy(lobbyDetails =>
-            {
-                var lobbyNameOptions = new LobbyDetailsCopyAttributeByKeyOptions { AttrKey = LobbyNameKey };
-                lobbyDetails.CopyAttributeByKey(ref lobbyNameOptions, out var lobbyNameAttribute);
-                return lobbyNameAttribute.HasValue ? lobbyNameAttribute.Value.Data?.Value.AsUtf8.ToString() : DefaultLobbyName;
-            });
+            var lobbiesFilteredSorted = lobbies
+                .Where(lobbyDetails =>
+                {
+                    var memberCountOptions = new LobbyDetailsGetMemberCountOptions();
+                    return lobbyDetails.GetMemberCount(ref memberCountOptions) >= 1;
+                })
+                .OrderBy(lobbyDetails =>
+                {
+                    var lobbyNameOptions = new LobbyDetailsCopyAttributeByKeyOptions { AttrKey = LobbyNameKey };
+                    lobbyDetails.CopyAttributeByKey(ref lobbyNameOptions, out var lobbyNameAttribute);
+                    return lobbyNameAttribute.HasValue ? lobbyNameAttribute.Value.Data?.Value.AsUtf8.ToString() : DefaultLobbyName;
+                })
+                .ToList();
 
-            foreach (var lobbyDetails in lobbiesNameSorted)
+            foreach (var lobbyDetails in lobbiesFilteredSorted)
             {
                 var listing = Instantiate(_lobbyListingPrefab, _lobbyListContainer);
 
@@ -306,7 +313,7 @@ namespace UI
                 });
             }
 
-            _emptyListNotice.SetActive(lobbies.Count == 0);
+            _emptyListNotice.SetActive(lobbiesFilteredSorted.Count == 0);
             _refreshNotice.transform.SetAsLastSibling();
         }
 
@@ -326,7 +333,7 @@ namespace UI
             var hostAddress = hostAttribute.Data?.Value.AsUtf8;
 
             NetworkManager.singleton.networkAddress = hostAddress;
-            NetworkManager.singleton.StartClient();
+            NetworkManager.singleton.StartClientLoading();
 
             if (_activeJoinAttempt)
             {

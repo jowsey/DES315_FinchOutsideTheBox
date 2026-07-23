@@ -1,3 +1,4 @@
+using System;
 using JetBrains.Annotations;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -7,10 +8,14 @@ public class WwiseAnimationEvents : MonoBehaviour
     [Required] public AK.Wwise.Event Footstep;
     [Required] public AK.Wwise.Event Jump;
     [Required] public AK.Wwise.Event Glide;
+    [Required] public AK.Wwise.Event headShake;
+    [Required] public AK.Wwise.Event headNod;
+    [Required] public AK.Wwise.Event spin; 
+    [Required] public AK.Wwise.Event Frontflip;
 
-    [ReadOnly] public bool GlideTriggered;
-    [ReadOnly] public bool DisableFootsteps;
-
+    [NonSerialized, ShowInInspector, ReadOnly] public bool GlideTriggered;
+    [NonSerialized, ShowInInspector, ReadOnly] public bool EnableFootsteps = true;
+    
     public void ResetGlideTrigger()
     {
         GlideTriggered = false;
@@ -19,7 +24,7 @@ public class WwiseAnimationEvents : MonoBehaviour
     [UsedImplicitly]
     public void PlayFootstepSound()
     {
-        if (DisableFootsteps) return;
+        if (!EnableFootsteps) return;
         Footstep.Post(gameObject);
     }
 
@@ -36,5 +41,29 @@ public class WwiseAnimationEvents : MonoBehaviour
 
         Glide.Post(gameObject);
         GlideTriggered = true;
+    }
+
+    [UsedImplicitly]
+    public void HeadShake()
+    {
+        headShake.Post(gameObject);
+    }
+
+    [UsedImplicitly]
+    public void HeadNod()
+    {
+        headNod.Post(gameObject);
+    }
+
+    [UsedImplicitly]
+    public void PlaySpin()
+    {
+        spin.Post(gameObject);
+    }
+
+    [UsedImplicitly]
+    public void PlayFlipSound()
+    {
+        Frontflip.Post(gameObject);
     }
 }

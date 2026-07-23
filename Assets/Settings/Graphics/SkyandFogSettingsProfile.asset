@@ -170,7 +170,7 @@ MonoBehaviour:
     m_Value: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   tint:
     m_OverrideState: 1
-    m_Value: {r: 0.9811321, g: 0.85196084, b: 0.8006408, a: 1}
+    m_Value: {r: 1, g: 0.6101121, b: 0.4575472, a: 1}
   maxFogDistance:
     m_OverrideState: 1
     m_Value: 45
@@ -193,7 +193,7 @@ MonoBehaviour:
     m_OverrideState: 1
     m_Value: 200
   enableVolumetricFog:
-    m_OverrideState: 1
+    m_OverrideState: 0
     m_Value: 1
   albedo:
     m_OverrideState: 1
@@ -250,31 +250,31 @@ MonoBehaviour:
   interCascadeBorders: 1
   maxShadowDistance:
     m_OverrideState: 1
-    m_Value: 3000
+    m_Value: 420
   directionalTransmissionMultiplier:
     m_OverrideState: 0
     m_Value: 1
   cascadeShadowSplitCount:
     m_OverrideState: 1
-    m_Value: 4
+    m_Value: 3
   cascadeShadowSplit0:
     m_OverrideState: 1
-    m_Value: 0.034615383
+    m_Value: 0.07619048
   cascadeShadowSplit1:
     m_OverrideState: 1
-    m_Value: 0.09743591
+    m_Value: 0.22857143
   cascadeShadowSplit2:
     m_OverrideState: 1
     m_Value: 0.1574359
   cascadeShadowBorder0:
-    m_OverrideState: 0
-    m_Value: 0
+    m_OverrideState: 1
+    m_Value: 0.5
   cascadeShadowBorder1:
-    m_OverrideState: 0
-    m_Value: 0
+    m_OverrideState: 1
+    m_Value: 0.5
   cascadeShadowBorder2:
-    m_OverrideState: 0
-    m_Value: 0
+    m_OverrideState: 1
+    m_Value: 0.49382716
   cascadeShadowBorder3:
     m_OverrideState: 0
     m_Value: 0
@@ -338,8 +338,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.RenderPipelines.HighDefinition.Runtime::UnityEngine.Rendering.HighDefinition.GlobalIllumination
   active: 1
   quality:
-    m_OverrideState: 0
-    m_Value: 1
+    m_OverrideState: 1
+    m_Value: 3
   enable:
     m_OverrideState: 1
     m_Value: 1
@@ -358,23 +358,23 @@ MonoBehaviour:
     m_OverrideState: 0
     m_Value: 0.1
   fullResolutionSS:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 1
   m_MaxRaySteps:
-    m_OverrideState: 0
-    m_Value: 64
+    m_OverrideState: 1
+    m_Value: 32
   m_DenoiseSS:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 1
   m_HalfResolutionDenoiserSS:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 0
   m_DenoiserRadiusSS:
-    m_OverrideState: 0
-    m_Value: 0.5
+    m_OverrideState: 1
+    m_Value: 0.25
   m_SecondDenoiserPassSS:
-    m_OverrideState: 0
-    m_Value: 1
+    m_OverrideState: 1
+    m_Value: 0
   lastBounceFallbackHierarchy:
     m_OverrideState: 0
     m_Value: 3
@@ -507,10 +507,10 @@ MonoBehaviour:
   active: 1
   postExposure:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 0.3
   contrast:
     m_OverrideState: 1
-    m_Value: -5
+    m_Value: -8
   colorFilter:
     m_OverrideState: 0
     m_Value: {r: 1, g: 1, b: 1, a: 1}
@@ -534,11 +534,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.RenderPipelines.HighDefinition.Runtime::UnityEngine.Rendering.HighDefinition.ShadowsMidtonesHighlights
   active: 1
   shadows:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: {x: 1, y: 0.93833333, z: 0.9, w: 0}
   midtones:
     m_OverrideState: 0
-    m_Value: {x: 0.9334102, y: 1, z: 0.7625672, w: 0}
+    m_Value: {x: 0.932, y: 1, z: 0.76, w: 0}
   highlights:
     m_OverrideState: 0
     m_Value: {x: 1, y: 1, z: 1, w: 0}
@@ -657,7 +657,7 @@ MonoBehaviour:
     m_Value: 0
   limitMin:
     m_OverrideState: 1
-    m_Value: 2
+    m_Value: 2.3
   limitMax:
     m_OverrideState: 1
     m_Value: 14

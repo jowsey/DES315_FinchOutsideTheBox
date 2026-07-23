@@ -1,20 +1,22 @@
+using System.Collections.Generic;
+using Game.Items;
 using Mirror;
 using UnityEngine;
 using UnityEngine.Playables;
-using System.Collections.Generic;
 
 public class CutsceneStart : NetworkBehaviour
 {
+    public static bool CutsceneActive { get; private set; }
+
     [SerializeField] private PlayableDirector _director;
     [SerializeField] private Cart _cart;
     [SerializeField] private GameObject _crosshair;
     [SerializeField] private Transform _cartStartTransform;
-    
+
     [SerializeField] private GameObject[] _disabledWhilePlaying;
-    
+
     //todo: maybe remove if we decide to have the cutscene triggered by button prompt instead? so that players can watch it multiple times
     private bool _played;
-
 
     private void Awake()
     {
@@ -34,17 +36,18 @@ public class CutsceneStart : NetworkBehaviour
         if (!_played)
         {
             Physics.SyncTransforms();
-            Dictionary<Treasure, (Vector3 localPos, Quaternion rot)> ObjectSnapshots = new Dictionary<Treasure, (Vector3 localPos, Quaternion rot)>();
-            foreach (Treasure treasure in _cart.CarriedTreasures)
+            Dictionary<Item, (Vector3 localPos, Quaternion rot)> objectSnapshots = new();
+            foreach (Item item in _cart.CarriedItems)
             {
-                ObjectSnapshots[treasure] = (_cart.transform.InverseTransformPoint(treasure.transform.position), treasure.transform.rotation);
+                objectSnapshots[item] = (_cart.transform.InverseTransformPoint(item.transform.position), item.transform.rotation);
             }
+
             _cart.transform.position = _cartStartTransform.position;
             _cart.transform.rotation = _cartStartTransform.rotation;
             _cart.Rb.position = _cartStartTransform.position;
             _cart.Rb.rotation = _cartStartTransform.rotation;
             Physics.SyncTransforms();
-            foreach (var kvp in ObjectSnapshots)
+            foreach (var kvp in objectSnapshots)
             {
                 Vector3 worldPos = _cart.transform.TransformPoint(kvp.Value.localPos);
                 Quaternion worldRot = kvp.Value.rot;
@@ -54,6 +57,7 @@ public class CutsceneStart : NetworkBehaviour
                 rb.position = worldPos;
                 rb.rotation = worldRot;
             }
+
             Physics.SyncTransforms();
 
             Camera.main.GetComponent<CameraZoomController>().OnForceThirdPersonActionStarted();
@@ -66,29 +70,33 @@ public class CutsceneStart : NetworkBehaviour
     //Wasn't sure where to chuck these
     private void OnCutsceneStarted(PlayableDirector _)
     {
+        CutsceneActive = true;
         foreach (GameObject obj in _disabledWhilePlaying) obj.SetActive(false);
 
         _crosshair.SetActive(false);
         Camera.main.GetComponent<ObstructionDitherer>().enabled = false;
-        Camera.main.GetComponent<CrosshairDetection>().enabled = false;
+        Camera.main.GetComponent<InteractDetection>().enabled = false;
         Camera.main.GetComponent<AkAudioListener>().enabled = true;
-        PlayerController.ControlBlockerFlags flags = PlayerController.ControlBlockerFlags.All;
-        flags &= ~PlayerController.ControlBlockerFlags.Pause;
-        PlayerController.AddControlBlockerFlags(this, flags);
+
+        PlayerController.AddControlBlockerFlags(this, PlayerController.ControlBlockerFlags.All);
     }
-    
+
     private void OnCutsceneStopped(PlayableDirector _)
     {
         foreach (GameObject obj in _disabledWhilePlaying) obj.SetActive(true);
 
         _crosshair.SetActive(true);
         Camera.main.GetComponent<ObstructionDitherer>().enabled = true;
-        Camera.main.GetComponent<CrosshairDetection>().enabled = true;
+        Camera.main.GetComponent<InteractDetection>().enabled = true;
         Camera.main.GetComponent<AkAudioListener>().enabled = false;
+
+        PlayerController.RemoveAllControlBlockerFlags(this);
 
         if (isServer)
         {
             _cart.CmdInvokeRespawnEvent(_cart.CurrentCheckpointIndex);
         }
+
+        CutsceneActive = false;
     }
 }

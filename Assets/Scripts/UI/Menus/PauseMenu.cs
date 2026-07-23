@@ -1,4 +1,3 @@
-using Epic.OnlineServices.Lobby;
 using Mirror;
 using TMPro;
 using UnityEngine;
@@ -43,7 +42,7 @@ namespace UI
                     ? joinCode
                     : new string('*', joinCode.Length);
 
-                _lobbyIdText.text = $"<b>Lobby ID</b>: {formattedJoinCode}\n" +
+                _lobbyIdText.text = $"<b>Join code</b>: {formattedJoinCode}\n" +
                                     $"This lobby is <b>{visibility}</b>.";
             }
         }
@@ -102,10 +101,7 @@ namespace UI
             RTPCMenuOnOff.SetGlobalValue(active ? 1 : 0);
         }
 
-        public void ReturnToCart()
-        {
-            PlayerController.LocalPlayer.CmdReturnToCart();
-        }
+        public void ReturnToCart() => PlayerController.LocalPlayer.CmdReturnToCart();
 
         public void QuitToMenu()
         {

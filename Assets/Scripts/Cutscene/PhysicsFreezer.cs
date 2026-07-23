@@ -37,7 +37,7 @@ public class PhysicsFreezer : MonoBehaviour
             }
         }
 
-        Camera.main.GetComponent<CrosshairDetection>().enabled = false;
+        Camera.main.GetComponent<InteractDetection>().enabled = false;
     }
 
     private void OnCutsceneStopped(PlayableDirector director)
@@ -49,6 +49,6 @@ public class PhysicsFreezer : MonoBehaviour
                 rb.isKinematic = _originalKinematicStates[rb];
             }
         }
-        Camera.main.GetComponent<CrosshairDetection>().enabled = true;
+        Camera.main.GetComponent<InteractDetection>().enabled = true;
     }
 }

@@ -100,10 +100,8 @@ MonoBehaviour:
   MoveAction: {fileID: -1680190386980627800, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
   JumpAction: {fileID: -2099379676528639254, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
   InteractAction: {fileID: 1781555164194001046, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
-  TreasurePickupFX:
-    idInternal: 0
-    valueGuidInternal: 
-    WwiseObjectReference: {fileID: 0}
+  DropItemAction: {fileID: 5042379338498899005, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
+  UseItemAction: {fileID: -4055770583918083563, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
   _gravityNegationPercentage: 60
   _rotationSmoothingSpeed: 8
   _firstPersonCameraViewPosition: {fileID: 4262451585859541057}
@@ -131,6 +129,7 @@ MonoBehaviour:
   PuppetGravityMultiplier: 0
   PuppetJumpForceMultiplier: 0
   IsPuppet: 0
+  ActiveShop: {fileID: 0}
 --- !u!114 &2406511369735062858
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -208,6 +207,14 @@ MonoBehaviour:
   _nameplateActiveIcon: {fileID: 21300000, guid: 7b90f1c6f83a1db4ab72b02f97ccc209, type: 3}
   _nameplateInactiveIcon: {fileID: 21300000, guid: 80e37b8af7da1c84ca6ac9d3bbb512e4, type: 3}
   _player: {fileID: 8993189542338515069}
+  _pushToTalkPressSfx:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: b0e236950b089cd4a9ca86b47dbd3bd9, type: 2}
+  _pushToTalkReleaseSfx:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 3ff5bd255c7f29e4d84cf062d960108b, type: 2}
 --- !u!82 &4479242599431745982
 AudioSource:
   m_ObjectHideFlags: 0
@@ -382,6 +389,22 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: 7e924f0dca54eb94d9aabb3a0ae047d3, type: 2}
+  headShake:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: de5413605c7b31942a6501ae66a4979b, type: 2}
+  headNod:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: d5efabe57763efa4bb193b53108c7918, type: 2}
+  spin:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: cbc2c1e118336454d8891ca8d68a7d26, type: 2}
+  Frontflip:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 62d35e3b608552646b0494e6fb88ae3e, type: 2}
   GlideTriggered: 0
   DisableFootsteps: 0
 --- !u!114 &-7403833992570093263
@@ -420,6 +443,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35ea3a2916ab3c441a91dcc9ff31e5fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Emoter
+  syncMethod: 0
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
 --- !u!1 &172664933246562798
 GameObject:
   m_ObjectHideFlags: 0

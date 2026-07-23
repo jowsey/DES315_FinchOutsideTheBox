@@ -1,4 +1,5 @@
 ﻿using System;
+using PrimeTween;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,12 +24,20 @@ namespace UI
         [SerializeField] private string _putDownText = "Put down";
         [SerializeField] private string _enterShopText = "Enter shop";
 
+        [SerializeField] private float _transitionDuration = 0.25f;
+
         private void OnValidate()
         {
             if (!_promptLabel) _promptLabel = GetComponentInChildren<TextMeshProUGUI>();
             if (!WorldFollowUI) WorldFollowUI = GetComponent<WorldFollowUI>();
-
+            
             Build(_interactionType);
+        }
+
+        private void OnEnable()
+        {
+            transform.localScale = Vector3.zero;
+            Tween.Scale(transform, Vector3.one, _transitionDuration, Ease.OutCubic);
         }
 
         public void Build(InteractionType interactionType)
@@ -42,6 +51,12 @@ namespace UI
             };
 
             LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)transform);
+        }
+
+        public void Destroy()
+        {
+            Tween.Scale(transform, Vector3.one, Vector3.zero, _transitionDuration, Ease.InBack)
+                .OnComplete(() => Destroy(gameObject));
         }
     }
 }

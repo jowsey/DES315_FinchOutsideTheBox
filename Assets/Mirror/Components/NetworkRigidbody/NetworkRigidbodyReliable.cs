@@ -97,17 +97,6 @@ namespace Mirror
             }
         }
 
-        private new void LateUpdate()
-        {
-            base.LateUpdate();
-
-            if (rb && rb.isKinematic && !authority)
-            {
-                rb.position = target.position;
-                rb.rotation = target.rotation;
-            }
-        }
-
         protected override void OnTeleport(Vector3 destination)
         {
             base.OnTeleport(destination);

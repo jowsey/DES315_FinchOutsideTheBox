@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Game.Items;
 using PrimeTween;
 using TMPro;
 using UnityEngine;
@@ -15,6 +15,8 @@ namespace UI
         [SerializeField] private TextMeshProUGUI _errorText;
 
         [SerializeField] private ItemCard _itemCardPrefab;
+
+        [SerializeField] private AK.Wwise.Event _sellSfx;
 
         private List<ItemCard> _itemCards = new();
 
@@ -55,14 +57,17 @@ namespace UI
             _shop = shop;
             shop.OnReceiveBuyResult.AddListener(OnReceiveBuyResult);
 
-            for (var i = 0; i < shop.PurchasableItems.Count; i++)
+            for (var i = 0; i < shop.AvailableItemIdentities.Count; i++)
             {
-                var item = shop.PurchasableItems[i];
+                if (!shop.AvailableItemIdentities[i]) continue;
+                
+                var item = shop.AvailableItemIdentities[i].GetComponent<Item>();
+                
                 ItemCard itemCard = Instantiate(_itemCardPrefab, transform);
                 itemCard.Build(item, i, shop);
 
                 itemCard.WorldFollowUI.TrackingTarget = item.transform;
-                itemCard.WorldFollowUI.TrackingOffset = Vector3.up * 1.25f;
+                itemCard.WorldFollowUI.TrackingOffset = Vector3.up * 0.75f;
 
                 _itemCards.Add(itemCard);
             }
@@ -71,11 +76,19 @@ namespace UI
         private void Update()
         {
             // todo event for when estimate changes so we don't have to compute every frame
-            _sellAllEstimateText.text = $"You will receive <b>{_shop.EvaluateSellAllPrice(_cachedCart)}</b> coins.";
+            _sellAllEstimateText.text = $"You will receive <b>{_cachedCart.ExpectedTotalItemSellPrice}</b> coins.";
             _balanceText.text = BankManager.Instance.Balance.ToString();
         }
 
         public void Leave() => _shop.LeaveShop();
-        public void SellAll() => _shop.SellAll();
+
+        public void SellAll()
+        {
+            if (_cachedCart.ExpectedTotalItemSellPrice > 0)
+            {
+                _sellSfx.Post(gameObject);
+                _shop.CmdSellAll(_cachedCart);
+            }
+        }
     }
 }

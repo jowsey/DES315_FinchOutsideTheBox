@@ -1,7 +1,9 @@
-using Mirror;
-using Sirenix.OdinInspector;
 using System;
 using System.Collections.Generic;
+using Game;
+using Game.Items;
+using Mirror;
+using Sirenix.OdinInspector;
 using TMPro;
 using UI;
 using Unity.Cinemachine;
@@ -52,16 +54,15 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private float _fallAnimationMinDownardsVelocity;
 
     [Header("Input")]
+    private bool _jumpPressed;
+    
     public InputActionReference MoveAction;
-
     public InputActionReference JumpAction;
     public InputActionReference InteractAction;
-
-    private bool _jumpPressed;
-
+    public InputActionReference DropItemAction;
+    public InputActionReference UseItemAction;
+    
     public WwiseAnimationEvents WwiseAnimationEvents { get; private set; }
-
-    public AK.Wwise.Event TreasurePickupFX;
 
     [Tooltip("Percentage of gravity to negate when gliding")]
     [SerializeField] [Range(0, 100)] private float _gravityNegationPercentage;
@@ -93,7 +94,7 @@ public class PlayerController : NetworkBehaviour
     [Header("State")]
     [ReadOnly] public WheelSeat Seat;
 
-    [ReadOnly] public Holdable HeldObject;
+    [ReadOnly] public Item HeldObject;
 
     [field: SyncVar] [field: ShowInInspector] [field: ReadOnly] public Vector3 WorldSpaceMoveDir { get; private set; }
     [SyncVar] public float AnalogueMoveScale;
@@ -104,7 +105,8 @@ public class PlayerController : NetworkBehaviour
     private List<Vector3> _contactNormals = new();
 
     [SerializeField] private ActionCurveLine _actionCurveLinePrefab;
-
+    private ActionCurveLine _onboardingLineInstance;
+    
     [field: SerializeField] public Transform HeldObjectPickupTarget { get; private set; }
 
     // Called when a player object is done being initially setup
@@ -150,8 +152,10 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private Transform _cameraObstructionDithererRayEndPosition;
 
     public bool PickupAllowed => ControlEnabled(ControlBlockerFlags.Interact) && !Seat && !HeldObject;
-    public bool PutdownAllowed => ControlEnabled(ControlBlockerFlags.Interact) && !Seat && HeldObject && HeldObject.State == Treasure.HoldableState.Held;
-
+    public bool PutdownAllowed => ControlEnabled(ControlBlockerFlags.Interact) && HeldObject?.State == Item.ItemState.Held && HeldObject is Treasure;
+    public bool UseAllowed => ControlEnabled(ControlBlockerFlags.Interact) && !Seat && HeldObject?.State == Item.ItemState.Held && HeldObject is Equipment;
+    public bool DropAllowed => ControlEnabled(ControlBlockerFlags.Interact) && HeldObject?.State == Item.ItemState.Held;
+    
     //Set in inspector to true if this player will only exist in cutscenes
     public bool CutscenePlayer;
 
@@ -221,6 +225,16 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
+    public static void ClearAllControlBlockerFlags()
+    {
+        foreach (var blocker in _controlBlockers.Keys)
+        {
+            RemoveAllControlBlockerFlags(blocker);
+        }
+
+        _controlBlockers.Clear();
+    }
+
     private void Awake()
     {
         LoadedSkins ??= Resources.LoadAll<SkinData>("PlayerSkins");
@@ -251,7 +265,7 @@ public class PlayerController : NetworkBehaviour
 
     private void Start()
     {
-        // doesn't work in Awake on non-host. "huh?" don't worry about it
+        // can't be in awake because camera has a NetworkIdentity meaning it's inactive until network ready
         _camera = Camera.main;
 
         PlayableDirector director = FindAnyObjectByType<PlayableDirector>();
@@ -271,7 +285,7 @@ public class PlayerController : NetworkBehaviour
                 puppeteer.SetPlayer1Name(PlayerName);
 
                 //Default (in case you somehow beat the game by yourself without anybody else joining?)
-                puppeteer.SetPlayer2Name("DefaultCat");
+                puppeteer.SetPlayer2Name("Cat");
                 puppeteer.SetPlayer2SkinIndex(1);
             }
             else if (NetworkServer.connections.Count == 2)
@@ -304,8 +318,7 @@ public class PlayerController : NetworkBehaviour
 
     public override void OnStopClient()
     {
-        if (isLocalPlayer) return;
-        PlayerPresenceFeed.OnPlayerLeave.Invoke(this);
+        if (!isLocalPlayer && !CutscenePlayer) PlayerPresenceFeed.OnPlayerLeave.Invoke(this);
     }
 
     public override void OnStartLocalPlayer()
@@ -338,22 +351,22 @@ public class PlayerController : NetworkBehaviour
         _nameplateCanvas.gameObject.SetActive(false);
 
         // Set default highlight states for interactables
-        Highlight.SetHighlightable("Treasure", true);
-        Highlight.SetHighlightable("ObjectCarrier", false);
+        Highlight.SetHighlightable("Item", true);
+        Highlight.SetHighlightable("TreasureCarrier", false);
 
         // todo this sucks
         // eventually we should just link carts to 2 players so we can have an arbitrary number of carts/players
         var wheels = FindObjectsByType<WheelSeat>(FindObjectsSortMode.InstanceID);
         var assignedWheel = wheels[PlayerIndex % wheels.Length];
 
-        var onboardingJumpLine = Instantiate(_actionCurveLinePrefab, null);
-        onboardingJumpLine.StartFollowTarget = transform;
-        onboardingJumpLine.StartTrackingOffset = Vector3.up * 0.5f;
-        onboardingJumpLine.EndFollowTarget = assignedWheel.transform;
-        onboardingJumpLine.EndTrackingOffset = assignedWheel.transform.InverseTransformPoint(assignedWheel.SeatedPosition);
-        onboardingJumpLine.PromptLabel = "Hop on with";
-        onboardingJumpLine.ShouldDestroy = () => Seat; // if we're sat, job's done
-
+        _onboardingLineInstance = Instantiate(_actionCurveLinePrefab, null);
+        _onboardingLineInstance.StartFollowTarget = transform;
+        _onboardingLineInstance.StartTrackingOffset = Vector3.up * 0.5f;
+        _onboardingLineInstance.EndFollowTarget = assignedWheel.transform;
+        _onboardingLineInstance.EndTrackingOffset = assignedWheel.transform.InverseTransformPoint(assignedWheel.SeatedPosition);
+        _onboardingLineInstance.PromptLabel = "Jump on!";
+        _onboardingLineInstance.ShouldDestroy = () => Seat; // if we're sat, job's done
+        
         // Only local player gets a Wwise audio listener
         gameObject.AddComponent<AkAudioListener>();
 
@@ -362,6 +375,7 @@ public class PlayerController : NetworkBehaviour
 
     public override void OnStopLocalPlayer()
     {
+        ActiveShop?.LeaveShop();
         Cursor.lockState = CursorLockMode.None;
     }
 
@@ -379,18 +393,18 @@ public class PlayerController : NetworkBehaviour
 
     private void OnRespawn(Checkpoint checkpoint)
     {
-        if (!authority || Seat) { return; }
-
+        if (!authority) return;
+        _cinemachineCamera.PreviousStateIsValid = false;
         ActiveShop?.LeaveShop();
 
-        Transform newTransform = checkpoint.playerRespawnLocalTransforms[PlayerIndex % checkpoint.playerRespawnLocalTransforms.Length];
+        // Cart will take us with it
+        if (Seat) return;
 
+        Transform newTransform = checkpoint.playerRespawnLocalTransforms[PlayerIndex % checkpoint.playerRespawnLocalTransforms.Length];
         Rb.position = newTransform.position;
         Rb.rotation = newTransform.rotation;
         Rb.linearVelocity = Vector3.zero;
         Rb.angularVelocity = Vector3.zero;
-
-        _cinemachineCamera.PreviousStateIsValid = false;
     }
 
     private void OnEnable()
@@ -443,35 +457,38 @@ public class PlayerController : NetworkBehaviour
             _cameraPitch = Mathf.Clamp(_cameraPitch - scaledMouseDelta.y, -89.0f, 89.0f);
             _cameraYawAccumulator += scaledMouseDelta.x;
         }
-
-        _contactNormals.Clear();
-
+        
         _jumpPressed |= JumpAction.action.WasPressedThisFrame();
 
-        if (CrosshairDetection.TargetedTransform)
+        if (InteractAction.action.WasPressedThisFrame())
         {
-            if (PickupAllowed)
+            if (PickupAllowed && InteractDetection.TargetedTransform)
             {
-                if (!CrosshairDetection.TargetedTransform.CompareTag("Treasure") && !CrosshairDetection.TargetedTransform.CompareTag("Item")) { return; }
+                if (!InteractDetection.TargetedTransform.CompareTag("Item")) return;
 
-                Holdable holdable = CrosshairDetection.TargetedTransform.GetComponentInParent<Holdable>();
-                if (holdable.State != Treasure.HoldableState.Idle) return;
+                Item item = InteractDetection.TargetedTransform.GetComponentInParent<Item>();
+                if (item.State != Item.ItemState.Idle) return;
 
-                if (InteractAction.action.WasPressedThisFrame())
-                {
-                    holdable.CmdTryPickup();
-                }
+                item.CmdTryPickup();
             }
-            else if (PutdownAllowed)
+            else if (PutdownAllowed && InteractDetection.TargetedTransform && InteractDetection.TargetedTransform.CompareTag("TreasureCarrier"))
             {
-                if (!CrosshairDetection.TargetedTransform.CompareTag("ObjectCarrier")) return;
-
-                HeldObjectPutdownTarget carrierTarget = CrosshairDetection.TargetedTransform.GetComponentInChildren<HeldObjectPutdownTarget>();
-                if (InteractAction.action.WasPressedThisFrame())
-                {
-                    HeldObject.CmdTryPutdown(carrierTarget);
-                    TreasurePickupFX.Post(gameObject);
-                }
+                HeldObjectPutdownTarget carrierTarget = InteractDetection.TargetedTransform.GetComponentInChildren<HeldObjectPutdownTarget>();
+                HeldObject.CmdTryPutdown(carrierTarget);
+            }
+        }
+        else if (UseItemAction.action.WasPressedThisFrame())
+        {
+            if (UseAllowed && HeldObject is Equipment equipment)
+            {
+                equipment.TryUse();
+            }
+        }
+        else if (DropItemAction.action.WasPressedThisFrame())
+        {
+            if (DropAllowed)
+            {
+                HeldObject.CmdTryDrop();
             }
         }
     }
@@ -537,6 +554,38 @@ public class PlayerController : NetworkBehaviour
             WwiseAnimationEvents.ResetGlideTrigger();
         }
 
+        //Grounded
+        int groundedHits = Physics.OverlapSphereNonAlloc(Rb.position, _groundedSphereRadius, _groundedCheckColliderBuffer, ~0, QueryTriggerInteraction.Ignore);
+        bool grounded = false;
+        for (int i = 0; i < groundedHits; i++)
+        {
+            // ignore self but *do* find other players
+            //Check all parents
+            bool self = false;
+            Transform t = _groundedCheckColliderBuffer[i].transform;
+            do
+            {
+                if (t == transform)
+                {
+                    self = true;
+                    break;
+                }
+
+                t = t.parent;
+            } while (t);
+
+            if (!self)
+            {
+                //Player has collided with something other than themselves
+                grounded = true;
+                break;
+            }
+        }
+
+        bool groundedOnBumpy = Physics.CheckSphere(Rb.position, _groundedSphereRadius, LayerMask.GetMask("Bumpy"), QueryTriggerInteraction.Ignore);
+
+        WwiseAnimationEvents.EnableFootsteps = !Seat && (grounded || groundedOnBumpy);
+
         if (!authority && !IsPuppet) return;
 
         //Movement input
@@ -583,34 +632,6 @@ public class PlayerController : NetworkBehaviour
             return;
         }
 
-        //Grounded
-        int groundedHits = Physics.OverlapSphereNonAlloc(Rb.position, _groundedSphereRadius, _groundedCheckColliderBuffer, ~0, QueryTriggerInteraction.Ignore);
-        bool grounded = false;
-        for (int i = 0; i < groundedHits; i++)
-        {
-            // ignore self but *do* find other players
-            //Check all parents
-            bool self = false;
-            Transform t = _groundedCheckColliderBuffer[i].transform;
-            do
-            {
-                if (t == transform)
-                {
-                    self = true;
-                    break;
-                }
-                t = t.parent;
-            } while (t != null);
-
-            if (!self)
-            {
-                //Player has collided with something other than themself
-                grounded = true;
-                break;
-            }
-        }
-
-        bool groundedOnBumpy = Physics.CheckSphere(Rb.position, _groundedSphereRadius, LayerMask.GetMask("Bumpy"), QueryTriggerInteraction.Ignore);
         Rb.useGravity = !groundedOnBumpy;
         _networkAnimator.animator.SetBool(GroundedState, grounded || groundedOnBumpy);
         if (IsPuppet && !grounded && !groundedOnBumpy && PuppetGravityMultiplier > 1f)
@@ -643,8 +664,8 @@ public class PlayerController : NetworkBehaviour
         if (ControlEnabled(ControlBlockerFlags.Glide) && isFalling && JumpAction.action.IsPressed())
         {
             //Player is gliding
-            float _gravityNegationPercentage01 = _gravityNegationPercentage / 100.0f;
-            Rb.AddForce(-Physics.gravity * _gravityNegationPercentage01, ForceMode.Acceleration);
+            float gravityNegationPercentage01 = _gravityNegationPercentage / 100.0f;
+            Rb.AddForce(-Physics.gravity * gravityNegationPercentage01, ForceMode.Acceleration);
 
             _networkAnimator.animator.SetBool(FallState, false);
             _networkAnimator.animator.SetBool(GlideState, true);
@@ -663,17 +684,12 @@ public class PlayerController : NetworkBehaviour
         }
 
         //Jumping
-        if ((ControlEnabled(ControlBlockerFlags.Jump) || IsPuppet) && (_jumpPressed || PuppetRequestJump) && (grounded || groundedOnBumpy))
+        if (((ControlEnabled(ControlBlockerFlags.Jump) && _jumpPressed) || (IsPuppet && PuppetRequestJump)) && (grounded || groundedOnBumpy))
         {
             _networkAnimator.animator.SetTrigger(JumpTrigger);
             float jumpMultiplier = IsPuppet ? PuppetJumpForceMultiplier : 1f;
             Rb.AddForce(Vector3.up * (_jumpForce * jumpMultiplier), ForceMode.Impulse);
         }
-
-        //if (ControlEnabled(ControlBlockerFlags.Emote) && InteractAction.action.WasPressedThisFrame())
-        //{
-        //    _emoter.PlayEmote("Emote_Spin");
-        //}
 
         CleanupFixedUpdate();
     }
@@ -717,6 +733,8 @@ public class PlayerController : NetworkBehaviour
             return;
         }
 
+        if (HeldObject) HeldObject.ServerSetIdle();
+
         var newRotation = Quaternion.LookRotation(cart.transform.position - newPosition, Vector3.up);
         newRotation = Quaternion.Euler(0, newRotation.eulerAngles.y, 0); // flatten angle
         GetComponent<NetworkTransformBase>().CmdTeleport(newPosition, newRotation);
@@ -727,6 +745,8 @@ public class PlayerController : NetworkBehaviour
         _jumpPressed = false;
         _cameraYawAccumulator = 0.0f;
         PuppetRequestJump = false;
+        
+        _contactNormals.Clear();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -742,28 +762,20 @@ public class PlayerController : NetworkBehaviour
 
     private void OnCutsceneStarted(PlayableDirector _)
     {
-        foreach (SkinnedMeshRenderer renderer in SkinnedRenderers)
-        {
-            renderer.enabled = CutscenePlayer;
-        }
-        foreach (Collider collider in GetComponentsInChildren<Collider>())
-        {
-            collider.enabled = CutscenePlayer;
-        }
+        foreach (SkinnedMeshRenderer smr in SkinnedRenderers) smr.enabled = CutscenePlayer;
+        foreach (Collider col in GetComponentsInChildren<Collider>()) col.enabled = CutscenePlayer;
+
+        if (_onboardingLineInstance) Destroy(_onboardingLineInstance.gameObject);
+        
         _nameplateCanvas.enabled = CutscenePlayer;
         Rb.isKinematic = !CutscenePlayer;
     }
 
     private void OnCutsceneStopped(PlayableDirector _)
     {
-        foreach (SkinnedMeshRenderer renderer in SkinnedRenderers)
-        {
-            renderer.enabled = !CutscenePlayer;
-        }
-        foreach (Collider collider in GetComponentsInChildren<Collider>())
-        {
-            collider.enabled = !CutscenePlayer;
-        }
+        foreach (SkinnedMeshRenderer smr in SkinnedRenderers) smr.enabled = !CutscenePlayer;
+        foreach (Collider col in GetComponentsInChildren<Collider>()) col.enabled = !CutscenePlayer;
+        
         _nameplateCanvas.enabled = !CutscenePlayer;
         Rb.isKinematic = CutscenePlayer;
     }

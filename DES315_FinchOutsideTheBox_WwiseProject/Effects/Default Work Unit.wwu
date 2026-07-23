@@ -3,14 +3,79 @@
 	<Effects>
 		<WorkUnit Name="Default Work Unit" ID="{9B700CA5-7BEA-4900-A170-C56D65C7C0BF}" PersistMode="Standalone">
 			<ChildrenList>
-				<Effect Name="New_Parametric_EQ" ID="{3ABAFE3E-AE23-4434-A688-C915E3621DE7}" PluginName="Wwise Parametric EQ" CompanyID="0" PluginID="105" PluginType="3">
+				<Effect Name="CaveEcho" ID="{4DF17D43-BADB-4FFA-89C4-133790CB3DD5}" PluginName="Wwise RoomVerb" CompanyID="0" PluginID="118" PluginType="3">
 					<PropertyList>
-						<Property Name="FilterTypeBand1" Type="int32" Value="0"/>
-						<Property Name="FilterTypeBand2" Type="int32" Value="1"/>
-						<Property Name="FrequencyBand1" Type="Real32" Value="7023"/>
-						<Property Name="FrequencyBand2" Type="Real32" Value="182"/>
-						<Property Name="FrequencyBand3" Type="Real32" Value="20000"/>
-						<Property Name="OnOffBand3" Type="bool" Value="False"/>
+						<Property Name="DecayTime" Type="Real32" Value="1.4"/>
+						<Property Name="Density" Type="Real32" Value="45"/>
+						<Property Name="DryLevel" Type="Real32" Value="-14.3"/>
+						<Property Name="ERLevel" Type="Real32" Value="-12"/>
+						<Property Name="Filter1Freq" Type="Real32" Value="240"/>
+						<Property Name="Filter2Q" Type="Real32" Value="1.7"/>
+						<Property Name="Filter3Freq" Type="Real32" Value="240"/>
+						<Property Name="FrontLevel" Type="Real32" Value="-96"/>
+						<Property Name="HFDamping" Type="Real32" Value="5.6"/>
+						<Property Name="InputLFELevel" Type="Real32" Value="-88.3"/>
+						<Property Name="LFELevel" Type="Real32" Value="-19.3"/>
+						<Property Name="PreDelay" Type="Real32" Value="68"/>
+						<Property Name="Quality" Type="int32" Value="12"/>
+						<Property Name="RearLevel" Type="Real32" Value="-59"/>
+						<Property Name="ReverbLevel" Type="Real32" Value="-33"/>
+						<Property Name="RoomSize" Type="Real32" Value="-19"/>
+					</PropertyList>
+					<ObjectLists>
+						<ObjectList Name="RTPC">
+							<Reference>
+								<Local>
+									<RTPC Name="" ID="{95D0CBF5-8B4C-4883-B4EB-A76C571BC24E}" ShortID="209478697">
+										<PropertyList>
+											<Property Name="PropertyName" Type="string" Value="DryLevel"/>
+										</PropertyList>
+										<ReferenceList>
+											<Reference Name="ControlInput">
+												<ObjectRef Name="InCave" ID="{438222D9-B4B8-4B73-A173-786F7088256B}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+											</Reference>
+											<Reference Name="Curve">
+												<Custom>
+													<Curve Name="" ID="{3F4BD4F0-FFA4-40E4-BAEE-BB2789F41331}">
+														<PropertyList>
+															<Property Name="Flags" Type="int32" Value="3"/>
+														</PropertyList>
+														<PointList>
+															<Point>
+																<XPos>0</XPos>
+																<YPos>96.3</YPos>
+																<Flags>5</Flags>
+															</Point>
+															<Point>
+																<XPos>1</XPos>
+																<YPos>0</YPos>
+																<Flags>37</Flags>
+															</Point>
+														</PointList>
+													</Curve>
+												</Custom>
+											</Reference>
+										</ReferenceList>
+									</RTPC>
+								</Local>
+							</Reference>
+						</ObjectList>
+					</ObjectLists>
+				</Effect>
+				<Effect Name="wind_compressor" ID="{44178556-2BE6-4946-948D-1FE37709C355}" PluginName="Wwise Compressor" CompanyID="0" PluginID="108" PluginType="3">
+					<PropertyList>
+						<Property Name="Threshold" Type="Real32" Value="-44.1"/>
+					</PropertyList>
+				</Effect>
+				<Effect Name="New_Parametric_EQ" ID="{4D54822E-EE14-4CF0-B8BE-72200B8AE058}" PluginName="Wwise Parametric EQ" CompanyID="0" PluginID="105" PluginType="3">
+					<PropertyList>
+						<Property Name="FilterTypeBand1" Type="int32" Value="5"/>
+						<Property Name="FilterTypeBand2" Type="int32" Value="0"/>
+						<Property Name="FilterTypeBand3" Type="int32" Value="1"/>
+						<Property Name="FrequencyBand2" Type="Real32" Value="20000"/>
+						<Property Name="FrequencyBand3" Type="Real32" Value="6881"/>
+						<Property Name="GainBand1" Type="Real32" Value="-3"/>
+						<Property Name="GainBand3" Type="Real32" Value="-5.5"/>
 					</PropertyList>
 				</Effect>
 			</ChildrenList>

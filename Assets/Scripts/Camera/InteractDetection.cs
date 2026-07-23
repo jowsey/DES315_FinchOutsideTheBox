@@ -1,0 +1,147 @@
+using Game.Items;
+using Sirenix.OdinInspector;
+using UI;
+using UnityEngine;
+
+public class InteractDetection : MonoBehaviour
+{
+    private Camera _camera;
+    private Transform _uiCanvas;
+
+    [SerializeField] private float _maxPickupDistance = 4.0f;
+    [SerializeField] private float _maxPutdownDistance = 8.0f;
+
+    [Header("UI")] [SerializeField] [Required]
+    private InteractPrompt _interactPromptPrefab;
+
+    [SerializeField] [Required] private ItemInfoCard _itemInfoCardPrefab;
+
+    private InteractPrompt _interactPromptInstance;
+    private ItemInfoCard _itemInfoCardInstance;
+
+    private readonly Collider[] _nearbyHits = new Collider[64];
+
+    //The transform of the object currently being looked at
+    public static Transform TargetedTransform { get; private set; }
+
+    private void Awake()
+    {
+        _camera = GetComponent<Camera>();
+        _uiCanvas = GameObject.FindGameObjectWithTag("UICanvas").transform;
+    }
+
+    private void CleanupInteractPrompt()
+    {
+        _interactPromptInstance.Destroy();
+        _interactPromptInstance = null;
+    }
+
+    private void CleanupItemInfoPrompt()
+    {
+        _itemInfoCardInstance.Destroy();
+        _itemInfoCardInstance = null;
+    }
+
+    private void CleanupPrompts()
+    {
+        TargetedTransform = null;
+        if (_interactPromptInstance) CleanupInteractPrompt();
+        if (_itemInfoCardInstance) CleanupItemInfoPrompt();
+    }
+
+    //LateUpdate so that it's after Cinemachine updates the camera
+    private void LateUpdate()
+    {
+        if (!PlayerController.LocalPlayer) return;
+
+        var detectMask = LayerMask.GetMask("Item", "Cart");
+        var maxReach = Mathf.Max(_maxPickupDistance, _maxPutdownDistance);
+
+        var ray = _camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+        var didRayHit = Physics.SphereCast(ray, 0.25f, out var rayHit, 100f, detectMask, QueryTriggerInteraction.Ignore);
+
+        Interactable interactable = null;
+        var playerPos = PlayerController.LocalPlayer.transform.position;
+        var distanceToPlayer = Vector3.Distance(rayHit.point, playerPos);
+
+        // Check if spherecast hit
+        if (!didRayHit || distanceToPlayer > maxReach || !rayHit.transform.TryGetComponent(out interactable))
+        {
+            // If not, check nearby
+            var hits = Physics.OverlapSphereNonAlloc(playerPos, maxReach / 2f, _nearbyHits, detectMask, QueryTriggerInteraction.Ignore);
+
+            var closest = float.MaxValue;
+            for (var i = 0; i < hits; i++)
+            {
+                var hitTransform = _nearbyHits[i].transform;
+                if (!hitTransform.TryGetComponent(out Interactable nearbyInteractable)) continue;
+                var distance = Vector3.Distance(hitTransform.position, playerPos);
+
+                if (distance >= closest) continue;
+                closest = distance;
+                interactable = nearbyInteractable;
+            }
+
+            if (interactable)
+            {
+                distanceToPlayer = closest;
+            }
+            else
+            {
+                CleanupPrompts();
+                return;
+            }
+        }
+
+        var interactedTransform = interactable.InteractedTransform;
+
+        // New target
+        Item item = null;
+        var validPickupTarget = distanceToPlayer <= _maxPickupDistance
+                                && PlayerController.LocalPlayer.PickupAllowed
+                                && interactedTransform.TryGetComponent(out item)
+                                && item.Pickuppable
+                                && item.State == Item.ItemState.Idle;
+        var validPutdownTarget = distanceToPlayer <= _maxPutdownDistance
+                                 && PlayerController.LocalPlayer.PutdownAllowed
+                                 && interactedTransform.CompareTag("TreasureCarrier");
+
+        if (!(validPickupTarget || validPutdownTarget))
+        {
+            CleanupPrompts();
+        }
+        else if (interactedTransform != TargetedTransform)
+        {
+            TargetedTransform = interactable.InteractedTransform;
+
+            if (!_interactPromptInstance) _interactPromptInstance = Instantiate(_interactPromptPrefab, _uiCanvas);
+
+            if (validPickupTarget)
+            {
+                if (!_itemInfoCardInstance) _itemInfoCardInstance = Instantiate(_itemInfoCardPrefab, _uiCanvas);
+
+                _interactPromptInstance.Build(InteractPrompt.InteractionType.PickUp);
+                _itemInfoCardInstance.Build(item.Data);
+
+                // Position interact prompt to right
+                _interactPromptInstance.WorldFollowUI.TrackingTarget = TargetedTransform;
+                ((RectTransform)_interactPromptInstance.transform).pivot = new Vector2(0, 0.5f);
+                _interactPromptInstance.WorldFollowUI.UIPositionOffset = new Vector2(32, 0);
+
+                // Position item info card below it
+                _itemInfoCardInstance.WorldFollowUI.TrackingTarget = TargetedTransform;
+                ((RectTransform)_itemInfoCardInstance.transform).pivot = new Vector2(0, 1.0f);
+                _itemInfoCardInstance.WorldFollowUI.UIPositionOffset = new Vector2(32, -32);
+            }
+            else if (validPutdownTarget)
+            {
+                _interactPromptInstance.Build(InteractPrompt.InteractionType.PutDown);
+
+                // Position to top of target
+                _interactPromptInstance.WorldFollowUI.TrackingTarget = TargetedTransform.GetComponentInChildren<HeldObjectPutdownTarget>().transform;
+                ((RectTransform)_interactPromptInstance.transform).pivot = new Vector2(0.5f, 0);
+                _interactPromptInstance.WorldFollowUI.UIPositionOffset = new Vector2(0, -32);
+            }
+        }
+    }
+}

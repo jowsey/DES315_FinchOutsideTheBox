@@ -5,13 +5,12 @@ using Mirror;
 using PrimeTween;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace UI
 {
     public class Menu : MonoBehaviour
     {
-        [SerializeField] [Required] private NetworkManager _networkManager;
+        [SerializeField] [Required] private Networking.NetworkManager _networkManager;
 
         [SerializeField] [Required] private EosTransport _eosTransportPrefab;
         [SerializeField] [Required] private KcpTransport _kcpTransportPrefab;
@@ -24,9 +23,6 @@ namespace UI
 
         [SerializeField] [Required] private MainMenuButton _lobbyBrowserButton;
         [SerializeField] [Required] private MainMenuButton _settingsButton;
-
-        [SerializeField] [Required] private InputActionReference _altMoveAction;
-        [SerializeField] [Required] private InputActionReference _altJumpAction;
 
         private void ResetTransports()
         {
@@ -53,6 +49,7 @@ namespace UI
         private void Awake()
         {
             Cursor.lockState = CursorLockMode.None;
+            PlayerController.ClearAllControlBlockerFlags();
 
             // Clean up previously-used transport if we're coming back from the game
             ResetTransports();
@@ -149,7 +146,7 @@ namespace UI
             Debug.Log("Hosting new local game");
             InitLocal();
 
-            _networkManager.StartHost();
+            _networkManager.StartHostLoading();
         }
 
         public void JoinLocal()
@@ -157,36 +154,8 @@ namespace UI
             Debug.Log("Joining local game");
             InitLocal();
 
-            _networkManager.StartClient();
+            _networkManager.StartClientLoading();
         }
-
-        // public void HostLocal2Player()
-        // {
-        //     InitLocal();
-        //     _networkManager.StartHost();
-        //
-        //     _networkManager.StartCoroutine(Routine());
-        //     return;
-        //
-        //     IEnumerator Routine()
-        //     {
-        //         yield return new WaitUntil(() => NetworkServer.localConnection?.isReady == true);
-        //
-        //         // manually spawn 2nd player with server authority
-        //         var spawnPoint = FindAnyObjectByType<Networking.NetworkManager>().GetStartPosition();
-        //
-        //         var otherPlayer = Instantiate(_networkManager.playerPrefab, spawnPoint.transform.position, spawnPoint.transform.rotation);
-        //         var otherPlayerController = otherPlayer.GetComponent<PlayerController>();
-        //         otherPlayerController.MoveAction = _altMoveAction;
-        //         otherPlayerController.JumpAction = _altJumpAction;
-        //
-        //         NetworkServer.ReplacePlayerForConnection(
-        //             NetworkServer.localConnection,
-        //             otherPlayer,
-        //             ReplacePlayerOptions.KeepAuthority
-        //         );
-        //     }
-        // }
 
         public void ToggleSettingsMenu()
         {
