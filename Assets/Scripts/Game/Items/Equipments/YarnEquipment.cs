@@ -25,7 +25,7 @@ namespace Game.Items.Equipments
                 var anchorCollider = anchor.GetComponentInChildren<Collider>();
                 var previousBody = anchor.GetComponent<Rigidbody>();
 
-                const float startingDelay = 0.15f;
+                const float startingDelay = 0.12f;
                 
                 for (var i = 0; i < _numSegments; i++)
                 {

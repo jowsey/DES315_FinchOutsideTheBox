@@ -14,10 +14,12 @@ namespace Obstacles
 
         [SerializeField] private Event _bounceSfx;
 
+        [SerializeField] private LayerMask _bounceLayers;
+
         private float _lastBounceTime;
         private float _bounceCooldown = 0.35f;
 
-        private void OnEnable()
+        private void Start()
         {
             Tween.Scale(transform, Vector3.zero, transform.localScale, TransitionDuration, Ease.OutBounce);
             Tween.LocalEulerAngles(
@@ -38,10 +40,16 @@ namespace Obstacles
 
         private void OnCollisionStay(Collision collision)
         {
+            if ((_bounceLayers.value & (1 << collision.gameObject.layer)) == 0) return;
+            
             if (Time.time - _lastBounceTime < _bounceCooldown) return;
-            _lastBounceTime = Time.time;
+            if (collision.rigidbody.isKinematic) return;
 
-            PlayerController.LocalPlayer.Rb.AddForce(transform.up * _jumpForce, ForceMode.Impulse);
+            if (!collision.body.TryGetComponent(out NetworkTransformBase identity)) return;
+            if (!identity.authority) return;
+
+            _lastBounceTime = Time.time;
+            collision.rigidbody.AddForce(transform.up * _jumpForce, ForceMode.Impulse);
 
             CmdReportBounce();
         }

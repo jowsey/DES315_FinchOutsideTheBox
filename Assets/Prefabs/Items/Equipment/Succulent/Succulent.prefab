@@ -104,7 +104,7 @@ Rigidbody:
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 2304
+    m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -131,12 +131,15 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _jumpForce: 200
+  _jumpForce: 225
   _innerMesh: {fileID: 652932086492436827}
   _bounceSfx:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 0}
+  _bounceLayers:
+    serializedVersion: 2
+    m_Bits: 2304
 --- !u!1001 &1046268020058193584
 PrefabInstance:
   m_ObjectHideFlags: 0
