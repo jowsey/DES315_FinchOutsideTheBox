@@ -693,6 +693,32 @@
 								</Action>
 							</ChildrenList>
 						</Event>
+						<Folder Name="Items" ID="{EF26864E-69D7-472B-B07F-B30F93AE7E1D}" ShortID="174915434">
+							<ChildrenList>
+								<Event Name="DollHum" ID="{EF0C6310-F1BD-4977-95B7-F8927F53CF00}">
+									<ChildrenList>
+										<Action Name="" ID="{01DEED8F-DA43-4E50-ADB5-1A3E244B2C99}" ShortID="759803869">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="LowHum" ID="{4CDD9ECA-720D-4C6A-ADEC-A0EC50EEA090}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+								<Event Name="DollBuy" ID="{32BBD4AB-CA94-40E3-86BE-6C5E48E7825A}">
+									<ChildrenList>
+										<Action Name="" ID="{BBDF97FC-099F-4F93-B975-2365A79E7051}" ShortID="761997768">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="BuyDoll" ID="{42E70704-2F88-4340-AEEF-B75F62B1C018}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+							</ChildrenList>
+						</Folder>
 					</ChildrenList>
 				</Folder>
 				<Folder Name="PushToTalk" ID="{BAA9D189-BC42-4623-928F-E256A4436F93}" ShortID="568184641">

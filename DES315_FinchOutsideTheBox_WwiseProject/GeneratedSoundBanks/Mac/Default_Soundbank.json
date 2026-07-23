@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{46173D95-DFFE-4BE9-8209-57EB1CFCE1F7}",
     "Language": "SFX",
-    "Hash": "{3AE5A471-EBC7-BB0A-14DA-AC759246F6CF}",
+    "Hash": "{B579188F-A802-5BB4-BB00-88C096FF70D6}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Default_Soundbank",
     "ShortName": "Default_Soundbank",
     "Path": "Default_Soundbank.bnk",
@@ -118,6 +118,14 @@
       "Location": "Memory",
       "ShortName": "Cat Jump-012.wav",
       "CachePath": "16/{16935FF0-6D70-F0F3-9DC2-5822F6EF8137}.wem"
+     },
+     {
+      "Id": "96185026",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "BuyDoll.wav",
+      "CachePath": "67/{677C202F-D2A2-8E99-60BC-F39D54E1AB19}.wem"
      },
      {
       "Id": "98700581",
@@ -374,6 +382,14 @@
       "Location": "Memory",
       "ShortName": "Sand Fts-004.wav",
       "CachePath": "4B/{4B4C456A-D4A9-2D72-DACF-C18E5433F929}.wem"
+     },
+     {
+      "Id": "323355592",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "LowHum.wav",
+      "CachePath": "3B/{3BEB43FB-827F-CCAC-BCD3-3106ACDD4D7F}.wem"
      },
      {
       "Id": "324644523",
@@ -1581,6 +1597,33 @@
       "MediaRefs": [
        {
         "Id": "476242004"
+       }
+      ]
+     },
+     {
+      "Id": "3659584350",
+      "Name": "DollBuy",
+      "ObjectPath": "\\Events\\Default Work Unit\\Shop\\Items\\DollBuy",
+      "GUID": "{32BBD4AB-CA94-40E3-86BE-6C5E48E7825A}",
+      "DurationType": "OneShot",
+      "DurationMin": "1.6783752",
+      "DurationMax": "1.6783752",
+      "MediaRefs": [
+       {
+        "Id": "96185026"
+       }
+      ]
+     },
+     {
+      "Id": "3457267156",
+      "Name": "DollHum",
+      "ObjectPath": "\\Events\\Default Work Unit\\Shop\\Items\\DollHum",
+      "GUID": "{EF0C6310-F1BD-4977-95B7-F8927F53CF00}",
+      "MaxAttenuation": "5",
+      "DurationType": "Infinite",
+      "MediaRefs": [
+       {
+        "Id": "323355592"
        }
       ]
      },
@@ -3261,6 +3304,6 @@
     ]
    }
   ],
-  "FileHash": "{F940B50F-0DF3-AFA0-B932-790BEDC58B00}"
+  "FileHash": "{55668807-7419-4907-9C65-60FDC9438214}"
  }
 }

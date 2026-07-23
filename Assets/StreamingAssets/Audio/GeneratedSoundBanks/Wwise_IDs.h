@@ -22,6 +22,8 @@ namespace AK
         static const AkUniqueID CATPING = 3173738935U;
         static const AkUniqueID CATSHOPENTER = 1950057143U;
         static const AkUniqueID CHECKPOINTDRUMS = 2509294038U;
+        static const AkUniqueID DOLLBUY = 3659584350U;
+        static const AkUniqueID DOLLHUM = 3457267156U;
         static const AkUniqueID DOORSMOVING = 758278606U;
         static const AkUniqueID EMOTEHOVERTICK = 151557060U;
         static const AkUniqueID FOOTSTEPS = 2385628198U;
