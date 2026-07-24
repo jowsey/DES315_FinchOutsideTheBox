@@ -91,6 +91,9 @@ public class PlayerController : NetworkBehaviour
 
     private Collider[] _groundedCheckColliderBuffer = new Collider[32];
 
+    [SerializeField] [SuffixLabel("seconds")]
+    private float _coyoteTime;
+    
     [Header("State")]
     [ReadOnly] public WheelSeat Seat;
 
@@ -109,6 +112,8 @@ public class PlayerController : NetworkBehaviour
     
     [field: SerializeField] public Transform HeldObjectPickupTarget { get; private set; }
 
+    private float _lastGroundedTime;
+    
     // Called when a player object is done being initially setup
     // Does NOT imply the player has just joined
     public static readonly UnityEvent<PlayerController> OnPlayerReady = new();
@@ -701,12 +706,21 @@ public class PlayerController : NetworkBehaviour
             _networkAnimator.animator.SetBool(GlideState, false);
         }
 
+        if (grounded || groundedOnBumpy)
+        {
+            _lastGroundedTime = Time.time;
+        }
+
         //Jumping
-        if (((ControlEnabled(ControlBlockerFlags.Jump) && _jumpPressed) || (IsPuppet && PuppetRequestJump)) && (grounded || groundedOnBumpy))
+        if (((ControlEnabled(ControlBlockerFlags.Jump) && _jumpPressed) || (IsPuppet && PuppetRequestJump))
+            && (grounded || groundedOnBumpy || (Time.time - _lastGroundedTime < _coyoteTime)))
         {
             _networkAnimator.animator.SetTrigger(JumpTrigger);
             float jumpMultiplier = IsPuppet ? PuppetJumpForceMultiplier : 1f;
             Rb.AddForce(Vector3.up * (_jumpForce * jumpMultiplier), ForceMode.Impulse);
+
+            // don't allow double-jump
+            _lastGroundedTime = 0;
         }
 
         CleanupFixedUpdate();
