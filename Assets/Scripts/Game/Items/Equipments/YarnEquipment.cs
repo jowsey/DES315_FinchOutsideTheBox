@@ -11,6 +11,10 @@ namespace Game.Items.Equipments
         [SerializeField] private ConfigurableJoint _yarnSegmentPrefab;
         [SerializeField] private ConfigurableJoint _yarnBallPrefab;
         [SerializeField, Min(1)] private int _maxSegments;
+        
+        [SerializeField] public AK.Wwise.RTPC YarnVol;
+        [SerializeField] public AK.Wwise.Event YarnStretch;
+        [SerializeField] public AK.Wwise.Event YarnOut;
 
         [SerializeField, Required] private LineRenderer _line;
         [SerializeField] private LayerMask _ropeCollideMask;
@@ -43,6 +47,9 @@ namespace Game.Items.Equipments
 
                         _positions.Clear();
                         _line.positionCount = 0;
+                        
+                        YarnVol.SetGlobalValue(0); 
+                        YarnStretch.Stop(gameObject);
                     }
 
                     break;
@@ -71,6 +78,9 @@ namespace Game.Items.Equipments
 
             IsHooking = true;
             SetPreviewVisible(true);
+            
+            YarnStretch.Post(gameObject);
+            YarnVol.SetGlobalValue(1);
         }
 
         private float GetTotalLineLength()
@@ -171,6 +181,9 @@ namespace Game.Items.Equipments
             _line.GetPositions(positions);
             CmdPlaceRope(_hookPoint, positions[1..^1]);
 
+            YarnVol.SetGlobalValue(0);
+            YarnStretch.Stop(gameObject);
+            YarnOut.Post(gameObject);
             IsHooking = false;
         }
 

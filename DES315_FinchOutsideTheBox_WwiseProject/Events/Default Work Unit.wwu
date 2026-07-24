@@ -871,6 +871,39 @@
 										</Action>
 									</ChildrenList>
 								</Event>
+								<Event Name="YarnBuy" ID="{AD47251B-5449-4DB9-A0B3-36DE6E7D333A}">
+									<ChildrenList>
+										<Action Name="" ID="{54365AD5-CE84-4B34-BA65-782E9D11158E}" ShortID="579924566">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="YarnBuy" ID="{BADE4652-717D-4020-9853-C81D80227BAC}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+								<Event Name="YarnUnravel" ID="{C8B814D8-AED9-47A6-B87B-2ACBFD86FC77}">
+									<ChildrenList>
+										<Action Name="" ID="{ACE8198F-9FB3-466F-81B9-8C634C6890DC}" ShortID="987985048">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="RopeCreak" ID="{7DCE6081-FB61-44EE-9DEF-990B26D4E10F}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+								<Event Name="YarnPlace" ID="{ED5B5406-5E7F-4AE3-8D6E-81AF34CBDAD4}">
+									<ChildrenList>
+										<Action Name="" ID="{3C555342-A6E8-42E8-B318-BA07F693733E}" ShortID="959015074">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="PlaceRope" ID="{1315F91B-D759-4545-996A-0CA780D296B6}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
 							</ChildrenList>
 						</Folder>
 					</ChildrenList>
