@@ -71,6 +71,9 @@ namespace AK
         static const AkUniqueID TIPJAR = 680758647U;
         static const AkUniqueID VERTSPINMOVING = 2481782438U;
         static const AkUniqueID WINDNSAND = 3811731857U;
+        static const AkUniqueID YARNBUY = 3208817649U;
+        static const AkUniqueID YARNPLACE = 2787064764U;
+        static const AkUniqueID YARNUNRAVEL = 408652242U;
         static const AkUniqueID ZIPPER = 1558183U;
         static const AkUniqueID ZIPPER_01 = 1618850795U;
         static const AkUniqueID ZIPPER_02 = 1618850792U;
@@ -173,6 +176,7 @@ namespace AK
         static const AkUniqueID PUSHERMOVING12S = 3719806030U;
         static const AkUniqueID PUSHERMOVING14S = 3619140280U;
         static const AkUniqueID PUSHERMOVING16S = 3652695426U;
+        static const AkUniqueID ROPEONOFF = 1753086197U;
         static const AkUniqueID SFXVOLUME = 988953028U;
         static const AkUniqueID SIDESWEEPER = 988175737U;
         static const AkUniqueID VERTSPINNYONOFF = 1139057927U;

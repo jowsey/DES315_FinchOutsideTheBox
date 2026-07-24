@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{46173D95-DFFE-4BE9-8209-57EB1CFCE1F7}",
     "Language": "SFX",
-    "Hash": "{B579188F-A802-5BB4-BB00-88C096FF70D6}",
+    "Hash": "{9381865C-0E58-686F-3AD9-CCEEB8CE7744}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Default_Soundbank",
     "ShortName": "Default_Soundbank",
     "Path": "Default_Soundbank.bnk",
@@ -125,7 +125,7 @@
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "BuyDoll.wav",
-      "CachePath": "67/{677C202F-D2A2-8E99-60BC-F39D54E1AB19}.wem"
+      "CachePath": "FF/{FF885EB4-6BE4-3093-6826-BD4B3CEF23BC}.wem"
      },
      {
       "Id": "98700581",
@@ -389,7 +389,7 @@
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "LowHum.wav",
-      "CachePath": "3B/{3BEB43FB-827F-CCAC-BCD3-3106ACDD4D7F}.wem"
+      "CachePath": "2C/{2C6CAB97-6F70-0E5F-ADBE-E69F9748CD97}.wem"
      },
      {
       "Id": "324644523",
@@ -486,6 +486,14 @@
       "Location": "Memory",
       "ShortName": "Pre HeavenlyGates.wav",
       "CachePath": "DF/{DF78CD04-9C86-B24A-56C2-D6E9546E913F}.wem"
+     },
+     {
+      "Id": "373906759",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "RopeCreak.wav",
+      "CachePath": "E5/{E54CC31C-5E55-038C-6AC6-7C882EC4F732}.wem"
      },
      {
       "Id": "378091100",
@@ -912,6 +920,14 @@
       "CachePath": "0D/{0D8A5930-2574-5603-C6CB-486075F00BBE}.wem"
      },
      {
+      "Id": "704368091",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "RopeCreak.wav",
+      "CachePath": "38/{38B7AD69-3D1C-2571-FE9C-D6D0DAC34093}.wem"
+     },
+     {
       "Id": "736609714",
       "Language": "SFX",
       "Streaming": "false",
@@ -1198,6 +1214,14 @@
       "Location": "Memory",
       "ShortName": "StoneFts-006.wav",
       "CachePath": "10/{101E0D91-87F2-C239-4FDC-6414D07C2268}.wem"
+     },
+     {
+      "Id": "949848348",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "PlaceRope.wav",
+      "CachePath": "91/{9147A5A0-32C1-8234-BCE8-DB9EF2F3D8EC}.wem"
      },
      {
       "Id": "954948749",
@@ -2640,7 +2664,7 @@
       "Name": "ShopkeepRadio",
       "ObjectPath": "\\Events\\Default Work Unit\\Shop\\ShopkeepRadio",
       "GUID": "{368BF370-EA0E-4697-8C6B-464B59D3E0E7}",
-      "MaxAttenuation": "7",
+      "MaxAttenuation": "10",
       "DurationType": "Infinite",
       "MediaRefs": [
        {
@@ -2780,6 +2804,48 @@
       "MediaRefs": [
        {
         "Id": "31480027"
+       }
+      ]
+     },
+     {
+      "Id": "3208817649",
+      "Name": "YarnBuy",
+      "ObjectPath": "\\Events\\Default Work Unit\\Shop\\Items\\YarnBuy",
+      "GUID": "{AD47251B-5449-4DB9-A0B3-36DE6E7D333A}",
+      "DurationType": "OneShot",
+      "DurationMin": "0.7333322",
+      "DurationMax": "0.7333322",
+      "MediaRefs": [
+       {
+        "Id": "704368091"
+       }
+      ]
+     },
+     {
+      "Id": "2787064764",
+      "Name": "YarnPlace",
+      "ObjectPath": "\\Events\\Default Work Unit\\Shop\\Items\\YarnPlace",
+      "GUID": "{ED5B5406-5E7F-4AE3-8D6E-81AF34CBDAD4}",
+      "MaxAttenuation": "10",
+      "DurationType": "OneShot",
+      "DurationMin": "0.89884925",
+      "DurationMax": "0.95229757",
+      "MediaRefs": [
+       {
+        "Id": "949848348"
+       }
+      ]
+     },
+     {
+      "Id": "408652242",
+      "Name": "YarnUnravel",
+      "ObjectPath": "\\Events\\Default Work Unit\\Shop\\Items\\YarnUnravel",
+      "GUID": "{C8B814D8-AED9-47A6-B87B-2ACBFD86FC77}",
+      "MaxAttenuation": "5",
+      "DurationType": "Infinite",
+      "MediaRefs": [
+       {
+        "Id": "373906759"
        }
       ]
      },
@@ -3104,6 +3170,12 @@
       "GUID": "{DDEBEE58-D2A7-4713-B5B7-BEA3F5281352}"
      },
      {
+      "Id": "1753086197",
+      "Name": "RopeOnOff",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\RopeOnOff",
+      "GUID": "{8B3B0840-DB03-4ECF-9291-14426DEE80B7}"
+     },
+     {
       "Id": "1907997609",
       "Name": "PlatformSpeed",
       "ObjectPath": "\\Game Parameters\\Default Work Unit\\Obstacles\\PlatformSpeed",
@@ -3304,6 +3376,6 @@
     ]
    }
   ],
-  "FileHash": "{2F51D7CC-9A9A-237A-7F85-77AC1CB5F95C}"
+  "FileHash": "{7B7C80C3-B7EB-43A3-1170-01B08D8888B2}"
  }
 }
