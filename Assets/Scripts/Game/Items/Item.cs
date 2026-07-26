@@ -101,12 +101,6 @@ namespace Game.Items
                     foreach (Renderer rend in _renderers) rend.enabled = true;
                     foreach (Light l in _lights) l.enabled = true;
 
-                    if (_holder)
-                    {
-                        _holder.HeldObject = null;
-                        _holder = null;
-                    }
-
                     break;
                 }
                 case ItemState.Held:
@@ -125,7 +119,7 @@ namespace Game.Items
                     {
                         Highlight.SetHighlightable("Item", false);
                     }
-                    
+
                     if (_hasInitialised)
                     {
                         _pickupSfx.Post(gameObject);
@@ -170,6 +164,21 @@ namespace Game.Items
                     }
 
                     foreach (Collider col in _colliders) col.enabled = false;
+
+                    break;
+                }
+            }
+
+            // Late transition out
+            switch (oldState)
+            {
+                case ItemState.Held:
+                {
+                    if (_holder)
+                    {
+                        _holder.HeldObject = null;
+                        _holder = null;
+                    }
 
                     break;
                 }
