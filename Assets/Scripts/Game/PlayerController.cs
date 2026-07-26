@@ -260,6 +260,7 @@ public class PlayerController : NetworkBehaviour
         }
 
         Rb = GetComponent<Rigidbody>();
+        Rb.sleepThreshold = 0.0f;
         _networkAnimator = GetComponent<NetworkAnimator>();
         WwiseAnimationEvents = GetComponentInChildren<WwiseAnimationEvents>(true);
 
