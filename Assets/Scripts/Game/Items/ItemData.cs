@@ -38,5 +38,21 @@ namespace Game.Items
         [field: SerializeField, SuffixLabel("coins")] public int SellPrice { get; private set; } = 5;
 
         [field: SerializeField] public Item Prefab { get; private set; }
+
+        private void OnEnable()
+        {
+#if UNITY_EDITOR
+            // Check if addressable
+            var settings = UnityEditor.AddressableAssets.AddressableAssetSettingsDefaultObject.Settings;
+
+            var assetPath = UnityEditor.AssetDatabase.GetAssetPath(this);
+            var guid = UnityEditor.AssetDatabase.AssetPathToGUID(assetPath);
+
+            var entry = settings.FindAssetEntry(guid);
+
+            if (settings && entry != null) return;
+            Debug.LogWarning($"Item {ItemName} ({name}) isn't registered with Addressables, remember to do so!");
+#endif
+        }
     }
 }

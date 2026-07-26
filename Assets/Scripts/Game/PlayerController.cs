@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Game;
 using Game.Items;
 using Mirror;
@@ -21,11 +22,45 @@ using ShowInInspectorAttribute = Sirenix.OdinInspector.ShowInInspectorAttribute;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : NetworkBehaviour
 {
+    public class PlayerStatusEffect
+    {
+        public enum StatusEffectTarget
+        {
+            MoveSpeed
+        }
+
+        public enum StatusEffectType
+        {
+            Add,
+            Multiply
+        }
+
+        public string DisplayName;
+        public float StartTime;
+        public float Duration;
+        public StatusEffectTarget Target;
+        public float Effect;
+        public StatusEffectType Type;
+        
+        public PlayerStatusEffect(string name, float duration, StatusEffectTarget target, float effect, StatusEffectType type)
+        {
+            DisplayName = name;
+            StartTime = Time.time;
+            Duration = duration;
+            Target = target;
+            Effect = effect;
+            Type = type;
+        }
+
+        public float GetProgress() => Mathf.Clamp01((Time.time - StartTime) / Duration);
+    }
+    
     private static readonly int RunningState = Animator.StringToHash("Running");
     private static readonly int JumpTrigger = Animator.StringToHash("Jump");
     private static readonly int GroundedState = Animator.StringToHash("Grounded");
     private static readonly int FallState = Animator.StringToHash("Fall");
     private static readonly int GlideState = Animator.StringToHash("Glide");
+    private static readonly int RelativeRunSpeed = Animator.StringToHash("RelativeRunSpeed");
 
     public static SkinData[] LoadedSkins;
 
@@ -143,7 +178,9 @@ public class PlayerController : NetworkBehaviour
         Emote = 1 << 11,
         All = ~0
     }
+    
     private static readonly Dictionary<Object, ControlBlockerFlags> _controlBlockers = new();
+    
     public static ControlBlockerFlags ActiveBlockers
     {
         get
@@ -178,10 +215,11 @@ public class PlayerController : NetworkBehaviour
     [HideInInspector] public bool IsPuppet;
 
     //Shop
-    public Shop ActiveShop; //The shop the player is currently in
+    [ReadOnly] public Shop ActiveShop; //The shop the player is currently in
     
     public Emoter Emoter { get; private set; }
 
+    // Control blockers
     public static void AddControlBlockerFlags(Object blocker, ControlBlockerFlags flags)
     {
         if (_controlBlockers.TryGetValue(blocker, out ControlBlockerFlags existing))
@@ -245,6 +283,37 @@ public class PlayerController : NetworkBehaviour
 
         _controlBlockers.Clear();
     }
+    
+    [SerializeField] private StatusEffectBox _statusEffectBoxPrefab;
+    private Transform _statusEffectList;
+    
+    private Dictionary<PlayerStatusEffect, StatusEffectBox> _statusEffectBoxes = new();
+    
+    private List<PlayerStatusEffect> _activeStatusEffects = new();
+
+    // Status effects
+    public void AddStatusEffect(PlayerStatusEffect effect)
+    {
+        _activeStatusEffects.Add(effect);
+
+        var box = Instantiate(_statusEffectBoxPrefab, _statusEffectList);
+        box.Build(effect);
+
+        _statusEffectBoxes[effect] = box;
+    }
+
+    private float EffectiveMoveForce => _activeStatusEffects
+        .Where(e => e.Target == PlayerStatusEffect.StatusEffectTarget.MoveSpeed)
+        .Aggregate(_moveForce, (acc, effect) =>
+        {
+            if (effect.Target != PlayerStatusEffect.StatusEffectTarget.MoveSpeed) return acc;
+            return effect.Type switch
+            {
+                PlayerStatusEffect.StatusEffectType.Add => acc + effect.Effect,
+                PlayerStatusEffect.StatusEffectType.Multiply => acc * effect.Effect,
+                _ => acc
+            };
+        });
 
     private void Awake()
     {
@@ -273,6 +342,8 @@ public class PlayerController : NetworkBehaviour
         PuppetRequestJump = false;
 
         Emoter = GetComponent<Emoter>();
+        
+        _statusEffectList = GameObject.FindGameObjectWithTag("StatusEffectList").transform;
     }
 
     private void Start()
@@ -503,6 +574,18 @@ public class PlayerController : NetworkBehaviour
                 HeldObject.CmdTryDrop();
             }
         }
+        
+        // Prune completed status effects
+        var completedEffects = _activeStatusEffects.Where(effect => Time.time - effect.StartTime >= effect.Duration);
+        
+        var boxesToRemove = _statusEffectBoxes.Where(kvp => completedEffects.Contains(kvp.Key)).ToList();
+        foreach (var box in boxesToRemove)
+        {
+            _statusEffectBoxes.Remove(box.Key);
+            box.Value.Destroy();
+        }
+        
+        _activeStatusEffects.RemoveAll(e => completedEffects.Contains(e));
     }
 
     private void LateUpdate()
@@ -642,8 +725,7 @@ public class PlayerController : NetworkBehaviour
             }
             _networkAnimator.animator.SetBool(RunningState, WorldSpaceMoveDir.sqrMagnitude > 0);
         }
-
-
+        
         //Unsitting
         if (Seat && ControlEnabled(ControlBlockerFlags.Jump) && _jumpPressed)
         {
@@ -663,7 +745,7 @@ public class PlayerController : NetworkBehaviour
         //Movement
         if (!Seat)
         {
-            Vector3 delta = new Vector3(WorldSpaceMoveDir.x, 0.0f, WorldSpaceMoveDir.z) * (Time.fixedDeltaTime * _moveForce * AnalogueMoveScale);
+            Vector3 delta = new Vector3(WorldSpaceMoveDir.x, 0.0f, WorldSpaceMoveDir.z) * (Time.fixedDeltaTime * EffectiveMoveForce * AnalogueMoveScale);
             foreach (Vector3 normal in _contactNormals)
             {
                 if (Vector3.Dot(delta, normal) < 0) //moving into the surface
@@ -678,6 +760,8 @@ public class PlayerController : NetworkBehaviour
                 Rb.MovePosition(Rb.position + delta);
             }
         }
+        
+        _networkAnimator.animator.SetFloat(RelativeRunSpeed, EffectiveMoveForce / _moveForce);
 
         bool isFalling = Rb.linearVelocity.y < _fallAnimationMinDownardsVelocity;
 

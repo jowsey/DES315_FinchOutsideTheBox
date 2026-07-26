@@ -26,6 +26,11 @@ namespace Game.Items
         protected void TargetOnSuccessfulUse(NetworkConnectionToClient target)
         {
             _useSfx.Post(gameObject);
+            OnClientSuccessfulUse();
+        }
+
+        protected virtual void OnClientSuccessfulUse()
+        {
         }
     }
 }
