@@ -1,4 +1,5 @@
-﻿using Sirenix.OdinInspector;
+﻿using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Game.Items
@@ -11,14 +12,23 @@ namespace Game.Items
 
     public enum ItemRarity
     {
-        Common,
-        Rare,
-        SuperRare
+        Common = -1,
+        Uncommon = 0,
+        Rare = 1,
+        SuperRare = 2
     }
 
     [CreateAssetMenu(fileName = "NewItem", menuName = "Game/Item Data")]
     public class ItemData : ScriptableObject
     {
+        public static Dictionary<ItemRarity, Color> RarityColors = new()
+        {
+            { ItemRarity.Common, Color.gray5 },
+            { ItemRarity.Uncommon, Color.forestGreen },
+            { ItemRarity.Rare, Color.cornflowerBlue },
+            { ItemRarity.SuperRare, Color.mediumPurple }
+        };
+
         [field: SerializeField] public ItemType Type { get; private set; } = ItemType.Treasure;
         [field: SerializeField] public string ItemName { get; private set; } = "Unknown item";
         [field: SerializeField, Multiline] public string Description { get; private set; } = "An unknown item";

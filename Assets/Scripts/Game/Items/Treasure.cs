@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using Mirror;
 using UnityEngine;
 
 namespace Game.Items
@@ -8,6 +10,37 @@ namespace Game.Items
 
         [SerializeField] private GameObject _smashedTreasurePrefab;
         [SerializeField] private AK.Wwise.Event _breakSfx;
+
+        [SerializeField] private MeshFilter _meshFilter;
+        [SerializeField] private MeshCollider _meshCollider;
+        [SerializeField] private List<Mesh> _randomMeshOptions = new();
+
+        [SyncVar(hook = nameof(OnChangeRandomMeshIndex))] private int _randomMeshIndex = -1;
+
+        public override void OnStartServer()
+        {
+            base.OnStartServer();
+            if (_randomMeshOptions.Count > 0)
+            {
+                _randomMeshIndex = Random.Range(0, _randomMeshOptions.Count);
+            }
+        }
+
+        protected override void OnValidate()
+        {
+            base.OnValidate();
+            if (!_meshFilter) _meshFilter = GetComponentInChildren<MeshFilter>();
+            if (!_meshCollider) _meshCollider = GetComponentInChildren<MeshCollider>();
+        }
+
+        private void OnChangeRandomMeshIndex(int oldValue, int newValue)
+        {
+            if (newValue >= 0)
+            {
+                _meshFilter.sharedMesh = _randomMeshOptions[newValue];
+                if (_meshCollider) _meshCollider.sharedMesh = _randomMeshOptions[newValue];
+            }
+        }
 
         protected override void OnStateChanged(ItemState oldState, ItemState newState)
         {

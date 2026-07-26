@@ -21,7 +21,7 @@ public enum PurchaseError
 
 public class Shop : NetworkBehaviour
 {
-    private static List<ItemData> _itemRegistry;
+    public static List<ItemData> ItemRegistry { get; private set; }
 
     private CinemachineCamera _cinemachineCamera;
     private CinemachineOrbitalFollow _orbitalFollow;
@@ -83,9 +83,9 @@ public class Shop : NetworkBehaviour
     {
         var handle = Addressables.LoadAssetsAsync<ItemData>("Item");
         var items = handle.WaitForCompletion();
-        _itemRegistry = items.ToList();
+        ItemRegistry = items.ToList();
 
-        Debug.Log($"Loaded {_itemRegistry.Count} shop items");
+        Debug.Log($"Loaded {ItemRegistry.Count} shop items");
     }
 
     private void Awake()
@@ -162,13 +162,15 @@ public class Shop : NetworkBehaviour
     {
         AvailableItemIdentities.Clear();
 
-        int numItems = Mathf.Min(_maxAvailableItems, _itemRegistry.Count);
+        var equipments = ItemRegistry.Where(i => i.Type == ItemType.Equipment).ToList();
+        
+        int numItems = Mathf.Min(_maxAvailableItems, equipments.Count);
         for (int i = 0; i < numItems; ++i)
         {
-            //If we can fit the entire registry, deterministically spawn one of each, else pick them at random
-            ItemData itemToSpawn = numItems <= _itemRegistry.Count
-                ? _itemRegistry[i]
-                : _itemRegistry[Random.Range(0, _itemRegistry.Count)];
+            //If we can fit the entire registry, deterministically spawn one of each, otherwise pick at random
+            ItemData itemToSpawn = numItems <= equipments.Count
+                ? equipments[i]
+                : equipments[Random.Range(0, equipments.Count)];
 
             //Calculate position along the line
             //If there's only one item, stick it in the middle. Otherwise, space em out evenly

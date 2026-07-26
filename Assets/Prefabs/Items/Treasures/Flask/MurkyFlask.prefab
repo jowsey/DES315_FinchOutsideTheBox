@@ -507,6 +507,9 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: d4d41d3b09f327b4b8b3466dc22fe8a0, type: 2}
+  _meshFilter: {fileID: 0}
+  _meshCollider: {fileID: 0}
+  _randomMeshOptions: []
 --- !u!114 &-4395463060295971911
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -737,6 +740,14 @@ PrefabInstance:
     - target: {fileID: -346788721996269360, guid: b5ea9efc5e464924b817fdcc4c75c863, type: 3}
       propertyPath: m_TagString
       value: Treasure
+      objectReference: {fileID: 0}
+    - target: {fileID: 14042664082920626, guid: b5ea9efc5e464924b817fdcc4c75c863, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 14042664082920626, guid: b5ea9efc5e464924b817fdcc4c75c863, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 775119181275051162, guid: b5ea9efc5e464924b817fdcc4c75c863, type: 3}
       propertyPath: m_RenderingLayerMask
