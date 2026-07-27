@@ -408,7 +408,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
   sceneId: 0
-  _assetId: 1459141250
+  _assetId: 2742300045
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
@@ -711,10 +711,39 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8775300e01b6ca24ba8da17408e5aa9c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8495062334733936196}
   m_SourcePrefab: {fileID: 100100000, guid: 8775300e01b6ca24ba8da17408e5aa9c, type: 3}
 --- !u!4 &6156110527763620751 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 8775300e01b6ca24ba8da17408e5aa9c, type: 3}
   m_PrefabInstance: {fileID: 5973000804776920164}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &6783886980143184181 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 8775300e01b6ca24ba8da17408e5aa9c, type: 3}
+  m_PrefabInstance: {fileID: 5973000804776920164}
+  m_PrefabAsset: {fileID: 0}
+--- !u!135 &8495062334733936196
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6783886980143184181}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 4.9772367
+  m_Center: {x: -0.00024405283, y: -2.9833257, z: 0}
