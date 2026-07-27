@@ -148,7 +148,7 @@ MonoBehaviour:
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: d4d41d3b09f327b4b8b3466dc22fe8a0, type: 2}
   _meshFilter: {fileID: 4251217571578473010}
-  _meshCollider: {fileID: 2416670970302840097}
+  _meshCollider: {fileID: 4546906129065122382}
   _randomMeshOptions:
   - {fileID: 5636105037668026457, guid: 269d93c4ce0cd2940af6c63ffc06cde7, type: 3}
   - {fileID: 1927305213291715778, guid: 4b96e90b0306b164189d21a44a07ded9, type: 3}
@@ -258,13 +258,17 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Item
       objectReference: {fileID: 0}
+    - target: {fileID: 3451118302482216456, guid: 269d93c4ce0cd2940af6c63ffc06cde7, type: 3}
+      propertyPath: m_Convex
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 269d93c4ce0cd2940af6c63ffc06cde7, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2416670970302840097}
+      addedObject: {fileID: 4546906129065122382}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 269d93c4ce0cd2940af6c63ffc06cde7, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5100292447617180333}
@@ -274,7 +278,7 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 269d93c4ce0cd2940af6c63ffc06cde7, type: 3}
   m_PrefabInstance: {fileID: 782000379602076284}
   m_PrefabAsset: {fileID: 0}
---- !u!64 &2416670970302840097
+--- !u!64 &4546906129065122382
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
