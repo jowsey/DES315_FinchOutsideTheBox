@@ -661,11 +661,14 @@ public class PlayerController : NetworkBehaviour
         bool isFalling = Rb.linearVelocity.y < _fallAnimationMinDownardsVelocity;
 
         //Player is falling - are they gliding?
-        if (ControlEnabled(ControlBlockerFlags.Glide) && isFalling && JumpAction.action.IsPressed())
+        if (ControlEnabled(ControlBlockerFlags.Glide) && JumpAction.action.IsPressed())
         {
             //Player is gliding
-            float gravityNegationPercentage01 = _gravityNegationPercentage / 100.0f;
-            Rb.AddForce(-Physics.gravity * gravityNegationPercentage01, ForceMode.Acceleration);
+            if (isFalling)
+            {
+                float gravityNegationPercentage01 = _gravityNegationPercentage / 100.0f;
+                Rb.AddForce(-Physics.gravity * gravityNegationPercentage01, ForceMode.Acceleration);
+            }
 
             _networkAnimator.animator.SetBool(FallState, false);
             _networkAnimator.animator.SetBool(GlideState, true);
