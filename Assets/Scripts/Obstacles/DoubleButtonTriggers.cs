@@ -9,8 +9,10 @@ public class DoubleButtonTriggers : NetworkBehaviour
     private Animator _animator;
     public bool Forward; //True when going forward, false when going backwards
 
-    public bool _triggerColliding;
+    private bool _triggerColliding;
     private bool _triggerCollidingLastTick;
+
+    public bool _triggered;
 
     public AK.Wwise.Event LeverDown;
 
@@ -29,6 +31,7 @@ public class DoubleButtonTriggers : NetworkBehaviour
         {
             if (other.gameObject.layer == 7)
             _triggerColliding = true;
+            _triggered = true;
         }
     }
 

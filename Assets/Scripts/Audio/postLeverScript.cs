@@ -10,18 +10,20 @@ public class postLeverScript : MonoBehaviour
 
     public void PlayLeverSound()
     {
-        if (GetComponentInChildren<LeverMovement>().Forward)
+        var leverMovement = GetComponentInChildren<LeverMovement>();
+        if (leverMovement?.Forward == true)
         {
-            leverSound.Post(gameObject);
-            leverUp.Post(gameObject);
+            leverSound?.Post(gameObject);
+            leverUp?.Post(gameObject);
         }
     }
 
     public void PlayLeverUp()
     {
-        if (GetComponentInChildren<LeverMovement>().Forward==false)
+        var leverMovement = GetComponentInChildren<LeverMovement>();
+        if (leverMovement?.Forward != true)
         {
-            leverUp.Post(gameObject);
+            leverUp?.Post(gameObject);
         }
     }
 
