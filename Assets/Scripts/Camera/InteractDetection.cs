@@ -106,38 +106,49 @@ public class InteractDetection : MonoBehaviour
                                  && PlayerController.LocalPlayer.PutdownAllowed
                                  && interactedTransform.CompareTag("TreasureCarrier");
 
-        if (!(validPickupTarget || validPutdownTarget))
+        var showInteractPrompt = validPickupTarget || validPutdownTarget;
+        var showInfoCard = validPickupTarget && item.ShowInfoCard;
+
+        if (!showInteractPrompt && _interactPromptInstance) CleanupInteractPrompt();
+        if (!showInfoCard && _itemInfoCardInstance) CleanupItemInfoPrompt();
+
+        if (!(showInteractPrompt || showInfoCard))
         {
-            CleanupPrompts();
+            TargetedTransform = null;
+            return;
         }
-        else if (interactedTransform != TargetedTransform)
+
+        // Build/update prompts for new state
+        if (interactedTransform != TargetedTransform)
         {
             TargetedTransform = interactable.InteractedTransform;
 
             if (!_interactPromptInstance) _interactPromptInstance = Instantiate(_interactPromptPrefab, _uiCanvas);
 
+            if (validPickupTarget) _interactPromptInstance.Build(InteractPrompt.InteractionType.PickUp);
+            else if (validPutdownTarget) _interactPromptInstance.Build(InteractPrompt.InteractionType.PutDown);
+
             if (validPickupTarget)
             {
-                if (!_itemInfoCardInstance) _itemInfoCardInstance = Instantiate(_itemInfoCardPrefab, _uiCanvas);
-
-                _interactPromptInstance.Build(InteractPrompt.InteractionType.PickUp);
-                _itemInfoCardInstance.Build(item.Data);
-
-                // Position interact prompt to right
+                // Interact prompt to right
                 _interactPromptInstance.WorldFollowUI.TrackingTarget = TargetedTransform;
                 ((RectTransform)_interactPromptInstance.transform).pivot = new Vector2(0, 0.5f);
                 _interactPromptInstance.WorldFollowUI.UIPositionOffset = new Vector2(32, 0);
 
-                // Position item info card below it
-                _itemInfoCardInstance.WorldFollowUI.TrackingTarget = TargetedTransform;
-                ((RectTransform)_itemInfoCardInstance.transform).pivot = new Vector2(0, 1.0f);
-                _itemInfoCardInstance.WorldFollowUI.UIPositionOffset = new Vector2(32, -32);
+                if (showInfoCard)
+                {
+                    if (!_itemInfoCardInstance) _itemInfoCardInstance = Instantiate(_itemInfoCardPrefab, _uiCanvas);
+                    _itemInfoCardInstance.Build(item.Data);
+
+                    // Info card below it
+                    _itemInfoCardInstance.WorldFollowUI.TrackingTarget = TargetedTransform;
+                    ((RectTransform)_itemInfoCardInstance.transform).pivot = new Vector2(0, 1.0f);
+                    _itemInfoCardInstance.WorldFollowUI.UIPositionOffset = new Vector2(32, -32);
+                }
             }
             else if (validPutdownTarget)
             {
-                _interactPromptInstance.Build(InteractPrompt.InteractionType.PutDown);
-
-                // Position to top of target
+                // Interact prompt above target
                 _interactPromptInstance.WorldFollowUI.TrackingTarget = TargetedTransform.GetComponentInChildren<HeldObjectPutdownTarget>().transform;
                 ((RectTransform)_interactPromptInstance.transform).pivot = new Vector2(0.5f, 0);
                 _interactPromptInstance.WorldFollowUI.UIPositionOffset = new Vector2(0, -32);

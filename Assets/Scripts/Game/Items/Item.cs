@@ -46,6 +46,8 @@ namespace Game.Items
 
         [SerializeField] private Event _pickupSfx;
 
+        [field: SerializeField] public bool ShowInfoCard { get; protected set; } = true;
+
         protected virtual void Awake()
         {
             Rb = GetComponent<Rigidbody>();
