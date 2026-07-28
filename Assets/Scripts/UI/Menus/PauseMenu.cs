@@ -1,4 +1,5 @@
 using Mirror;
+using PrimeTween;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -15,6 +16,8 @@ namespace UI
 
         private bool _isActive;
         private CanvasGroup _canvasGroup;
+
+        [SerializeField] private CanvasGroup[] _hiddenOnOpen;
 
         public AK.Wwise.RTPC RTPCMenuOnOff;
 
@@ -99,6 +102,9 @@ namespace UI
 
             // set wwise rtpc
             RTPCMenuOnOff.SetGlobalValue(active ? 1 : 0);
+            
+            // hide
+            foreach (var group in _hiddenOnOpen) Tween.Alpha(group, _isActive ? 0f : 1f, 0.5f, Ease.OutCubic);
         }
 
         public void ReturnToCart() => PlayerController.LocalPlayer.CmdReturnToCart();

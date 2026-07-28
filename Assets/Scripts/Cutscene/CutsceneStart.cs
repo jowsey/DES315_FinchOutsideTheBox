@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Game.Items;
 using Mirror;
+using PrimeTween;
 using UnityEngine;
 using UnityEngine.Playables;
 
@@ -13,7 +14,7 @@ public class CutsceneStart : NetworkBehaviour
     [SerializeField] private GameObject _crosshair;
     [SerializeField] private Transform _cartStartTransform;
 
-    [SerializeField] private GameObject[] _disabledWhilePlaying;
+    [SerializeField] private CanvasGroup[] _hiddenWhilePlaying;
 
     //todo: maybe remove if we decide to have the cutscene triggered by button prompt instead? so that players can watch it multiple times
     private bool _played;
@@ -71,7 +72,7 @@ public class CutsceneStart : NetworkBehaviour
     private void OnCutsceneStarted(PlayableDirector _)
     {
         CutsceneActive = true;
-        foreach (GameObject obj in _disabledWhilePlaying) obj.SetActive(false);
+        foreach (CanvasGroup group in _hiddenWhilePlaying) Tween.Alpha(group, 0f, 0.5f, Ease.OutCubic);
 
         _crosshair.SetActive(false);
         Camera.main.GetComponent<ObstructionDitherer>().enabled = false;
@@ -83,7 +84,7 @@ public class CutsceneStart : NetworkBehaviour
 
     private void OnCutsceneStopped(PlayableDirector _)
     {
-        foreach (GameObject obj in _disabledWhilePlaying) obj.SetActive(true);
+        foreach (CanvasGroup group in _hiddenWhilePlaying) Tween.Alpha(group, 1f, 0.5f, Ease.OutCubic);
 
         _crosshair.SetActive(true);
         Camera.main.GetComponent<ObstructionDitherer>().enabled = true;
