@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using PrimeTween;
 using TMPro;
 using UnityEngine;
@@ -12,7 +13,8 @@ namespace UI
         {
             PickUp,
             PutDown,
-            EnterShop
+            EnterShop,
+            Attach
         }
 
         [field: SerializeField] public WorldFollowUI WorldFollowUI { get; private set; }
@@ -20,17 +22,13 @@ namespace UI
 
         [SerializeField] private InteractionType _interactionType;
 
-        [SerializeField] private string _pickUpText = "Pick up";
-        [SerializeField] private string _putDownText = "Put down";
-        [SerializeField] private string _enterShopText = "Enter shop";
-
         [SerializeField] private float _transitionDuration = 0.25f;
 
         private void OnValidate()
         {
             if (!_promptLabel) _promptLabel = GetComponentInChildren<TextMeshProUGUI>();
             if (!WorldFollowUI) WorldFollowUI = GetComponent<WorldFollowUI>();
-            
+
             Build(_interactionType);
         }
 
@@ -44,9 +42,10 @@ namespace UI
         {
             _promptLabel.text = interactionType switch
             {
-                InteractionType.PickUp => _pickUpText,
-                InteractionType.PutDown => _putDownText,
-                InteractionType.EnterShop => _enterShopText,
+                InteractionType.PickUp => "Pick up",
+                InteractionType.PutDown => "Put down",
+                InteractionType.EnterShop => "Enter shop",
+                InteractionType.Attach => "Attach yarn",
                 _ => throw new ArgumentOutOfRangeException(nameof(interactionType), interactionType, null)
             };
 

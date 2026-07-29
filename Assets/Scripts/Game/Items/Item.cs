@@ -29,9 +29,9 @@ namespace Game.Items
         protected Renderer[] _renderers;
         protected Light[] _lights;
 
-        [field: SerializeField] [field: Required] public ItemData Data { get; protected set; }
+        [field: SerializeField] public ItemData Data { get; protected set; }
 
-        [SerializeField] protected float _movementSpeed;
+        public const float PutdownSpeed = 16f;
 
         [SyncVar(hook = nameof(OnHolderIdentityChanged))]
         protected NetworkIdentity _holderIdentity;
@@ -47,6 +47,7 @@ namespace Game.Items
         [SerializeField] private Event _pickupSfx;
 
         [field: SerializeField] public bool ShowInfoCard { get; protected set; } = true;
+        [field: SerializeField] public bool ForceMoveOnHeld { get; protected set; } = true;
 
         protected virtual void Awake()
         {
@@ -251,7 +252,7 @@ namespace Game.Items
             if (State == ItemState.PuttingDown)
             {
                 Vector3 targetVec = _moveTarget.position - Rb.position;
-                Vector3 delta = targetVec.normalized * (Time.fixedDeltaTime * _movementSpeed);
+                Vector3 delta = targetVec.normalized * (Time.fixedDeltaTime * PutdownSpeed);
                 Rb.MovePosition(Rb.position + delta);
 
                 if (targetVec.sqrMagnitude < 0.025f)
@@ -263,11 +264,10 @@ namespace Game.Items
 
         protected virtual void LateUpdate()
         {
-            if (State == ItemState.Held)
+            if (State == ItemState.Held && ForceMoveOnHeld)
             {
-                transform.position = _holder.HeldObjectPickupTarget.position;
                 // todo this follows body which is updated in physics, not camera which is updated every frame - if on local player and first-person, it jitters on rotate specifically 
-                transform.rotation = _holder.HeldObjectPickupTarget.rotation;
+                transform.SetPositionAndRotation(_holder.HeldObjectPickupTarget.position, _holder.HeldObjectPickupTarget.rotation);
             }
         }
     }

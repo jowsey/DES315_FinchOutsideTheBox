@@ -12,15 +12,16 @@ namespace Game.Items.Equipments
         private static readonly Color InvalidPositionColour = new(1f, 0f, 0f, 0.5f);
 
         [SerializeField] protected GameObject _placePrefab;
+        protected GameObject _placeInstance { get; private set; }
+
         [SerializeField] protected GameObject _previewPrefab;
-        
-        private GameObject _previewInstance;
+        protected GameObject _previewInstance { get; private set; }
+
         private Renderer[] _previewRenderers;
+        private bool _previewVisible = true;
         private MaterialPropertyBlock _mpb;
-
-        private Camera _camera;
-
         private LayerMask _placeMask;
+        private Camera _camera;
 
         protected override void Awake()
         {
@@ -59,6 +60,7 @@ namespace Game.Items.Equipments
                         foreach (var rnd in _previewRenderers)
                         {
                             rnd.SetPropertyBlock(_mpb);
+                            rnd.enabled = _previewVisible;
                         }
                     }
 
@@ -93,20 +95,23 @@ namespace Game.Items.Equipments
             }
         }
 
-        [Command(requiresAuthority = false)]
-        private void CmdPlace(Vector3 position, Quaternion rotation, NetworkConnectionToClient sender = null)
+        protected virtual void OnServerTryPlace(Vector3 position, Quaternion rotation, PlayerController player)
         {
             if (State != ItemState.Held) return;
-            var player = sender!.identity.GetComponent<PlayerController>();
             if (player != _holder) return;
 
             var distanceToPlayer = Vector3.Distance(_holder.transform.position, position);
             if (distanceToPlayer > MaxPlaceDistance) return;
 
-            var instance = Instantiate(_placePrefab, position, rotation);
-            NetworkServer.Spawn(instance);
+            _placeInstance = Instantiate(_placePrefab, position, rotation);
+            NetworkServer.Spawn(_placeInstance);
+        }
 
-            OnServerPlace(instance);
+        [Command(requiresAuthority = false)]
+        private void CmdPlace(Vector3 position, Quaternion rotation, NetworkConnectionToClient sender = null)
+        {
+            OnServerTryPlace(position, rotation, sender!.identity.GetComponent<PlayerController>());
+            OnServerUse();
         }
 
         public override void TryUse()
@@ -117,9 +122,15 @@ namespace Game.Items.Equipments
             CmdPlace(_previewInstance.transform.position, _previewInstance.transform.rotation);
         }
 
-        protected virtual void OnServerPlace(GameObject instance)
+        protected void SetPreviewVisible(bool visible)
         {
-            OnServerSuccessfulUse();
+            _previewVisible = visible;
+            if (!_previewInstance) return;
+
+            foreach (var rnd in _previewRenderers)
+            {
+                rnd.enabled = visible;
+            }
         }
     }
 }

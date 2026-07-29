@@ -12,7 +12,7 @@ namespace Game.Items
         {
         }
 
-        protected virtual void OnServerSuccessfulUse()
+        protected virtual void OnServerUse()
         {
             var cachedClient = _holder.connectionToClient;
 

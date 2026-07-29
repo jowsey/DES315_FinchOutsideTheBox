@@ -1,4 +1,5 @@
 using Game.Items;
+using Game.Items.Equipments;
 using Sirenix.OdinInspector;
 using UI;
 using UnityEngine;
@@ -64,11 +65,13 @@ public class InteractDetection : MonoBehaviour
         var playerPos = PlayerController.LocalPlayer.transform.position;
         var distanceToPlayer = Vector3.Distance(rayHit.point, playerPos);
 
+        // todo spherecast prevents fallback if it hits something it doesnt end up using, do full checks before deciding whether to do fallback 
+
         // Check if spherecast hit
         if (!didRayHit || distanceToPlayer > maxReach || !rayHit.transform.TryGetComponent(out interactable))
         {
             // If not, check nearby
-            var hits = Physics.OverlapSphereNonAlloc(playerPos, maxReach / 2f, _nearbyHits, detectMask, QueryTriggerInteraction.Ignore);
+            var hits = Physics.OverlapSphereNonAlloc(playerPos, maxReach / 2f, _nearbyHits, detectMask);
 
             var closest = float.MaxValue;
             for (var i = 0; i < hits; i++)
@@ -105,8 +108,12 @@ public class InteractDetection : MonoBehaviour
         var validPutdownTarget = distanceToPlayer <= _maxPutdownDistance
                                  && PlayerController.LocalPlayer.PutdownAllowed
                                  && interactedTransform.CompareTag("TreasureCarrier");
+        var validHookTarget = distanceToPlayer <= _maxPickupDistance
+                              && PlayerController.LocalPlayer.UseAllowed
+                              && PlayerController.LocalPlayer.HeldObject is YarnEquipment { IsHooking: false }
+                              && interactedTransform.CompareTag("YarnHookTarget");
 
-        var showInteractPrompt = validPickupTarget || validPutdownTarget;
+        var showInteractPrompt = validPickupTarget || validPutdownTarget || validHookTarget;
         var showInfoCard = validPickupTarget && item.ShowInfoCard;
 
         if (!showInteractPrompt && _interactPromptInstance) CleanupInteractPrompt();
@@ -127,11 +134,13 @@ public class InteractDetection : MonoBehaviour
 
             if (validPickupTarget) _interactPromptInstance.Build(InteractPrompt.InteractionType.PickUp);
             else if (validPutdownTarget) _interactPromptInstance.Build(InteractPrompt.InteractionType.PutDown);
+            else if (validHookTarget) _interactPromptInstance.Build(InteractPrompt.InteractionType.Attach);
+
+            _interactPromptInstance.WorldFollowUI.TrackingTarget = TargetedTransform;
 
             if (validPickupTarget)
             {
                 // Interact prompt to right
-                _interactPromptInstance.WorldFollowUI.TrackingTarget = TargetedTransform;
                 ((RectTransform)_interactPromptInstance.transform).pivot = new Vector2(0, 0.5f);
                 _interactPromptInstance.WorldFollowUI.UIPositionOffset = new Vector2(32, 0);
 
@@ -146,10 +155,9 @@ public class InteractDetection : MonoBehaviour
                     _itemInfoCardInstance.WorldFollowUI.UIPositionOffset = new Vector2(32, -32);
                 }
             }
-            else if (validPutdownTarget)
+            else if (validPutdownTarget || validHookTarget)
             {
                 // Interact prompt above target
-                _interactPromptInstance.WorldFollowUI.TrackingTarget = TargetedTransform.GetComponentInChildren<HeldObjectPutdownTarget>().transform;
                 ((RectTransform)_interactPromptInstance.transform).pivot = new Vector2(0.5f, 0);
                 _interactPromptInstance.WorldFollowUI.UIPositionOffset = new Vector2(0, -32);
             }

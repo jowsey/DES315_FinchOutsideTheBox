@@ -16,7 +16,7 @@ namespace Game.Items.Equipments
             var player = sender!.identity.GetComponent<PlayerController>();
             if (player != _holder) return;
 
-            OnServerSuccessfulUse();
+            OnServerUse();
         }
 
         public override void TryUse()

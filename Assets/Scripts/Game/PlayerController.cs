@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Game;
 using Game.Items;
+using Game.Items.Equipments;
 using Mirror;
 using Sirenix.OdinInspector;
 using TMPro;
@@ -202,6 +203,7 @@ public class PlayerController : NetworkBehaviour
     public bool PickupAllowed => ControlEnabled(ControlBlockerFlags.Interact) && !Seat && !HeldObject;
     public bool PutdownAllowed => ControlEnabled(ControlBlockerFlags.Interact) && HeldObject?.State == Item.ItemState.Held && HeldObject is Treasure;
     public bool UseAllowed => ControlEnabled(ControlBlockerFlags.Interact) && !Seat && HeldObject?.State == Item.ItemState.Held && HeldObject is Equipment;
+    public bool HookAllowed => ControlEnabled(ControlBlockerFlags.Interact) && !Seat && HeldObject?.State == Item.ItemState.Held && HeldObject is YarnEquipment;
     public bool DropAllowed => ControlEnabled(ControlBlockerFlags.Interact) && HeldObject?.State == Item.ItemState.Held;
     
     //Set in inspector to true if this player will only exist in cutscenes
@@ -543,9 +545,19 @@ public class PlayerController : NetworkBehaviour
         
         _jumpPressed |= JumpAction.action.WasPressedThisFrame();
 
-        if (InteractAction.action.WasPressedThisFrame())
+        if (InteractAction.action.WasPressedThisFrame() && InteractDetection.TargetedTransform)
         {
-            if (PickupAllowed && InteractDetection.TargetedTransform)
+            if (UseAllowed && InteractDetection.TargetedTransform.CompareTag("YarnHookTarget") && HeldObject is YarnEquipment yarnEquipment)
+            {
+                // todo yes it sucks that we're hard-coding interaction types here
+
+                if (yarnEquipment.IsHooking) return;
+                if (InteractDetection.TargetedTransform.TryGetComponent<YarnHookPoint>(out var hookPoint))
+                {
+                    yarnEquipment.TryStartHook(hookPoint);
+                }
+            }
+            else if (PickupAllowed)
             {
                 if (!InteractDetection.TargetedTransform.CompareTag("Item")) return;
 
@@ -554,7 +566,7 @@ public class PlayerController : NetworkBehaviour
 
                 item.CmdTryPickup();
             }
-            else if (PutdownAllowed && InteractDetection.TargetedTransform && InteractDetection.TargetedTransform.CompareTag("TreasureCarrier"))
+            else if (PutdownAllowed && InteractDetection.TargetedTransform.CompareTag("TreasureCarrier"))
             {
                 HeldObjectPutdownTarget carrierTarget = InteractDetection.TargetedTransform.GetComponentInChildren<HeldObjectPutdownTarget>();
                 HeldObject.CmdTryPutdown(carrierTarget);

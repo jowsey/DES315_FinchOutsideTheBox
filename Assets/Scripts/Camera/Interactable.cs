@@ -9,7 +9,7 @@ public class Interactable : MonoBehaviour
     {
         if (!InteractedTransform)
         {
-            var parentInteractable = transform.parent.GetComponentInParent<Interactable>();
+            var parentInteractable = transform.parent ? transform.parent.GetComponentInParent<Interactable>() : GetComponent<Interactable>();
             InteractedTransform = parentInteractable ? parentInteractable.InteractedTransform : transform;
         }
     }
