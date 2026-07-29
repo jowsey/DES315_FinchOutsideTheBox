@@ -49,7 +49,7 @@ public class InteractDetection : MonoBehaviour
         if (_interactPromptInstance) CleanupInteractPrompt();
         if (_itemInfoCardInstance) CleanupItemInfoPrompt();
     }
-
+    
     //LateUpdate so that it's after Cinemachine updates the camera
     private void LateUpdate()
     {
@@ -114,7 +114,7 @@ public class InteractDetection : MonoBehaviour
                               && PlayerController.LocalPlayer.UseAllowed
                               && PlayerController.LocalPlayer.HeldObject is YarnEquipment { IsHooking: false }
                               && interactedTransform.CompareTag("YarnHookTarget");
-
+        
         var validPullTarget = distanceToPlayer <= _maxInteractDistance
                               && PlayerController.LocalPlayer.PickupAllowed
                               && interactedTransform.gameObject.layer == LayerMask.NameToLayer("Rope");

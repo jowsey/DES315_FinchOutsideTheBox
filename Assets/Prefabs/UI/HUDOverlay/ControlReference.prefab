@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6857757110758921231}
   - component: {fileID: 5725418840101540062}
   - component: {fileID: 4076734008293252426}
+  - component: {fileID: 3848881830370665628}
   m_Layer: 5
   m_Name: KeyIcon
   m_TagString: Untagged
@@ -35,7 +36,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 40, y: 40}
+  m_SizeDelta: {x: 40, y: 0}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &5725418840101540062
 CanvasRenderer:
@@ -75,6 +76,23 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &3848881830370665628
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2665758544896463395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc312d0e63e29c248934719ffb5be94b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI.InputIconManager
+  _image: {fileID: 4076734008293252426}
+  _keyboardMouseSprite: {fileID: 21300000, guid: 779d8220f3127f641934774bb889c0b3, type: 3}
+  _playstationSprite: {fileID: 21300000, guid: a929ac459e0ab794595b84d13f0059ef, type: 3}
+  _switchSprite: {fileID: 21300000, guid: f40648a9ab0a99e4a9265aa7f9083162, type: 3}
+  _xboxSprite: {fileID: 21300000, guid: d2e897d42d4e4174a8b975936b1d8cf1, type: 3}
 --- !u!1 &4737666273456011414
 GameObject:
   m_ObjectHideFlags: 0
@@ -110,8 +128,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 60, y: -24}
-  m_SizeDelta: {x: 100.93, y: 48}
+  m_AnchoredPosition: {x: 12, y: -20}
+  m_SizeDelta: {x: 84.11, y: 40}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &9072507282671892333
 CanvasRenderer:
@@ -362,3 +380,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.ControlReference
   _input: {fileID: 0}
+  _affectedBlockerFlags: 0

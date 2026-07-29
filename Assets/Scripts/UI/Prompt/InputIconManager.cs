@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using Util;
@@ -16,6 +17,11 @@ namespace UI
         [SerializeField] private Sprite _xboxSprite;
 
         private InputDeviceManager.InputType _currentlyDisplayedInputType;
+
+        private void OnValidate()
+        {
+            if (!_image) _image = GetComponent<Image>();
+        }
 
         public void Start()
         {

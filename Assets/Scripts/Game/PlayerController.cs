@@ -194,7 +194,12 @@ public class PlayerController : NetworkBehaviour
             return flags;
         }
     }
-    public static bool ControlEnabled(ControlBlockerFlags flag) => !ActiveBlockers.HasFlag(flag);
+
+    public static bool ControlEnabled(ControlBlockerFlags flag)
+    {
+        if (flag == ControlBlockerFlags.None) return true;
+        return (ActiveBlockers & flag) == 0;
+    }
     
     private static CinemachineInputAxisController _cinemachineInput;
 
