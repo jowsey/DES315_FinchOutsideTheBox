@@ -32,6 +32,28 @@ namespace Game.Items.Equipments
 
         private YarnHookPoint _hookPoint;
 
+        protected override void OnStateChanged(ItemState oldState, ItemState newState)
+        {
+            switch (oldState)
+            {
+                case ItemState.Held:
+                {
+                    if (_holder.isLocalPlayer)
+                    {
+                        SetPreviewVisible(false);
+                        IsHooking = false;
+
+                        _positions.Clear();
+                        _line.positionCount = 0;
+                    }
+
+                    break;
+                }
+            }
+
+            base.OnStateChanged(oldState, newState);
+        }
+
         protected override void Awake()
         {
             base.Awake();
