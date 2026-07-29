@@ -140,6 +140,10 @@ MonoBehaviour:
   _pickupSfx:
     idInternal: 0
     valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 7e924f0dca54eb94d9aabb3a0ae047d3, type: 2}
+  <BuySfx>k__BackingField:
+    idInternal: 0
+    valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: 2f0b95e4c3883684891f393c00cc0e9e, type: 2}
   <ShowInfoCard>k__BackingField: 1
   <ForceMoveOnHeld>k__BackingField: 1
@@ -147,15 +151,12 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: 308d7a1f741009e4890a44ca8bd2a8f0, type: 2}
+  _singleUse: 1
   _placePrefab: {fileID: 306058756046213730, guid: d23f4aa3dae48984b97c43e303b11d98, type: 3}
   _previewPrefab: {fileID: 306058756046213730, guid: 0f86c557bf0e16341acbf7b5576e5d1d, type: 3}
   _yarnSegmentPrefab: {fileID: 3318153292190278696, guid: 6657a643567d59048bba6be276da6b69, type: 3}
   _yarnBallPrefab: {fileID: 3318153292190278696, guid: 0017adc08f181fc418a759f62450955d, type: 3}
   _maxSegments: 60
-  _line: {fileID: -8431954238749571692}
-  _ropeCollideMask:
-    serializedVersion: 2
-    m_Bits: 8055
   YarnVol:
     idInternal: 0
     valueGuidInternal: 
@@ -167,7 +168,11 @@ MonoBehaviour:
   YarnOut:
     idInternal: 0
     valueGuidInternal: 
-    WwiseObjectReference: {fileID: 11400000, guid: d4d41d3b09f327b4b8b3466dc22fe8a0, type: 2}
+    WwiseObjectReference: {fileID: 11400000, guid: 9e7828510aacb8e4085227a844bc3a1b, type: 2}
+  _line: {fileID: -8431954238749571692}
+  _ropeCollideMask:
+    serializedVersion: 2
+    m_Bits: 8055
 --- !u!120 &-8431954238749571692
 LineRenderer:
   serializedVersion: 3
@@ -194,7 +199,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10306, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: e7413a37e645df8468cff24b8f4e4115, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -238,8 +243,8 @@ LineRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 0, g: 1, b: 0, a: 0.49803922}
-      key1: {r: 0, g: 1, b: 0, a: 0.49803922}
+      key0: {r: 1, g: 1, b: 1, a: 1}
+      key1: {r: 1, g: 1, b: 1, a: 1}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}
@@ -266,10 +271,10 @@ LineRenderer:
       m_ColorSpace: 0
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
-    numCornerVertices: 0
-    numCapVertices: 0
+    numCornerVertices: 4
+    numCapVertices: 4
     alignment: 0
-    textureMode: 0
+    textureMode: 1
     textureScale: {x: 1, y: 1}
     shadowBias: 0.5
     generateLightingData: 0
@@ -366,7 +371,7 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: af2141a957849274582ce0e8ff7891a0, type: 3}
-      propertyPath: m_Materials.Array.data[0]
+      propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: e7413a37e645df8468cff24b8f4e4115, type: 2}
     - target: {fileID: 919132149155446097, guid: af2141a957849274582ce0e8ff7891a0, type: 3}

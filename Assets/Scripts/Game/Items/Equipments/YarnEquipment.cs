@@ -117,11 +117,13 @@ namespace Game.Items.Equipments
 
                 var hasLineOfSight = didHit && hit.collider.attachedRigidbody == _holder.Rb;
 
-                var lineColour = hasLineOfSight && GetTotalLineLength() < _segmentLength * _maxSegments
-                    ? ValidColour
-                    : InvalidColour;
-                _line.startColor = lineColour;
-                _line.endColor = lineColour;
+                var validLine = hasLineOfSight && GetTotalLineLength() < _segmentLength * _maxSegments;
+                
+                // var lineColour = validLine
+                //     ? ValidColour
+                //     : InvalidColour;
+                // _line.startColor = lineColour;
+                // _line.endColor = lineColour;
 
                 if (hasLineOfSight)
                 {
