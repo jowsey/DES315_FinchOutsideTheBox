@@ -9,7 +9,7 @@ public class InteractDetection : MonoBehaviour
     private Camera _camera;
     private Transform _uiCanvas;
 
-    [SerializeField] private float _maxPickupDistance = 4.0f;
+    [SerializeField] private float _maxInteractDistance = 4.0f;
     [SerializeField] private float _maxPutdownDistance = 8.0f;
 
     [Header("UI")] [SerializeField] [Required]
@@ -55,8 +55,8 @@ public class InteractDetection : MonoBehaviour
     {
         if (!PlayerController.LocalPlayer) return;
 
-        var detectMask = LayerMask.GetMask("Item", "Cart");
-        var maxReach = Mathf.Max(_maxPickupDistance, _maxPutdownDistance);
+        var detectMask = LayerMask.GetMask("Item", "Cart", "Rope");
+        var maxReach = Mathf.Max(_maxInteractDistance, _maxPutdownDistance);
 
         var ray = _camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         var didRayHit = Physics.SphereCast(ray, 0.25f, out var rayHit, 100f, detectMask, QueryTriggerInteraction.Ignore);
@@ -100,20 +100,26 @@ public class InteractDetection : MonoBehaviour
 
         // New target
         Item item = null;
-        var validPickupTarget = distanceToPlayer <= _maxPickupDistance
+        var validPickupTarget = distanceToPlayer <= _maxInteractDistance
                                 && PlayerController.LocalPlayer.PickupAllowed
                                 && interactedTransform.TryGetComponent(out item)
                                 && item.Pickuppable
                                 && item.State == Item.ItemState.Idle;
+
         var validPutdownTarget = distanceToPlayer <= _maxPutdownDistance
                                  && PlayerController.LocalPlayer.PutdownAllowed
                                  && interactedTransform.CompareTag("TreasureCarrier");
-        var validHookTarget = distanceToPlayer <= _maxPickupDistance
+
+        var validHookTarget = distanceToPlayer <= _maxInteractDistance
                               && PlayerController.LocalPlayer.UseAllowed
                               && PlayerController.LocalPlayer.HeldObject is YarnEquipment { IsHooking: false }
                               && interactedTransform.CompareTag("YarnHookTarget");
 
-        var showInteractPrompt = validPickupTarget || validPutdownTarget || validHookTarget;
+        var validPullTarget = distanceToPlayer <= _maxInteractDistance
+                              && PlayerController.LocalPlayer.PickupAllowed
+                              && interactedTransform.gameObject.layer == LayerMask.NameToLayer("Rope");
+
+        var showInteractPrompt = validPickupTarget || validPutdownTarget || validHookTarget || validPullTarget;
         var showInfoCard = validPickupTarget && item.ShowInfoCard;
 
         if (!showInteractPrompt && _interactPromptInstance) CleanupInteractPrompt();
@@ -135,7 +141,7 @@ public class InteractDetection : MonoBehaviour
             if (validPickupTarget) _interactPromptInstance.Build(InteractPrompt.InteractionType.PickUp);
             else if (validPutdownTarget) _interactPromptInstance.Build(InteractPrompt.InteractionType.PutDown);
             else if (validHookTarget) _interactPromptInstance.Build(InteractPrompt.InteractionType.Attach);
-
+            else if (validPullTarget) _interactPromptInstance.Build(InteractPrompt.InteractionType.Pull);
             _interactPromptInstance.WorldFollowUI.TrackingTarget = TargetedTransform;
 
             if (validPickupTarget)
@@ -155,7 +161,7 @@ public class InteractDetection : MonoBehaviour
                     _itemInfoCardInstance.WorldFollowUI.UIPositionOffset = new Vector2(32, -32);
                 }
             }
-            else if (validPutdownTarget || validHookTarget)
+            else
             {
                 // Interact prompt above target
                 ((RectTransform)_interactPromptInstance.transform).pivot = new Vector2(0.5f, 0);

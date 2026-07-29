@@ -14,7 +14,8 @@ namespace UI
             PickUp,
             PutDown,
             EnterShop,
-            Attach
+            Attach,
+            Pull
         }
 
         [field: SerializeField] public WorldFollowUI WorldFollowUI { get; private set; }
@@ -46,6 +47,7 @@ namespace UI
                 InteractionType.PutDown => "Put down",
                 InteractionType.EnterShop => "Enter shop",
                 InteractionType.Attach => "Attach yarn",
+                InteractionType.Pull => "Pull rope",
                 _ => throw new ArgumentOutOfRangeException(nameof(interactionType), interactionType, null)
             };
 
