@@ -7,7 +7,9 @@ namespace Game.Items
     public abstract class Equipment : Item
     {
         [SerializeField] private Event _useSfx;
-
+        
+        [SerializeField] protected bool _singleUse = true;
+        
         public virtual void TryUse()
         {
         }
@@ -16,20 +18,29 @@ namespace Game.Items
         {
             var cachedClient = _holder.connectionToClient;
 
-            ServerSetIdle();
-            State = ItemState.Inactive;
+            if (_singleUse)
+            {
+                ServerSetIdle();
+                State = ItemState.Inactive;
+            }
 
+            ClientOnSuccessfulUse();
             TargetOnSuccessfulUse(cachedClient);
+        }
+
+        [ClientRpc]
+        protected void ClientOnSuccessfulUse()
+        {
+            _useSfx.Post(gameObject);
         }
 
         [TargetRpc]
         protected void TargetOnSuccessfulUse(NetworkConnectionToClient target)
         {
-            _useSfx.Post(gameObject);
-            OnClientSuccessfulUse();
+            OnClientHolderSuccessfulUse();
         }
 
-        protected virtual void OnClientSuccessfulUse()
+        protected virtual void OnClientHolderSuccessfulUse()
         {
         }
     }

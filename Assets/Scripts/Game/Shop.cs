@@ -361,7 +361,10 @@ public class Shop : NetworkBehaviour
             case PurchaseError.None:
             {
                 Debug.Log($"Successfully purchased {item.name} (price = {price})");
+
                 _shopBuy.Post(gameObject);
+                item.BuySfx?.Post(gameObject);
+                
                 LeaveShop();
                 break;
             }

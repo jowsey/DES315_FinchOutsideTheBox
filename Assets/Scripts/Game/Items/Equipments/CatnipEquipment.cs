@@ -26,9 +26,9 @@ namespace Game.Items.Equipments
             CmdConsume();
         }
 
-        protected override void OnClientSuccessfulUse()
+        protected override void OnClientHolderSuccessfulUse()
         {
-            base.OnClientSuccessfulUse();
+            base.OnClientHolderSuccessfulUse();
 
             PlayerController.LocalPlayer.AddStatusEffect(new PlayerController.PlayerStatusEffect("Catnip!", _effectDuration, PlayerController.PlayerStatusEffect.StatusEffectTarget.MoveSpeed, _effect, _effectType));
         }
