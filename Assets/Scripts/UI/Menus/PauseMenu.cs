@@ -102,7 +102,7 @@ namespace UI
 
             // set wwise rtpc
             RTPCMenuOnOff.SetGlobalValue(active ? 1 : 0);
-            
+
             // hide
             foreach (var group in _hiddenOnOpen) Tween.Alpha(group, _isActive ? 0f : 1f, 0.5f, Ease.OutCubic);
         }

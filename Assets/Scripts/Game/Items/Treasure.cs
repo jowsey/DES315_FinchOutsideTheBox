@@ -38,7 +38,7 @@ namespace Game.Items
             if (newValue >= 0)
             {
                 var newMesh = _randomMeshOptions[newValue];
-                
+
                 _meshFilter.sharedMesh = newMesh;
                 if (_meshCollider)
                 {

@@ -21,7 +21,7 @@ namespace Game.Items
     [CreateAssetMenu(fileName = "NewItem", menuName = "Game/Item Data")]
     public class ItemData : ScriptableObject
     {
-        public static Dictionary<ItemRarity, Color> RarityColors = new()
+        public static readonly Dictionary<ItemRarity, Color> RarityColors = new()
         {
             { ItemRarity.Common, Color.gray5 },
             { ItemRarity.Uncommon, Color.forestGreen },

@@ -5,13 +5,6 @@ using UnityEngine;
 
 namespace Game.Items
 {
-    [Serializable]
-    public struct SpawnGroup
-    {
-        public ItemRarity Rarity;
-        [Min(1)] public int Amount;
-    }
-
     public class TreasureSpawnLocation : NetworkBehaviour
     {
         [SerializeField] private ItemRarity _rarity = ItemRarity.Common;
@@ -30,12 +23,13 @@ namespace Game.Items
             name = $"TreasureSpawnLocation ({_rarity})";
         }
 
+        [Server]
         private void SpawnNewItem()
         {
             var treasureData = Shop.ItemRegistry
-                .Where(i => i.Type == ItemType.Treasure)
+                .Where(i => i.Type == ItemType.Treasure && i.Rarity == _rarity)
                 .OrderBy(x => Guid.NewGuid())
-                .FirstOrDefault(x => x.Rarity == _rarity);
+                .FirstOrDefault();
 
             if (!treasureData)
             {
@@ -52,9 +46,9 @@ namespace Game.Items
         public override void OnStartServer()
         {
             base.OnStartServer();
+            Checkpoint.RespawnEvent.AddListener(OnServerRespawn);
 
             SpawnNewItem();
-            Checkpoint.RespawnEvent.AddListener(OnServerRespawn);
         }
 
         public override void OnStopServer()
@@ -70,8 +64,11 @@ namespace Game.Items
             // _spawnedItem.transform.position = transform.position;
             // _spawnedItem.ServerSetIdle();
 
-            NetworkServer.Destroy(_spawnedItem.gameObject);
-            _spawnedItem = null;
+            if (_spawnedItem)
+            {
+                NetworkServer.Destroy(_spawnedItem.gameObject);
+                _spawnedItem = null;
+            }
 
             SpawnNewItem();
         }
