@@ -113,6 +113,10 @@ public class PlayerController : NetworkBehaviour
     // Does NOT imply the player has just joined
     public static readonly UnityEvent<PlayerController> OnPlayerReady = new();
 
+    //VFX
+    [SerializeField] public GameObject groundImpactVFX;
+    private bool wasGrounded = false;
+
     //While there are any control blockers for a given action, that action will be blocked
     [Flags]
     public enum ControlBlockerFlags
@@ -578,6 +582,10 @@ public class PlayerController : NetworkBehaviour
             {
                 //Player has collided with something other than themselves
                 grounded = true;
+
+                //SPAWNING GROUND IMPACT VFX
+                Spawn_GroundVFX(grounded);
+
                 break;
             }
         }
@@ -789,5 +797,16 @@ public class PlayerController : NetworkBehaviour
         {
             Gizmos.DrawSphere(Rb.position, _groundedSphereRadius);
         }
+    }
+
+    private void Spawn_GroundVFX(bool amGrounded)
+    {
+        //SPAWNING GROUND IMPACT VFX
+        if (amGrounded && !wasGrounded)
+        {
+            GameObject gv = Instantiate(groundImpactVFX, transform.position, Quaternion.identity);
+            Destroy(gv, 1f);
+        }
+        wasGrounded = amGrounded;
     }
 }
