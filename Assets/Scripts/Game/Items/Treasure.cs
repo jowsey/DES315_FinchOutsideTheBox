@@ -35,17 +35,18 @@ namespace Game.Items
 
         private void OnChangeRandomMeshIndex(int oldValue, int newValue)
         {
-            if (newValue >= 0)
-            {
-                var newMesh = _randomMeshOptions[newValue];
+            if (newValue < 0 || newValue >= _randomMeshOptions.Count) return;
 
-                _meshFilter.sharedMesh = newMesh;
-                if (_meshCollider)
-                {
-                    _meshCollider.sharedMesh = null;
-                    _meshCollider.sharedMesh = newMesh;
-                }
-            }
+            var newMesh = _randomMeshOptions[newValue];
+            if (_meshFilter.sharedMesh != newMesh) _meshFilter.sharedMesh = newMesh;
+            if (_meshCollider && _meshCollider.sharedMesh != newMesh) _meshCollider.sharedMesh = newMesh;
+        }
+
+        private void OnDestroy()
+        {
+            // fixes hang on scene unload in editor? shrug
+            _meshFilter.sharedMesh = null;
+            _meshCollider.sharedMesh = null;
         }
 
         protected override void OnStateChanged(ItemState oldState, ItemState newState)
