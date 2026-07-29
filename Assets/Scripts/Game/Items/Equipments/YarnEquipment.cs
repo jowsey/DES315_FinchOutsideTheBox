@@ -181,13 +181,14 @@ namespace Game.Items.Equipments
                     var point = regeneratedPositions[pointI];
                     var nextPoint = regeneratedPositions[pointI + 1];
                     var numSegments = Mathf.CeilToInt(Vector3.Distance(point, nextPoint) / _segmentLength) + 1; // extra segment for leeway
-                    var lineDirection = (nextPoint - previousBody.position).normalized;
 
                     Debug.Log($"Line {pointI} has {numSegments} segments");
 
                     for (var segmentI = 0; segmentI < numSegments; segmentI++)
                     {
                         yield return new WaitForSecondsRealtime(segmentInterval);
+
+                        var lineDirection = (nextPoint - previousBody.position).normalized;
 
                         var firstSegment = pointI == 0 && segmentI == 0;
                         var segment = Instantiate(

@@ -6,6 +6,7 @@ namespace Game.Items.Equipments
     public class PlaceableEquipment : Equipment
     {
         private static readonly int BaseColorID = Shader.PropertyToID("_BaseColor");
+        private static readonly int BaseColourID = Shader.PropertyToID("_BaseColour");
         private const float MaxPlaceDistance = 5f;
 
         private static readonly Color ValidPositionColour = new(0f, 1f, 0f, 0.5f);
@@ -55,6 +56,7 @@ namespace Game.Items.Equipments
 
                         _mpb = new MaterialPropertyBlock();
                         _mpb.SetColor(BaseColorID, ValidPositionColour);
+                        _mpb.SetColor(BaseColourID, ValidPositionColour);
 
                         _previewRenderers = _previewInstance.GetComponentsInChildren<Renderer>();
                         foreach (var rnd in _previewRenderers)
@@ -88,30 +90,35 @@ namespace Game.Items.Equipments
                     foreach (var rnd in _previewRenderers)
                     {
                         rnd.GetPropertyBlock(_mpb);
-                        _mpb.SetColor(BaseColorID, distanceToPlayer <= MaxPlaceDistance ? ValidPositionColour : InvalidPositionColour);
+                        var colour = distanceToPlayer <= MaxPlaceDistance ? ValidPositionColour : InvalidPositionColour;
+                        _mpb.SetColor(BaseColorID, colour);
+                        _mpb.SetColor(BaseColourID, colour);
                         rnd.SetPropertyBlock(_mpb);
                     }
                 }
             }
         }
 
-        protected virtual void OnServerTryPlace(Vector3 position, Quaternion rotation, PlayerController player)
+        protected virtual bool OnServerTryPlace(Vector3 position, Quaternion rotation, PlayerController player)
         {
-            if (State != ItemState.Held) return;
-            if (player != _holder) return;
+            if (State != ItemState.Held) return false;
+            if (player != _holder) return false;
 
             var distanceToPlayer = Vector3.Distance(_holder.transform.position, position);
-            if (distanceToPlayer > MaxPlaceDistance) return;
+            if (distanceToPlayer > MaxPlaceDistance) return false;
 
             _placeInstance = Instantiate(_placePrefab, position, rotation);
             NetworkServer.Spawn(_placeInstance);
+            return true;
         }
 
         [Command(requiresAuthority = false)]
         private void CmdPlace(Vector3 position, Quaternion rotation, NetworkConnectionToClient sender = null)
         {
-            OnServerTryPlace(position, rotation, sender!.identity.GetComponent<PlayerController>());
-            OnServerUse();
+            if (OnServerTryPlace(position, rotation, sender!.identity.GetComponent<PlayerController>()))
+            {
+                OnServerUse();
+            }
         }
 
         public override void TryUse()
