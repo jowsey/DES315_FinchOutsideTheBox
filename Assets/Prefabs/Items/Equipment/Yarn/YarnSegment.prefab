@@ -99,7 +99,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 255578332200727897}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 8662fae194198384da2e07a7bbe5a139, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -143,6 +143,7 @@ GameObject:
   - component: {fileID: 1830892848116719769}
   - component: {fileID: 7782488029612068296}
   - component: {fileID: 8835592131843286588}
+  - component: {fileID: -6661722607028156518}
   m_Layer: 13
   m_Name: YarnSegment
   m_TagString: Untagged
@@ -191,8 +192,8 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7626024902671833401}
   serializedVersion: 5
-  m_Mass: 0.05
-  m_LinearDamping: 0.1
+  m_Mass: 6
+  m_LinearDamping: 0.5
   m_AngularDamping: 0.5
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
@@ -228,7 +229,7 @@ ConfigurableJoint:
   m_XMotion: 0
   m_YMotion: 0
   m_ZMotion: 0
-  m_AngularXMotion: 2
+  m_AngularXMotion: 0
   m_AngularYMotion: 2
   m_AngularZMotion: 2
   m_LinearLimitSpring:
@@ -372,3 +373,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5e5263c28d18964fb87d6ea1a00d5a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Highlight
+--- !u!114 &-6661722607028156518
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7626024902671833401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4e4e6cfb7a8444eba9e2dcacbcdb611, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Items.Equipments.YarnSegment
+  syncMethod: 0
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _pullForce: 500

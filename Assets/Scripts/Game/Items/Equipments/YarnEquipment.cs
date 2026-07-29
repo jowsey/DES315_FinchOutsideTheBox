@@ -1,7 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using Epic.OnlineServices.AntiCheatCommon;
 using Mirror;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -12,7 +10,7 @@ namespace Game.Items.Equipments
     {
         [SerializeField] private ConfigurableJoint _yarnSegmentPrefab;
         [SerializeField] private ConfigurableJoint _yarnBallPrefab;
-        [SerializeField, Min(1)] private int _maxSegments = 35;
+        [SerializeField, Min(1)] private int _maxSegments;
 
         [SerializeField, Required] private LineRenderer _line;
         [SerializeField] private LayerMask _ropeCollideMask;

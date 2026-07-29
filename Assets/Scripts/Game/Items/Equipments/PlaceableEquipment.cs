@@ -7,7 +7,7 @@ namespace Game.Items.Equipments
     {
         private static readonly int BaseColorID = Shader.PropertyToID("_BaseColor");
         private static readonly int BaseColourID = Shader.PropertyToID("_BaseColour");
-        private const float MaxPlaceDistance = 5f;
+        private const float MaxPlaceDistance = 6f;
 
         private static readonly Color ValidPositionColour = new(0f, 1f, 0f, 0.5f);
         private static readonly Color InvalidPositionColour = new(1f, 0f, 0f, 0.5f);

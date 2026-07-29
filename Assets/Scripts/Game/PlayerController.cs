@@ -210,6 +210,9 @@ public class PlayerController : NetworkBehaviour
     public bool UseAllowed => ControlEnabled(ControlBlockerFlags.Interact) && !Seat && HeldObject?.State == Item.ItemState.Held && HeldObject is Equipment;
     public bool HookAllowed => ControlEnabled(ControlBlockerFlags.Interact) && !Seat && HeldObject?.State == Item.ItemState.Held && HeldObject is YarnEquipment;
     public bool DropAllowed => ControlEnabled(ControlBlockerFlags.Interact) && HeldObject?.State == Item.ItemState.Held;
+
+    public YarnSegment ActivePullSegment { get; private set; }
+    private float _lastPullAckTime = -Mathf.Infinity;
     
     //Set in inspector to true if this player will only exist in cutscenes
     public bool CutscenePlayer;
@@ -555,7 +558,7 @@ public class PlayerController : NetworkBehaviour
             if (UseAllowed && InteractDetection.TargetedTransform.CompareTag("YarnHookTarget") && HeldObject is YarnEquipment yarnEquipment)
             {
                 // todo yes it sucks that we're hard-coding interaction types here
-
+                
                 if (yarnEquipment.IsHooking) return;
                 if (InteractDetection.TargetedTransform.TryGetComponent<YarnHookPoint>(out var hookPoint))
                 {
@@ -590,6 +593,29 @@ public class PlayerController : NetworkBehaviour
             {
                 HeldObject.CmdTryDrop();
             }
+        }
+
+        // Rope pulling
+        if (InteractAction.action.IsPressed() && PickupAllowed)
+        {
+            if (InteractDetection.TargetedTransform && InteractDetection.TargetedTransform.TryGetComponent<YarnSegment>(out var segment) && segment != ActivePullSegment)
+            {
+                if (ActivePullSegment) ActivePullSegment.CmdStopPull();
+                ActivePullSegment = segment;
+                _lastPullAckTime = -Mathf.Infinity;
+            }
+
+            if (ActivePullSegment && Time.time - _lastPullAckTime > YarnSegment.MaxPullAckTimeout * 0.5f)
+            {
+                ActivePullSegment.CmdContinuePull();
+                _lastPullAckTime = Time.time;
+            }
+        }
+        else if (ActivePullSegment && !InteractAction.action.IsPressed())
+        {
+            ActivePullSegment.CmdStopPull();
+            ActivePullSegment = null;
+            _lastPullAckTime = -Mathf.Infinity;
         }
         
         // Prune completed status effects
