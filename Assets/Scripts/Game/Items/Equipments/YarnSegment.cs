@@ -7,7 +7,7 @@ namespace Game.Items.Equipments
     public class YarnSegment : NetworkBehaviour
     {
         public const float MaxPullAckTimeout = 1f;
-        [SerializeField] private float _pullForce = 600f;
+        [SerializeField] private float _pullSpeed = 3f;
 
         private Rigidbody _rb;
         private ConfigurableJoint _joint;
@@ -34,14 +34,17 @@ namespace Game.Items.Equipments
             if (sender!.identity != _activePuller) return;
             _lastPullTime = -Mathf.Infinity;
         }
-
+        
         private void FixedUpdate()
         {
+            if (!isServer) return;
+            
             if (Time.time - _lastPullTime < MaxPullAckTimeout)
             {
-                var direction = (transform.position - _joint.connectedBody.position).normalized;
-                // _rb.AddForce(direction * _pullForce, ForceMode.Force);
-                _rb.AddForce(direction * (_pullForce * Time.fixedDeltaTime), ForceMode.VelocityChange);
+                var magnitudeDifference = _pullSpeed - _rb.linearVelocity.magnitude;
+                
+                var direction = (_rb.position - _joint.connectedBody.position).normalized;
+                _rb.AddForce(direction * magnitudeDifference, ForceMode.VelocityChange);
             }
         }
     }
