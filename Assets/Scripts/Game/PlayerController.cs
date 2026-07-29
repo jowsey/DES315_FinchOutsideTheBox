@@ -115,7 +115,9 @@ public class PlayerController : NetworkBehaviour
 
     //VFX
     [SerializeField] public GameObject groundImpactVFX;
+    [SerializeField] public GameObject dustVFX;
     private bool wasGrounded = false;
+    private bool dustGrounded = false;
 
     //While there are any control blockers for a given action, that action will be blocked
     [Flags]
@@ -582,13 +584,18 @@ public class PlayerController : NetworkBehaviour
             {
                 //Player has collided with something other than themselves
                 grounded = true;
-
-                //SPAWNING GROUND IMPACT VFX
-                Spawn_GroundVFX(grounded);
-
                 break;
             }
         }
+
+
+        //SPAWNING GROUND IMPACT VFX
+        Spawn_GroundVFX(grounded);
+        dustGrounded = grounded; //can't pass into invoke (why it exists)
+        Spawn_DustVFX();
+        //Invoke("Spawn_DustVFX", 0.1f);
+
+
 
         bool groundedOnBumpy = Physics.CheckSphere(Rb.position, _groundedSphereRadius, LayerMask.GetMask("Bumpy"), QueryTriggerInteraction.Ignore);
 
@@ -808,5 +815,15 @@ public class PlayerController : NetworkBehaviour
             Destroy(gv, 1f);
         }
         wasGrounded = amGrounded;
+    }
+
+    private void Spawn_DustVFX()
+    {
+        //SPAWNING GROUND IMPACT VFX
+        if (dustGrounded && _networkAnimator.animator.GetBool(RunningState) == true)
+        {
+            GameObject gv = Instantiate(dustVFX, transform.position, Quaternion.identity);
+            Destroy(gv, 0.8f);
+        }
     }
 }
