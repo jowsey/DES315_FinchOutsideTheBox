@@ -67,6 +67,7 @@ namespace Util
             PlayerPresenceFeed.OnPlayerLeave.RemoveListener(OnPlayerLeave);
             Cart.OnReachCheckpoint.RemoveListener(OnReachCheckpoint);
 
+            _client?.ClearRichPresence();
             _client?.Dispose();
         }
 
