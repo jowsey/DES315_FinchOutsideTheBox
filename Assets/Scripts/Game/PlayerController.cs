@@ -142,9 +142,6 @@ public class PlayerController : NetworkBehaviour
     public Renderer[] SkinnedRenderers;
 
     private List<Vector3> _contactNormals = new();
-
-    [SerializeField] private ActionCurveLine _actionCurveLinePrefab;
-    private ActionCurveLine _onboardingLineInstance;
     
     [field: SerializeField] public Transform HeldObjectPickupTarget { get; private set; }
 
@@ -446,19 +443,6 @@ public class PlayerController : NetworkBehaviour
         // Set default highlight states for interactables
         Highlight.SetHighlightable("Item", true);
         Highlight.SetHighlightable("TreasureCarrier", false);
-
-        // todo this sucks
-        // eventually we should just link carts to 2 players so we can have an arbitrary number of carts/players
-        var wheels = FindObjectsByType<WheelSeat>(FindObjectsSortMode.InstanceID);
-        var assignedWheel = wheels[PlayerIndex % wheels.Length];
-
-        _onboardingLineInstance = Instantiate(_actionCurveLinePrefab, null);
-        _onboardingLineInstance.StartFollowTarget = transform;
-        _onboardingLineInstance.StartTrackingOffset = Vector3.up * 0.5f;
-        _onboardingLineInstance.EndFollowTarget = assignedWheel.transform;
-        _onboardingLineInstance.EndTrackingOffset = assignedWheel.transform.InverseTransformPoint(assignedWheel.SeatedPosition);
-        _onboardingLineInstance.PromptLabel = "Jump on!";
-        _onboardingLineInstance.ShouldDestroy = () => Seat; // if we're sat, job's done
         
         // Only local player gets a Wwise audio listener
         gameObject.AddComponent<AkAudioListener>();
@@ -929,8 +913,6 @@ public class PlayerController : NetworkBehaviour
     {
         foreach (SkinnedMeshRenderer smr in SkinnedRenderers) smr.enabled = CutscenePlayer;
         foreach (Collider col in GetComponentsInChildren<Collider>()) col.enabled = CutscenePlayer;
-
-        if (_onboardingLineInstance) Destroy(_onboardingLineInstance.gameObject);
         
         _nameplateCanvas.enabled = CutscenePlayer;
         Rb.isKinematic = !CutscenePlayer;
