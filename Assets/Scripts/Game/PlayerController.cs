@@ -340,7 +340,7 @@ public class PlayerController : NetworkBehaviour
         _networkAnimator = GetComponent<NetworkAnimator>();
         WwiseAnimationEvents = GetComponentInChildren<WwiseAnimationEvents>(true);
 
-        Checkpoint.RespawnEvent.AddListener(OnRespawn);
+        Checkpoint.OnRespawn.AddListener(OnRespawn);
 
         PuppetGravityMultiplier = 1.0f;
         PuppetJumpForceMultiplier = 1.0f;
@@ -458,7 +458,7 @@ public class PlayerController : NetworkBehaviour
 
     private void OnDestroy()
     {
-        Checkpoint.RespawnEvent.RemoveListener(OnRespawn);
+        Checkpoint.OnRespawn.RemoveListener(OnRespawn);
 
         PlayableDirector director = FindAnyObjectByType<PlayableDirector>();
         if (director)

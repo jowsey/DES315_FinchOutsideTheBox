@@ -86,7 +86,7 @@ public class Cart : NetworkBehaviour
 
     public override void OnStartServer()
     {
-        Checkpoint.RespawnEvent.AddListener(OnRespawn);
+        Checkpoint.OnRespawn.AddListener(OnRespawn);
 
         _checkpointSnapshots = new Dictionary<Item, ObjectSnapshot>[Checkpoints.Count];
         for (int i = 0; i < _checkpointSnapshots.Length; ++i)
@@ -129,7 +129,7 @@ public class Cart : NetworkBehaviour
 
     private void OnDestroy()
     {
-        if (isServer) Checkpoint.RespawnEvent.RemoveListener(OnRespawn);
+        if (isServer) Checkpoint.OnRespawn.RemoveListener(OnRespawn);
     }
 
     private void Update()
@@ -328,7 +328,7 @@ public class Cart : NetworkBehaviour
         {
             OnReachCheckpoint.Invoke(Checkpoints[CurrentCheckpointIndex]);
         }
-
+        
         CurrentCheckpointIndex = newCheckpointIndex;
 
         // fallback for dev hotkeys, otherwise will naturally be populated
@@ -336,8 +336,9 @@ public class Cart : NetworkBehaviour
         {
             CaptureCheckpointSnapshot();
         }
-
-        Checkpoint.RespawnEvent.Invoke(Checkpoints[CurrentCheckpointIndex]);
+        
+        Checkpoint.OnPreRespawn.Invoke(Checkpoints[CurrentCheckpointIndex]);
+        Checkpoint.OnRespawn.Invoke(Checkpoints[CurrentCheckpointIndex]);
     }
 
     [Server]

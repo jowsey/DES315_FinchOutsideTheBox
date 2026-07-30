@@ -46,7 +46,7 @@ namespace Game.Items
         public override void OnStartServer()
         {
             base.OnStartServer();
-            Checkpoint.RespawnEvent.AddListener(OnServerRespawn);
+            Checkpoint.OnRespawn.AddListener(OnServerRespawn);
 
             SpawnNewItem();
         }
@@ -54,7 +54,7 @@ namespace Game.Items
         public override void OnStopServer()
         {
             base.OnStopServer();
-            Checkpoint.RespawnEvent.RemoveListener(OnServerRespawn);
+            Checkpoint.OnRespawn.RemoveListener(OnServerRespawn);
         }
 
         [Server]

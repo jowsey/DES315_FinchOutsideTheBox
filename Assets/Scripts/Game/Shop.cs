@@ -109,7 +109,7 @@ public class Shop : NetworkBehaviour
     public override void OnStartServer()
     {
         Cart.OnReachCheckpoint.AddListener(SaveShopState);
-        Checkpoint.RespawnEvent.AddListener(RestoreShopState);
+        Checkpoint.OnRespawn.AddListener(RestoreShopState);
         SpawnPhysicalItems();
 
         _telescope.localRotation = Quaternion.Euler(0, Random.Range(0, 360f), 0);
@@ -124,7 +124,7 @@ public class Shop : NetworkBehaviour
     public override void OnStopServer()
     {
         Cart.OnReachCheckpoint.RemoveListener(SaveShopState);
-        Checkpoint.RespawnEvent.RemoveListener(RestoreShopState);
+        Checkpoint.OnRespawn.RemoveListener(RestoreShopState);
     }
 
     public override void OnStopClient()

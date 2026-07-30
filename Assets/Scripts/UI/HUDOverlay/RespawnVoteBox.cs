@@ -82,7 +82,7 @@ namespace UI
             _openPosition = rt.anchoredPosition;
             rt.anchoredPosition = _hiddenPosition;
 
-            Checkpoint.RespawnEvent.AddListener(OnRespawn);
+            Checkpoint.OnRespawn.AddListener(OnRespawn);
         }
 
         private void Start()
@@ -92,7 +92,7 @@ namespace UI
 
         private void OnDestroy()
         {
-            Checkpoint.RespawnEvent.RemoveListener(OnRespawn);
+            Checkpoint.OnRespawn.RemoveListener(OnRespawn);
         }
 
         private void OnRespawn(Checkpoint checkpoint)

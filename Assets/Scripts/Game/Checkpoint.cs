@@ -4,7 +4,8 @@ using UnityEngine.Events;
 
 public class Checkpoint : MonoBehaviour
 {
-    public static readonly UnityEvent<Checkpoint> RespawnEvent = new();
+    public static readonly UnityEvent<Checkpoint> OnPreRespawn = new();
+    public static readonly UnityEvent<Checkpoint> OnRespawn = new();
 
     [field: SerializeField] public Transform[] playerRespawnLocalTransforms { get; private set; }
     [field: SerializeField] public Transform cartRespawnLocalTransform { get; private set; }

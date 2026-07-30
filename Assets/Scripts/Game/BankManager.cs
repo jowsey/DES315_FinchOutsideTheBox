@@ -19,13 +19,13 @@ public class BankManager : NetworkBehaviour
     public override void OnStartServer()
     {
         Cart.OnReachCheckpoint.AddListener(SaveCheckpointBalance);
-        Checkpoint.RespawnEvent.AddListener(RestoreCheckpointBalance);
+        Checkpoint.OnRespawn.AddListener(RestoreCheckpointBalance);
     }
 
     public override void OnStopServer()
     {
         Cart.OnReachCheckpoint.RemoveListener(SaveCheckpointBalance);
-        Checkpoint.RespawnEvent.RemoveListener(RestoreCheckpointBalance);
+        Checkpoint.OnRespawn.RemoveListener(RestoreCheckpointBalance);
     }
 
     [Server]
