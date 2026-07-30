@@ -37,22 +37,10 @@ namespace Game.Items.Equipments
             _lastPullTime = -Mathf.Infinity;
         }
 
-        [Server]
-        private void ServerDetach()
-        {
-            foreach (var segments in ParentRope.Segments)
-            {
-                NetworkServer.Destroy(segments.gameObject);
-            }
-
-            ParentRope.ParentEquipment.ServerSetIdle();
-            ParentRope.ParentEquipment.Rb.position = Rb.position + transform.up * 0.5f;
-        }
-
         [Command(requiresAuthority = false)]
         public void CmdDetachRope(NetworkConnectionToClient sender = null)
         {
-            ServerDetach();
+            ParentRope.ServerDetach(Rb.position + transform.up * 0.5f);
         }
 
         private void FixedUpdate()

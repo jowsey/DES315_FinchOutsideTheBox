@@ -212,7 +212,8 @@ namespace Game.Items.Equipments
                     ParentEquipment = this,
                     GroundAnchor = _placeInstance
                 };
-                
+                hookPoint.AttachedRopes.Add(yarnRope);
+
                 var previousBody = hookPoint.AttachedBody;
 
                 const float segmentInterval = 0.02f;
