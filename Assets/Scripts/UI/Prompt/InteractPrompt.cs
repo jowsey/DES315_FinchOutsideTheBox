@@ -30,7 +30,7 @@ namespace UI
             if (!WorldFollowUI) WorldFollowUI = GetComponent<WorldFollowUI>();
         }
 
-        private void OnEnable()
+        private void Start()
         {
             var initialScale = transform.localScale;
             transform.localScale = Vector3.zero;
