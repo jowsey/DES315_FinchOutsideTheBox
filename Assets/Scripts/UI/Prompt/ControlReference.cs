@@ -8,11 +8,17 @@ namespace UI
     {
         [SerializeField] private InputActionReference _input;
         [SerializeField] private PlayerController.ControlBlockerFlags _affectedBlockerFlags;
+        [SerializeField] private InputIconManager _inputIconManager;
 
         private const float _transitionDuration = 0.15f;
 
         private bool _isPressed;
 
+        private void Start()
+        {
+            _inputIconManager.SetAction(_input);
+        }
+        
         private void Update()
         {
             if (!_isPressed && (_input.action.IsPressed() && PlayerController.ControlEnabled(_affectedBlockerFlags)))

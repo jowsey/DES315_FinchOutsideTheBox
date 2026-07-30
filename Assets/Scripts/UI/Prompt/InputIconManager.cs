@@ -2,6 +2,8 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.DualShock;
+using UnityEngine.InputSystem.XInput;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.UI;
 
@@ -18,27 +20,22 @@ namespace UI
         private AsyncOperationHandle<Sprite> _iconHandle;
 
         private static InputDevice _lastActiveDevice;
-        private static bool _registeredStaticDeviceHandler;
 
         private void OnValidate()
         {
             if (!_image) _image = GetComponent<Image>();
         }
 
-        public void Start()
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        private static void RegisterStaticDeviceHandler()
         {
-            if (!_registeredStaticDeviceHandler)
-            {
-                InputSystem.onActionChange += TrackActionDeviceChanged;
-                _registeredStaticDeviceHandler = true;
-            }
-
-            UpdateIcons();
+            InputSystem.onActionChange += TrackActionDeviceChanged;
         }
 
         private void OnEnable()
         {
             InputSystem.onActionChange += OnActionChange;
+            UpdateIcons();
         }
 
         private void OnDisable()
@@ -76,11 +73,25 @@ namespace UI
             _image.sprite = null;
             if (_iconHandle.IsValid()) Addressables.Release(_iconHandle);
 
+            bool deviceNativeControl = true;
             var activeControl = _actionRef.action.controls.FirstOrDefault(control => control.device == _lastActiveDevice);
-            activeControl ??= _actionRef.action.controls.Count > 0 ? _actionRef.action.controls[0] : null;
+            if (activeControl == null)
+            {
+                deviceNativeControl = false;
+                activeControl = _actionRef.action.controls.Count > 0 ? _actionRef.action.controls[0] : null;
+            }
             if (activeControl == null) return;
 
-            _iconHandle = Addressables.LoadAssetAsync<Sprite>("InputIcon/" + activeControl.name);
+            var inputPath = activeControl.path;
+
+            if (deviceNativeControl && _lastActiveDevice is Gamepad)
+            {
+                inputPath = inputPath.Replace(inputPath.Split('/')[1], _lastActiveDevice is DualShockGamepad ? "PlayStation" : "Xbox");
+            }
+
+            var assetPath = $"InputIcon{inputPath}";
+
+            _iconHandle = Addressables.LoadAssetAsync<Sprite>(assetPath);
             _iconHandle.WaitForCompletion();
 
             if (_iconHandle.Status == AsyncOperationStatus.Succeeded)
@@ -89,7 +100,7 @@ namespace UI
             }
             else
             {
-                Debug.LogWarning($"Input icon 'InputIcon/{activeControl.name}' for {_actionRef.action.name} not found in Addressables!");
+                Debug.LogWarning($"Input icon '{assetPath}' for {_actionRef.action.name} not found in Addressables!");
                 Addressables.Release(_iconHandle);
             }
         }

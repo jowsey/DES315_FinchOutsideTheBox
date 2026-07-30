@@ -89,10 +89,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.InputIconManager
   _image: {fileID: 4076734008293252426}
-  _keyboardMouseSprite: {fileID: 21300000, guid: 779d8220f3127f641934774bb889c0b3, type: 3}
-  _playstationSprite: {fileID: 21300000, guid: a929ac459e0ab794595b84d13f0059ef, type: 3}
-  _switchSprite: {fileID: 21300000, guid: f40648a9ab0a99e4a9265aa7f9083162, type: 3}
-  _xboxSprite: {fileID: 21300000, guid: d2e897d42d4e4174a8b975936b1d8cf1, type: 3}
+  _actionRef: {fileID: 0}
 --- !u!1 &4737666273456011414
 GameObject:
   m_ObjectHideFlags: 0
@@ -381,3 +378,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UI.ControlReference
   _input: {fileID: 0}
   _affectedBlockerFlags: 0
+  _inputIconManager: {fileID: 3848881830370665628}

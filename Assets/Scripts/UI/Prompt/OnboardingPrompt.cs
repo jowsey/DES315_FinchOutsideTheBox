@@ -17,6 +17,8 @@ namespace UI
         [SerializeField] private Event _satisfySfx;
         [SerializeField] private Event _appearSfx;
 
+        [SerializeField] private InputIconManager _inputIconManager;
+        
         public static bool EnableDetection = true;
         
         private RectTransform _rt;
@@ -26,11 +28,13 @@ namespace UI
         private void OnValidate()
         {
             if (!_canvasGroup) _canvasGroup = GetComponent<CanvasGroup>();
+            if (!_inputIconManager) _inputIconManager = GetComponentInChildren<InputIconManager>();
         }
 
         private void Awake()
         {
             _rt = (RectTransform)transform;
+            _inputIconManager.SetAction(_satisfyAction);
         }
 
         public void Start()
