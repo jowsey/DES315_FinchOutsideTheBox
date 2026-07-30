@@ -1,4 +1,5 @@
 ﻿using Mirror;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Game.Items.Equipments
@@ -18,11 +19,15 @@ namespace Game.Items.Equipments
         [SerializeField] protected GameObject _previewPrefab;
         protected GameObject _previewInstance { get; private set; }
 
+        [SerializeField, Range(0, 180f), SuffixLabel("degs")] private float _maxPlacementAngle = 30;
+
         private Renderer[] _previewRenderers;
         private bool _previewVisible = true;
         private MaterialPropertyBlock _mpb;
         private LayerMask _placeMask;
         private Camera _camera;
+
+        private bool _previewBelievedValid;
 
         protected override void Awake()
         {
@@ -86,15 +91,18 @@ namespace Game.Items.Equipments
                     _previewInstance.transform.up = hit.normal;
 
                     var distanceToPlayer = Vector3.Distance(_holder.transform.position, hit.point);
+                    var validPos = distanceToPlayer <= MaxPlaceDistance && Vector3.Angle(hit.normal, Vector3.up) <= _maxPlacementAngle;
 
                     foreach (var rnd in _previewRenderers)
                     {
                         rnd.GetPropertyBlock(_mpb);
-                        var colour = distanceToPlayer <= MaxPlaceDistance ? ValidPositionColour : InvalidPositionColour;
+                        var colour = validPos ? ValidPositionColour : InvalidPositionColour;
                         _mpb.SetColor(BaseColorID, colour);
                         _mpb.SetColor(BaseColourID, colour);
                         rnd.SetPropertyBlock(_mpb);
                     }
+
+                    _previewBelievedValid = validPos;
                 }
             }
         }
@@ -106,6 +114,9 @@ namespace Game.Items.Equipments
 
             var distanceToPlayer = Vector3.Distance(_holder.transform.position, position);
             if (distanceToPlayer > MaxPlaceDistance) return false;
+
+            var normalAngle = Vector3.Angle(Vector3.up, rotation * Vector3.up);
+            if (normalAngle > _maxPlacementAngle) return false;
 
             _placeInstance = Instantiate(_placePrefab, position, rotation);
             NetworkServer.Spawn(_placeInstance);
@@ -124,7 +135,7 @@ namespace Game.Items.Equipments
         public override void TryUse()
         {
             base.TryUse();
-            if (!_previewInstance) return;
+            if (!_previewInstance || !_previewBelievedValid) return;
 
             CmdPlace(_previewInstance.transform.position, _previewInstance.transform.rotation);
         }
