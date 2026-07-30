@@ -192,8 +192,6 @@ namespace Game.Items.Equipments
         [Command(requiresAuthority = false)]
         private void CmdPlaceRope(YarnHookPoint hookPoint, Vector3[] positions)
         {
-            Debug.Log($"Received {positions.Length} positions");
-
             var regeneratedPositions = new List<Vector3>(positions.Length + 2);
             regeneratedPositions.Add(hookPoint.transform.position);
             regeneratedPositions.AddRange(positions);
@@ -223,8 +221,6 @@ namespace Game.Items.Equipments
                     var point = regeneratedPositions[pointI];
                     var nextPoint = regeneratedPositions[pointI + 1];
                     var numSegments = Mathf.CeilToInt(Vector3.Distance(point, nextPoint) / _segmentLength) + 1; // extra segment for leeway
-
-                    Debug.Log($"Line {pointI} has {numSegments} segments");
 
                     for (var segmentI = 0; segmentI < numSegments; segmentI++)
                     {
