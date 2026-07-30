@@ -8,10 +8,10 @@ namespace Game.Items.Equipments
 {
     public class YarnEquipment : PlaceableEquipment
     {
-        [SerializeField] private ConfigurableJoint _yarnSegmentPrefab;
+        [SerializeField] private YarnSegment _yarnSegmentPrefab;
         [SerializeField] private ConfigurableJoint _yarnBallPrefab;
         [SerializeField, Min(1)] private int _maxSegments;
-        
+
         [SerializeField] public AK.Wwise.RTPC YarnVol;
         [SerializeField] public AK.Wwise.Event YarnStretch;
         [SerializeField] public AK.Wwise.Event YarnOut;
@@ -47,8 +47,8 @@ namespace Game.Items.Equipments
 
                         _positions.Clear();
                         _line.positionCount = 0;
-                        
-                        YarnVol.SetGlobalValue(0); 
+
+                        YarnVol.SetGlobalValue(0);
                         YarnStretch.Stop(gameObject);
                     }
 
@@ -78,7 +78,7 @@ namespace Game.Items.Equipments
 
             IsHooking = true;
             SetPreviewVisible(true);
-            
+
             YarnStretch.Post(gameObject);
             YarnVol.SetGlobalValue(1);
         }
@@ -118,7 +118,7 @@ namespace Game.Items.Equipments
                 var hasLineOfSight = didHit && hit.collider.attachedRigidbody == _holder.Rb;
 
                 var validLine = hasLineOfSight && GetTotalLineLength() < _segmentLength * _maxSegments;
-                
+
                 // var lineColour = validLine
                 //     ? ValidColour
                 //     : InvalidColour;
@@ -207,6 +207,12 @@ namespace Game.Items.Equipments
 
             IEnumerator BuildSegments()
             {
+                var yarnRope = new YarnRope
+                {
+                    ParentEquipment = this,
+                    GroundAnchor = _placeInstance
+                };
+                
                 var previousBody = hookPoint.AttachedBody;
 
                 const float segmentInterval = 0.02f;
@@ -236,18 +242,20 @@ namespace Game.Items.Equipments
                         if (firstSegment)
                         {
                             // connection to hook point
-                            segment.connectedBody = hookPoint.AttachedBody;
-                            segment.connectedAnchor = hookPoint.transform.localPosition;
+                            segment.Joint.connectedBody = hookPoint.AttachedBody;
+                            segment.Joint.connectedAnchor = hookPoint.transform.localPosition;
                         }
                         else
                         {
                             // connection to previous segment
-                            segment.connectedBody = previousBody;
-                            segment.connectedAnchor = Vector3.forward * _segmentLength;
+                            segment.Joint.connectedBody = previousBody;
+                            segment.Joint.connectedAnchor = Vector3.forward * _segmentLength;
                         }
 
-                        var segmentBody = segment.GetComponent<Rigidbody>();
-                        previousBody = segmentBody;
+                        segment.ParentRope = yarnRope;
+                        yarnRope.Segments.Add(segment);
+
+                        previousBody = segment.Rb;
                     }
                 }
 

@@ -589,6 +589,11 @@ public class PlayerController : NetworkBehaviour
         }
         else if (DropItemAction.action.WasPressedThisFrame())
         {
+            if (PickupAllowed && InteractDetection.TargetedTransform && InteractDetection.TargetedTransform.TryGetComponent<YarnSegment>(out var segment))
+            {
+                segment.CmdDetachRope();
+            }
+            
             if (DropAllowed)
             {
                 HeldObject.CmdTryDrop();

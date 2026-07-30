@@ -6,19 +6,21 @@ namespace Game.Items.Equipments
     [RequireComponent(typeof(Rigidbody), typeof(ConfigurableJoint))]
     public class YarnSegment : NetworkBehaviour
     {
-        public const float MaxPullAckTimeout = 1f;
-        [SerializeField] private float _pullSpeed = 3f;
+        public YarnRope ParentRope;
 
-        private Rigidbody _rb;
-        private ConfigurableJoint _joint;
+        public const float MaxPullAckTimeout = 1f;
+        [SerializeField] private float _pullSpeed = 15f;
+
+        public Rigidbody Rb { get; private set; }
+        public ConfigurableJoint Joint { get; private set; }
 
         private NetworkIdentity _activePuller;
         private float _lastPullTime = -Mathf.Infinity;
 
         private void Awake()
         {
-            _rb = GetComponent<Rigidbody>();
-            _joint = GetComponent<ConfigurableJoint>();
+            Rb = GetComponent<Rigidbody>();
+            Joint = GetComponent<ConfigurableJoint>();
         }
 
         [Command(requiresAuthority = false)]
@@ -34,17 +36,35 @@ namespace Game.Items.Equipments
             if (sender!.identity != _activePuller) return;
             _lastPullTime = -Mathf.Infinity;
         }
-        
+
+        [Server]
+        private void ServerDetach()
+        {
+            foreach (var segments in ParentRope.Segments)
+            {
+                NetworkServer.Destroy(segments.gameObject);
+            }
+
+            ParentRope.ParentEquipment.ServerSetIdle();
+            ParentRope.ParentEquipment.Rb.position = Rb.position + transform.up * 0.5f;
+        }
+
+        [Command(requiresAuthority = false)]
+        public void CmdDetachRope(NetworkConnectionToClient sender = null)
+        {
+            ServerDetach();
+        }
+
         private void FixedUpdate()
         {
             if (!isServer) return;
-            
+
             if (Time.time - _lastPullTime < MaxPullAckTimeout)
             {
-                var magnitudeDifference = _pullSpeed - _rb.linearVelocity.magnitude;
-                
-                var direction = (_rb.position - _joint.connectedBody.position).normalized;
-                _rb.AddForce(direction * magnitudeDifference, ForceMode.VelocityChange);
+                var magnitudeDifference = _pullSpeed - Rb.linearVelocity.magnitude;
+
+                var direction = (Rb.position - Joint.connectedBody.position).normalized;
+                Rb.AddForce(direction * magnitudeDifference, ForceMode.VelocityChange);
             }
         }
     }
