@@ -102,7 +102,7 @@ MonoBehaviour:
   updateMethod: 0
   syncPosition: 1
   syncRotation: 1
-  syncScale: 0
+  syncScale: 1
   onlySyncOnChange: 1
   compressRotation: 1
   interpolatePosition: 1
@@ -159,17 +159,23 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   <Data>k__BackingField: {fileID: 11400000, guid: 035224ea695830d469bf9bb79a72059e, type: 2}
-  _movementSpeed: 16
   State: 0
   Pickuppable: 1
   _pickupSfx:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 0}
+  <BuySfx>k__BackingField:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  <ShowInfoCard>k__BackingField: 1
+  <ForceMoveOnHeld>k__BackingField: 1
   _useSfx:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 0}
+  _singleUse: 1
   _effectDuration: 10
   _effectType: 1
   _effect: 1.85
