@@ -36,6 +36,8 @@ public class Shop : NetworkBehaviour
     [SerializeField] private InteractPrompt _enterPromptPrefab;
     private InteractPrompt _enterPromptInstance;
 
+    [SerializeField] private InteractPrompt.InteractPromptConfiguration _enterPromptConfig;
+
     [SerializeField] private ShopUI _shopUIPrefab;
     private ShopUI _shopUIInstance;
 
@@ -425,7 +427,7 @@ public class Shop : NetworkBehaviour
             if (PlayerController.LocalPlayer?.Seat) return;
 
             _enterPromptInstance = Instantiate(_enterPromptPrefab, _uiCanvas);
-            _enterPromptInstance.Build(InteractPrompt.InteractionType.EnterShop);
+            _enterPromptInstance.Build(_enterPromptConfig);
             _enterPromptInstance.WorldFollowUI.TrackingTarget = _enterPromptPosition;
         }
     }

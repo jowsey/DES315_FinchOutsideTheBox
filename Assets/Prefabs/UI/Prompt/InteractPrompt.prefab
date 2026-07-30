@@ -241,10 +241,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   _image: {fileID: 8824723510661456513}
-  _keyboardMouseSprite: {fileID: 21300000, guid: 5c9c3b5a0cf84324ea1326e4d4da3968, type: 3}
-  _playstationSprite: {fileID: 21300000, guid: 9a0d813d09747144c8ca47034b244338, type: 3}
-  _switchSprite: {fileID: 21300000, guid: 3bfe4b381d7403045815f074c6bf4b33, type: 3}
-  _xboxSprite: {fileID: 21300000, guid: bf0b509d34f1f1b4a9887265e1e7e52b, type: 3}
+  _actionRef: {fileID: 0}
 --- !u!1 &5897592355308795173
 GameObject:
   m_ObjectHideFlags: 0
@@ -398,6 +395,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UI.InteractPrompt
   <WorldFollowUI>k__BackingField: {fileID: 6793614353184999653}
   _promptLabel: {fileID: 6456573876188173245}
-  _interactionType: 0
-  _pickUpText: Pick up
-  _putDownText: Put down
+  _inputIconManager: {fileID: 5967759628048253830}
+  _transitionDuration: 0.25

@@ -18,10 +18,17 @@ public class InteractDetection : MonoBehaviour
     [SerializeField] [Required] private ItemInfoCard _itemInfoCardPrefab;
 
     private InteractPrompt _interactPromptInstance;
+    private InteractPrompt _secondaryInteractPromptInstance;
     private ItemInfoCard _itemInfoCardInstance;
 
     private readonly Collider[] _nearbyHits = new Collider[64];
 
+    [SerializeField] private InteractPrompt.InteractPromptConfiguration _pickupConfig;
+    [SerializeField] private InteractPrompt.InteractPromptConfiguration _putdownConfig;
+    [SerializeField] private InteractPrompt.InteractPromptConfiguration _attachHookConfig;
+    [SerializeField] private InteractPrompt.InteractPromptConfiguration _pullRopeConfig;
+    [SerializeField] private InteractPrompt.InteractPromptConfiguration _detachHookConfig;
+    
     //The transform of the object currently being looked at
     public static Transform TargetedTransform { get; private set; }
 
@@ -37,19 +44,18 @@ public class InteractDetection : MonoBehaviour
         _interactPromptInstance = null;
     }
 
+    private void CleanupSecondaryInteractPrompt()
+    {
+        _secondaryInteractPromptInstance.Destroy();
+        _secondaryInteractPromptInstance = null;
+    }
+
     private void CleanupItemInfoPrompt()
     {
         _itemInfoCardInstance.Destroy();
         _itemInfoCardInstance = null;
     }
 
-    private void CleanupPrompts()
-    {
-        TargetedTransform = null;
-        if (_interactPromptInstance) CleanupInteractPrompt();
-        if (_itemInfoCardInstance) CleanupItemInfoPrompt();
-    }
-    
     //LateUpdate so that it's after Cinemachine updates the camera
     private void LateUpdate()
     {
@@ -91,7 +97,10 @@ public class InteractDetection : MonoBehaviour
             }
             else
             {
-                CleanupPrompts();
+                TargetedTransform = null;
+                if (_interactPromptInstance) CleanupInteractPrompt();
+                if (_secondaryInteractPromptInstance) CleanupSecondaryInteractPrompt();
+                if (_itemInfoCardInstance) CleanupItemInfoPrompt();
                 return;
             }
         }
@@ -114,7 +123,7 @@ public class InteractDetection : MonoBehaviour
                               && PlayerController.LocalPlayer.UseAllowed
                               && PlayerController.LocalPlayer.HeldObject is YarnEquipment { IsHooking: false }
                               && interactedTransform.CompareTag("YarnHookTarget");
-        
+
         var validPullTarget = distanceToPlayer <= _maxInteractDistance
                               && PlayerController.LocalPlayer.PickupAllowed
                               && interactedTransform.gameObject.layer == LayerMask.NameToLayer("Rope");
@@ -123,6 +132,7 @@ public class InteractDetection : MonoBehaviour
         var showInfoCard = validPickupTarget && item.ShowInfoCard;
 
         if (!showInteractPrompt && _interactPromptInstance) CleanupInteractPrompt();
+        if (!validPullTarget && _secondaryInteractPromptInstance) CleanupSecondaryInteractPrompt();
         if (!showInfoCard && _itemInfoCardInstance) CleanupItemInfoPrompt();
 
         if (!(showInteractPrompt || showInfoCard))
@@ -138,10 +148,18 @@ public class InteractDetection : MonoBehaviour
 
             if (!_interactPromptInstance) _interactPromptInstance = Instantiate(_interactPromptPrefab, _uiCanvas);
 
-            if (validPickupTarget) _interactPromptInstance.Build(InteractPrompt.InteractionType.PickUp);
-            else if (validPutdownTarget) _interactPromptInstance.Build(InteractPrompt.InteractionType.PutDown);
-            else if (validHookTarget) _interactPromptInstance.Build(InteractPrompt.InteractionType.Attach);
-            else if (validPullTarget) _interactPromptInstance.Build(InteractPrompt.InteractionType.Pull);
+            if (validPickupTarget) _interactPromptInstance.Build(_pickupConfig);
+            else if (validPutdownTarget) _interactPromptInstance.Build(_putdownConfig);
+            else if (validHookTarget) _interactPromptInstance.Build(_attachHookConfig);
+            else if (validPullTarget)
+            {
+                _interactPromptInstance.Build(_pullRopeConfig);
+
+                if (!_secondaryInteractPromptInstance) _secondaryInteractPromptInstance = Instantiate(_interactPromptPrefab, _uiCanvas);
+                _secondaryInteractPromptInstance.Build(_detachHookConfig);
+                _secondaryInteractPromptInstance.transform.localScale = Vector3.one * 0.75f;
+            }
+
             _interactPromptInstance.WorldFollowUI.TrackingTarget = TargetedTransform;
 
             if (validPickupTarget)
@@ -165,7 +183,15 @@ public class InteractDetection : MonoBehaviour
             {
                 // Interact prompt above target
                 ((RectTransform)_interactPromptInstance.transform).pivot = new Vector2(0.5f, 0);
-                _interactPromptInstance.WorldFollowUI.UIPositionOffset = new Vector2(0, -32);
+                _interactPromptInstance.WorldFollowUI.UIPositionOffset = new Vector2(0, 16);
+
+                if (validPullTarget)
+                {
+                    // Detach prompt below it
+                    _secondaryInteractPromptInstance.WorldFollowUI.TrackingTarget = TargetedTransform;
+                    ((RectTransform)_secondaryInteractPromptInstance.transform).pivot = new Vector2(0.5f, 1.0f);
+                    _secondaryInteractPromptInstance.WorldFollowUI.UIPositionOffset = new Vector2(0, -16);
+                }
             }
         }
     }

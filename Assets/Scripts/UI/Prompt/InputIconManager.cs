@@ -1,7 +1,9 @@
-using System;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.InputSystem;
+using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.UI;
-using Util;
 
 namespace UI
 {
@@ -9,14 +11,14 @@ namespace UI
     {
         [Tooltip("The image to be replaced")]
         [SerializeField] private Image _image;
-        
-        [Header("Icons")]
-        [SerializeField] private Sprite _keyboardMouseSprite;
-        [SerializeField] private Sprite _playstationSprite;
-        [SerializeField] private Sprite _switchSprite;
-        [SerializeField] private Sprite _xboxSprite;
 
-        private InputDeviceManager.InputType _currentlyDisplayedInputType;
+        [Header("Icons")]
+        [SerializeField] private InputActionReference _actionRef;
+
+        private AsyncOperationHandle<Sprite> _iconHandle;
+
+        private static InputDevice _lastActiveDevice;
+        private static bool _registeredStaticDeviceHandler;
 
         private void OnValidate()
         {
@@ -25,38 +27,77 @@ namespace UI
 
         public void Start()
         {
-            _currentlyDisplayedInputType = InputDeviceManager.InputType.KeyboardMouse;
-            CheckForInputTypeChange();
-        }
-
-        private void Update()
-        {
-            CheckForInputTypeChange();
-        }
-
-        private void CheckForInputTypeChange()
-        {
-            if (_currentlyDisplayedInputType != InputDeviceManager.CurrentInputType)
+            if (!_registeredStaticDeviceHandler)
             {
-                switch (InputDeviceManager.CurrentInputType)
-                {
-                    case
-                        InputDeviceManager.InputType.KeyboardMouse:
-                        _image.sprite = _keyboardMouseSprite;
-                        break;
-                    case InputDeviceManager.InputType.Switch:
-                        _image.sprite = _switchSprite;
-                        break;
-                    case InputDeviceManager.InputType.Playstation:
-                        _image.sprite = _playstationSprite;
-                        break;
-                    default: //fallback (xbox for now)
-                        _image.sprite = _xboxSprite;
-                        break;
-
-                }
-                _currentlyDisplayedInputType = InputDeviceManager.CurrentInputType;
+                InputSystem.onActionChange += TrackActionDeviceChanged;
+                _registeredStaticDeviceHandler = true;
             }
+
+            UpdateIcons();
+        }
+
+        private void OnEnable()
+        {
+            InputSystem.onActionChange += OnActionChange;
+        }
+
+        private void OnDisable()
+        {
+            InputSystem.onActionChange -= OnActionChange;
+        }
+
+        private static void TrackActionDeviceChanged(object obj, InputActionChange change)
+        {
+            if (change != InputActionChange.ActionStarted) return;
+
+            var action = (InputAction)obj;
+            var control = action.activeControl;
+            if (control != null) _lastActiveDevice = control.device;
+        }
+
+        private void OnDestroy()
+        {
+            if (_iconHandle.IsValid()) Addressables.Release(_iconHandle);
+        }
+
+        private void OnActionChange(object obj, InputActionChange change)
+        {
+            if (change != InputActionChange.ActionStarted) return;
+
+            var action = (InputAction)obj;
+            var control = action.activeControl;
+            if (control != null) UpdateIcons();
+        }
+
+        private void UpdateIcons()
+        {
+            if (!_actionRef) return;
+
+            _image.sprite = null;
+            if (_iconHandle.IsValid()) Addressables.Release(_iconHandle);
+
+            var activeControl = _actionRef.action.controls.FirstOrDefault(control => control.device == _lastActiveDevice);
+            activeControl ??= _actionRef.action.controls.Count > 0 ? _actionRef.action.controls[0] : null;
+            if (activeControl == null) return;
+
+            _iconHandle = Addressables.LoadAssetAsync<Sprite>("InputIcon/" + activeControl.name);
+            _iconHandle.WaitForCompletion();
+
+            if (_iconHandle.Status == AsyncOperationStatus.Succeeded)
+            {
+                _image.sprite = _iconHandle.Result;
+            }
+            else
+            {
+                Debug.LogWarning($"Input icon 'InputIcon/{activeControl.name}' for {_actionRef.action.name} not found in Addressables!");
+                Addressables.Release(_iconHandle);
+            }
+        }
+
+        public void SetAction(InputActionReference action)
+        {
+            _actionRef = action;
+            UpdateIcons();
         }
     }
 }
