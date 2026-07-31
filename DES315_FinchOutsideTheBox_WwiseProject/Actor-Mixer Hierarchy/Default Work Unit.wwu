@@ -5625,692 +5625,7 @@
 								</Folder>
 								<Folder Name="Pusher" ID="{0EB7BDF3-BD2A-40E9-AB9F-368FF58A70CE}" ShortID="308006269">
 									<ChildrenList>
-										<Sound Name="Pusher2s" ID="{3B07C87A-D672-4D68-9F54-679A02DD1E9A}" ShortID="1055310389">
-											<PropertyList>
-												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
-												<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
-												<Property Name="MaxSoundPerInstance" Type="int16">
-													<ValueList>
-														<Value>1</Value>
-													</ValueList>
-												</Property>
-												<Property Name="UseMaxSoundPerInstance" Type="bool">
-													<ValueList>
-														<Value>True</Value>
-													</ValueList>
-												</Property>
-												<Property Name="Volume" Type="Real64">
-													<ValueList>
-														<Value>-20</Value>
-													</ValueList>
-												</Property>
-											</PropertyList>
-											<ReferenceList>
-												<Reference Name="Attenuation">
-													<ObjectRef Name="StoneMovers" ID="{0F946374-F46F-41FA-98E7-EC85D98AD049}" WorkUnitID="{0D537A1A-A097-4DE3-A5EA-9723A41B16C7}"/>
-												</Reference>
-												<Reference Name="Conversion">
-													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
-												</Reference>
-												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
-												</Reference>
-											</ReferenceList>
-											<ChildrenList>
-												<AudioFileSource Name="PusherMoving" ID="{F9D8F589-4F93-4ACE-BE92-104C935A338D}">
-													<PropertyList>
-														<Property Name="FadeOutDuration" Type="Real64" Value="0.0225881242752077"/>
-														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
-													</PropertyList>
-													<Language>SFX</Language>
-													<AudioFile>PlatformMoving.wav</AudioFile>
-													<MediaIDList>
-														<MediaID ID="83499910"/>
-													</MediaIDList>
-												</AudioFileSource>
-											</ChildrenList>
-											<ObjectLists>
-												<ObjectList Name="RTPC">
-													<Reference>
-														<Local>
-															<RTPC Name="" ID="{385981B7-8E76-40B1-AF2A-9E9D7568D08C}" ShortID="230507384">
-																<PropertyList>
-																	<Property Name="PropertyName" Type="string" Value="Volume"/>
-																</PropertyList>
-																<ReferenceList>
-																	<Reference Name="ControlInput">
-																		<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
-																	</Reference>
-																	<Reference Name="Curve">
-																		<Custom>
-																			<Curve Name="" ID="{1851163F-3D53-4C01-86CB-F6C98795F6FD}">
-																				<PropertyList>
-																					<Property Name="Flags" Type="int32" Value="3"/>
-																				</PropertyList>
-																				<PointList>
-																					<Point>
-																						<XPos>0</XPos>
-																						<YPos>-200</YPos>
-																						<Flags>5</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>30</XPos>
-																						<YPos>6.05179</YPos>
-																						<Flags>37</Flags>
-																					</Point>
-																				</PointList>
-																			</Curve>
-																		</Custom>
-																	</Reference>
-																</ReferenceList>
-															</RTPC>
-														</Local>
-													</Reference>
-													<Reference>
-														<Local>
-															<RTPC Name="" ID="{EC67AB68-54A0-4CB7-AC25-A45756F3F8F5}" ShortID="173304501">
-																<PropertyList>
-																	<Property Name="PropertyName" Type="string" Value="Volume"/>
-																</PropertyList>
-																<ReferenceList>
-																	<Reference Name="ControlInput">
-																		<ObjectRef Name="PusherMoving2s" ID="{3E9472E8-5A47-4FCC-8C71-B12A60D49103}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
-																	</Reference>
-																	<Reference Name="Curve">
-																		<Custom>
-																			<Curve Name="" ID="{3CC03E7E-8F64-49A1-AFBE-873D5D39739B}">
-																				<PropertyList>
-																					<Property Name="Flags" Type="int32" Value="3"/>
-																				</PropertyList>
-																				<PointList>
-																					<Point>
-																						<XPos>0</XPos>
-																						<YPos>-200</YPos>
-																						<Flags>5</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>0.40846</XPos>
-																						<YPos>-200</YPos>
-																						<Flags>0</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>0.78072</XPos>
-																						<YPos>-0.24937</YPos>
-																						<Flags>0</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>9.89847228993987</XPos>
-																						<YPos>-0.01232</YPos>
-																						<Flags>0</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>10</XPos>
-																						<YPos>-200</YPos>
-																						<Flags>37</Flags>
-																					</Point>
-																				</PointList>
-																			</Curve>
-																		</Custom>
-																	</Reference>
-																</ReferenceList>
-															</RTPC>
-														</Local>
-													</Reference>
-												</ObjectList>
-											</ObjectLists>
-											<ActiveSourceList>
-												<ActiveSource Name="PusherMoving" ID="{F9D8F589-4F93-4ACE-BE92-104C935A338D}" Platform="Linked"/>
-											</ActiveSourceList>
-										</Sound>
-										<Sound Name="Pusher6s" ID="{931E8BE2-8017-4704-B2BB-8393D7703EC6}" ShortID="201868459">
-											<PropertyList>
-												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
-												<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
-												<Property Name="MaxSoundPerInstance" Type="int16">
-													<ValueList>
-														<Value>1</Value>
-													</ValueList>
-												</Property>
-												<Property Name="UseMaxSoundPerInstance" Type="bool">
-													<ValueList>
-														<Value>True</Value>
-													</ValueList>
-												</Property>
-												<Property Name="Volume" Type="Real64">
-													<ValueList>
-														<Value>-20</Value>
-													</ValueList>
-												</Property>
-											</PropertyList>
-											<ReferenceList>
-												<Reference Name="Attenuation">
-													<ObjectRef Name="StoneMovers" ID="{0F946374-F46F-41FA-98E7-EC85D98AD049}" WorkUnitID="{0D537A1A-A097-4DE3-A5EA-9723A41B16C7}"/>
-												</Reference>
-												<Reference Name="Conversion">
-													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
-												</Reference>
-												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
-												</Reference>
-											</ReferenceList>
-											<ChildrenList>
-												<AudioFileSource Name="PusherMoving" ID="{9F53F34E-E6F7-475B-91B8-E32584F8395A}">
-													<PropertyList>
-														<Property Name="FadeOutDuration" Type="Real64" Value="0.0225881242752077"/>
-														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
-													</PropertyList>
-													<Language>SFX</Language>
-													<AudioFile>PlatformMoving.wav</AudioFile>
-													<MediaIDList>
-														<MediaID ID="83499910"/>
-													</MediaIDList>
-												</AudioFileSource>
-											</ChildrenList>
-											<ObjectLists>
-												<ObjectList Name="RTPC">
-													<Reference>
-														<Local>
-															<RTPC Name="" ID="{EF3957F1-FED7-473E-93F4-79DD08CEC5A1}" ShortID="88828910">
-																<PropertyList>
-																	<Property Name="PropertyName" Type="string" Value="Volume"/>
-																</PropertyList>
-																<ReferenceList>
-																	<Reference Name="ControlInput">
-																		<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
-																	</Reference>
-																	<Reference Name="Curve">
-																		<Custom>
-																			<Curve Name="" ID="{B97072F5-5326-4EEB-814F-C915FF58A349}">
-																				<PropertyList>
-																					<Property Name="Flags" Type="int32" Value="3"/>
-																				</PropertyList>
-																				<PointList>
-																					<Point>
-																						<XPos>0</XPos>
-																						<YPos>-200</YPos>
-																						<Flags>5</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>30</XPos>
-																						<YPos>6.05179</YPos>
-																						<Flags>37</Flags>
-																					</Point>
-																				</PointList>
-																			</Curve>
-																		</Custom>
-																	</Reference>
-																</ReferenceList>
-															</RTPC>
-														</Local>
-													</Reference>
-													<Reference>
-														<Local>
-															<RTPC Name="" ID="{522E7A37-7A9B-453D-B522-F395516A2AB6}" ShortID="354086892">
-																<PropertyList>
-																	<Property Name="PropertyName" Type="string" Value="Volume"/>
-																</PropertyList>
-																<ReferenceList>
-																	<Reference Name="ControlInput">
-																		<ObjectRef Name="PusherMoving6a" ID="{6B13AFD6-6221-4EA5-9E30-BFDBE334DE3E}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
-																	</Reference>
-																	<Reference Name="Curve">
-																		<Custom>
-																			<Curve Name="" ID="{3E49FB4F-C3B3-4B19-B2E4-56E694415DAA}">
-																				<PropertyList>
-																					<Property Name="Flags" Type="int32" Value="3"/>
-																				</PropertyList>
-																				<PointList>
-																					<Point>
-																						<XPos>0</XPos>
-																						<YPos>-200</YPos>
-																						<Flags>5</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>1.00444</XPos>
-																						<YPos>-200</YPos>
-																						<Flags>0</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>1.18143</XPos>
-																						<YPos>-0.16545</YPos>
-																						<Flags>0</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>6.09053</XPos>
-																						<YPos>-0.00667</YPos>
-																						<Flags>0</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>6.153</XPos>
-																						<YPos>-200</YPos>
-																						<Flags>37</Flags>
-																					</Point>
-																				</PointList>
-																			</Curve>
-																		</Custom>
-																	</Reference>
-																</ReferenceList>
-															</RTPC>
-														</Local>
-													</Reference>
-												</ObjectList>
-											</ObjectLists>
-											<ActiveSourceList>
-												<ActiveSource Name="PusherMoving" ID="{9F53F34E-E6F7-475B-91B8-E32584F8395A}" Platform="Linked"/>
-											</ActiveSourceList>
-										</Sound>
-										<Sound Name="Pusher7s" ID="{D415CD8D-D9D2-4728-A6E5-D84E7D578523}" ShortID="790399391">
-											<PropertyList>
-												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
-												<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
-												<Property Name="MaxSoundPerInstance" Type="int16">
-													<ValueList>
-														<Value>1</Value>
-													</ValueList>
-												</Property>
-												<Property Name="UseMaxSoundPerInstance" Type="bool">
-													<ValueList>
-														<Value>True</Value>
-													</ValueList>
-												</Property>
-												<Property Name="Volume" Type="Real64">
-													<ValueList>
-														<Value>-20</Value>
-													</ValueList>
-												</Property>
-											</PropertyList>
-											<ReferenceList>
-												<Reference Name="Attenuation">
-													<ObjectRef Name="StoneMovers" ID="{0F946374-F46F-41FA-98E7-EC85D98AD049}" WorkUnitID="{0D537A1A-A097-4DE3-A5EA-9723A41B16C7}"/>
-												</Reference>
-												<Reference Name="Conversion">
-													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
-												</Reference>
-												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
-												</Reference>
-											</ReferenceList>
-											<ChildrenList>
-												<AudioFileSource Name="PusherMoving" ID="{5FA1E259-577B-42C1-AF2A-D7994D88CB28}">
-													<PropertyList>
-														<Property Name="FadeOutDuration" Type="Real64" Value="0.0225881242752077"/>
-														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
-													</PropertyList>
-													<Language>SFX</Language>
-													<AudioFile>PlatformMoving.wav</AudioFile>
-													<MediaIDList>
-														<MediaID ID="83499910"/>
-													</MediaIDList>
-												</AudioFileSource>
-											</ChildrenList>
-											<ObjectLists>
-												<ObjectList Name="RTPC">
-													<Reference>
-														<Local>
-															<RTPC Name="" ID="{12041988-B152-4D3A-81C2-640F886D6585}" ShortID="391911476">
-																<PropertyList>
-																	<Property Name="PropertyName" Type="string" Value="Volume"/>
-																</PropertyList>
-																<ReferenceList>
-																	<Reference Name="ControlInput">
-																		<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
-																	</Reference>
-																	<Reference Name="Curve">
-																		<Custom>
-																			<Curve Name="" ID="{233DFD66-B438-407A-AFD0-BDD98E949134}">
-																				<PropertyList>
-																					<Property Name="Flags" Type="int32" Value="3"/>
-																				</PropertyList>
-																				<PointList>
-																					<Point>
-																						<XPos>0</XPos>
-																						<YPos>-200</YPos>
-																						<Flags>5</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>30</XPos>
-																						<YPos>6.05179</YPos>
-																						<Flags>37</Flags>
-																					</Point>
-																				</PointList>
-																			</Curve>
-																		</Custom>
-																	</Reference>
-																</ReferenceList>
-															</RTPC>
-														</Local>
-													</Reference>
-													<Reference>
-														<Local>
-															<RTPC Name="" ID="{DBB2C04F-FAD5-462A-B776-0772C1EC7D81}" ShortID="541642172">
-																<PropertyList>
-																	<Property Name="PropertyName" Type="string" Value="Volume"/>
-																</PropertyList>
-																<ReferenceList>
-																	<Reference Name="ControlInput">
-																		<ObjectRef Name="PusherMoving7s" ID="{6405334A-F455-49D5-A2BC-D1D0E3631642}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
-																	</Reference>
-																	<Reference Name="Curve">
-																		<Custom>
-																			<Curve Name="" ID="{D4680E9C-6587-4C42-A3F0-A40FF1F0DC33}">
-																				<PropertyList>
-																					<Property Name="Flags" Type="int32" Value="3"/>
-																				</PropertyList>
-																				<PointList>
-																					<Point>
-																						<XPos>0</XPos>
-																						<YPos>-200</YPos>
-																						<Flags>5</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>0.99402</XPos>
-																						<YPos>-200</YPos>
-																						<Flags>0</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>1.07732</XPos>
-																						<YPos>0</YPos>
-																						<Flags>0</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>6.11136</XPos>
-																						<YPos>0</YPos>
-																						<Flags>0</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>6.153</XPos>
-																						<YPos>-200</YPos>
-																						<Flags>37</Flags>
-																					</Point>
-																				</PointList>
-																			</Curve>
-																		</Custom>
-																	</Reference>
-																</ReferenceList>
-															</RTPC>
-														</Local>
-													</Reference>
-												</ObjectList>
-											</ObjectLists>
-											<ActiveSourceList>
-												<ActiveSource Name="PusherMoving" ID="{5FA1E259-577B-42C1-AF2A-D7994D88CB28}" Platform="Linked"/>
-											</ActiveSourceList>
-										</Sound>
-										<Sound Name="Pusher10s" ID="{17870E29-EBDD-4477-9257-31F8EC114BF2}" ShortID="855919790">
-											<PropertyList>
-												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
-												<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
-												<Property Name="MaxSoundPerInstance" Type="int16">
-													<ValueList>
-														<Value>1</Value>
-													</ValueList>
-												</Property>
-												<Property Name="UseMaxSoundPerInstance" Type="bool">
-													<ValueList>
-														<Value>True</Value>
-													</ValueList>
-												</Property>
-												<Property Name="Volume" Type="Real64">
-													<ValueList>
-														<Value>-20</Value>
-													</ValueList>
-												</Property>
-											</PropertyList>
-											<ReferenceList>
-												<Reference Name="Attenuation">
-													<ObjectRef Name="StoneMovers" ID="{0F946374-F46F-41FA-98E7-EC85D98AD049}" WorkUnitID="{0D537A1A-A097-4DE3-A5EA-9723A41B16C7}"/>
-												</Reference>
-												<Reference Name="Conversion">
-													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
-												</Reference>
-												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
-												</Reference>
-											</ReferenceList>
-											<ChildrenList>
-												<AudioFileSource Name="PusherMoving" ID="{88684FF0-1175-41D7-92C3-9BC879D02FB4}">
-													<PropertyList>
-														<Property Name="FadeOutDuration" Type="Real64" Value="0.0225881242752077"/>
-														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
-													</PropertyList>
-													<Language>SFX</Language>
-													<AudioFile>PlatformMoving.wav</AudioFile>
-													<MediaIDList>
-														<MediaID ID="83499910"/>
-													</MediaIDList>
-												</AudioFileSource>
-											</ChildrenList>
-											<ObjectLists>
-												<ObjectList Name="RTPC">
-													<Reference>
-														<Local>
-															<RTPC Name="" ID="{1B98A41F-084B-4C22-BB48-8FFE3B3B11F4}" ShortID="1042964632">
-																<PropertyList>
-																	<Property Name="PropertyName" Type="string" Value="Volume"/>
-																</PropertyList>
-																<ReferenceList>
-																	<Reference Name="ControlInput">
-																		<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
-																	</Reference>
-																	<Reference Name="Curve">
-																		<Custom>
-																			<Curve Name="" ID="{A8A82EC1-09D2-4739-B0A3-3A5BD0BABE3F}">
-																				<PropertyList>
-																					<Property Name="Flags" Type="int32" Value="3"/>
-																				</PropertyList>
-																				<PointList>
-																					<Point>
-																						<XPos>0</XPos>
-																						<YPos>-200</YPos>
-																						<Flags>5</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>30</XPos>
-																						<YPos>6.05179</YPos>
-																						<Flags>37</Flags>
-																					</Point>
-																				</PointList>
-																			</Curve>
-																		</Custom>
-																	</Reference>
-																</ReferenceList>
-															</RTPC>
-														</Local>
-													</Reference>
-													<Reference>
-														<Local>
-															<RTPC Name="" ID="{59112891-C366-4507-8C03-DC255D0203F6}" ShortID="491014135">
-																<PropertyList>
-																	<Property Name="PropertyName" Type="string" Value="Volume"/>
-																</PropertyList>
-																<ReferenceList>
-																	<Reference Name="ControlInput">
-																		<ObjectRef Name="PusherMoving10s" ID="{F92FD13E-A742-413D-83E2-B562DE089D54}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
-																	</Reference>
-																	<Reference Name="Curve">
-																		<Custom>
-																			<Curve Name="" ID="{C328DB6C-F020-478F-8AE4-C88BBBA94E47}">
-																				<PropertyList>
-																					<Property Name="Flags" Type="int32" Value="3"/>
-																				</PropertyList>
-																				<PointList>
-																					<Point>
-																						<XPos>0</XPos>
-																						<YPos>-200</YPos>
-																						<Flags>5</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>0.98841</XPos>
-																						<YPos>-200</YPos>
-																						<Flags>0</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>1.0717</XPos>
-																						<YPos>0</YPos>
-																						<Flags>0</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>6.12177</XPos>
-																						<YPos>0</YPos>
-																						<Flags>0</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>6.153</XPos>
-																						<YPos>-200</YPos>
-																						<Flags>37</Flags>
-																					</Point>
-																				</PointList>
-																			</Curve>
-																		</Custom>
-																	</Reference>
-																</ReferenceList>
-															</RTPC>
-														</Local>
-													</Reference>
-												</ObjectList>
-											</ObjectLists>
-											<ActiveSourceList>
-												<ActiveSource Name="PusherMoving" ID="{88684FF0-1175-41D7-92C3-9BC879D02FB4}" Platform="Linked"/>
-											</ActiveSourceList>
-										</Sound>
-										<Sound Name="Pusher8s" ID="{48B42B7D-D5BD-4117-B090-B2619F0AE0D2}" ShortID="266875560">
-											<PropertyList>
-												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
-												<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
-												<Property Name="MaxSoundPerInstance" Type="int16">
-													<ValueList>
-														<Value>1</Value>
-													</ValueList>
-												</Property>
-												<Property Name="UseMaxSoundPerInstance" Type="bool">
-													<ValueList>
-														<Value>True</Value>
-													</ValueList>
-												</Property>
-												<Property Name="Volume" Type="Real64">
-													<ValueList>
-														<Value>-20</Value>
-													</ValueList>
-												</Property>
-											</PropertyList>
-											<ReferenceList>
-												<Reference Name="Attenuation">
-													<ObjectRef Name="StoneMovers" ID="{0F946374-F46F-41FA-98E7-EC85D98AD049}" WorkUnitID="{0D537A1A-A097-4DE3-A5EA-9723A41B16C7}"/>
-												</Reference>
-												<Reference Name="Conversion">
-													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
-												</Reference>
-												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
-												</Reference>
-											</ReferenceList>
-											<ChildrenList>
-												<AudioFileSource Name="PusherMoving" ID="{CA2415D5-BCA9-40BC-8DA4-DE810EA703FE}">
-													<PropertyList>
-														<Property Name="FadeOutDuration" Type="Real64" Value="0.0225881242752077"/>
-														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
-													</PropertyList>
-													<Language>SFX</Language>
-													<AudioFile>PlatformMoving.wav</AudioFile>
-													<MediaIDList>
-														<MediaID ID="83499910"/>
-													</MediaIDList>
-												</AudioFileSource>
-											</ChildrenList>
-											<ObjectLists>
-												<ObjectList Name="RTPC">
-													<Reference>
-														<Local>
-															<RTPC Name="" ID="{E0A755B2-8206-4398-AE47-0146011F15CB}" ShortID="287303056">
-																<PropertyList>
-																	<Property Name="PropertyName" Type="string" Value="Volume"/>
-																</PropertyList>
-																<ReferenceList>
-																	<Reference Name="ControlInput">
-																		<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
-																	</Reference>
-																	<Reference Name="Curve">
-																		<Custom>
-																			<Curve Name="" ID="{1C375714-4CC6-4995-8B6A-5B15CADC7F1C}">
-																				<PropertyList>
-																					<Property Name="Flags" Type="int32" Value="3"/>
-																				</PropertyList>
-																				<PointList>
-																					<Point>
-																						<XPos>0</XPos>
-																						<YPos>-200</YPos>
-																						<Flags>5</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>30</XPos>
-																						<YPos>6.05179</YPos>
-																						<Flags>37</Flags>
-																					</Point>
-																				</PointList>
-																			</Curve>
-																		</Custom>
-																	</Reference>
-																</ReferenceList>
-															</RTPC>
-														</Local>
-													</Reference>
-													<Reference>
-														<Local>
-															<RTPC Name="" ID="{8443CEE1-9C66-42DB-9217-57603E1BDA15}" ShortID="609999268">
-																<PropertyList>
-																	<Property Name="PropertyName" Type="string" Value="Volume"/>
-																</PropertyList>
-																<ReferenceList>
-																	<Reference Name="ControlInput">
-																		<ObjectRef Name="PusherMoving8s" ID="{4B1E97BE-6D1A-4285-A6D9-C08A02FCFE3C}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
-																	</Reference>
-																	<Reference Name="Curve">
-																		<Custom>
-																			<Curve Name="" ID="{CBA4554F-DD82-4FF1-9388-88DAE17BE13E}">
-																				<PropertyList>
-																					<Property Name="Flags" Type="int32" Value="3"/>
-																				</PropertyList>
-																				<PointList>
-																					<Point>
-																						<XPos>0</XPos>
-																						<YPos>-200</YPos>
-																						<Flags>5</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>0.99403</XPos>
-																						<YPos>-200</YPos>
-																						<Flags>0</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>1.0669</XPos>
-																						<YPos>0</YPos>
-																						<Flags>0</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>6.09053</XPos>
-																						<YPos>-0.1049</YPos>
-																						<Flags>0</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>6.153</XPos>
-																						<YPos>-200</YPos>
-																						<Flags>37</Flags>
-																					</Point>
-																				</PointList>
-																			</Curve>
-																		</Custom>
-																	</Reference>
-																</ReferenceList>
-															</RTPC>
-														</Local>
-													</Reference>
-												</ObjectList>
-											</ObjectLists>
-											<ActiveSourceList>
-												<ActiveSource Name="PusherMoving" ID="{CA2415D5-BCA9-40BC-8DA4-DE810EA703FE}" Platform="Linked"/>
-											</ActiveSourceList>
-										</Sound>
-										<Sound Name="Pusher9s" ID="{A73D2858-8DF2-4AC7-A414-0186F0342FDC}" ShortID="19751275">
+										<Sound Name="Pusher_Basement_Row_1" ID="{CDE29F33-C047-4B41-B8FB-3899BDF68C7B}" ShortID="767260808">
 											<PropertyList>
 												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
 												<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
@@ -6327,143 +5642,6 @@
 												<Property Name="Volume" Type="Real64">
 													<ValueList>
 														<Value>-24</Value>
-													</ValueList>
-												</Property>
-											</PropertyList>
-											<ReferenceList>
-												<Reference Name="Attenuation">
-													<ObjectRef Name="StoneMovers" ID="{0F946374-F46F-41FA-98E7-EC85D98AD049}" WorkUnitID="{0D537A1A-A097-4DE3-A5EA-9723A41B16C7}"/>
-												</Reference>
-												<Reference Name="Conversion">
-													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
-												</Reference>
-												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
-												</Reference>
-											</ReferenceList>
-											<ChildrenList>
-												<AudioFileSource Name="PusherMoving" ID="{183FE68A-3694-4C3C-A4E9-68668C5F9631}">
-													<PropertyList>
-														<Property Name="FadeOutDuration" Type="Real64" Value="0.0225881242752077"/>
-														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
-													</PropertyList>
-													<Language>SFX</Language>
-													<AudioFile>PlatformMoving.wav</AudioFile>
-													<MediaIDList>
-														<MediaID ID="83499910"/>
-													</MediaIDList>
-												</AudioFileSource>
-											</ChildrenList>
-											<ObjectLists>
-												<ObjectList Name="RTPC">
-													<Reference>
-														<Local>
-															<RTPC Name="" ID="{423E58F1-41A9-4081-B456-6D79C0B38028}" ShortID="285996159">
-																<PropertyList>
-																	<Property Name="PropertyName" Type="string" Value="Volume"/>
-																</PropertyList>
-																<ReferenceList>
-																	<Reference Name="ControlInput">
-																		<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
-																	</Reference>
-																	<Reference Name="Curve">
-																		<Custom>
-																			<Curve Name="" ID="{9EDA685E-4834-4152-91DD-F217BD216BF5}">
-																				<PropertyList>
-																					<Property Name="Flags" Type="int32" Value="3"/>
-																				</PropertyList>
-																				<PointList>
-																					<Point>
-																						<XPos>0</XPos>
-																						<YPos>-200</YPos>
-																						<Flags>5</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>30</XPos>
-																						<YPos>6.05179</YPos>
-																						<Flags>37</Flags>
-																					</Point>
-																				</PointList>
-																			</Curve>
-																		</Custom>
-																	</Reference>
-																</ReferenceList>
-															</RTPC>
-														</Local>
-													</Reference>
-													<Reference>
-														<Local>
-															<RTPC Name="" ID="{B558072D-65BE-4406-AA2B-8C6FCCA361E3}" ShortID="185995359">
-																<PropertyList>
-																	<Property Name="PropertyName" Type="string" Value="Volume"/>
-																</PropertyList>
-																<ReferenceList>
-																	<Reference Name="ControlInput">
-																		<ObjectRef Name="PusherMoving9s" ID="{E6F0B13A-AD6E-4AC3-A064-824DD0B86841}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
-																	</Reference>
-																	<Reference Name="Curve">
-																		<Custom>
-																			<Curve Name="" ID="{96F82634-4BD4-40BE-9CE1-BC2B75A54D5B}">
-																				<PropertyList>
-																					<Property Name="Flags" Type="int32" Value="3"/>
-																				</PropertyList>
-																				<PointList>
-																					<Point>
-																						<XPos>0</XPos>
-																						<YPos>-200</YPos>
-																						<Flags>5</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>0.99345</XPos>
-																						<YPos>-200</YPos>
-																						<Flags>0</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>1.07356</XPos>
-																						<YPos>-0.04708</YPos>
-																						<Flags>0</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>6.08892</XPos>
-																						<YPos>-0.07781</YPos>
-																						<Flags>0</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>6.153</XPos>
-																						<YPos>-200</YPos>
-																						<Flags>37</Flags>
-																					</Point>
-																				</PointList>
-																			</Curve>
-																		</Custom>
-																	</Reference>
-																</ReferenceList>
-															</RTPC>
-														</Local>
-													</Reference>
-												</ObjectList>
-											</ObjectLists>
-											<ActiveSourceList>
-												<ActiveSource Name="PusherMoving" ID="{183FE68A-3694-4C3C-A4E9-68668C5F9631}" Platform="Linked"/>
-											</ActiveSourceList>
-										</Sound>
-										<Sound Name="Pusher5s" ID="{CDE29F33-C047-4B41-B8FB-3899BDF68C7B}" ShortID="767260808">
-											<PropertyList>
-												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
-												<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
-												<Property Name="MaxSoundPerInstance" Type="int16">
-													<ValueList>
-														<Value>1</Value>
-													</ValueList>
-												</Property>
-												<Property Name="UseMaxSoundPerInstance" Type="bool">
-													<ValueList>
-														<Value>True</Value>
-													</ValueList>
-												</Property>
-												<Property Name="Volume" Type="Real64">
-													<ValueList>
-														<Value>-20</Value>
 													</ValueList>
 												</Property>
 											</PropertyList>
@@ -6536,7 +5714,7 @@
 																</PropertyList>
 																<ReferenceList>
 																	<Reference Name="ControlInput">
-																		<ObjectRef Name="PusherMoving5s" ID="{AA581EF7-D6A8-41DE-AF6A-406233D89A0F}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																		<ObjectRef Name="Pusher_Basement_Row_1" ID="{AA581EF7-D6A8-41DE-AF6A-406233D89A0F}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
 																	</Reference>
 																	<Reference Name="Curve">
 																		<Custom>
@@ -6551,22 +5729,27 @@
 																						<Flags>5</Flags>
 																					</Point>
 																					<Point>
-																						<XPos>0.99403</XPos>
-																						<YPos>-199.72204</YPos>
+																						<XPos>2.32973</XPos>
+																						<YPos>-32.76979</YPos>
 																						<Flags>0</Flags>
 																					</Point>
 																					<Point>
-																						<XPos>1.16061</XPos>
-																						<YPos>0</YPos>
+																						<XPos>2.60736</XPos>
+																						<YPos>-0.0742</YPos>
 																						<Flags>0</Flags>
 																					</Point>
 																					<Point>
-																						<XPos>6.11135</XPos>
+																						<XPos>7.56449</XPos>
 																						<YPos>-0.16503</YPos>
 																						<Flags>0</Flags>
 																					</Point>
 																					<Point>
-																						<XPos>6.153</XPos>
+																						<XPos>7.88</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>8</XPos>
 																						<YPos>-200</YPos>
 																						<Flags>37</Flags>
 																					</Point>
@@ -6582,417 +5765,6 @@
 											</ObjectLists>
 											<ActiveSourceList>
 												<ActiveSource Name="PusherMoving" ID="{E76ACAEF-3054-43BF-9005-EDC2E5DBB6BB}" Platform="Linked"/>
-											</ActiveSourceList>
-										</Sound>
-										<Sound Name="Pusher16s" ID="{E5B7D2CF-2A33-4E97-B0D3-125B349E271C}" ShortID="627034396">
-											<PropertyList>
-												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
-												<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
-												<Property Name="MaxSoundPerInstance" Type="int16">
-													<ValueList>
-														<Value>1</Value>
-													</ValueList>
-												</Property>
-												<Property Name="UseMaxSoundPerInstance" Type="bool">
-													<ValueList>
-														<Value>True</Value>
-													</ValueList>
-												</Property>
-												<Property Name="Volume" Type="Real64">
-													<ValueList>
-														<Value>-36</Value>
-													</ValueList>
-												</Property>
-											</PropertyList>
-											<ReferenceList>
-												<Reference Name="Attenuation">
-													<ObjectRef Name="StoneMovers" ID="{0F946374-F46F-41FA-98E7-EC85D98AD049}" WorkUnitID="{0D537A1A-A097-4DE3-A5EA-9723A41B16C7}"/>
-												</Reference>
-												<Reference Name="Conversion">
-													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
-												</Reference>
-												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
-												</Reference>
-											</ReferenceList>
-											<ChildrenList>
-												<AudioFileSource Name="PusherMoving" ID="{7A1B7D04-7E13-4218-8573-D87BD99E196C}">
-													<PropertyList>
-														<Property Name="FadeOutDuration" Type="Real64" Value="0.0225881242752077"/>
-														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
-													</PropertyList>
-													<Language>SFX</Language>
-													<AudioFile>PlatformMoving.wav</AudioFile>
-													<MediaIDList>
-														<MediaID ID="83499910"/>
-													</MediaIDList>
-												</AudioFileSource>
-											</ChildrenList>
-											<ObjectLists>
-												<ObjectList Name="RTPC">
-													<Reference>
-														<Local>
-															<RTPC Name="" ID="{AA409B58-1982-4D98-8284-665C13B5BF7C}" ShortID="392019366">
-																<PropertyList>
-																	<Property Name="PropertyName" Type="string" Value="Volume"/>
-																</PropertyList>
-																<ReferenceList>
-																	<Reference Name="ControlInput">
-																		<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
-																	</Reference>
-																	<Reference Name="Curve">
-																		<Custom>
-																			<Curve Name="" ID="{84284658-A9F5-405C-9078-407618116087}">
-																				<PropertyList>
-																					<Property Name="Flags" Type="int32" Value="3"/>
-																				</PropertyList>
-																				<PointList>
-																					<Point>
-																						<XPos>0</XPos>
-																						<YPos>-200</YPos>
-																						<Flags>5</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>30</XPos>
-																						<YPos>6.05179</YPos>
-																						<Flags>37</Flags>
-																					</Point>
-																				</PointList>
-																			</Curve>
-																		</Custom>
-																	</Reference>
-																</ReferenceList>
-															</RTPC>
-														</Local>
-													</Reference>
-													<Reference>
-														<Local>
-															<RTPC Name="" ID="{01AF8F3A-B4DE-45C7-BA4D-6B44961688E7}" ShortID="996752185">
-																<PropertyList>
-																	<Property Name="PropertyName" Type="string" Value="Volume"/>
-																</PropertyList>
-																<ReferenceList>
-																	<Reference Name="ControlInput">
-																		<ObjectRef Name="PusherMoving16s" ID="{173572C0-B011-4852-A32B-C6C34C42BAAA}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
-																	</Reference>
-																	<Reference Name="Curve">
-																		<Custom>
-																			<Curve Name="" ID="{3D4CB6CF-52A4-4E62-9BEC-23B9E3D1FD8A}">
-																				<PropertyList>
-																					<Property Name="Flags" Type="int32" Value="3"/>
-																				</PropertyList>
-																				<PointList>
-																					<Point>
-																						<XPos>0</XPos>
-																						<YPos>-200</YPos>
-																						<Flags>5</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>0.62467</XPos>
-																						<YPos>-200</YPos>
-																						<Flags>0</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>0.63508</XPos>
-																						<YPos>-0.08233</YPos>
-																						<Flags>0</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>6.11136</XPos>
-																						<YPos>0.08233</YPos>
-																						<Flags>0</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>6.153</XPos>
-																						<YPos>-200</YPos>
-																						<Flags>37</Flags>
-																					</Point>
-																				</PointList>
-																			</Curve>
-																		</Custom>
-																	</Reference>
-																</ReferenceList>
-															</RTPC>
-														</Local>
-													</Reference>
-												</ObjectList>
-											</ObjectLists>
-											<ActiveSourceList>
-												<ActiveSource Name="PusherMoving" ID="{7A1B7D04-7E13-4218-8573-D87BD99E196C}" Platform="Linked"/>
-											</ActiveSourceList>
-										</Sound>
-										<Sound Name="Pusher14s" ID="{697044EF-511E-4E5C-A0E9-13B6C5E8CE96}" ShortID="395730332">
-											<PropertyList>
-												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
-												<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
-												<Property Name="MaxSoundPerInstance" Type="int16">
-													<ValueList>
-														<Value>1</Value>
-													</ValueList>
-												</Property>
-												<Property Name="UseMaxSoundPerInstance" Type="bool">
-													<ValueList>
-														<Value>True</Value>
-													</ValueList>
-												</Property>
-												<Property Name="Volume" Type="Real64">
-													<ValueList>
-														<Value>-20</Value>
-													</ValueList>
-												</Property>
-											</PropertyList>
-											<ReferenceList>
-												<Reference Name="Attenuation">
-													<ObjectRef Name="StoneMovers" ID="{0F946374-F46F-41FA-98E7-EC85D98AD049}" WorkUnitID="{0D537A1A-A097-4DE3-A5EA-9723A41B16C7}"/>
-												</Reference>
-												<Reference Name="Conversion">
-													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
-												</Reference>
-												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
-												</Reference>
-											</ReferenceList>
-											<ChildrenList>
-												<AudioFileSource Name="PusherMoving" ID="{0B676521-EC85-407E-9374-AF13891EF5E8}">
-													<PropertyList>
-														<Property Name="FadeOutDuration" Type="Real64" Value="0.0225881242752077"/>
-														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
-													</PropertyList>
-													<Language>SFX</Language>
-													<AudioFile>PlatformMoving.wav</AudioFile>
-													<MediaIDList>
-														<MediaID ID="83499910"/>
-													</MediaIDList>
-												</AudioFileSource>
-											</ChildrenList>
-											<ObjectLists>
-												<ObjectList Name="RTPC">
-													<Reference>
-														<Local>
-															<RTPC Name="" ID="{04D1A93A-8505-416D-BAC4-32B20E9FEBC4}" ShortID="962736345">
-																<PropertyList>
-																	<Property Name="PropertyName" Type="string" Value="Volume"/>
-																</PropertyList>
-																<ReferenceList>
-																	<Reference Name="ControlInput">
-																		<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
-																	</Reference>
-																	<Reference Name="Curve">
-																		<Custom>
-																			<Curve Name="" ID="{FFEEE985-EB42-4268-9E1A-FC94D124F47E}">
-																				<PropertyList>
-																					<Property Name="Flags" Type="int32" Value="3"/>
-																				</PropertyList>
-																				<PointList>
-																					<Point>
-																						<XPos>0</XPos>
-																						<YPos>-200</YPos>
-																						<Flags>5</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>30</XPos>
-																						<YPos>6.05179</YPos>
-																						<Flags>37</Flags>
-																					</Point>
-																				</PointList>
-																			</Curve>
-																		</Custom>
-																	</Reference>
-																</ReferenceList>
-															</RTPC>
-														</Local>
-													</Reference>
-													<Reference>
-														<Local>
-															<RTPC Name="" ID="{03F90796-4212-4291-8748-6132368BC2E3}" ShortID="48481263">
-																<PropertyList>
-																	<Property Name="PropertyName" Type="string" Value="Volume"/>
-																</PropertyList>
-																<ReferenceList>
-																	<Reference Name="ControlInput">
-																		<ObjectRef Name="PusherMoving14s" ID="{5AFF9EF7-1874-46CC-9959-E42EBA38296A}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
-																	</Reference>
-																	<Reference Name="Curve">
-																		<Custom>
-																			<Curve Name="" ID="{4C8CDDEF-9D3B-47CF-A884-C1D76D229CC3}">
-																				<PropertyList>
-																					<Property Name="Flags" Type="int32" Value="3"/>
-																				</PropertyList>
-																				<PointList>
-																					<Point>
-																						<XPos>0</XPos>
-																						<YPos>-200</YPos>
-																						<Flags>5</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>0.64549</XPos>
-																						<YPos>-200</YPos>
-																						<Flags>0</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>0.70796</XPos>
-																						<YPos>-0.08233</YPos>
-																						<Flags>0</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>6.11136</XPos>
-																						<YPos>0</YPos>
-																						<Flags>0</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>6.153</XPos>
-																						<YPos>-200</YPos>
-																						<Flags>37</Flags>
-																					</Point>
-																				</PointList>
-																			</Curve>
-																		</Custom>
-																	</Reference>
-																</ReferenceList>
-															</RTPC>
-														</Local>
-													</Reference>
-												</ObjectList>
-											</ObjectLists>
-											<ActiveSourceList>
-												<ActiveSource Name="PusherMoving" ID="{0B676521-EC85-407E-9374-AF13891EF5E8}" Platform="Linked"/>
-											</ActiveSourceList>
-										</Sound>
-										<Sound Name="Pusher12s" ID="{0664643B-905F-4BE9-B279-60A36CFDA818}" ShortID="751428890">
-											<PropertyList>
-												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
-												<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
-												<Property Name="MaxSoundPerInstance" Type="int16">
-													<ValueList>
-														<Value>1</Value>
-													</ValueList>
-												</Property>
-												<Property Name="UseMaxSoundPerInstance" Type="bool">
-													<ValueList>
-														<Value>True</Value>
-													</ValueList>
-												</Property>
-												<Property Name="Volume" Type="Real64">
-													<ValueList>
-														<Value>-20</Value>
-													</ValueList>
-												</Property>
-											</PropertyList>
-											<ReferenceList>
-												<Reference Name="Attenuation">
-													<ObjectRef Name="StoneMovers" ID="{0F946374-F46F-41FA-98E7-EC85D98AD049}" WorkUnitID="{0D537A1A-A097-4DE3-A5EA-9723A41B16C7}"/>
-												</Reference>
-												<Reference Name="Conversion">
-													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
-												</Reference>
-												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
-												</Reference>
-											</ReferenceList>
-											<ChildrenList>
-												<AudioFileSource Name="PusherMoving" ID="{8D22E1B8-9084-4952-91AC-0539C1B3312E}">
-													<PropertyList>
-														<Property Name="FadeOutDuration" Type="Real64" Value="0.0225881242752077"/>
-														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
-													</PropertyList>
-													<Language>SFX</Language>
-													<AudioFile>PlatformMoving.wav</AudioFile>
-													<MediaIDList>
-														<MediaID ID="83499910"/>
-													</MediaIDList>
-												</AudioFileSource>
-											</ChildrenList>
-											<ObjectLists>
-												<ObjectList Name="RTPC">
-													<Reference>
-														<Local>
-															<RTPC Name="" ID="{EAE212C7-44B6-4788-844F-02DEC6D3A3C1}" ShortID="813959455">
-																<PropertyList>
-																	<Property Name="PropertyName" Type="string" Value="Volume"/>
-																</PropertyList>
-																<ReferenceList>
-																	<Reference Name="ControlInput">
-																		<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
-																	</Reference>
-																	<Reference Name="Curve">
-																		<Custom>
-																			<Curve Name="" ID="{EA3A3F09-A955-419C-9168-58AF4A984C6C}">
-																				<PropertyList>
-																					<Property Name="Flags" Type="int32" Value="3"/>
-																				</PropertyList>
-																				<PointList>
-																					<Point>
-																						<XPos>0</XPos>
-																						<YPos>-200</YPos>
-																						<Flags>5</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>30</XPos>
-																						<YPos>6.05179</YPos>
-																						<Flags>37</Flags>
-																					</Point>
-																				</PointList>
-																			</Curve>
-																		</Custom>
-																	</Reference>
-																</ReferenceList>
-															</RTPC>
-														</Local>
-													</Reference>
-													<Reference>
-														<Local>
-															<RTPC Name="" ID="{5A5A425C-4557-4226-B081-46C64133F331}" ShortID="965281783">
-																<PropertyList>
-																	<Property Name="PropertyName" Type="string" Value="Volume"/>
-																</PropertyList>
-																<ReferenceList>
-																	<Reference Name="ControlInput">
-																		<ObjectRef Name="PusherMoving12s" ID="{1FA967B8-EC1F-4A91-BCF5-33B09A7B7665}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
-																	</Reference>
-																	<Reference Name="Curve">
-																		<Custom>
-																			<Curve Name="" ID="{B9774BD5-BCB6-483D-9AB8-B4A2685E471B}">
-																				<PropertyList>
-																					<Property Name="Flags" Type="int32" Value="3"/>
-																				</PropertyList>
-																				<PointList>
-																					<Point>
-																						<XPos>0</XPos>
-																						<YPos>-200</YPos>
-																						<Flags>5</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>1.01403</XPos>
-																						<YPos>-200</YPos>
-																						<Flags>0</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>1.0765</XPos>
-																						<YPos>0.08233</YPos>
-																						<Flags>0</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>6.09053</XPos>
-																						<YPos>0</YPos>
-																						<Flags>0</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>6.153</XPos>
-																						<YPos>-200</YPos>
-																						<Flags>37</Flags>
-																					</Point>
-																				</PointList>
-																			</Curve>
-																		</Custom>
-																	</Reference>
-																</ReferenceList>
-															</RTPC>
-														</Local>
-													</Reference>
-												</ObjectList>
-											</ObjectLists>
-											<ActiveSourceList>
-												<ActiveSource Name="PusherMoving" ID="{8D22E1B8-9084-4952-91AC-0539C1B3312E}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
 										<Folder Name="Zipper" ID="{F81E982E-800B-49FA-B3CB-B26E0A66158A}" ShortID="1059462325">
@@ -8708,8 +7480,1921 @@
 												</Sound>
 											</ChildrenList>
 										</Folder>
-										<Sound Name="Pusher10s_01" ID="{DB7FE65F-4DDC-4C9D-9573-2242FCC92B68}" ShortID="371110951">
+										<Sound Name="Pusher_Basement_Row_2" ID="{9DAB61F8-8D9B-4167-968A-1BA3DAB8DF9F}" ShortID="750110566">
 											<PropertyList>
+												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+												<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
+												<Property Name="MaxSoundPerInstance" Type="int16">
+													<ValueList>
+														<Value>1</Value>
+													</ValueList>
+												</Property>
+												<Property Name="UseMaxSoundPerInstance" Type="bool">
+													<ValueList>
+														<Value>True</Value>
+													</ValueList>
+												</Property>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-24</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="StoneMovers" ID="{0F946374-F46F-41FA-98E7-EC85D98AD049}" WorkUnitID="{0D537A1A-A097-4DE3-A5EA-9723A41B16C7}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="PusherMoving" ID="{BAC73546-51F9-4697-AACF-1CEBC7B66267}">
+													<PropertyList>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0225881242752077"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+													</PropertyList>
+													<Language>SFX</Language>
+													<AudioFile>PlatformMoving.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="83499910"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ObjectLists>
+												<ObjectList Name="RTPC">
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{4877FA26-119C-4A31-88C8-63723E5065F7}" ShortID="583135895">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{99AFA9ED-E6D8-49FA-B2E5-0763C68C9838}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>30</XPos>
+																						<YPos>6.05179</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{D24E916A-68AC-4313-BAF0-C649F3564BB4}" ShortID="151400902">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="Pusher_Basement_Row_2" ID="{E193AA0E-9357-4920-A42A-0CF46CA13CD4}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{1E6B2B8C-B31F-44C6-BE81-D134402C20A9}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>2.32973</XPos>
+																						<YPos>-32.76979</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>2.60736</XPos>
+																						<YPos>-0.0742</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>7.56449</XPos>
+																						<YPos>-0.16503</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>7.88</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>8</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+												</ObjectList>
+											</ObjectLists>
+											<ActiveSourceList>
+												<ActiveSource Name="PusherMoving" ID="{BAC73546-51F9-4697-AACF-1CEBC7B66267}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Pusher_Basement_Row_3" ID="{05E40C7B-B2A7-4F1D-88CA-644F93641451}" ShortID="491700446">
+											<PropertyList>
+												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+												<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
+												<Property Name="MaxSoundPerInstance" Type="int16">
+													<ValueList>
+														<Value>1</Value>
+													</ValueList>
+												</Property>
+												<Property Name="UseMaxSoundPerInstance" Type="bool">
+													<ValueList>
+														<Value>True</Value>
+													</ValueList>
+												</Property>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-24</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="StoneMovers" ID="{0F946374-F46F-41FA-98E7-EC85D98AD049}" WorkUnitID="{0D537A1A-A097-4DE3-A5EA-9723A41B16C7}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="PusherMoving" ID="{9A5CBED8-8688-42F3-ABD4-B2402DB2D86E}">
+													<PropertyList>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0225881242752077"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+													</PropertyList>
+													<Language>SFX</Language>
+													<AudioFile>PlatformMoving.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="83499910"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ObjectLists>
+												<ObjectList Name="RTPC">
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{0076556B-6590-4BB3-ADBB-0AE691D419EF}" ShortID="664360066">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{2006EAFE-BDB9-44A5-9F7B-B4A0B2E649EE}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>30</XPos>
+																						<YPos>6.05179</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{22194890-BF47-4738-A9CC-D6D76F829BED}" ShortID="944304653">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="Pusher_Basement_Row_3" ID="{3A1DC041-FC1A-4B61-BA45-2EA74EDAD8AB}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{EEAA3A51-07C5-4B9C-B155-E6CC1EB1A185}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>2.32973</XPos>
+																						<YPos>-32.76979</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>2.60736</XPos>
+																						<YPos>-0.0742</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>7.56449</XPos>
+																						<YPos>-0.16503</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>7.88</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>8</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+												</ObjectList>
+											</ObjectLists>
+											<ActiveSourceList>
+												<ActiveSource Name="PusherMoving" ID="{9A5CBED8-8688-42F3-ABD4-B2402DB2D86E}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Pusher_Basement_Row_4" ID="{E955146A-58E9-4602-A72D-59DE0B5670CB}" ShortID="971188247">
+											<PropertyList>
+												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+												<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
+												<Property Name="MaxSoundPerInstance" Type="int16">
+													<ValueList>
+														<Value>1</Value>
+													</ValueList>
+												</Property>
+												<Property Name="UseMaxSoundPerInstance" Type="bool">
+													<ValueList>
+														<Value>True</Value>
+													</ValueList>
+												</Property>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-24</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="StoneMovers" ID="{0F946374-F46F-41FA-98E7-EC85D98AD049}" WorkUnitID="{0D537A1A-A097-4DE3-A5EA-9723A41B16C7}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="PusherMoving" ID="{CA3BADCE-4536-4DAC-8784-C0AEE2AD954E}">
+													<PropertyList>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0225881242752077"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+													</PropertyList>
+													<Language>SFX</Language>
+													<AudioFile>PlatformMoving.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="83499910"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ObjectLists>
+												<ObjectList Name="RTPC">
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{43610AD7-337F-4202-889D-827E4F6C7182}" ShortID="85753433">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{94A9A7D7-56B5-4401-A3B0-88DBD0C26060}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>30</XPos>
+																						<YPos>6.05179</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{0AA63F1A-7DA2-4DF7-B813-E4B5535C8BA7}" ShortID="546305365">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="Pusher_Basement_Row_4" ID="{7F8E2E03-E47A-4230-8B31-4B4412C65394}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{95CC4642-B6BD-4B31-B3FD-ED7B9533008B}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>2.32973</XPos>
+																						<YPos>-32.76979</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>2.60736</XPos>
+																						<YPos>-0.0742</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>7.56449</XPos>
+																						<YPos>-0.16503</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>7.88</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>8</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+												</ObjectList>
+											</ObjectLists>
+											<ActiveSourceList>
+												<ActiveSource Name="PusherMoving" ID="{CA3BADCE-4536-4DAC-8784-C0AEE2AD954E}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Pusher_Basement_Row_5" ID="{955C43A2-AEAD-4512-8530-FA6B4050E1B4}" ShortID="403213931">
+											<PropertyList>
+												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+												<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
+												<Property Name="MaxSoundPerInstance" Type="int16">
+													<ValueList>
+														<Value>1</Value>
+													</ValueList>
+												</Property>
+												<Property Name="UseMaxSoundPerInstance" Type="bool">
+													<ValueList>
+														<Value>True</Value>
+													</ValueList>
+												</Property>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-27</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="StoneMovers" ID="{0F946374-F46F-41FA-98E7-EC85D98AD049}" WorkUnitID="{0D537A1A-A097-4DE3-A5EA-9723A41B16C7}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="PusherMoving" ID="{66E632A6-B13D-439C-9C23-42058C1FA847}">
+													<PropertyList>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0225881242752077"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+													</PropertyList>
+													<Language>SFX</Language>
+													<AudioFile>PlatformMoving.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="83499910"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ObjectLists>
+												<ObjectList Name="RTPC">
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{BD910BB5-994A-423B-87B4-06D055F2BD04}" ShortID="1054633434">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{A0FB6660-0FB2-4865-991C-62305D7F13B7}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>30</XPos>
+																						<YPos>6.05179</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{29E42D8F-827A-4B05-94C7-04B98722090C}" ShortID="941564589">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="Pusher_Basement_Row_5" ID="{F3264825-147D-49E7-B801-25B54FC196C4}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{448A2316-722E-4A0C-8E02-764C03C1FA8A}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>2.27</XPos>
+																						<YPos>-32.76979</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>2.53</XPos>
+																						<YPos>-0.0742</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>9.56877</XPos>
+																						<YPos>-0.16503</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>10</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+												</ObjectList>
+											</ObjectLists>
+											<ActiveSourceList>
+												<ActiveSource Name="PusherMoving" ID="{66E632A6-B13D-439C-9C23-42058C1FA847}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Pusher_Basement_Row_6" ID="{D1B6EE4D-1700-4ED2-8845-AC153348AB3C}" ShortID="901248742">
+											<PropertyList>
+												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+												<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
+												<Property Name="MaxSoundPerInstance" Type="int16">
+													<ValueList>
+														<Value>1</Value>
+													</ValueList>
+												</Property>
+												<Property Name="UseMaxSoundPerInstance" Type="bool">
+													<ValueList>
+														<Value>True</Value>
+													</ValueList>
+												</Property>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-27</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="StoneMovers" ID="{0F946374-F46F-41FA-98E7-EC85D98AD049}" WorkUnitID="{0D537A1A-A097-4DE3-A5EA-9723A41B16C7}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="PusherMoving" ID="{77470ABD-B4FF-40A2-BB69-40A94915BA2A}">
+													<PropertyList>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0225881242752077"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+													</PropertyList>
+													<Language>SFX</Language>
+													<AudioFile>PlatformMoving.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="83499910"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ObjectLists>
+												<ObjectList Name="RTPC">
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{865EF77F-E152-415D-B5AF-6FBFC6F2F802}" ShortID="1018489490">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{BB4C4BA2-D372-4569-A990-85DEDE4F0643}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>30</XPos>
+																						<YPos>6.05179</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{F6B40414-6CE6-4FB8-A2BE-D0D4D59A5928}" ShortID="651198206">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="Pusher_Basement_Row_6" ID="{2BCAFB5E-9668-4590-A899-1DFFB4F7C78A}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{4F95C26B-10D6-41B0-AEA6-D1CD2DCF56AF}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>2.27</XPos>
+																						<YPos>-32.76979</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>2.53</XPos>
+																						<YPos>-0.0742</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>9.56877</XPos>
+																						<YPos>-0.16503</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>10</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+												</ObjectList>
+											</ObjectLists>
+											<ActiveSourceList>
+												<ActiveSource Name="PusherMoving" ID="{77470ABD-B4FF-40A2-BB69-40A94915BA2A}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Pusher_Basement_Row_7" ID="{3BCD50FC-217D-4B55-86B5-6E4EEAA5B08B}" ShortID="696610946">
+											<PropertyList>
+												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+												<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
+												<Property Name="MaxSoundPerInstance" Type="int16">
+													<ValueList>
+														<Value>1</Value>
+													</ValueList>
+												</Property>
+												<Property Name="UseMaxSoundPerInstance" Type="bool">
+													<ValueList>
+														<Value>True</Value>
+													</ValueList>
+												</Property>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-27</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="StoneMovers" ID="{0F946374-F46F-41FA-98E7-EC85D98AD049}" WorkUnitID="{0D537A1A-A097-4DE3-A5EA-9723A41B16C7}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="PusherMoving" ID="{BC710192-FE38-4DDD-9C66-8E9804BC5675}">
+													<PropertyList>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0225881242752077"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+													</PropertyList>
+													<Language>SFX</Language>
+													<AudioFile>PlatformMoving.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="83499910"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ObjectLists>
+												<ObjectList Name="RTPC">
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{D5A89A6E-83B5-4FCA-8DC9-AD96FFA0AC35}" ShortID="1000932347">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{D372417B-1D11-4FC8-A838-B3280C18B324}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>30</XPos>
+																						<YPos>6.05179</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{EF82FB63-2991-4FBE-9F47-E3316478FE29}" ShortID="960603372">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="Pusher_Basement_Row_7" ID="{52924D4F-043D-4057-83C4-C713C0D05239}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{440B1F1F-072A-4F0D-810F-16EE914F9F86}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>2.27</XPos>
+																						<YPos>-32.76979</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>2.53</XPos>
+																						<YPos>-0.0742</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>9.56877</XPos>
+																						<YPos>-0.16503</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>10</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+												</ObjectList>
+											</ObjectLists>
+											<ActiveSourceList>
+												<ActiveSource Name="PusherMoving" ID="{BC710192-FE38-4DDD-9C66-8E9804BC5675}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Pusher_Basement_Row_8" ID="{6762E5CA-DC2F-4BFE-9D7F-B68761B440BA}" ShortID="222991829">
+											<PropertyList>
+												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+												<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
+												<Property Name="MaxSoundPerInstance" Type="int16">
+													<ValueList>
+														<Value>1</Value>
+													</ValueList>
+												</Property>
+												<Property Name="UseMaxSoundPerInstance" Type="bool">
+													<ValueList>
+														<Value>True</Value>
+													</ValueList>
+												</Property>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-27</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="StoneMovers" ID="{0F946374-F46F-41FA-98E7-EC85D98AD049}" WorkUnitID="{0D537A1A-A097-4DE3-A5EA-9723A41B16C7}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="PusherMoving" ID="{CAC10B7C-EEFE-45B4-9F61-9F41F94C1F51}">
+													<PropertyList>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0225881242752077"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+													</PropertyList>
+													<Language>SFX</Language>
+													<AudioFile>PlatformMoving.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="83499910"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ObjectLists>
+												<ObjectList Name="RTPC">
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{387D15CB-306A-47F2-8E75-8C1628B5177C}" ShortID="247136800">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{840A7297-3795-4B87-AC5C-6AFEDABD9C51}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>30</XPos>
+																						<YPos>6.05179</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{D5F3A127-7E7E-4E0F-9B0A-DF47AFBB3DAB}" ShortID="697044675">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="Pusher_Basement_Row_8" ID="{30038EBA-81B8-4C97-A385-61D392AD4D83}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{55606F1B-EE76-47B7-A280-64822B4C707C}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>2.27</XPos>
+																						<YPos>-32.76979</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>2.53</XPos>
+																						<YPos>-0.0742</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>9.56877</XPos>
+																						<YPos>-0.16503</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>10</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+												</ObjectList>
+											</ObjectLists>
+											<ActiveSourceList>
+												<ActiveSource Name="PusherMoving" ID="{CAC10B7C-EEFE-45B4-9F61-9F41F94C1F51}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Pusher_Basement_Row_9" ID="{A2ADDC71-DF17-4C9D-A1BD-4973433DED2F}" ShortID="991658418">
+											<PropertyList>
+												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+												<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
+												<Property Name="MaxSoundPerInstance" Type="int16">
+													<ValueList>
+														<Value>1</Value>
+													</ValueList>
+												</Property>
+												<Property Name="UseMaxSoundPerInstance" Type="bool">
+													<ValueList>
+														<Value>True</Value>
+													</ValueList>
+												</Property>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-27</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="StoneMovers" ID="{0F946374-F46F-41FA-98E7-EC85D98AD049}" WorkUnitID="{0D537A1A-A097-4DE3-A5EA-9723A41B16C7}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="PusherMoving" ID="{8C3883DA-E27F-446F-AC39-AAB385848C4E}">
+													<PropertyList>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0225881242752077"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+													</PropertyList>
+													<Language>SFX</Language>
+													<AudioFile>PlatformMoving.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="83499910"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ObjectLists>
+												<ObjectList Name="RTPC">
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{37EF12BD-2411-4B3B-AF7C-D1D820A40095}" ShortID="654210207">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{14072C7B-25CF-4181-BBA7-0B345C8C9BE2}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>30</XPos>
+																						<YPos>6.05179</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{CE87E606-5251-483E-A49C-8F8A2FEEDB63}" ShortID="90988567">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="Pusher_Basement_Row_9" ID="{008416BD-2DD4-4FF1-97B7-1BA8E1B17554}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{24509045-2082-4866-AD32-069017696C51}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>2.27</XPos>
+																						<YPos>-32.76979</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>2.53</XPos>
+																						<YPos>-0.0742</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>9.56877</XPos>
+																						<YPos>-0.16503</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>10</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+												</ObjectList>
+											</ObjectLists>
+											<ActiveSourceList>
+												<ActiveSource Name="PusherMoving" ID="{8C3883DA-E27F-446F-AC39-AAB385848C4E}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Pusher_Basement_Row_10" ID="{C3CD1800-5635-4AAA-85C8-0246D94D87B6}" ShortID="226834667">
+											<PropertyList>
+												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+												<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
+												<Property Name="MaxSoundPerInstance" Type="int16">
+													<ValueList>
+														<Value>1</Value>
+													</ValueList>
+												</Property>
+												<Property Name="UseMaxSoundPerInstance" Type="bool">
+													<ValueList>
+														<Value>True</Value>
+													</ValueList>
+												</Property>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-27</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="StoneMovers" ID="{0F946374-F46F-41FA-98E7-EC85D98AD049}" WorkUnitID="{0D537A1A-A097-4DE3-A5EA-9723A41B16C7}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="PusherMoving" ID="{9AA7671D-5EDF-4343-813C-31985AC25F4C}">
+													<PropertyList>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0225881242752077"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+													</PropertyList>
+													<Language>SFX</Language>
+													<AudioFile>PlatformMoving.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="83499910"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ObjectLists>
+												<ObjectList Name="RTPC">
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{0E868276-35BE-4A17-8BD1-73CA625D1A1F}" ShortID="57187220">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{7AAEB585-0AF2-403E-BD5E-9006C0FA0FB6}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>30</XPos>
+																						<YPos>6.05179</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{008B6683-3869-45FC-B5F3-823DBB650E0A}" ShortID="842737755">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="Pusher_Basement_Row_10" ID="{B43712CD-A264-4667-AD4C-344476A531EF}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{CE0E8FFE-CF66-4B8D-A5AC-F23E1296E417}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>2.27</XPos>
+																						<YPos>-32.76979</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>2.53</XPos>
+																						<YPos>-0.0742</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>9.56877</XPos>
+																						<YPos>-0.16503</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>10</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+												</ObjectList>
+											</ObjectLists>
+											<ActiveSourceList>
+												<ActiveSource Name="PusherMoving" ID="{9AA7671D-5EDF-4343-813C-31985AC25F4C}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Pusher_Basement_Row_11" ID="{7AF19236-CDAF-4307-9BE3-9341DAC5AA37}" ShortID="169660400">
+											<PropertyList>
+												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+												<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
+												<Property Name="MaxSoundPerInstance" Type="int16">
+													<ValueList>
+														<Value>1</Value>
+													</ValueList>
+												</Property>
+												<Property Name="UseMaxSoundPerInstance" Type="bool">
+													<ValueList>
+														<Value>True</Value>
+													</ValueList>
+												</Property>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-27</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="StoneMovers" ID="{0F946374-F46F-41FA-98E7-EC85D98AD049}" WorkUnitID="{0D537A1A-A097-4DE3-A5EA-9723A41B16C7}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="PusherMoving" ID="{FB50B8E2-1CE5-48A1-BFA5-20E5A4955874}">
+													<PropertyList>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0225881242752077"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+													</PropertyList>
+													<Language>SFX</Language>
+													<AudioFile>PlatformMoving.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="83499910"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ObjectLists>
+												<ObjectList Name="RTPC">
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{1FBB1136-2876-4DEA-A764-3B2047DCF57E}" ShortID="303015864">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{DF3BEAD6-FDE7-4FD7-805C-45F6CF5D9560}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>30</XPos>
+																						<YPos>6.05179</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{27F4B599-0F7B-4574-BCE2-CAFF6A1BF6E6}" ShortID="102335055">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="Pusher_Basement_Row_11" ID="{955D302B-0389-4DCC-9233-49F892E5F293}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{6388FF37-B286-4584-8C26-CF6AC8F59F81}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>2.27</XPos>
+																						<YPos>-32.76979</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>2.53</XPos>
+																						<YPos>-0.0742</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>9.56877</XPos>
+																						<YPos>-0.16503</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>10</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+												</ObjectList>
+											</ObjectLists>
+											<ActiveSourceList>
+												<ActiveSource Name="PusherMoving" ID="{FB50B8E2-1CE5-48A1-BFA5-20E5A4955874}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Pusher_Basement_Row_12" ID="{7D11BA74-24FA-4C21-B075-933670A7FCDD}" ShortID="335021650">
+											<PropertyList>
+												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+												<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
+												<Property Name="MaxSoundPerInstance" Type="int16">
+													<ValueList>
+														<Value>1</Value>
+													</ValueList>
+												</Property>
+												<Property Name="UseMaxSoundPerInstance" Type="bool">
+													<ValueList>
+														<Value>True</Value>
+													</ValueList>
+												</Property>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-27</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="StoneMovers" ID="{0F946374-F46F-41FA-98E7-EC85D98AD049}" WorkUnitID="{0D537A1A-A097-4DE3-A5EA-9723A41B16C7}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="PusherMoving" ID="{64D1DC4C-E633-4D70-BE19-6BD33D5DC269}">
+													<PropertyList>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0225881242752077"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+													</PropertyList>
+													<Language>SFX</Language>
+													<AudioFile>PlatformMoving.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="83499910"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ObjectLists>
+												<ObjectList Name="RTPC">
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{7D20B1CB-77E3-4D5F-9840-CEB5BFCA8F4D}" ShortID="135349670">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{C9079C30-6810-4672-9956-74FD6B21CA95}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>30</XPos>
+																						<YPos>6.05179</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{35D4482E-BF58-4EB2-B08E-6A8EE9D63ED2}" ShortID="773766599">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="Pusher_Basement_Row_12" ID="{0DF95B7F-4E25-4C31-9F73-1E3CE8ADAB22}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{785F27B6-2E3D-4D54-954F-2D0FF07D3A8F}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>2.27</XPos>
+																						<YPos>-32.76979</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>2.53</XPos>
+																						<YPos>-0.0742</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>9.56877</XPos>
+																						<YPos>-0.16503</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>10</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+												</ObjectList>
+											</ObjectLists>
+											<ActiveSourceList>
+												<ActiveSource Name="PusherMoving" ID="{64D1DC4C-E633-4D70-BE19-6BD33D5DC269}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Pusher_Temple_1" ID="{F2E7DE25-C28F-46D1-9448-2BFE6B9075D2}" ShortID="1039226611">
+											<PropertyList>
+												<Property Name="Highpass" Type="int16">
+													<ValueList>
+														<Value>13</Value>
+													</ValueList>
+												</Property>
+												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+												<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
+												<Property Name="MaxSoundPerInstance" Type="int16">
+													<ValueList>
+														<Value>1</Value>
+													</ValueList>
+												</Property>
+												<Property Name="UseMaxSoundPerInstance" Type="bool">
+													<ValueList>
+														<Value>True</Value>
+													</ValueList>
+												</Property>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-14</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="StoneMovers" ID="{0F946374-F46F-41FA-98E7-EC85D98AD049}" WorkUnitID="{0D537A1A-A097-4DE3-A5EA-9723A41B16C7}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="PusherMoving" ID="{16F4BEF2-1D2F-40E1-9D84-198A6B0CADE8}">
+													<PropertyList>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0225881242752077"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+													</PropertyList>
+													<Language>SFX</Language>
+													<AudioFile>PlatformMoving.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="83499910"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ObjectLists>
+												<ObjectList Name="RTPC">
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{F1800218-E4EC-4D51-A243-F5A9E3311832}" ShortID="726244492">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{CC62F38E-8118-451D-9094-2E8DC3BF34AD}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>30</XPos>
+																						<YPos>6.05179</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{8D5C10B8-D991-4706-9ED6-ABDC2727B8B0}" ShortID="477996564">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="Pusher_Temple_1" ID="{864CA81F-9692-4800-B362-5C17D701D875}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{890B3416-78C7-4858-A6CE-E5830CF5223F}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>0.01</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>10</XPos>
+																						<YPos>0</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+												</ObjectList>
+											</ObjectLists>
+											<ActiveSourceList>
+												<ActiveSource Name="PusherMoving" ID="{16F4BEF2-1D2F-40E1-9D84-198A6B0CADE8}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Pusher_Temple_3" ID="{0662FA20-63D6-43DF-B7FD-55B6FEE9F174}" ShortID="956648114">
+											<PropertyList>
+												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+												<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
+												<Property Name="MaxSoundPerInstance" Type="int16">
+													<ValueList>
+														<Value>1</Value>
+													</ValueList>
+												</Property>
+												<Property Name="UseMaxSoundPerInstance" Type="bool">
+													<ValueList>
+														<Value>True</Value>
+													</ValueList>
+												</Property>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-14</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="StoneMovers" ID="{0F946374-F46F-41FA-98E7-EC85D98AD049}" WorkUnitID="{0D537A1A-A097-4DE3-A5EA-9723A41B16C7}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="PusherMoving" ID="{17B42408-3B2F-4A07-9676-DEA5EC6E1CB8}">
+													<PropertyList>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0225881242752077"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+													</PropertyList>
+													<Language>SFX</Language>
+													<AudioFile>PlatformMoving.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="83499910"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ObjectLists>
+												<ObjectList Name="RTPC">
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{67560646-2FD6-4485-87EF-4EF3F8125D1C}" ShortID="973904506">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{32F6CE0C-CDEF-4D22-89B6-69181FC93DA6}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>30</XPos>
+																						<YPos>6.05179</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{A569B663-0279-4AED-ADF6-2B89D04D74FA}" ShortID="104716177">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="Pusher_Temple_3" ID="{BC18DB92-6B71-4F5E-BF98-6DA9EC997747}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{9FB58F96-3416-42F3-9AE2-7ACCF847CEEE}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>0.01</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>10</XPos>
+																						<YPos>0</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+												</ObjectList>
+											</ObjectLists>
+											<ActiveSourceList>
+												<ActiveSource Name="PusherMoving" ID="{17B42408-3B2F-4A07-9676-DEA5EC6E1CB8}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Pusher_Temple_2" ID="{7C889026-1DF6-445A-B391-980E26867C21}" ShortID="535635836">
+											<PropertyList>
+												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+												<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
+												<Property Name="MaxSoundPerInstance" Type="int16">
+													<ValueList>
+														<Value>1</Value>
+													</ValueList>
+												</Property>
+												<Property Name="UseMaxSoundPerInstance" Type="bool">
+													<ValueList>
+														<Value>True</Value>
+													</ValueList>
+												</Property>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-19</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="StoneMovers" ID="{0F946374-F46F-41FA-98E7-EC85D98AD049}" WorkUnitID="{0D537A1A-A097-4DE3-A5EA-9723A41B16C7}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="PusherMoving" ID="{5ABF9B43-2C17-48D8-952B-79045EFB2154}">
+													<PropertyList>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0225881242752077"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+													</PropertyList>
+													<Language>SFX</Language>
+													<AudioFile>PlatformMoving.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="83499910"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ObjectLists>
+												<ObjectList Name="RTPC">
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{534BC7C6-9A7D-48ED-A33D-7767AF1180F5}" ShortID="354038906">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{AD132518-157F-47A0-9103-1D368A980259}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>30</XPos>
+																						<YPos>6.05179</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{B0CF6B63-8E76-40BA-873E-771CA48D71E8}" ShortID="144995240">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="Pusher_Temple_2" ID="{2E6E306A-FED2-4481-8159-D730E4B0D674}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{46C1B259-4FE1-4E86-A2A0-96E523B3767A}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>0.01</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>10</XPos>
+																						<YPos>-0.10042</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+												</ObjectList>
+											</ObjectLists>
+											<ActiveSourceList>
+												<ActiveSource Name="PusherMoving" ID="{5ABF9B43-2C17-48D8-952B-79045EFB2154}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Pusher_Cave_Exit_1" ID="{5ED18F4D-4154-4A95-A24C-EC598A0A6379}" ShortID="450877487">
+											<PropertyList>
+												<Property Name="Highpass" Type="int16">
+													<ValueList>
+														<Value>13</Value>
+													</ValueList>
+												</Property>
 												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
 												<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
 												<Property Name="MaxSoundPerInstance" Type="int16">
@@ -8740,7 +9425,7 @@
 												</Reference>
 											</ReferenceList>
 											<ChildrenList>
-												<AudioFileSource Name="PusherMoving" ID="{AE0FF7B9-E3EE-4D6E-A84A-ACF9767039E3}">
+												<AudioFileSource Name="PusherMoving" ID="{42FB02E4-1873-4E1C-855D-4578A0DA42C7}">
 													<PropertyList>
 														<Property Name="FadeOutDuration" Type="Real64" Value="0.0225881242752077"/>
 														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
@@ -8756,7 +9441,7 @@
 												<ObjectList Name="RTPC">
 													<Reference>
 														<Local>
-															<RTPC Name="" ID="{2B8D58C8-06AC-4554-B9F0-BDDF82644788}" ShortID="118326504">
+															<RTPC Name="" ID="{110E6951-BB12-4650-95F0-2D6F1BDFFD47}" ShortID="200419218">
 																<PropertyList>
 																	<Property Name="PropertyName" Type="string" Value="Volume"/>
 																</PropertyList>
@@ -8766,7 +9451,7 @@
 																	</Reference>
 																	<Reference Name="Curve">
 																		<Custom>
-																			<Curve Name="" ID="{4E47592C-BCAB-4669-B62A-FF1F71ADD76B}">
+																			<Curve Name="" ID="{FA2DEFE2-062C-422F-8151-06BD753D8F23}">
 																				<PropertyList>
 																					<Property Name="Flags" Type="int32" Value="3"/>
 																				</PropertyList>
@@ -8791,17 +9476,17 @@
 													</Reference>
 													<Reference>
 														<Local>
-															<RTPC Name="" ID="{B9840721-692A-4D54-9E41-5E864AE9F6F0}" ShortID="497120999">
+															<RTPC Name="" ID="{92C2EBDD-9D67-4FEB-91CC-E816BA06EF29}" ShortID="652545760">
 																<PropertyList>
 																	<Property Name="PropertyName" Type="string" Value="Volume"/>
 																</PropertyList>
 																<ReferenceList>
 																	<Reference Name="ControlInput">
-																		<ObjectRef Name="PusherMoving10s_01" ID="{C842B0A2-3379-4CDB-BD6C-D8694BCB8A72}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																		<ObjectRef Name="Pusher_Cave_Exit_1" ID="{EA128056-A6A7-43AE-9B07-30D5A0166EA5}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
 																	</Reference>
 																	<Reference Name="Curve">
 																		<Custom>
-																			<Curve Name="" ID="{E582F759-2555-4BC4-AF91-B77F67166F6E}">
+																			<Curve Name="" ID="{0724B1A8-FF66-42B9-A929-EBE2C87D924F}">
 																				<PropertyList>
 																					<Property Name="Flags" Type="int32" Value="3"/>
 																				</PropertyList>
@@ -8812,18 +9497,13 @@
 																						<Flags>5</Flags>
 																					</Point>
 																					<Point>
-																						<XPos>0.549582</XPos>
+																						<XPos>0.01</XPos>
 																						<YPos>-200</YPos>
 																						<Flags>0</Flags>
 																					</Point>
 																					<Point>
-																						<XPos>0.698478</XPos>
+																						<XPos>10</XPos>
 																						<YPos>0</YPos>
-																						<Flags>0</Flags>
-																					</Point>
-																					<Point>
-																						<XPos>11</XPos>
-																						<YPos>-0.04708</YPos>
 																						<Flags>37</Flags>
 																					</Point>
 																				</PointList>
@@ -8837,7 +9517,1195 @@
 												</ObjectList>
 											</ObjectLists>
 											<ActiveSourceList>
-												<ActiveSource Name="PusherMoving" ID="{AE0FF7B9-E3EE-4D6E-A84A-ACF9767039E3}" Platform="Linked"/>
+												<ActiveSource Name="PusherMoving" ID="{42FB02E4-1873-4E1C-855D-4578A0DA42C7}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Pusher_Cave_Elevator_1" ID="{2E4DE7CA-9236-49EF-B1F0-9B8CB4B89A64}" ShortID="107098167">
+											<PropertyList>
+												<Property Name="Highpass" Type="int16">
+													<ValueList>
+														<Value>13</Value>
+													</ValueList>
+												</Property>
+												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+												<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
+												<Property Name="MaxSoundPerInstance" Type="int16">
+													<ValueList>
+														<Value>1</Value>
+													</ValueList>
+												</Property>
+												<Property Name="UseMaxSoundPerInstance" Type="bool">
+													<ValueList>
+														<Value>True</Value>
+													</ValueList>
+												</Property>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-20</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="StoneMovers" ID="{0F946374-F46F-41FA-98E7-EC85D98AD049}" WorkUnitID="{0D537A1A-A097-4DE3-A5EA-9723A41B16C7}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="PusherMoving" ID="{E9695552-AA8E-4842-B6B7-3EF7A00751BF}">
+													<PropertyList>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0225881242752077"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+													</PropertyList>
+													<Language>SFX</Language>
+													<AudioFile>PlatformMoving.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="83499910"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ObjectLists>
+												<ObjectList Name="RTPC">
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{EEA77103-568C-43B6-8149-2DB54273F019}" ShortID="892584819">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{D78D2DB5-DA89-463F-AC57-4AFA84C33779}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>30</XPos>
+																						<YPos>6.05179</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{B39F33F7-B18A-4C60-BCCB-E2FC62EF4D28}" ShortID="824046450">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="Pusher_Cave_Elevator_1" ID="{6C31F32A-C128-4E1D-A58E-058ECB4B3F12}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{00C1D0B9-5102-4405-8E44-6A3CE4570D74}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>0.01</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>10</XPos>
+																						<YPos>0</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+												</ObjectList>
+											</ObjectLists>
+											<ActiveSourceList>
+												<ActiveSource Name="PusherMoving" ID="{E9695552-AA8E-4842-B6B7-3EF7A00751BF}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Pusher_Cave_Tiny_1" ID="{955BFB65-7B12-4DF9-B40B-79DB4B60293D}" ShortID="125784816">
+											<PropertyList>
+												<Property Name="Highpass" Type="int16">
+													<ValueList>
+														<Value>13</Value>
+													</ValueList>
+												</Property>
+												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+												<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
+												<Property Name="MaxSoundPerInstance" Type="int16">
+													<ValueList>
+														<Value>1</Value>
+													</ValueList>
+												</Property>
+												<Property Name="UseMaxSoundPerInstance" Type="bool">
+													<ValueList>
+														<Value>True</Value>
+													</ValueList>
+												</Property>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-20</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="StoneMovers" ID="{0F946374-F46F-41FA-98E7-EC85D98AD049}" WorkUnitID="{0D537A1A-A097-4DE3-A5EA-9723A41B16C7}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="PusherMoving" ID="{D334E708-446A-4E08-8CDC-E216C0FEB7FE}">
+													<PropertyList>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0225881242752077"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+													</PropertyList>
+													<Language>SFX</Language>
+													<AudioFile>PlatformMoving.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="83499910"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ObjectLists>
+												<ObjectList Name="RTPC">
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{9D2DEFD1-0789-464B-8180-F24DF511A00F}" ShortID="126027802">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{070A3555-7A2F-4C5D-95D9-075B18B946EF}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>30</XPos>
+																						<YPos>6.05179</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{32D44892-8A4F-4EDF-916F-302813D30B72}" ShortID="995107828">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="Pusher_Cave_Tiny_1" ID="{018B9E84-CE5D-483A-BE93-097D39C31A21}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{43A0A568-6AFE-4988-8810-F02226EAF81E}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>0.01</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>10</XPos>
+																						<YPos>0</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+												</ObjectList>
+											</ObjectLists>
+											<ActiveSourceList>
+												<ActiveSource Name="PusherMoving" ID="{D334E708-446A-4E08-8CDC-E216C0FEB7FE}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Pusher_Cave_Tiny_6" ID="{8D95D311-183B-4A0A-8740-CC3BA97392E9}" ShortID="160551620">
+											<PropertyList>
+												<Property Name="Highpass" Type="int16">
+													<ValueList>
+														<Value>13</Value>
+													</ValueList>
+												</Property>
+												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+												<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
+												<Property Name="MaxSoundPerInstance" Type="int16">
+													<ValueList>
+														<Value>1</Value>
+													</ValueList>
+												</Property>
+												<Property Name="UseMaxSoundPerInstance" Type="bool">
+													<ValueList>
+														<Value>True</Value>
+													</ValueList>
+												</Property>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-20</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="StoneMovers" ID="{0F946374-F46F-41FA-98E7-EC85D98AD049}" WorkUnitID="{0D537A1A-A097-4DE3-A5EA-9723A41B16C7}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="PusherMoving" ID="{F16A2E4D-293B-442D-A8C8-9B7C80D67E01}">
+													<PropertyList>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0225881242752077"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+													</PropertyList>
+													<Language>SFX</Language>
+													<AudioFile>PlatformMoving.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="83499910"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ObjectLists>
+												<ObjectList Name="RTPC">
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{0E23416A-BCDF-4203-A701-DED0CBA0314F}" ShortID="888372135">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{32874EC8-B6A4-4422-94B1-14C9C837353A}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>30</XPos>
+																						<YPos>6.05179</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{6FBCE959-7288-43AE-A15D-AC11B9B7F419}" ShortID="208095722">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="Pusher_Cave_Tiny_6" ID="{5E880C01-8687-4680-A8C4-4B8FAC4309D4}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{1A105E98-A4D9-4832-816B-FAE081DDB21A}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>0.01</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>10</XPos>
+																						<YPos>0</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+												</ObjectList>
+											</ObjectLists>
+											<ActiveSourceList>
+												<ActiveSource Name="PusherMoving" ID="{F16A2E4D-293B-442D-A8C8-9B7C80D67E01}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Pusher_Cave_Tiny_2" ID="{63CA2BD7-3942-4C47-B032-D51FBCF33698}" ShortID="691740776">
+											<PropertyList>
+												<Property Name="Highpass" Type="int16">
+													<ValueList>
+														<Value>13</Value>
+													</ValueList>
+												</Property>
+												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+												<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
+												<Property Name="MaxSoundPerInstance" Type="int16">
+													<ValueList>
+														<Value>1</Value>
+													</ValueList>
+												</Property>
+												<Property Name="UseMaxSoundPerInstance" Type="bool">
+													<ValueList>
+														<Value>True</Value>
+													</ValueList>
+												</Property>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-20</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="StoneMovers" ID="{0F946374-F46F-41FA-98E7-EC85D98AD049}" WorkUnitID="{0D537A1A-A097-4DE3-A5EA-9723A41B16C7}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="PusherMoving" ID="{7D041FDE-263D-418D-9134-17F5593DE399}">
+													<PropertyList>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0225881242752077"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+													</PropertyList>
+													<Language>SFX</Language>
+													<AudioFile>PlatformMoving.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="83499910"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ObjectLists>
+												<ObjectList Name="RTPC">
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{4BF19713-7D25-4EB1-AE19-EA45DE4C2ABA}" ShortID="439982158">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{68965793-7667-48F3-8C7D-33C525A80C1E}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>30</XPos>
+																						<YPos>6.05179</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{F10B8A95-0ECC-442C-88C5-DCDFCD43E4D1}" ShortID="623872419">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="Pusher_Cave_Tiny_2" ID="{AF49A9C6-FF5D-473E-AA13-479ECBD284D0}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{6900E9B3-0DDD-4AAD-8D9C-F528714F6C6C}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>0.01</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>10</XPos>
+																						<YPos>0</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+												</ObjectList>
+											</ObjectLists>
+											<ActiveSourceList>
+												<ActiveSource Name="PusherMoving" ID="{7D041FDE-263D-418D-9134-17F5593DE399}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Pusher_Cave_Tiny_3" ID="{D2526F02-0CEE-4A59-8DAB-DA31BA75A6A4}" ShortID="259064889">
+											<PropertyList>
+												<Property Name="Highpass" Type="int16">
+													<ValueList>
+														<Value>13</Value>
+													</ValueList>
+												</Property>
+												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+												<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
+												<Property Name="MaxSoundPerInstance" Type="int16">
+													<ValueList>
+														<Value>1</Value>
+													</ValueList>
+												</Property>
+												<Property Name="UseMaxSoundPerInstance" Type="bool">
+													<ValueList>
+														<Value>True</Value>
+													</ValueList>
+												</Property>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-20</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="StoneMovers" ID="{0F946374-F46F-41FA-98E7-EC85D98AD049}" WorkUnitID="{0D537A1A-A097-4DE3-A5EA-9723A41B16C7}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="PusherMoving" ID="{F0869FF2-7EA3-4636-8D2C-03C77467C4D7}">
+													<PropertyList>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0225881242752077"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+													</PropertyList>
+													<Language>SFX</Language>
+													<AudioFile>PlatformMoving.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="83499910"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ObjectLists>
+												<ObjectList Name="RTPC">
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{EFD84852-96BE-4A5A-BA71-A015A6228CAC}" ShortID="1041487523">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{8602A2BA-2646-47DD-AD81-0478989FADB7}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>30</XPos>
+																						<YPos>6.05179</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{94784E22-2264-499E-9BDB-4806FCAD685A}" ShortID="97001331">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="Pusher_Cave_Tiny_3" ID="{F1421B54-6F1F-4A99-9611-78F1774B29C3}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{1F07ECA5-7B7E-4DEE-831D-0944DA72F766}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>0.01</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>10</XPos>
+																						<YPos>0</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+												</ObjectList>
+											</ObjectLists>
+											<ActiveSourceList>
+												<ActiveSource Name="PusherMoving" ID="{F0869FF2-7EA3-4636-8D2C-03C77467C4D7}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Pusher_Cave_Tiny_4" ID="{3C90180F-19E5-4870-B51C-2C1062F5DABE}" ShortID="220060119">
+											<PropertyList>
+												<Property Name="Highpass" Type="int16">
+													<ValueList>
+														<Value>13</Value>
+													</ValueList>
+												</Property>
+												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+												<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
+												<Property Name="MaxSoundPerInstance" Type="int16">
+													<ValueList>
+														<Value>1</Value>
+													</ValueList>
+												</Property>
+												<Property Name="UseMaxSoundPerInstance" Type="bool">
+													<ValueList>
+														<Value>True</Value>
+													</ValueList>
+												</Property>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-20</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="StoneMovers" ID="{0F946374-F46F-41FA-98E7-EC85D98AD049}" WorkUnitID="{0D537A1A-A097-4DE3-A5EA-9723A41B16C7}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="PusherMoving" ID="{19C8B4C2-0B77-49C2-8E2C-F11CC7F6F4B3}">
+													<PropertyList>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0225881242752077"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+													</PropertyList>
+													<Language>SFX</Language>
+													<AudioFile>PlatformMoving.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="83499910"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ObjectLists>
+												<ObjectList Name="RTPC">
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{C623AD98-655A-4B14-A140-7A7BB147E868}" ShortID="1039915408">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{C32DF24B-F789-4FE1-B13C-BFE57A5AF93A}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>30</XPos>
+																						<YPos>6.05179</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{901F343E-4124-4F9B-8F5B-DACFA60B5FE0}" ShortID="412026577">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="Pusher_Cave_Tiny_4" ID="{8C85D686-EF5F-48A6-B1A5-8EC07645C544}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{CCD20F7B-14B8-44C0-A5F0-90895D11EC15}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>0.01</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>10</XPos>
+																						<YPos>0</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+												</ObjectList>
+											</ObjectLists>
+											<ActiveSourceList>
+												<ActiveSource Name="PusherMoving" ID="{19C8B4C2-0B77-49C2-8E2C-F11CC7F6F4B3}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Pusher_Cave_Tiny_5" ID="{E740FEEB-F60C-412C-BE59-5D0E59A987AB}" ShortID="890188182">
+											<PropertyList>
+												<Property Name="Highpass" Type="int16">
+													<ValueList>
+														<Value>13</Value>
+													</ValueList>
+												</Property>
+												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+												<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
+												<Property Name="MaxSoundPerInstance" Type="int16">
+													<ValueList>
+														<Value>1</Value>
+													</ValueList>
+												</Property>
+												<Property Name="UseMaxSoundPerInstance" Type="bool">
+													<ValueList>
+														<Value>True</Value>
+													</ValueList>
+												</Property>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-20</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="StoneMovers" ID="{0F946374-F46F-41FA-98E7-EC85D98AD049}" WorkUnitID="{0D537A1A-A097-4DE3-A5EA-9723A41B16C7}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="PusherMoving" ID="{51714F32-94A2-452D-9B39-922898428D1F}">
+													<PropertyList>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0225881242752077"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+													</PropertyList>
+													<Language>SFX</Language>
+													<AudioFile>PlatformMoving.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="83499910"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ObjectLists>
+												<ObjectList Name="RTPC">
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{79AE470C-EBD9-42B5-B380-74C688C43F9A}" ShortID="704489335">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{FEA983AD-2393-4413-BE5C-405850F39136}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>30</XPos>
+																						<YPos>6.05179</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{C9AD4B21-437D-4F49-8320-52A7A02D4567}" ShortID="1023726743">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="Pusher_Cave_Tiny_5" ID="{9F814558-D3E9-4FDF-90E4-D930F33262C4}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{48E7B70E-E759-491B-826D-9A19E84E77F3}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>0.01</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>10</XPos>
+																						<YPos>0</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+												</ObjectList>
+											</ObjectLists>
+											<ActiveSourceList>
+												<ActiveSource Name="PusherMoving" ID="{51714F32-94A2-452D-9B39-922898428D1F}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Pusher_Cave_Platforming_1" ID="{611972DB-3D5E-4D90-B30B-70D958DF0E4C}" ShortID="35113181">
+											<PropertyList>
+												<Property Name="Highpass" Type="int16">
+													<ValueList>
+														<Value>13</Value>
+													</ValueList>
+												</Property>
+												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+												<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
+												<Property Name="MaxSoundPerInstance" Type="int16">
+													<ValueList>
+														<Value>1</Value>
+													</ValueList>
+												</Property>
+												<Property Name="UseMaxSoundPerInstance" Type="bool">
+													<ValueList>
+														<Value>True</Value>
+													</ValueList>
+												</Property>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-20</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="StoneMovers" ID="{0F946374-F46F-41FA-98E7-EC85D98AD049}" WorkUnitID="{0D537A1A-A097-4DE3-A5EA-9723A41B16C7}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="PusherMoving" ID="{4D634A79-9B13-4C74-9E86-0A8C5BC63AE3}">
+													<PropertyList>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0225881242752077"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+													</PropertyList>
+													<Language>SFX</Language>
+													<AudioFile>PlatformMoving.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="83499910"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ObjectLists>
+												<ObjectList Name="RTPC">
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{A6D9FDD4-5EAA-494F-895B-31E5E0646C02}" ShortID="2704487">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{419E6C4A-C953-4356-A3AD-E1F99683B005}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>30</XPos>
+																						<YPos>6.05179</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{3B904991-CB5D-48BE-B0CA-83155D474CA4}" ShortID="209710178">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="Pusher_Cave_Platforming_1" ID="{1CA68A80-0FB5-41AB-AA21-DB77474D7B2E}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{AC794048-BCF2-441C-A690-CE055C6A9761}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>0.01</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>10</XPos>
+																						<YPos>0</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+												</ObjectList>
+											</ObjectLists>
+											<ActiveSourceList>
+												<ActiveSource Name="PusherMoving" ID="{4D634A79-9B13-4C74-9E86-0A8C5BC63AE3}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Pusher_Cave_SOS_1" ID="{3FE250B4-BD90-4E84-85BB-4083C283F7A2}" ShortID="655645678">
+											<PropertyList>
+												<Property Name="Highpass" Type="int16">
+													<ValueList>
+														<Value>13</Value>
+													</ValueList>
+												</Property>
+												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+												<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
+												<Property Name="MaxSoundPerInstance" Type="int16">
+													<ValueList>
+														<Value>1</Value>
+													</ValueList>
+												</Property>
+												<Property Name="UseMaxSoundPerInstance" Type="bool">
+													<ValueList>
+														<Value>True</Value>
+													</ValueList>
+												</Property>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-20</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="StoneMovers" ID="{0F946374-F46F-41FA-98E7-EC85D98AD049}" WorkUnitID="{0D537A1A-A097-4DE3-A5EA-9723A41B16C7}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="PusherMoving" ID="{708393FC-1295-413B-9D9B-7F8742006268}">
+													<PropertyList>
+														<Property Name="FadeOutDuration" Type="Real64" Value="0.0225881242752077"/>
+														<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+													</PropertyList>
+													<Language>SFX</Language>
+													<AudioFile>PlatformMoving.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="83499910"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ObjectLists>
+												<ObjectList Name="RTPC">
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{71AE691A-DA64-40D4-8D6D-84FD6DD9604F}" ShortID="229652997">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{A6FA653A-8F43-47C9-B1A0-1AC9AA39BEB4}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>30</XPos>
+																						<YPos>6.05179</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+													<Reference>
+														<Local>
+															<RTPC Name="" ID="{7A766032-B124-4F30-8DB7-4CE9B09A8FC8}" ShortID="1047168602">
+																<PropertyList>
+																	<Property Name="PropertyName" Type="string" Value="Volume"/>
+																</PropertyList>
+																<ReferenceList>
+																	<Reference Name="ControlInput">
+																		<ObjectRef Name="Pusher_Cave_SOS_1" ID="{D6364E21-54FB-4C6F-8383-5457B7F3FE6D}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+																	</Reference>
+																	<Reference Name="Curve">
+																		<Custom>
+																			<Curve Name="" ID="{6784B5E7-19B6-40C7-BF7F-20227EABBC2D}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>0.01</XPos>
+																						<YPos>-200</YPos>
+																						<Flags>0</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>10</XPos>
+																						<YPos>0</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</Custom>
+																	</Reference>
+																</ReferenceList>
+															</RTPC>
+														</Local>
+													</Reference>
+												</ObjectList>
+											</ObjectLists>
+											<ActiveSourceList>
+												<ActiveSource Name="PusherMoving" ID="{708393FC-1295-413B-9D9B-7F8742006268}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
 									</ChildrenList>
