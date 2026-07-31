@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Game;
 using Game.Items;
 using Mirror;
 using PrimeTween;
@@ -75,9 +76,6 @@ public class Shop : NetworkBehaviour
 
     public readonly SyncList<NetworkIdentity> AvailableItemIdentities = new();
 
-    //For restoring bought items upon respawn
-    private Dictionary<Checkpoint, List<NetworkIdentity>> _shopStateAtCheckpoint = new();
-
     public UnityEvent<Item, PurchaseError> OnReceiveBuyResult { get; private set; } = new();
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -108,8 +106,8 @@ public class Shop : NetworkBehaviour
 
     public override void OnStartServer()
     {
-        Cart.OnReachCheckpoint.AddListener(SaveShopState);
-        Checkpoint.OnRespawn.AddListener(RestoreShopState);
+        RespawnTarget.OnBuildRespawnSnapshot.AddListener(OnBuildRespawnSnapshot);
+        RespawnTarget.OnRespawn.AddListener(OnRespawn);
         SpawnPhysicalItems();
 
         _telescope.localRotation = Quaternion.Euler(0, Random.Range(0, 360f), 0);
@@ -123,8 +121,8 @@ public class Shop : NetworkBehaviour
 
     public override void OnStopServer()
     {
-        Cart.OnReachCheckpoint.RemoveListener(SaveShopState);
-        Checkpoint.OnRespawn.RemoveListener(RestoreShopState);
+        RespawnTarget.OnBuildRespawnSnapshot.RemoveListener(OnBuildRespawnSnapshot);
+        RespawnTarget.OnRespawn.RemoveListener(OnRespawn);
     }
 
     public override void OnStopClient()
@@ -191,41 +189,35 @@ public class Shop : NetworkBehaviour
     }
 
     [Server]
-    private void SaveShopState(Checkpoint checkpoint)
+    private void OnBuildRespawnSnapshot(RespawnTarget.RespawnSnapshot snapshot)
     {
-        _shopStateAtCheckpoint[checkpoint] = new List<NetworkIdentity>(AvailableItemIdentities);
+        snapshot.ShopAvailableItems[this] = AvailableItemIdentities.ToList();
     }
 
     [Server]
-    private void RestoreShopState(Checkpoint checkpoint)
+    private void OnRespawn(RespawnTarget target)
     {
-        if (_shopStateAtCheckpoint.TryGetValue(checkpoint, out var savedItems))
+        AvailableItemIdentities.Clear();
+        AvailableItemIdentities.AddRange(target.Snapshot.ShopAvailableItems[this]);
+
+        //Put the items back on the display rack
+        int count = AvailableItemIdentities.Count;
+        for (int i = 0; i < count; ++i)
         {
-            // AvailableItemIdentities = new SyncList<NetworkIdentity>(savedItems); //deep copy (todo maybe not necessary ?)
-            AvailableItemIdentities.Clear();
-            AvailableItemIdentities.AddRange(savedItems);
-
-            //Put the items back on the display rack
-            int count = AvailableItemIdentities.Count;
-            for (int i = 0; i < count; ++i)
+            NetworkIdentity itemIdentity = AvailableItemIdentities[i];
+            if (itemIdentity)
             {
-                NetworkIdentity itemIdentity = AvailableItemIdentities[i];
-                if (itemIdentity)
-                {
-                    var item = itemIdentity.GetComponent<Item>();
+                var item = itemIdentity.GetComponent<Item>();
 
-                    float t = (count == 1) ? 0.5f : (float)i / (count - 1);
-                    item.Rb.position = Vector3.Lerp(_itemSpawnStart.position, _itemSpawnEnd.position, t);
-                    item.Rb.rotation = _itemSpawnStart.rotation;
-                    Physics.SyncTransforms();
-                    item.State = Item.ItemState.Idle;
-                    item.Pickuppable = false;
-                    item.transform.localScale = Vector3.one * 0.5f;
-                    item.State = Item.ItemState.Frozen;
-                }
+                float t = (count == 1) ? 0.5f : (float)i / (count - 1);
+                item.Rb.position = Vector3.Lerp(_itemSpawnStart.position, _itemSpawnEnd.position, t);
+                item.Rb.rotation = _itemSpawnStart.rotation;
+                Physics.SyncTransforms();
+                item.State = Item.ItemState.Idle;
+                item.Pickuppable = false;
+                item.transform.localScale = Vector3.one * 0.5f;
+                item.State = Item.ItemState.Frozen;
             }
-
-            Debug.Log($"Shop restored: display rack reverted at {checkpoint.AreaName}");
         }
     }
 

@@ -24,6 +24,14 @@ namespace Game.Items
             {
                 _randomMeshIndex = Random.Range(0, _randomMeshOptions.Count);
             }
+            
+            RespawnTarget.OnRespawn.AddListener(OnRespawn);
+        }
+
+        public override void OnStopServer()
+        {
+            base.OnStopServer();
+            RespawnTarget.OnRespawn.RemoveListener(OnRespawn);
         }
 
         protected override void OnValidate()
@@ -49,6 +57,11 @@ namespace Game.Items
             _meshCollider.sharedMesh = null;
         }
 
+        private void OnRespawn(RespawnTarget target)
+        {
+            Smashable = false;
+        }
+        
         protected override void OnStateChanged(ItemState oldState, ItemState newState)
         {
             // Transition out

@@ -1,29 +1,24 @@
 using System.Collections.Generic;
 using System.Linq;
+using Game;
 using Game.Items;
+using Game.Items.Equipments;
 using Mirror;
 using Sirenix.OdinInspector;
 using UI;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.InputSystem;
-using ShowInInspector = Sirenix.OdinInspector.ShowInInspectorAttribute;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Cart : NetworkBehaviour
 {
-    private struct ObjectSnapshot
-    {
-        public Vector3 LocalPosition;
-        public Quaternion Rotation;
-    }
-
     public Rigidbody Rb;
+    public static Cart Instance { get; private set; }
 
     [ValidateInput("@gameObject.scene.isLoaded ? $value.Count > 0 : true", "Cart doesn't have any checkpoints linked.", InfoMessageType.Warning)]
     [field: SerializeField] public List<Checkpoint> Checkpoints { get; private set; }
 
-    [field: ShowInInspector] public int CurrentCheckpointIndex { get; private set; }
+    [field: SyncVar] public RespawnTarget CurrentRespawnTarget { get; private set; }
 
     [SerializeField] [Required] private CheckpointBanner _checkpointBannerPrefab;
 
@@ -43,13 +38,12 @@ public class Cart : NetworkBehaviour
     [SerializeField] [Required] private Collider _carryBounds;
 
     // Populated on server, unnecessary on clients
-    private Dictionary<Item, ObjectSnapshot>[] _checkpointSnapshots;
     public readonly HashSet<Item> CarriedItems = new();
-    public readonly SyncList<int> NumItemsAtCheckpoint = new();
+
     [field: SyncVar(hook = nameof(OnTotalCarriedItemsChanged))] public int TotalCarriedItems { get; private set; }
 
     [SyncVar] public int ExpectedTotalItemSellPrice;
-    
+
     //Sound effects
     [SerializeField] [Required] private AK.Wwise.Event _carSound;
     [SerializeField] [Required] private AK.Wwise.Event _carOnSurface;
@@ -63,9 +57,6 @@ public class Cart : NetworkBehaviour
     //Velocity doesn't exist on non-authed client, so we use this to calculate our own rough speed
     private Vector3 _positionLastFrame;
 
-    // todo make non-static and check specific carts
-    public static UnityEvent<Checkpoint> OnReachCheckpoint = new();
-
     public bool IsPuppet;
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -78,6 +69,7 @@ public class Cart : NetworkBehaviour
         Rb = GetComponent<Rigidbody>();
         _uiCanvas = GameObject.FindGameObjectWithTag("UICanvas").transform;
         IsPuppet = false;
+        Instance = this;
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         _wheelSeats = GetComponentsInChildren<WheelSeat>();
@@ -86,15 +78,8 @@ public class Cart : NetworkBehaviour
 
     public override void OnStartServer()
     {
-        Checkpoint.OnRespawn.AddListener(OnRespawn);
-
-        _checkpointSnapshots = new Dictionary<Item, ObjectSnapshot>[Checkpoints.Count];
-        for (int i = 0; i < _checkpointSnapshots.Length; ++i)
-        {
-            _checkpointSnapshots[i] = new Dictionary<Item, ObjectSnapshot>();
-        }
-
-        NumItemsAtCheckpoint.AddRange(Enumerable.Repeat(-1, Checkpoints.Count).ToArray());
+        RespawnTarget.OnRespawn.AddListener(OnRespawn);
+        RespawnTarget.OnReachNewTarget.AddListener(OnReachNewTarget);
 
         // First checkpoint runs on Frame 0 before treasures run OnTriggerEnter so we need to manually init
         // - Bounds check isn't perfectly accurate, but we can reasonably assume
@@ -109,13 +94,8 @@ public class Cart : NetworkBehaviour
             }
         }
 
-        CurrentCheckpointIndex = 0;
         Debug.Log($"Hit checkpoint 0: {Checkpoints[0].AreaName}");
-        OnReachCheckpoint.Invoke(Checkpoints[0]);
-        if (isServer)
-        {
-            CaptureCheckpointSnapshot();
-        }
+        SetActiveRespawnTarget(Checkpoints[0]);
     }
 
     public override void OnStartClient()
@@ -127,21 +107,85 @@ public class Cart : NetworkBehaviour
         _positionLastFrame = transform.position;
     }
 
-    private void OnDestroy()
+    public override void OnStopServer()
     {
-        if (isServer) Checkpoint.OnRespawn.RemoveListener(OnRespawn);
+        base.OnStopServer();
+        RespawnTarget.OnRespawn.RemoveListener(OnRespawn);
+        RespawnTarget.OnReachNewTarget.RemoveListener(OnReachNewTarget);
+    }
+
+    private bool GetPreviousRespawnTarget(RespawnTarget target, out RespawnTarget previousTarget)
+    {
+        if (target is Sandcastle sandcastle)
+        {
+            var siblingIndex = sandcastle.Parent.Sandcastles.IndexOf(sandcastle);
+            previousTarget = siblingIndex > 0 ? sandcastle.Parent.Sandcastles[siblingIndex - 1] : sandcastle.Parent;
+            return true;
+        }
+
+        if (target is Checkpoint checkpoint)
+        {
+            var index = Checkpoints.IndexOf(checkpoint);
+            if (index > 0)
+            {
+                var previousCheckpoint = Checkpoints[index - 1];
+                previousTarget = previousCheckpoint.Sandcastles.Count > 0 ? previousCheckpoint.Sandcastles[^1] : previousCheckpoint;
+                return true;
+            }
+
+            previousTarget = null;
+            return false;
+        }
+
+        Debug.LogWarning($"Current respawn target {target} is not a checkpoint or sandcastle, can't get previous");
+        previousTarget = null;
+        return false;
+    }
+
+    private bool GetNextRespawnTarget(RespawnTarget target, out RespawnTarget nextTarget)
+    {
+        if (target is Sandcastle sandcastle)
+        {
+            var siblingIndex = sandcastle.Parent.Sandcastles.IndexOf(sandcastle);
+            if (siblingIndex < sandcastle.Parent.Sandcastles.Count - 1)
+            {
+                nextTarget = sandcastle.Parent.Sandcastles[siblingIndex + 1];
+                return true;
+            }
+
+            var parentIndex = Checkpoints.IndexOf(sandcastle.Parent);
+            nextTarget = parentIndex < Checkpoints.Count - 1 ? Checkpoints[parentIndex + 1] : null;
+            return true;
+        }
+
+        if (target is Checkpoint checkpoint)
+        {
+            if (checkpoint.Sandcastles.Count > 0)
+            {
+                nextTarget = checkpoint.Sandcastles[0];
+                return true;
+            }
+
+            var index = Checkpoints.IndexOf(checkpoint);
+            nextTarget = index < Checkpoints.Count - 1 ? Checkpoints[index + 1] : null;
+            return true;
+        }
+
+        Debug.LogWarning($"Current respawn target {target} is not a checkpoint or sandcastle, can't get next");
+        nextTarget = null;
+        return false;
     }
 
     private void Update()
     {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-        if (_devCheckpointBackAction.action.WasPressedThisFrame() && CurrentCheckpointIndex != 0)
+        if (_devCheckpointBackAction.action.WasPressedThisFrame() && GetPreviousRespawnTarget(CurrentRespawnTarget, out var prevTarget))
         {
-            CmdInvokeRespawnEvent(CurrentCheckpointIndex - 1);
+            CmdInvokeRespawnEvent(prevTarget);
         }
-        else if (_devCheckpointForwardAction.action.WasPressedThisFrame() && CurrentCheckpointIndex != Checkpoints.Count - 1)
+        else if (_devCheckpointForwardAction.action.WasPressedThisFrame() && GetNextRespawnTarget(CurrentRespawnTarget, out var nextTarget))
         {
-            CmdInvokeRespawnEvent(CurrentCheckpointIndex + 1);
+            CmdInvokeRespawnEvent(nextTarget);
         }
 #endif
 
@@ -178,23 +222,6 @@ public class Cart : NetworkBehaviour
         Rb.AddTorque(_tiltCorrection * rotExp * transform.forward);
     }
 
-    // Records the local positions of all CarriedItems and writes them to the current checkpoint's snapshot
-    private void CaptureCheckpointSnapshot()
-    {
-        Physics.SyncTransforms();
-
-        foreach (Item item in CarriedItems)
-        {
-            _checkpointSnapshots[CurrentCheckpointIndex][item] = new ObjectSnapshot
-            {
-                LocalPosition = transform.InverseTransformPoint(item.transform.position),
-                Rotation = item.transform.rotation
-            };
-        }
-
-        NumItemsAtCheckpoint[CurrentCheckpointIndex] = TotalCarriedItems;
-    }
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Checkpoint"))
@@ -202,29 +229,29 @@ public class Cart : NetworkBehaviour
             Checkpoint checkpoint = other.GetComponent<Checkpoint>();
             var newIndex = Checkpoints.IndexOf(checkpoint);
 
-            if (newIndex > CurrentCheckpointIndex)
+            var currentIndex = CurrentRespawnTarget switch
             {
-                // New checkpoint reached
-                CurrentCheckpointIndex = newIndex;
-                Debug.Log($"Hit checkpoint {newIndex}: {checkpoint.AreaName}");
-                var checkpointBanner = Instantiate(_checkpointBannerPrefab, _uiCanvas.transform);
-                checkpointBanner.Checkpoint = checkpoint;
+                Checkpoint currentCheckpoint => Checkpoints.IndexOf(currentCheckpoint),
+                Sandcastle currentSandcastle => Checkpoints.IndexOf(currentSandcastle.Parent),
+                _ => -1
+            };
 
-                OnReachCheckpoint.Invoke(checkpoint);
+            if (newIndex <= currentIndex) return;
 
-                if (isServer)
-                {
-                    CaptureCheckpointSnapshot();
-                }
-            }
+            // New checkpoint reached
+            Debug.Log($"Hit checkpoint {newIndex}: {checkpoint.AreaName}");
+            SetActiveRespawnTarget(checkpoint);
+
+            var checkpointBanner = Instantiate(_checkpointBannerPrefab, _uiCanvas.transform);
+            checkpointBanner.Checkpoint = checkpoint;
         }
     }
 
-    private void OnRespawn(Checkpoint checkpoint)
+    private void OnRespawn(RespawnTarget target)
     {
         if (!isServer) return;
 
-        Transform newTransform = checkpoint.cartRespawnLocalTransform;
+        Transform newTransform = target.CartSpawnPoint;
 
         var rbs = GetComponentsInChildren<Rigidbody>();
         var wasNonKinematic = new List<Rigidbody>();
@@ -248,33 +275,8 @@ public class Cart : NetworkBehaviour
             rb.linearVelocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
         }
-
-        RevertItemsToCurrentSnapshot();
     }
-
-    public void RevertItemsToCurrentSnapshot()
-    {
-        if (!isServer) return;
-
-        List<Item> itemsToDrop = CarriedItems.ToList();
-        foreach (Item item in itemsToDrop)
-        {
-            if (!_checkpointSnapshots[CurrentCheckpointIndex].ContainsKey(item))
-            {
-                item.State = Item.ItemState.Inactive;
-                RemoveCarriedItem(item);
-            }
-        }
-
-        foreach (var (item, snapshot) in _checkpointSnapshots[CurrentCheckpointIndex])
-        {
-            item.transform.position = transform.TransformPoint(snapshot.LocalPosition);
-            item.transform.rotation = snapshot.Rotation;
-            Physics.SyncTransforms();
-            item.State = Item.ItemState.Idle;
-        }
-    }
-
+    
     [Server]
     public void AddCarriedItem(Item item)
     {
@@ -302,43 +304,65 @@ public class Cart : NetworkBehaviour
         _numCarriedTreasuresRTPC.SetGlobalValue(newValue);
     }
 
+    [Server]
+    public void SetActiveRespawnTarget(RespawnTarget target)
+    {
+        var newCheckpoint = target switch
+        {
+            Checkpoint checkpoint => checkpoint,
+            Sandcastle sandcastle => sandcastle.Parent,
+            _ => null
+        };
+
+        if (!newCheckpoint)
+        {
+            Debug.LogWarning($"Can't set respawn target to {target}, invalid");
+            return;
+        }
+
+        CurrentRespawnTarget = target;
+        RespawnTarget.OnReachNewTarget.Invoke(newCheckpoint);
+    }
+
+    private void OnReachNewTarget(RespawnTarget target)
+    {
+        Physics.SyncTransforms();
+
+        var snapshot = new RespawnTarget.RespawnSnapshot();
+        RespawnTarget.OnBuildRespawnSnapshot.Invoke(snapshot);
+
+        CurrentRespawnTarget.Snapshot = snapshot;
+        CurrentRespawnTarget.NumCarriedItemsOnReach = TotalCarriedItems;
+    }
+
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
     [Command(requiresAuthority = false)]
 #else
     [Command]
 #endif
-    public void CmdInvokeRespawnEvent(int newCheckpointIndex)
+    public void CmdInvokeRespawnEvent(RespawnTarget target)
     {
-        // todo we can definitely simplify this a bunch, we've got clients subscribing to OnRespawn just to do isServer checks and such
-        // also we should make respawn require authority and have the debug hotkeys be separate unauthed paths removed in prod builds
-        RpcInvokeRespawnEvent(newCheckpointIndex);
+        RpcInvokeRespawnEvent(target);
     }
 
     [ClientRpc]
-    private void RpcInvokeRespawnEvent(int newCheckpointIndex)
+    private void RpcInvokeRespawnEvent(RespawnTarget target)
     {
-        if (newCheckpointIndex < 0 || newCheckpointIndex >= Checkpoints.Count)
+        if (target is Checkpoint checkpoint && !Checkpoints.Contains(checkpoint))
         {
-            Debug.LogWarning($"Tried to respawn at invalid checkpoint index {newCheckpointIndex}");
+            Debug.LogWarning($"Tried to respawn at unregistered checkpoint {target}!");
             return;
         }
 
-        // Respawning at a different checkpoint, almost certainly from dev hotkeys
-        if (CurrentCheckpointIndex != newCheckpointIndex)
+        // Respawning at a different target, mainly from dev hotkeys
+        if (CurrentRespawnTarget != target)
         {
-            OnReachCheckpoint.Invoke(Checkpoints[CurrentCheckpointIndex]);
+            SetActiveRespawnTarget(target);
         }
-        
-        CurrentCheckpointIndex = newCheckpointIndex;
 
-        // fallback for dev hotkeys, otherwise will naturally be populated
-        if (isServer && NumItemsAtCheckpoint[CurrentCheckpointIndex] == -1)
-        {
-            CaptureCheckpointSnapshot();
-        }
-        
-        Checkpoint.OnPreRespawn.Invoke(Checkpoints[CurrentCheckpointIndex]);
-        Checkpoint.OnRespawn.Invoke(Checkpoints[CurrentCheckpointIndex]);
+        RespawnTarget.OnPreRespawn.Invoke(target);
+        RespawnTarget.OnRespawn.Invoke(target);
+        RespawnTarget.OnPostRespawn.Invoke(target);
     }
 
     [Server]

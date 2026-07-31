@@ -88,7 +88,7 @@ namespace Game.Items.Equipments
                 if (Physics.Raycast(ray, out var hit, 100f, _placeMask, QueryTriggerInteraction.Ignore))
                 {
                     _previewInstance.transform.position = hit.point;
-                    _previewInstance.transform.up = hit.normal;
+                    _previewInstance.transform.rotation = Quaternion.LookRotation(_previewInstance.transform.position - _holder.transform.position, hit.normal);
 
                     var distanceToPlayer = Vector3.Distance(_holder.transform.position, hit.point);
                     var validPos = distanceToPlayer <= MaxPlaceDistance && Vector3.Angle(hit.normal, Vector3.up) <= _maxPlacementAngle;
@@ -119,7 +119,6 @@ namespace Game.Items.Equipments
             if (normalAngle > _maxPlacementAngle) return false;
 
             _placeInstance = Instantiate(_placePrefab, position, rotation);
-            NetworkServer.Spawn(_placeInstance);
             return true;
         }
 
@@ -129,6 +128,7 @@ namespace Game.Items.Equipments
             if (OnServerTryPlace(position, rotation, sender!.identity.GetComponent<PlayerController>()))
             {
                 OnServerUse();
+                NetworkServer.Spawn(_placeInstance);
             }
         }
 

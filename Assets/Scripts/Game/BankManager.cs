@@ -1,14 +1,13 @@
-using System.Collections.Generic;
+using Game;
 using Mirror;
 using Sirenix.OdinInspector;
-using UnityEngine;
+using ReadOnlyAttribute = Sirenix.OdinInspector.ReadOnlyAttribute;
 
 public class BankManager : NetworkBehaviour
 {
     public static BankManager Instance { get; private set; }
 
-    [field: SyncVar] public int Balance;
-    private Dictionary<Checkpoint, int> _balanceAtCheckpoint = new();
+    [SyncVar, ReadOnly] public int Balance;
 
     private void Awake()
     {
@@ -18,35 +17,28 @@ public class BankManager : NetworkBehaviour
 
     public override void OnStartServer()
     {
-        Cart.OnReachCheckpoint.AddListener(SaveCheckpointBalance);
-        Checkpoint.OnRespawn.AddListener(RestoreCheckpointBalance);
+        RespawnTarget.OnBuildRespawnSnapshot.AddListener(OnBuildRespawnSnapshot);
+        RespawnTarget.OnRespawn.AddListener(OnRespawn);
     }
 
     public override void OnStopServer()
     {
-        Cart.OnReachCheckpoint.RemoveListener(SaveCheckpointBalance);
-        Checkpoint.OnRespawn.RemoveListener(RestoreCheckpointBalance);
+        RespawnTarget.OnBuildRespawnSnapshot.RemoveListener(OnBuildRespawnSnapshot);
+        RespawnTarget.OnRespawn.RemoveListener(OnRespawn);
     }
 
     [Server]
-    private void SaveCheckpointBalance(Checkpoint checkpoint)
+    private void OnBuildRespawnSnapshot(RespawnTarget.RespawnSnapshot snapshot)
     {
-        _balanceAtCheckpoint[checkpoint] = Balance;
-        Debug.Log($"Bank Saved: {Balance} at {checkpoint.AreaName}");
+        snapshot.Balance = Balance;
     }
 
     [Server]
-    private void RestoreCheckpointBalance(Checkpoint checkpoint)
+    private void OnRespawn(RespawnTarget target)
     {
-        if (_balanceAtCheckpoint.TryGetValue(checkpoint, out int savedBalance))
-        {
-            Balance = savedBalance;
-            Debug.Log($"Bank Restored: Balance reverted to {Balance}");
-        }
+        Balance = target.Snapshot.Balance;
     }
-
-    [Button] public void DebugBalance() => Debug.Log(Balance);
-
+    
     [Button, DisableInEditorMode]
     private void DebugGiveMoney()
     {

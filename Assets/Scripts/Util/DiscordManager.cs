@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using Discord.Sdk;
+using Game;
+using Game.Items.Equipments;
 using Networking;
 using Sirenix.OdinInspector;
 using UI;
@@ -56,7 +58,7 @@ namespace Util
             NetworkManager.OnLeaveGame.AddListener(OnLeaveGame);
             PlayerPresenceFeed.OnPlayerJoin.AddListener(OnPlayerJoin);
             PlayerPresenceFeed.OnPlayerLeave.AddListener(OnPlayerLeave);
-            Cart.OnReachCheckpoint.AddListener(OnReachCheckpoint);
+            RespawnTarget.OnReachNewTarget.AddListener(OnReachNewTarget);
         }
 
         private void OnDestroy()
@@ -65,7 +67,7 @@ namespace Util
             NetworkManager.OnLeaveGame.RemoveListener(OnLeaveGame);
             PlayerPresenceFeed.OnPlayerJoin.RemoveListener(OnPlayerJoin);
             PlayerPresenceFeed.OnPlayerLeave.RemoveListener(OnPlayerLeave);
-            Cart.OnReachCheckpoint.RemoveListener(OnReachCheckpoint);
+            RespawnTarget.OnReachNewTarget.RemoveListener(OnReachNewTarget);
 
             _client?.ClearRichPresence();
             _client?.Dispose();
@@ -92,7 +94,12 @@ namespace Util
                     activity.SetTimestamps(timestamps);
 
                     var cart = FindAnyObjectByType<Cart>();
-                    var activeCheckpointName = cart.Checkpoints[cart.CurrentCheckpointIndex].AreaName;
+                    var activeCheckpointName = cart.CurrentRespawnTarget switch
+                    {
+                        Checkpoint checkpoint => checkpoint.AreaName,
+                        Sandcastle sandcastle => sandcastle.Parent.AreaName,
+                        _ => "Unknown Area"
+                    };
                     activity.SetDetails($"Exploring {activeCheckpointName}");
 
                     if (NetworkManager.singleton.EosLobby.ConnectedToLobby)
@@ -156,7 +163,7 @@ namespace Util
             RebuildPresence();
         }
 
-        private void OnReachCheckpoint(Checkpoint checkpoint)
+        private void OnReachNewTarget(RespawnTarget target)
         {
             if (_presenceMode != PresenceMode.InGame) return;
             RebuildPresence();

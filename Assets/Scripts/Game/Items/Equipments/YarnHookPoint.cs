@@ -18,16 +18,16 @@ namespace Game
 
         private void OnEnable()
         {
-            Checkpoint.OnPreRespawn.AddListener(OnServerPreRespawn);
+            RespawnTarget.OnPreRespawn.AddListener(OnServerPreRespawn);
         }
 
         private void OnDisable()
         {
-            Checkpoint.OnPreRespawn.RemoveListener(OnServerPreRespawn);
+            RespawnTarget.OnPreRespawn.RemoveListener(OnServerPreRespawn);
         }
 
         [Server]
-        private void OnServerPreRespawn(Checkpoint checkpoint)
+        private void OnServerPreRespawn(RespawnTarget target)
         {
             foreach (var rope in AttachedRopes)
             {

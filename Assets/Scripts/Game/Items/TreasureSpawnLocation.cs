@@ -23,9 +23,9 @@ namespace Game.Items
             name = $"TreasureSpawnLocation ({_rarity})";
         }
 
-        [Server]
-        private void SpawnNewItem()
+        public override void OnStartServer()
         {
+            base.OnStartServer();
             var treasureData = Shop.ItemRegistry
                 .Where(i => i.Type == ItemType.Treasure && i.Rarity == _rarity)
                 .OrderBy(x => Guid.NewGuid())
@@ -41,36 +41,6 @@ namespace Game.Items
             var itemInstance = Instantiate(treasureData.Prefab, transform.position, rotation);
             NetworkServer.Spawn(itemInstance.gameObject);
             _spawnedItem = itemInstance;
-        }
-
-        public override void OnStartServer()
-        {
-            base.OnStartServer();
-            Checkpoint.OnRespawn.AddListener(OnServerRespawn);
-
-            SpawnNewItem();
-        }
-
-        public override void OnStopServer()
-        {
-            base.OnStopServer();
-            Checkpoint.OnRespawn.RemoveListener(OnServerRespawn);
-        }
-
-        [Server]
-        private void OnServerRespawn(Checkpoint checkpoint)
-        {
-            // todo filter to current checkpoint only? or otherwise only picked-up ones?
-            // _spawnedItem.transform.position = transform.position;
-            // _spawnedItem.ServerSetIdle();
-
-            if (_spawnedItem)
-            {
-                NetworkServer.Destroy(_spawnedItem.gameObject);
-                _spawnedItem = null;
-            }
-
-            SpawnNewItem();
         }
     }
 }

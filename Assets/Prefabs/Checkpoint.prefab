@@ -435,6 +435,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2394111315396812499}
+  - component: {fileID: 5241693444348090960}
   - component: {fileID: 683626801796291691}
   - component: {fileID: 7967293577213156495}
   m_Layer: 12
@@ -464,6 +465,23 @@ Transform:
   - {fileID: 8749457065787169715}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5241693444348090960
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4221880605503247291}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 0
+  _assetId: 2165915217
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!114 &683626801796291691
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -476,16 +494,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69d9f1f031411cf4ea6f962d56e6849e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Checkpoint
-  <playerRespawnLocalTransforms>k__BackingField:
+  syncMethod: 0
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  <PlayerSpawnPoints>k__BackingField:
   - {fileID: 1268816674487757554}
   - {fileID: 6193633454723726457}
   - {fileID: 1544810229383416283}
   - {fileID: 3449692223901353981}
   - {fileID: 5611473675147373946}
   - {fileID: 1713930834458006077}
-  <cartRespawnLocalTransform>k__BackingField: {fileID: 8640858329023172798}
+  <CartSpawnPoint>k__BackingField: {fileID: 8640858329023172798}
   AreaName: Unnamed Checkpoint
   <AnimatorController>k__BackingField: {fileID: 0}
+  Sandcastles: []
 --- !u!65 &7967293577213156495
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -95,7 +95,7 @@ public class CutsceneStart : NetworkBehaviour
 
         if (isServer)
         {
-            _cart.CmdInvokeRespawnEvent(_cart.CurrentCheckpointIndex);
+            _cart.CmdInvokeRespawnEvent(_cart.CurrentRespawnTarget);
         }
 
         CutsceneActive = false;

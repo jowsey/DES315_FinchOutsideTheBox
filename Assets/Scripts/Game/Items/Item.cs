@@ -1,5 +1,5 @@
+using Game.Items.Equipments;
 using Mirror;
-using Sirenix.OdinInspector;
 using UnityEngine;
 using Util;
 using Event = AK.Wwise.Event;
@@ -46,7 +46,7 @@ namespace Game.Items
 
         [SerializeField] private Event _pickupSfx;
         [field: SerializeField] public Event BuySfx { get; private set; }
-        
+
         [field: SerializeField] public bool ShowInfoCard { get; protected set; } = true;
         [field: SerializeField] public bool ForceMoveOnHeld { get; protected set; } = true;
 
@@ -61,6 +61,73 @@ namespace Game.Items
         public override void OnStartClient()
         {
             _hasInitialised = true;
+        }
+
+        public override void OnStartServer()
+        {
+            base.OnStartServer();
+            RespawnTarget.OnBuildRespawnSnapshot.AddListener(OnBuildRespawnSnapshot);
+            RespawnTarget.OnPostRespawn.AddListener(OnPostRespawn);
+        }
+
+        public override void OnStopServer()
+        {
+            base.OnStopServer();
+            RespawnTarget.OnBuildRespawnSnapshot.RemoveListener(OnBuildRespawnSnapshot);
+            RespawnTarget.OnPostRespawn.RemoveListener(OnPostRespawn);
+        }
+
+        private void OnBuildRespawnSnapshot(RespawnTarget.RespawnSnapshot snapshot)
+        {
+            if (this is SandcastleEquipment && State == ItemState.Inactive) return; // sandcastles are persistent across respawns, don't store
+            
+            if (Cart.Instance.CarriedItems.Contains(this))
+            {
+                snapshot.CarriedItems[this] = new RespawnTarget.RespawnSnapshot.CarriedItemSnapshot
+                {
+                    LocalPosition = Cart.Instance.transform.InverseTransformPoint(transform.position),
+                    Rotation = transform.rotation
+                };
+            }
+            else
+            {
+                snapshot.WorldItems[this] = new RespawnTarget.RespawnSnapshot.WorldItemSnapshot
+                {
+                    Position = transform.position,
+                    Rotation = transform.rotation,
+                    State = State
+                };
+            }
+        }
+
+        private void OnPostRespawn(RespawnTarget target)
+        {
+            if (target.Snapshot.CarriedItems.ContainsKey(this))
+            {
+                var snapshot = target.Snapshot.CarriedItems[this];
+                transform.position = Cart.Instance.transform.TransformPoint(snapshot.LocalPosition);
+                transform.rotation = snapshot.Rotation;
+                Physics.SyncTransforms();
+                State = ItemState.Idle;
+
+                Cart.Instance.AddCarriedItem(this);
+            }
+            else if (target.Snapshot.WorldItems.TryGetValue(this, out var worldItemSnapshot))
+            {
+                if (Cart.Instance.CarriedItems.Contains(this))
+                {
+                    Cart.Instance.RemoveCarriedItem(this);
+                }
+
+                transform.position = worldItemSnapshot.Position;
+                transform.rotation = worldItemSnapshot.Rotation;
+                State = worldItemSnapshot.State;
+            }
+            else
+            {
+                // we didn't exist at the time of this snapshot
+                NetworkServer.Destroy(gameObject); // 🫡
+            }
         }
 
         private void OnHolderIdentityChanged(NetworkIdentity _, NetworkIdentity newHolder)

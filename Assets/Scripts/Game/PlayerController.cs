@@ -340,7 +340,7 @@ public class PlayerController : NetworkBehaviour
         _networkAnimator = GetComponent<NetworkAnimator>();
         WwiseAnimationEvents = GetComponentInChildren<WwiseAnimationEvents>(true);
 
-        Checkpoint.OnRespawn.AddListener(OnRespawn);
+        RespawnTarget.OnRespawn.AddListener(OnRespawn);
 
         PuppetGravityMultiplier = 1.0f;
         PuppetJumpForceMultiplier = 1.0f;
@@ -468,7 +468,7 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    private void OnRespawn(Checkpoint checkpoint)
+    private void OnRespawn(RespawnTarget target)
     {
         if (!authority) return;
         _cinemachineCamera.PreviousStateIsValid = false;
@@ -477,7 +477,7 @@ public class PlayerController : NetworkBehaviour
         // Cart will take us with it
         if (Seat) return;
 
-        Transform newTransform = checkpoint.playerRespawnLocalTransforms[PlayerIndex % checkpoint.playerRespawnLocalTransforms.Length];
+        Transform newTransform = target.PlayerSpawnPoints[PlayerIndex % target.PlayerSpawnPoints.Length];
         Rb.position = newTransform.position;
         Rb.rotation = newTransform.rotation;
         Rb.linearVelocity = Vector3.zero;
