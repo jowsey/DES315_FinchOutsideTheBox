@@ -21,7 +21,7 @@ namespace Game.Items.Equipments
 
             Segments.Clear();
 
-            ParentEquipment.ServerSetIdle();
+            ParentEquipment.State = Item.ItemState.Idle;
             ParentEquipment.Rb.position = itemPosition;
         }
     }

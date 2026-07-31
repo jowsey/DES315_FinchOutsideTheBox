@@ -20,7 +20,6 @@ namespace Game.Items
 
             if (_singleUse)
             {
-                ServerSetIdle();
                 State = ItemState.Inactive;
             }
 

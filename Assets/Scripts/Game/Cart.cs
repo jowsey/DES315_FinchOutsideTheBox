@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Game;
@@ -13,6 +14,7 @@ using UnityEngine.InputSystem;
 public class Cart : NetworkBehaviour
 {
     public Rigidbody Rb;
+
     public static Cart Instance { get; private set; }
 
     [ValidateInput("@gameObject.scene.isLoaded ? $value.Count > 0 : true", "Cart doesn't have any checkpoints linked.", InfoMessageType.Warning)]
@@ -78,6 +80,7 @@ public class Cart : NetworkBehaviour
 
     public override void OnStartServer()
     {
+        base.OnStartServer();
         RespawnTarget.OnRespawn.AddListener(OnRespawn);
         RespawnTarget.OnReachNewTarget.AddListener(OnReachNewTarget);
 
@@ -94,8 +97,18 @@ public class Cart : NetworkBehaviour
             }
         }
 
-        Debug.Log($"Hit checkpoint 0: {Checkpoints[0].AreaName}");
-        SetActiveRespawnTarget(Checkpoints[0]);
+        StartCoroutine(SetInitialRespawnTarget());
+        return;
+
+        // Cart may have spawned before first checkpoint on the server,
+        // wait for it, since the snapshot code sets syncvars and whatnot
+        IEnumerator SetInitialRespawnTarget()
+        {
+            yield return new WaitUntil(() => Checkpoints[0].isServer);
+            
+            Debug.Log($"Hit checkpoint 0: {Checkpoints[0].AreaName}");
+            SetActiveRespawnTarget(Checkpoints[0]);   
+        }
     }
 
     public override void OnStartClient()
@@ -237,10 +250,13 @@ public class Cart : NetworkBehaviour
             };
 
             if (newIndex <= currentIndex) return;
-
-            // New checkpoint reached
             Debug.Log($"Hit checkpoint {newIndex}: {checkpoint.AreaName}");
-            SetActiveRespawnTarget(checkpoint);
+            
+            // New checkpoint reached
+            if (isServer)
+            {
+                SetActiveRespawnTarget(checkpoint);
+            }
 
             var checkpointBanner = Instantiate(_checkpointBannerPrefab, _uiCanvas.transform);
             checkpointBanner.Checkpoint = checkpoint;
@@ -276,7 +292,7 @@ public class Cart : NetworkBehaviour
             rb.angularVelocity = Vector3.zero;
         }
     }
-    
+
     [Server]
     public void AddCarriedItem(Item item)
     {

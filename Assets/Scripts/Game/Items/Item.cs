@@ -95,7 +95,13 @@ namespace Game.Items
                 {
                     Position = transform.position,
                     Rotation = transform.rotation,
-                    State = State
+                    State = State switch
+                    {
+                        ItemState.Held => ItemState.Idle,
+                        ItemState.PuttingDown => ItemState.Idle,
+                        ItemState.Smashed => ItemState.Inactive,
+                        _ => State
+                    }
                 };
             }
         }
@@ -249,6 +255,7 @@ namespace Game.Items
                     {
                         _holder.HeldObject = null;
                         _holder = null;
+                        _holderIdentity = null;
                     }
 
                     break;
@@ -301,14 +308,7 @@ namespace Game.Items
 
             var player = sender!.identity.GetComponent<PlayerController>();
             if (player != _holder) return;
-            ServerSetIdle();
-        }
-
-        [Server]
-        public void ServerSetIdle()
-        {
             State = ItemState.Idle;
-            _holderIdentity = null;
         }
 
         private void FixedUpdate()
@@ -325,7 +325,7 @@ namespace Game.Items
 
                 if (targetVec.sqrMagnitude < 0.025f)
                 {
-                    ServerSetIdle();
+                    State = ItemState.Idle;
                 }
             }
         }
