@@ -65,7 +65,7 @@ public class InteractDetection : MonoBehaviour
         var maxReach = Mathf.Max(_maxInteractDistance, _maxPutdownDistance);
 
         var ray = _camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
-        var didRayHit = Physics.SphereCast(ray, 0.25f, out var rayHit, 100f, detectMask, QueryTriggerInteraction.Ignore);
+        var didRayHit = Physics.SphereCast(ray, 0.15f, out var rayHit, 100f, detectMask, QueryTriggerInteraction.Ignore);
 
         Interactable interactable = null;
         var playerPos = PlayerController.LocalPlayer.transform.position;
