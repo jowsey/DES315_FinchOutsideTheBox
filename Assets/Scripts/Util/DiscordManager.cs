@@ -93,8 +93,7 @@ namespace Util
                     timestamps.SetStart(_joinGameEpoch);
                     activity.SetTimestamps(timestamps);
 
-                    var cart = FindAnyObjectByType<Cart>();
-                    var activeCheckpointName = cart.CurrentRespawnTarget switch
+                    var activeCheckpointName = Cart.Instance.CurrentRespawnTarget switch
                     {
                         Checkpoint checkpoint => checkpoint.AreaName,
                         Sandcastle sandcastle => sandcastle.Parent.AreaName,

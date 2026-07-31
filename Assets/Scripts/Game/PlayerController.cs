@@ -848,8 +848,6 @@ public class PlayerController : NetworkBehaviour
     {
         if (Seat) return;
 
-        var cart = FindAnyObjectByType<Cart>(); // todo use linked cart
-
         const float radius = 6f;
         Vector3 newPosition = default;
 
@@ -858,7 +856,7 @@ public class PlayerController : NetworkBehaviour
         while (tries++ < maxTries)
         {
             var circularPos = Random.insideUnitCircle * radius;
-            var attemptedPosition = cart.transform.TransformPoint(new Vector3(circularPos.x, 0.5f, circularPos.y));
+            var attemptedPosition = Cart.Instance.transform.TransformPoint(new Vector3(circularPos.x, 0.5f, circularPos.y));
 
             // collision check
             if (Physics.CheckSphere(attemptedPosition, 0.45f, ~0, QueryTriggerInteraction.Ignore))
@@ -884,7 +882,7 @@ public class PlayerController : NetworkBehaviour
 
         if (HeldObject) HeldObject.State = Item.ItemState.Idle;
 
-        var newRotation = Quaternion.LookRotation(cart.transform.position - newPosition, Vector3.up);
+        var newRotation = Quaternion.LookRotation(Cart.Instance.transform.position - newPosition, Vector3.up);
         newRotation = Quaternion.Euler(0, newRotation.eulerAngles.y, 0); // flatten angle
         GetComponent<NetworkTransformBase>().CmdTeleport(newPosition, newRotation);
     }

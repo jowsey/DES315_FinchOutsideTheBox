@@ -70,8 +70,6 @@ namespace UI
         private Vector2 _openPosition;
         private Vector2 _hiddenPosition => _openPosition + ((RectTransform)transform).sizeDelta * Vector2.up;
 
-        private Cart _linkedCart;
-
         // Tracking when all treasures are lost
         private int _lastKnownTreasureCount;
 
@@ -84,11 +82,6 @@ namespace UI
             rt.anchoredPosition = _hiddenPosition;
 
             RespawnTarget.OnRespawn.AddListener(OnRespawn);
-        }
-
-        private void Start()
-        {
-            _linkedCart = FindAnyObjectByType<Cart>();
         }
 
         private void OnDestroy()
@@ -143,7 +136,7 @@ namespace UI
 
                 if (_votesActive >= _votesRequired)
                 {
-                    _linkedCart.CmdInvokeRespawnEvent(_linkedCart.CurrentRespawnTarget);
+                    Cart.Instance.CmdInvokeRespawnEvent(Cart.Instance.CurrentRespawnTarget);
 
                     _votedClients.Clear();
                     _votesActive = 0;
@@ -152,7 +145,7 @@ namespace UI
 
             // Force active if respawn pressed, there are active votes, or we just lost our last treasure
             if (_votesActive > 0 || (PlayerController.ControlEnabled(PlayerController.ControlBlockerFlags.Respawn) && _respawnAction.action.WasPressedThisFrame()) ||
-                (_lastKnownTreasureCount > 0 && _linkedCart.TotalCarriedItems == 0 && _pingOnAllTreasuresLost))
+                (_lastKnownTreasureCount > 0 && Cart.Instance.TotalCarriedItems == 0 && _pingOnAllTreasuresLost))
             {
                 _lastActivityTime = Time.time;
             }
@@ -235,10 +228,10 @@ namespace UI
             {
                 _chargeImage.fillAmount = _voteCharge;
                 _countText.text = $"<b>{_votesActive}</b>/{_votesRequired}";
-                _treasureCountOnRespawnText.text = $"You will respawn with <b>{_linkedCart.CurrentRespawnTarget.NumCarriedItemsOnReach}</b> treasures.";
+                _treasureCountOnRespawnText.text = $"You will respawn with <b>{Cart.Instance.CurrentRespawnTarget.NumCarriedItemsOnReach}</b> treasures.";
             }
 
-            _lastKnownTreasureCount = _linkedCart.TotalCarriedItems;
+            _lastKnownTreasureCount = Cart.Instance.TotalCarriedItems;
         }
 
         [Command(requiresAuthority = false)]

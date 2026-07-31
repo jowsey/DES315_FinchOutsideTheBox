@@ -9,10 +9,8 @@ namespace Game.Items.Equipments
         public override void OnStartServer()
         {
             base.OnStartServer();
-
-            var cart = FindAnyObjectByType<Cart>();
-
-            var currentCheckpoint = cart.CurrentRespawnTarget switch
+            
+            var currentCheckpoint = Cart.Instance.CurrentRespawnTarget switch
             {
                 Checkpoint cp => cp,
                 Sandcastle sc => sc.Parent,
@@ -21,7 +19,7 @@ namespace Game.Items.Equipments
 
             Parent = currentCheckpoint;
             currentCheckpoint?.Sandcastles.Add(this);
-            cart.SetActiveRespawnTarget(this);
+            Cart.Instance.SetActiveRespawnTarget(this);
         }
     }
 }

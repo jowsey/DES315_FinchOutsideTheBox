@@ -376,10 +376,10 @@ public class Shop : NetworkBehaviour
     }
 
     [Command(requiresAuthority = false)]
-    public void CmdSellAll(Cart cart)
+    public void CmdSellAll()
     {
-        BankManager.Instance.Balance += cart.EvaluateTotalItemSellPrice(); //must be done before removing all the treasure, obviously
-        cart.RemoveAllTreasures();
+        BankManager.Instance.Balance += Cart.Instance.EvaluateTotalItemSellPrice(); //must be done before removing all the treasure, obviously
+        Cart.Instance.RemoveAllTreasures();
     }
 
     private void OnTriggerEnter(Collider other)

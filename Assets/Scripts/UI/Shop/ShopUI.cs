@@ -20,14 +20,6 @@ namespace UI
 
         private List<ItemCard> _itemCards = new();
 
-        private Cart _cachedCart;
-
-        private void Awake()
-        {
-            // todo thuis really sucks, make global singleton now we're committing to one cart
-            _cachedCart = FindAnyObjectByType<Cart>();
-        }
-
         private void OnEnable()
         {
             if (_shop) _shop.OnReceiveBuyResult.AddListener(OnReceiveBuyResult);
@@ -76,7 +68,7 @@ namespace UI
         private void Update()
         {
             // todo event for when estimate changes so we don't have to compute every frame
-            _sellAllEstimateText.text = $"You will receive <b>{_cachedCart.ExpectedTotalItemSellPrice}</b> coins.";
+            _sellAllEstimateText.text = $"You will receive <b>{Cart.Instance.ExpectedTotalItemSellPrice}</b> coins.";
             _balanceText.text = BankManager.Instance.Balance.ToString();
         }
 
@@ -84,10 +76,10 @@ namespace UI
 
         public void SellAll()
         {
-            if (_cachedCart.ExpectedTotalItemSellPrice > 0)
+            if (Cart.Instance.ExpectedTotalItemSellPrice > 0)
             {
                 _sellSfx.Post(gameObject);
-                _shop.CmdSellAll(_cachedCart);
+                _shop.CmdSellAll();
             }
         }
     }
