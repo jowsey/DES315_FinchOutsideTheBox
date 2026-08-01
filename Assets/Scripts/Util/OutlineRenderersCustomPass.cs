@@ -29,7 +29,7 @@ namespace Util
                 if (!outlineTarget) continue;
 
                 var renderer = outlineTarget.Renderer;
-                if (!renderer) continue;
+                if (!renderer || !renderer.isVisible) continue;
 
                 propertyBlock.Clear();
                 propertyBlock.SetColor(ShaderIDs.SelectionColor, outlineTarget.Colour);
