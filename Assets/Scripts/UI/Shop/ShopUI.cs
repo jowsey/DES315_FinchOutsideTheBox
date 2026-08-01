@@ -59,7 +59,7 @@ namespace UI
                 itemCard.Build(item, i, shop);
 
                 itemCard.WorldFollowUI.TrackingTarget = item.transform;
-                itemCard.WorldFollowUI.TrackingOffset = Vector3.up * 0.75f;
+                itemCard.WorldFollowUI.TrackingOffset = Vector3.up * -0.25f;
 
                 _itemCards.Add(itemCard);
             }
