@@ -64,7 +64,7 @@ namespace Util
                 var portInUse = IsUdpPortInUse(_kcpTransport.Port);
                 _button.interactable = _activeIf == ActiveIf.Free ? !portInUse : portInUse;
             }
-            catch (NotImplementedException e)
+            catch (NotImplementedException)
             {
                 _button.interactable = true;
             }
