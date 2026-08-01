@@ -26,7 +26,10 @@ public class Shop : NetworkBehaviour
 
     private CinemachineCamera _cinemachineCamera;
     private CinemachineOrbitalFollow _orbitalFollow;
+    private CinemachineRotationComposer _rotationComposer;
     private CameraZoomController _zoomController;
+
+    private Vector2 _initialRotationComposerDamping;
 
     [SerializeField] private InputActionReference _interactAction;
 
@@ -96,6 +99,7 @@ public class Shop : NetworkBehaviour
             {
                 _cinemachineCamera = cam;
                 _orbitalFollow = _cinemachineCamera.GetComponent<CinemachineOrbitalFollow>();
+                _rotationComposer = _cinemachineCamera.GetComponent<CinemachineRotationComposer>();
                 break;
             }
         }
@@ -154,6 +158,16 @@ public class Shop : NetworkBehaviour
         if (_enterPromptInstance && _interactAction.action.WasPressedThisFrame())
         {
             EnterShop();
+        }
+
+        if (_shopUIInstance)
+        {
+            var extents = new Vector2(0.1f, 0.1f);
+            var mousePos = Mouse.current.position.ReadValue();
+            _rotationComposer.Composition.ScreenPosition = new Vector2(
+                Mathf.Lerp(extents.x, -extents.x, mousePos.x / Screen.width),
+                Mathf.Lerp(-extents.y, extents.y, mousePos.y / Screen.height)
+            );
         }
     }
 
@@ -235,8 +249,12 @@ public class Shop : NetworkBehaviour
         _zoomController.OnForceMinThirdPersonRadiusActionStarted();
         _cinemachineCamera.Follow = _cameraLockLocation;
         _cinemachineCamera.LookAt = _cameraLockLocation;
+        
         _orbitalFollow.HorizontalAxis.Value = _cameraLockLocation.eulerAngles.y;
-        _orbitalFollow.VerticalAxis.Value = 20; // todo figure out correct dynamic values here
+        _orbitalFollow.VerticalAxis.Value = _cameraLockLocation.eulerAngles.x;
+        
+        _initialRotationComposerDamping = _rotationComposer.Damping;
+        _rotationComposer.Damping = Vector2.one * 0.5f;
 
         //Add control blockers
         PlayerController.ControlBlockerFlags flags = PlayerController.ControlBlockerFlags.All;
@@ -258,7 +276,7 @@ public class Shop : NetworkBehaviour
         {
             Tween.Alpha(uiElement, 0, 0.25f, Ease.OutCubic);
         }
-
+        
         OnboardingPrompt.EnableDetection = false;
 
         if (_enterPromptInstance) _enterPromptInstance.gameObject.SetActive(false);
@@ -270,7 +288,12 @@ public class Shop : NetworkBehaviour
         //Move camera
         _cinemachineCamera.Follow = PlayerController.LocalPlayer.transform;
         _cinemachineCamera.LookAt = PlayerController.LocalPlayer.transform;
+        
         _orbitalFollow.HorizontalAxis.Value = PlayerController.LocalPlayer.transform.eulerAngles.y;
+        
+        _rotationComposer.Composition.ScreenPosition.x = 0f;
+        _rotationComposer.Damping = _initialRotationComposerDamping;
+        
         _zoomController.OnRestorePreActionFirstPersonState();
         _zoomController.OnRestorePreActionThirdPersonRadiusState();
 
@@ -415,8 +438,8 @@ public class Shop : NetworkBehaviour
 
         if (!_enterPromptInstance && NetworkClient.localPlayer?.gameObject == other.attachedRigidbody?.gameObject)
         {
-            //Don't show players Enter prompt if they're on the cart
-            if (PlayerController.LocalPlayer?.Seat) return;
+            //Don't show players Enter prompt if they're on the cart or holding something
+            if (PlayerController.LocalPlayer?.Seat || PlayerController.LocalPlayer?.HeldObject) return;
 
             _enterPromptInstance = Instantiate(_enterPromptPrefab, _uiCanvas);
             _enterPromptInstance.Build(_enterPromptConfig);
