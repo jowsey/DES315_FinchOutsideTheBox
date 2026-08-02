@@ -1,24 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
 using Game.Items;
 using PrimeTween;
 using TMPro;
 using UnityEngine;
 
-namespace UI
+namespace UI.Shop
 {
     public class ShopUI : MonoBehaviour
     {
-        private Shop _shop;
+        private Game.Shop _shop;
 
         [SerializeField] private TextMeshProUGUI _sellAllEstimateText;
         [SerializeField] private TextMeshProUGUI _balanceText;
         [SerializeField] private TextMeshProUGUI _errorText;
 
-        [SerializeField] private ItemCard _itemCardPrefab;
+        [SerializeField] private ItemInfoCard _itemCardPrefab;
 
         [SerializeField] private AK.Wwise.Event _sellSfx;
-
-        private List<ItemCard> _itemCards = new();
 
         private void OnEnable()
         {
@@ -30,44 +28,44 @@ namespace UI
             if (_shop) _shop.OnReceiveBuyResult.RemoveListener(OnReceiveBuyResult);
         }
 
-        private void OnReceiveBuyResult(Item item, PurchaseError result)
+        private void OnReceiveBuyResult(Item item, Game.Shop.PurchaseError result)
         {
-            if (result == PurchaseError.None) return;
+            if (result == Game.Shop.PurchaseError.None) return;
 
             _errorText.text = result switch
             {
-                PurchaseError.NotEnoughMoney => "You don't have enough coins to purchase this.",
-                PurchaseError.AlreadyHoldingObject => "You are already holding an object.",
+                Game.Shop.PurchaseError.NotEnoughMoney => "You don't have enough coins to purchase this.",
+                Game.Shop.PurchaseError.AlreadyHoldingObject => "You are already holding an object.",
                 _ => "An unknown error occurred :\\"
             };
 
             Tween.Color(_errorText, Color.red, _errorText.color, 0.5f, Ease.OutCubic);
         }
 
-        public void Build(Shop shop)
+        public void Build(Game.Shop shop)
         {
             _shop = shop;
             shop.OnReceiveBuyResult.AddListener(OnReceiveBuyResult);
 
-            for (var i = 0; i < shop.AvailableItems.Count; i++)
+            foreach (var counterItem in shop.AvailableItems.Select(i => i.GetComponent<ShopCounterItem>()).Append(shop.SackItem))
             {
-                if (!shop.AvailableItems[i]) continue;
-                
-                var item = shop.AvailableItems[i].GetComponent<Item>();
-                
-                ItemCard itemCard = Instantiate(_itemCardPrefab, transform);
-                itemCard.Build(item, i, shop);
+                if (!counterItem) continue;
 
-                itemCard.WorldFollowUI.TrackingTarget = item.transform;
-                itemCard.WorldFollowUI.TrackingOffset = Vector3.up * -0.25f;
+                var itemCard = Instantiate(_itemCardPrefab, transform);
+                itemCard.Build(counterItem.ItemData);
 
-                _itemCards.Add(itemCard);
+                itemCard.WorldFollowUI.TrackingTarget = counterItem.transform;
+                ((RectTransform)itemCard.transform).pivot = new Vector2(0, 0.5f);
+                itemCard.WorldFollowUI.UIPositionOffset = new Vector2(48, 0);
+                
+                itemCard.gameObject.SetActive(false);
+                
+                counterItem.OnSelectedChange.AddListener(itemCard.gameObject.SetActive);
             }
         }
 
         private void Update()
         {
-            // todo event for when estimate changes so we don't have to compute every frame
             _sellAllEstimateText.text = $"You will receive <b>{Cart.Instance.ExpectedTotalItemSellPrice}</b> coins.";
             _balanceText.text = BankManager.Instance.Balance.ToString();
         }

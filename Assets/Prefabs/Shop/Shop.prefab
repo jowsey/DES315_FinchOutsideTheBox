@@ -823,6 +823,7 @@ MonoBehaviour:
   _itemHoverMask:
     serializedVersion: 2
     m_Bits: 2048
+  <SackItem>k__BackingField: {fileID: 1603301105827507860}
   _tipJar: {fileID: 2113122619182343238}
   _telescope: {fileID: 6843063348486269544}
   _hatchLeft: {fileID: 231465717815513096}
@@ -835,6 +836,7 @@ MonoBehaviour:
   _shopkeepAnimator: {fileID: 2563056146072484015}
   _itemSpawnStart: {fileID: 478531929793919167}
   _itemSpawnEnd: {fileID: 7307562827852216382}
+  _maxAvailableItems: 3
   _hiddenUIElements: []
   _shopEnter:
     idInternal: 0
@@ -852,7 +854,6 @@ MonoBehaviour:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: 809d43dcd9d3e304eb406897c2061a22, type: 2}
-  _maxAvailableItems: 3
 --- !u!54 &7750386620212409712
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1129,7 +1130,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6625744578921156054}
-  m_Layer: 0
+  - component: {fileID: 3538000911869674876}
+  - component: {fileID: 1603301105827507860}
+  m_Layer: 11
   m_Name: Sack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1152,6 +1155,39 @@ Transform:
   - {fileID: 4104885335261559587}
   m_Father: {fileID: 231465717815513096}
   m_LocalEulerAnglesHint: {x: 11.488, y: 140.728, z: 12.36}
+--- !u!114 &3538000911869674876
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5816556399724894060}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f01b5de57ac5c442936638e8a273c26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Util.OutlineTarget
+  Renderers:
+  - {fileID: 6824441532134187341}
+  Colour: {r: 1, g: 1, b: 1, a: 1}
+  MaxDrawDistance: 0
+  WidthFactor: 1
+--- !u!114 &1603301105827507860
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5816556399724894060}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0039140efdc54db4a8e85e1b5a7988b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Items.ShopCounterItem
+  ItemData: {fileID: 11400000, guid: 79b81683d8d09684ca5a665c72e41afb, type: 2}
+  OnSelectedChange:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &7331440430282831290
 GameObject:
   m_ObjectHideFlags: 0

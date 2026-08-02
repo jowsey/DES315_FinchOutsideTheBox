@@ -1,49 +1,50 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 using Util;
 
 namespace Game.Items
 {
-    [RequireComponent(typeof(Item), typeof(OutlineTarget))]
+    [RequireComponent(typeof(OutlineTarget))]
     public class ShopCounterItem : MonoBehaviour
     {
-        private ItemData _itemData;
-        private OutlineTarget _outline;
-
         private readonly Color _standardColour = Color.whiteSmoke;
         private readonly Color _validColour = Color.lightGreen;
         private readonly Color _invalidColour = Color.softRed;
 
+        public ItemData ItemData;
+        
+        public UnityEvent<bool> OnSelectedChange = new();
+        
+        public OutlineTarget Outline { get; private set; }
         private bool _selected;
-
-        public void Build(ItemData data)
-        {
-            _itemData = data;
-        }
 
         private void Awake()
         {
-            _outline = GetComponent<OutlineTarget>();
+            Outline = GetComponent<OutlineTarget>();
+            Outline.enabled = false;
         }
 
         public void SetSelected(bool selected)
         {
+            Outline.WidthFactor = selected ? 1f : 0.5f;
+            if (!selected) Outline.Colour = _standardColour;
+
             _selected = selected;
-            _outline.WidthFactor = selected ? 1f : 0.5f;
-            if (!selected) _outline.Colour = _standardColour;
+            OnSelectedChange?.Invoke(selected);
         }
 
         private void Update()
         {
             if (!_selected) return;
 
-            _outline.Colour = BankManager.Instance.Balance >= _itemData.BuyPrice
+            Outline.Colour = BankManager.Instance.Balance >= ItemData.BuyPrice
                 ? _validColour
                 : _invalidColour;
         }
 
         private void OnDestroy()
         {
-            Destroy(_outline);
+            Destroy(Outline);
         }
     }
 }
