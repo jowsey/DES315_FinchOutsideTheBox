@@ -52,14 +52,14 @@ namespace UI.Shop
                 if (!counterItem) continue;
 
                 var itemCard = Instantiate(_itemCardPrefab, transform);
-                itemCard.Build(counterItem.ItemData);
+                itemCard.Build(counterItem.ItemData, ItemInfoCard.ItemInfoCardPriceDisplay.BuyPrice);
 
                 itemCard.WorldFollowUI.TrackingTarget = counterItem.transform;
                 ((RectTransform)itemCard.transform).pivot = new Vector2(0, 0.5f);
                 itemCard.WorldFollowUI.UIPositionOffset = new Vector2(48, 0);
-                
+
                 itemCard.gameObject.SetActive(false);
-                
+
                 counterItem.OnSelectedChange.AddListener(itemCard.gameObject.SetActive);
             }
         }

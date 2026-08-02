@@ -35,7 +35,7 @@ namespace UI
             var trackingPosition = ApplyTrackingOffsetLocally
                 ? TrackingTarget.TransformPoint(TrackingOffset)
                 : TrackingTarget.position + TrackingOffset;
-
+            
             var newPos = _camera.WorldToScreenPoint(trackingPosition) + (Vector3)UIPositionOffset * _parentCanvas.scaleFactor;
             transform.position = Vector3.Lerp(transform.position, newPos, 1 - Mathf.Exp(-_followSpeed * Time.deltaTime));
 

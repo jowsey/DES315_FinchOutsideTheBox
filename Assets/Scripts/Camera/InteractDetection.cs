@@ -171,7 +171,7 @@ public class InteractDetection : MonoBehaviour
                 if (showInfoCard)
                 {
                     if (!_itemInfoCardInstance) _itemInfoCardInstance = Instantiate(_itemInfoCardPrefab, _uiCanvas);
-                    _itemInfoCardInstance.Build(item.Data);
+                    _itemInfoCardInstance.Build(item.Data, ItemInfoCard.ItemInfoCardPriceDisplay.None);
 
                     // Info card below it
                     _itemInfoCardInstance.WorldFollowUI.TrackingTarget = TargetedTransform;
