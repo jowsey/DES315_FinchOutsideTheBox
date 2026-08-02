@@ -22,6 +22,8 @@ public enum PurchaseError
 
 public class Shop : NetworkBehaviour
 {
+    private static readonly int ShopkeepOnBuyTrigger = Animator.StringToHash("OnBuy");
+    
     public static List<ItemData> ItemRegistry { get; private set; }
 
     private CinemachineCamera _cinemachineCamera;
@@ -56,6 +58,8 @@ public class Shop : NetworkBehaviour
     [SerializeField, SuffixLabel("degs/s")] private float _telescopeRotateSpeed = 55f;
     [SerializeField] private float _hatchOpenDuration = 1.0f;
     [SerializeField] private float _hatchOpenAngle = 135f;
+
+    [SerializeField] private NetworkAnimator _shopkeepAnimator;
 
     private Tween _telescopeRotationTween;
     private bool _hasOpened;
@@ -365,7 +369,9 @@ public class Shop : NetworkBehaviour
         itemToBuy.transform.localScale = Vector3.one;
         itemToBuy.State = Item.ItemState.Idle;
         itemToBuy.ServerTryPickup(buyer);
+        
         TargetBuyResult(sender, PurchaseError.None, itemToBuy, price);
+        _shopkeepAnimator.SetTrigger(ShopkeepOnBuyTrigger);
     }
 
     [TargetRpc]
