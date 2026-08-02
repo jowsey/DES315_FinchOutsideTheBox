@@ -725,13 +725,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4347633449846499788}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.97992474, z: -0.19936788, w: 0}
-  m_LocalPosition: {x: -0.15, y: -0.3, z: -0.25}
+  m_LocalRotation: {x: 0.0842565, y: -0.8881134, z: 0.18068866, w: 0.41413403}
+  m_LocalPosition: {x: 1, y: -0.5, z: -0.25}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 633008303981821938}
-  m_LocalEulerAnglesHint: {x: 23, y: 180, z: 0}
+  m_LocalEulerAnglesHint: {x: 23, y: -130, z: 0}
 --- !u!1 &5199798206775010617
 GameObject:
   m_ObjectHideFlags: 0
@@ -820,6 +820,9 @@ MonoBehaviour:
     Label: Enter shop
     ActionReference: {fileID: 1781555164194001046, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
   _shopUIPrefab: {fileID: 3805034678786570387, guid: 0f89bbc1e6c5c104f92b0ecf92da0d37, type: 3}
+  _itemHoverMask:
+    serializedVersion: 2
+    m_Bits: 2048
   _tipJar: {fileID: 2113122619182343238}
   _telescope: {fileID: 6843063348486269544}
   _hatchLeft: {fileID: 231465717815513096}

@@ -23,7 +23,7 @@ public enum PurchaseError
 public class Shop : NetworkBehaviour
 {
     private static readonly int ShopkeepOnBuyTrigger = Animator.StringToHash("OnBuy");
-    
+
     public static List<ItemData> ItemRegistry { get; private set; }
 
     private CinemachineCamera _cinemachineCamera;
@@ -46,6 +46,11 @@ public class Shop : NetworkBehaviour
 
     [SerializeField] private ShopUI _shopUIPrefab;
     private ShopUI _shopUIInstance;
+
+    [SerializeField] private LayerMask _itemHoverMask;
+    private ShopCounterItem _hoveredItem;
+
+    private Camera _camera;
 
     [Header("Animation")]
     [SerializeField] private Transform _tipJar;
@@ -81,7 +86,7 @@ public class Shop : NetworkBehaviour
 
     [SerializeField] private int _maxAvailableItems;
 
-    public readonly SyncList<NetworkIdentity> AvailableItemIdentities = new();
+    public readonly SyncList<Item> AvailableItems = new();
 
     public UnityEvent<Item, PurchaseError> OnReceiveBuyResult { get; private set; } = new();
 
@@ -93,6 +98,23 @@ public class Shop : NetworkBehaviour
         ItemRegistry = items.ToList();
 
         Debug.Log($"Loaded {ItemRegistry.Count} shop items");
+    }
+
+    private void OnAvailableItemAdded(int index)
+    {
+        var newItem = AvailableItems[index];
+        var counterItem = newItem.gameObject.AddComponent<ShopCounterItem>();
+        counterItem.Build(newItem.Data);
+    }
+
+    private void OnAvailableItemRemoved(int index, Item removedItem)
+    {
+        if (removedItem.TryGetComponent(out ShopCounterItem counterItem) && counterItem == _hoveredItem)
+        {
+            _hoveredItem = null;
+        }
+
+        Destroy(removedItem.GetComponent<ShopCounterItem>());
     }
 
     private void OnDrawGizmosSelected()
@@ -114,7 +136,8 @@ public class Shop : NetworkBehaviour
             }
         }
 
-        _zoomController = Camera.main.GetComponent<CameraZoomController>();
+        _camera = Camera.main!;
+        _zoomController = _camera.GetComponent<CameraZoomController>();
         _uiCanvas = GameObject.FindGameObjectWithTag("UICanvas").transform;
     }
 
@@ -131,6 +154,14 @@ public class Shop : NetworkBehaviour
     public override void OnStartClient()
     {
         _shopkeepRadio.Post(gameObject);
+
+        AvailableItems.OnAdd += OnAvailableItemAdded;
+        AvailableItems.OnRemove += OnAvailableItemRemoved;
+
+        for (var i = 0; i < AvailableItems.Count; i++)
+        {
+            OnAvailableItemAdded(i);
+        }
     }
 
     public override void OnStopServer()
@@ -181,13 +212,29 @@ public class Shop : NetworkBehaviour
         }
     }
 
+    private void LateUpdate()
+    {
+        if (!_shopUIInstance) return;
+
+        var ray = _camera.ScreenPointToRay(Mouse.current.position.ReadValue());
+        var hitItem = Physics.Raycast(ray, out var hit, 100f, _itemHoverMask, QueryTriggerInteraction.Ignore)
+            ? hit.collider.GetComponentInParent<ShopCounterItem>()
+            : null;
+
+        if (hitItem == _hoveredItem) return;
+
+        if (_hoveredItem) _hoveredItem.SetSelected(false);
+        _hoveredItem = hitItem;
+        if (_hoveredItem) _hoveredItem.SetSelected(true);
+    }
+
     [Server]
     private void SpawnPhysicalItems()
     {
-        AvailableItemIdentities.Clear();
+        AvailableItems.Clear();
 
         var equipments = ItemRegistry.Where(i => i.Type == ItemType.Equipment).ToList();
-        
+
         int cappedItemCount = Mathf.Min(_maxAvailableItems, equipments.Count);
         for (int i = 0; i < cappedItemCount; ++i)
         {
@@ -209,39 +256,37 @@ public class Shop : NetworkBehaviour
             newItem.Pickuppable = false;
 
             NetworkServer.Spawn(newItem.gameObject);
-            AvailableItemIdentities.Add(newItem.netIdentity);
+            AvailableItems.Add(newItem);
         }
     }
 
     [Server]
     private void OnBuildRespawnSnapshot(RespawnTarget.RespawnSnapshot snapshot)
     {
-        snapshot.ShopAvailableItems[this] = AvailableItemIdentities.ToList();
+        snapshot.ShopAvailableItems[this] = AvailableItems.ToList();
     }
 
     [Server]
     private void OnRespawn(RespawnTarget target)
     {
-        AvailableItemIdentities.Clear();
-        AvailableItemIdentities.AddRange(target.Snapshot.ShopAvailableItems[this]);
+        AvailableItems.Clear();
+        AvailableItems.AddRange(target.Snapshot.ShopAvailableItems[this]);
 
         //Put the items back on the display rack
-        int count = AvailableItemIdentities.Count;
+        int count = AvailableItems.Count;
         for (int i = 0; i < count; ++i)
         {
-            NetworkIdentity itemIdentity = AvailableItemIdentities[i];
-            if (itemIdentity)
+            Item item = AvailableItems[i];
+            if (item)
             {
-                var item = itemIdentity.GetComponent<Item>();
-
                 float t = (count == 1) ? 0.5f : (float)i / (count - 1);
+                Physics.SyncTransforms();
+
+                item.State = Item.ItemState.Frozen;
                 item.Rb.position = Vector3.Lerp(_itemSpawnStart.position, _itemSpawnEnd.position, t);
                 item.Rb.rotation = _itemSpawnStart.rotation;
-                Physics.SyncTransforms();
-                item.State = Item.ItemState.Idle;
-                item.Pickuppable = false;
                 item.transform.localScale = Vector3.one * 0.5f;
-                item.State = Item.ItemState.Frozen;
+                item.Pickuppable = false;
             }
         }
     }
@@ -260,10 +305,10 @@ public class Shop : NetworkBehaviour
         _zoomController.OnForceMinThirdPersonRadiusActionStarted();
         _cinemachineCamera.Follow = _cameraLockLocation;
         _cinemachineCamera.LookAt = _cameraLockLocation;
-        
-        _orbitalFollow.HorizontalAxis.Value = _cameraLockLocation.eulerAngles.y;
-        _orbitalFollow.VerticalAxis.Value = _cameraLockLocation.eulerAngles.x;
-        
+
+        _orbitalFollow.HorizontalAxis.Value = _cameraLockLocation.localEulerAngles.y;
+        _orbitalFollow.VerticalAxis.Value = _cameraLockLocation.localEulerAngles.x;
+
         _initialRotationComposerDamping = _rotationComposer.Damping;
         _rotationComposer.Damping = Vector2.one * 0.5f;
 
@@ -287,7 +332,7 @@ public class Shop : NetworkBehaviour
         {
             Tween.Alpha(uiElement, 0, 0.25f, Ease.OutCubic);
         }
-        
+
         OnboardingPrompt.EnableDetection = false;
 
         if (_enterPromptInstance) _enterPromptInstance.gameObject.SetActive(false);
@@ -299,12 +344,12 @@ public class Shop : NetworkBehaviour
         //Move camera
         _cinemachineCamera.Follow = PlayerController.LocalPlayer.transform;
         _cinemachineCamera.LookAt = PlayerController.LocalPlayer.transform;
-        
+
         _orbitalFollow.HorizontalAxis.Value = PlayerController.LocalPlayer.transform.eulerAngles.y;
-        
+
         _rotationComposer.Composition.ScreenPosition.x = 0f;
         _rotationComposer.Damping = _initialRotationComposerDamping;
-        
+
         _zoomController.OnRestorePreActionFirstPersonState();
         _zoomController.OnRestorePreActionThirdPersonRadiusState();
 
@@ -319,6 +364,12 @@ public class Shop : NetworkBehaviour
         {
             Destroy(_shopUIInstance.gameObject);
             _shopUIInstance = null;
+        }
+
+        if (_hoveredItem)
+        {
+            _hoveredItem.SetSelected(false);
+            _hoveredItem = null;
         }
 
         //Show action UIs & enter prompt
@@ -336,19 +387,19 @@ public class Shop : NetworkBehaviour
     public void CmdTryBuy(int index, NetworkConnectionToClient sender = null)
     {
         //Buncha input validation
-        if (index < 0 || index >= AvailableItemIdentities.Count)
+        if (index < 0 || index >= AvailableItems.Count)
         {
-            Debug.LogError("Shop.TryBuy() called with index " + index + " which was out of range (_purchasableItems.Count = " + AvailableItemIdentities.Count + ")");
+            Debug.LogError("Shop.TryBuy() called with index " + index + " which was out of range (_purchasableItems.Count = " + AvailableItems.Count + ")");
             return;
         }
 
-        if (!AvailableItemIdentities[index])
+        if (!AvailableItems[index])
         {
             Debug.LogError("Shop.TryBuy() called with index " + index + " which was null (has the item already been bought?)");
             return;
         }
 
-        Item itemToBuy = AvailableItemIdentities[index].GetComponent<Item>();
+        Item itemToBuy = AvailableItems[index].GetComponent<Item>();
         if (!itemToBuy || itemToBuy.State != Item.ItemState.Frozen)
         {
             Debug.LogError("Shop.TryBuy() called with index " + index + " which returned a " + (!itemToBuy ? "null item" : "non-frozen item (name = " + itemToBuy.name + ")"));
@@ -371,12 +422,12 @@ public class Shop : NetworkBehaviour
 
         //Take the money, remove from the display rack, and put it in the player's hands
         BankManager.Instance.Balance -= price;
-        AvailableItemIdentities[index] = null;
+        AvailableItems[index] = null;
         itemToBuy.Pickuppable = true;
         itemToBuy.transform.localScale = Vector3.one;
         itemToBuy.State = Item.ItemState.Idle;
         itemToBuy.ServerTryPickup(buyer);
-        
+
         TargetBuyResult(sender, PurchaseError.None, itemToBuy, price);
         _shopkeepAnimator.SetTrigger(ShopkeepOnBuyTrigger);
     }
@@ -394,7 +445,7 @@ public class Shop : NetworkBehaviour
 
                 _shopBuy.Post(gameObject);
                 item.BuySfx?.Post(gameObject);
-                
+
                 LeaveShop();
                 break;
             }

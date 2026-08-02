@@ -240,8 +240,6 @@ namespace Game.Items
                         Rb.isKinematic = true;
                     }
 
-                    foreach (Collider col in _colliders) col.enabled = false;
-
                     break;
                 }
             }

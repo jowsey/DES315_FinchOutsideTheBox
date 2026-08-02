@@ -25,7 +25,8 @@ namespace Game
             
             public Dictionary<Item, CarriedItemSnapshot> CarriedItems = new();
             public Dictionary<Item, WorldItemSnapshot> WorldItems = new();
-            public Dictionary<Shop, List<NetworkIdentity>> ShopAvailableItems = new();
+            public Dictionary<Shop, List<Item>> ShopAvailableItems = new();
+            
             public int Balance;
         }
         

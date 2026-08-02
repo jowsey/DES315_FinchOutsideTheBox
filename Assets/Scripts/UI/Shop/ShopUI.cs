@@ -49,11 +49,11 @@ namespace UI
             _shop = shop;
             shop.OnReceiveBuyResult.AddListener(OnReceiveBuyResult);
 
-            for (var i = 0; i < shop.AvailableItemIdentities.Count; i++)
+            for (var i = 0; i < shop.AvailableItems.Count; i++)
             {
-                if (!shop.AvailableItemIdentities[i]) continue;
+                if (!shop.AvailableItems[i]) continue;
                 
-                var item = shop.AvailableItemIdentities[i].GetComponent<Item>();
+                var item = shop.AvailableItems[i].GetComponent<Item>();
                 
                 ItemCard itemCard = Instantiate(_itemCardPrefab, transform);
                 itemCard.Build(item, i, shop);
