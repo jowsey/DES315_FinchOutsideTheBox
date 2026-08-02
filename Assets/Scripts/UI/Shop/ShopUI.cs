@@ -56,11 +56,13 @@ namespace UI.Shop
 
                 itemCard.WorldFollowUI.TrackingTarget = counterItem.transform;
                 ((RectTransform)itemCard.transform).pivot = new Vector2(0, 0.5f);
-                itemCard.WorldFollowUI.UIPositionOffset = new Vector2(48, 0);
-
-                itemCard.gameObject.SetActive(false);
-
-                counterItem.OnSelectedChange.AddListener(itemCard.gameObject.SetActive);
+                itemCard.WorldFollowUI.UIPositionOffset = new Vector2(64, 0);
+                
+                counterItem.OnSelectedChange.AddListener(itemCard.SetVisible);
+                
+                // Force card immediately hidden
+                Tween.CompleteAll(itemCard.transform);
+                itemCard.transform.localScale = Vector3.zero;
             }
         }
 

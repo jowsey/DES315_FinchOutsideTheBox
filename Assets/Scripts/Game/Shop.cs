@@ -200,7 +200,7 @@ namespace Game
 
             if (_shopUIInstance)
             {
-                var extents = new Vector2(0.1f, 0.1f);
+                var extents = new Vector2(0.05f, 0.075f);
                 var mousePos = Mouse.current.position.ReadValue();
                 _rotationComposer.Composition.ScreenPosition = new Vector2(
                     Mathf.Lerp(extents.x, -extents.x, mousePos.x / Screen.width),
@@ -230,23 +230,18 @@ namespace Game
         {
             AvailableItems.Clear();
 
-            var equipments = ItemRegistry.Where(i => i.Type == ItemType.Equipment).ToList();
+            var allEquipment = ItemRegistry.Where(i => i.Type == ItemType.Equipment && i.Prefab).ToList();
+            var cappedItemCount = Mathf.Min(_maxAvailableItems, allEquipment.Count);
+            var itemsToSpawn = allEquipment.OrderBy(_ => Random.value).Take(cappedItemCount).ToList();
 
-            int cappedItemCount = Mathf.Min(_maxAvailableItems, equipments.Count);
-            for (int i = 0; i < cappedItemCount; ++i)
+            for (var i = 0; i < cappedItemCount; ++i)
             {
-                //If we can fit the entire registry, deterministically spawn one of each, otherwise pick at random
-                ItemData itemToSpawn = cappedItemCount >= equipments.Count
-                    ? equipments[i]
-                    : equipments[Random.Range(0, equipments.Count)];
+                var itemToSpawn = itemsToSpawn[i];
 
-                //Calculate position along the line
-                //If there's only one item, stick it in the middle. Otherwise, space em out evenly
-                float t = (cappedItemCount == 1) ? 0.5f : (float)i / (cappedItemCount - 1);
-                Vector3 spawnPos = Vector3.Lerp(_itemSpawnStart.position, _itemSpawnEnd.position, t);
+                var t = cappedItemCount == 1 ? 0.5f : (float)i / (cappedItemCount - 1);
+                var spawnPos = Vector3.Lerp(_itemSpawnStart.position, _itemSpawnEnd.position, t);
 
-                //Spawn the networked object and track it
-                Item newItem = Instantiate(itemToSpawn.Prefab, spawnPos, _itemSpawnStart.rotation);
+                var newItem = Instantiate(itemToSpawn.Prefab, spawnPos, _itemSpawnStart.rotation);
                 newItem.Rb.isKinematic = true; // force immediate kinematic before state change to prevent any possible physics tick
                 newItem.State = Item.ItemState.Frozen;
                 newItem.transform.localScale = Vector3.one * 0.5f;

@@ -35,7 +35,12 @@ namespace UI
         private void OnEnable()
         {
             transform.localScale = Vector3.zero;
-            Tween.Scale(transform, Vector3.one, _transitionDuration, Ease.OutCubic);
+            SetVisible(true);
+        }
+
+        public void SetVisible(bool visible)
+        {
+            Tween.Scale(transform, visible ? Vector3.one : Vector3.zero, _transitionDuration, Ease.OutCubic);
         }
 
         public void Build(ItemData data, ItemInfoCardPriceDisplay priceDisplay)
