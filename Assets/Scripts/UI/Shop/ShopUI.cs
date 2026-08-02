@@ -28,7 +28,7 @@ namespace UI.Shop
             if (_shop) _shop.OnReceiveBuyResult.RemoveListener(OnReceiveBuyResult);
         }
 
-        private void OnReceiveBuyResult(Item item, Game.Shop.PurchaseError result)
+        private void OnReceiveBuyResult(ItemData itemData, Game.Shop.PurchaseError result)
         {
             if (result == Game.Shop.PurchaseError.None) return;
 
@@ -47,7 +47,12 @@ namespace UI.Shop
             _shop = shop;
             shop.OnReceiveBuyResult.AddListener(OnReceiveBuyResult);
 
-            foreach (var counterItem in shop.AvailableItems.Select(i => i.GetComponent<ShopCounterItem>()).Append(shop.SackItem))
+            var allPurchasableItems = shop.AvailableItems
+                .Where(i => i)
+                .Select(i => i.GetComponent<ShopCounterItem>())
+                .Append(shop.SackItem);
+            
+            foreach (var counterItem in allPurchasableItems)
             {
                 if (!counterItem) continue;
 

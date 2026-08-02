@@ -45,7 +45,6 @@ namespace Game.Items
         public bool Pickuppable = true;
 
         [SerializeField] private Event _pickupSfx;
-        [field: SerializeField] public Event BuySfx { get; private set; }
 
         [field: SerializeField] public bool ShowInfoCard { get; protected set; } = true;
         [field: SerializeField] public bool ForceMoveOnHeld { get; protected set; } = true;

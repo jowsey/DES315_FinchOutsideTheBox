@@ -36,6 +36,7 @@ namespace Game
         private Vector2 _initialRotationComposerDamping;
 
         [SerializeField] private InputActionReference _interactAction;
+        [SerializeField] private InputActionReference _buyAction;
 
         [Tooltip("The transform that the camera will be moved to when the shop is entered")]
         [SerializeField] private Transform _cameraLockLocation;
@@ -85,7 +86,9 @@ namespace Game
         [SerializeField] private AK.Wwise.Event _shopkeepRadio;
 
         public readonly SyncList<Item> AvailableItems = new();
-        public UnityEvent<Item, PurchaseError> OnReceiveBuyResult { get; private set; } = new();
+
+        public readonly UnityEvent<ItemData, PurchaseError> OnReceiveBuyResult = new();
+        private readonly UnityEvent OnGlobalHideSack = new();
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void LoadAllItems()
@@ -100,18 +103,21 @@ namespace Game
         private void OnAvailableItemAdded(int index)
         {
             var newItem = AvailableItems[index];
-            var counterItem = newItem.gameObject.AddComponent<ShopCounterItem>();
+            if (!newItem) return; // will be null if already bought on join
+
+            var counterItem = newItem.gameObject.GetComponent<ShopCounterItem>() ?? newItem.gameObject.AddComponent<ShopCounterItem>();
+            counterItem.enabled = true;
             counterItem.ItemData = newItem.Data;
+            counterItem.SetSelected(false);
         }
 
-        private void OnAvailableItemRemoved(int index, Item removedItem)
+        private void OnAvailableItemChanged(int index, Item oldValue)
         {
-            if (removedItem.TryGetComponent(out ShopCounterItem counterItem) && counterItem == _hoveredItem)
+            var newValue = AvailableItems[index];
+            if (!newValue && oldValue.TryGetComponent(out ShopCounterItem counterItem) && counterItem == _hoveredItem)
             {
                 _hoveredItem = null;
             }
-
-            Destroy(removedItem.GetComponent<ShopCounterItem>());
         }
 
         private void OnDrawGizmosSelected()
@@ -151,9 +157,10 @@ namespace Game
         public override void OnStartClient()
         {
             _shopkeepRadio.Post(gameObject);
+            OnGlobalHideSack.AddListener(OnHideSack);
 
             AvailableItems.OnAdd += OnAvailableItemAdded;
-            AvailableItems.OnRemove += OnAvailableItemRemoved;
+            AvailableItems.OnSet += OnAvailableItemChanged;
 
             for (var i = 0; i < AvailableItems.Count; i++)
             {
@@ -170,6 +177,7 @@ namespace Game
         public override void OnStopClient()
         {
             _shopkeepRadio.Stop(gameObject);
+            OnGlobalHideSack.RemoveListener(OnHideSack);
         }
 
         [Server]
@@ -218,11 +226,64 @@ namespace Game
                 ? hit.collider.GetComponentInParent<ShopCounterItem>()
                 : null;
 
+            if (hitItem && _buyAction.action.WasPressedThisFrame())
+            {
+                if (hitItem == SackItem)
+                {
+                    CmdTryBuySack();
+                }
+                else
+                {
+                    var index = AvailableItems.IndexOf(hitItem.GetComponent<Item>());
+                    if (index != -1) CmdTryBuy(index);
+                }
+            }
+
             if (hitItem == _hoveredItem) return;
 
             if (_hoveredItem) _hoveredItem.SetSelected(false);
             _hoveredItem = hitItem;
             if (_hoveredItem) _hoveredItem.SetSelected(true);
+        }
+
+        [Command(requiresAuthority = false)]
+        private void CmdTryBuySack()
+        {
+            if (BankManager.Instance.Balance < SackItem.ItemData.BuyPrice)
+            {
+                TargetBuyResult(connectionToClient, PurchaseError.NotEnoughMoney, SackItem.ItemData);
+                return;
+            }
+
+            var nextSackPosition = Cart.Instance.SackPositions.FirstOrDefault(s => !s.gameObject.activeSelf);
+            if (!nextSackPosition) return;
+
+            // Hide on counter if buying final sack
+            if (nextSackPosition == Cart.Instance.SackPositions[^1])
+            {
+                RpcGlobalHideSack();
+            }
+
+            BankManager.Instance.Balance -= SackItem.ItemData.BuyPrice;
+            nextSackPosition.gameObject.SetActive(true);
+
+            var newSack = Instantiate(Cart.Instance.SackPrefab, nextSackPosition.position, nextSackPosition.rotation);
+            newSack.Joint.connectedBody = Cart.Instance.Rb;
+            newSack.Joint.connectedAnchor = Cart.Instance.transform.InverseTransformPoint(nextSackPosition.position);
+            NetworkServer.Spawn(newSack.gameObject);
+
+            _shopkeepAnimator.SetTrigger(ShopkeepOnBuyTrigger);
+        }
+
+        [ClientRpc]
+        private void RpcGlobalHideSack()
+        {
+            OnGlobalHideSack.Invoke();
+        }
+
+        private void OnHideSack()
+        {
+            SackItem.gameObject.SetActive(false);
         }
 
         [Server]
@@ -323,6 +384,7 @@ namespace Game
             SackItem.Outline.enabled = true;
             foreach (var item in AvailableItems)
             {
+                if (!item) continue;
                 var counterItem = item.GetComponent<ShopCounterItem>();
                 if (counterItem) counterItem.Outline.enabled = true;
             }
@@ -376,6 +438,7 @@ namespace Game
             SackItem.Outline.enabled = false;
             foreach (var item in AvailableItems)
             {
+                if (!item) continue;
                 var counterItem = item.GetComponent<ShopCounterItem>();
                 if (counterItem) counterItem.Outline.enabled = false;
             }
@@ -407,7 +470,7 @@ namespace Game
                 return;
             }
 
-            Item itemToBuy = AvailableItems[index].GetComponent<Item>();
+            Item itemToBuy = AvailableItems[index];
             if (!itemToBuy || itemToBuy.State != Item.ItemState.Frozen)
             {
                 Debug.LogError("Shop.TryBuy() called with index " + index + " which returned a " + (!itemToBuy ? "null item" : "non-frozen item (name = " + itemToBuy.name + ")"));
@@ -417,14 +480,14 @@ namespace Game
             PlayerController buyer = sender!.identity.GetComponent<PlayerController>();
             if (buyer.HeldObject)
             {
-                TargetBuyResult(sender, PurchaseError.AlreadyHoldingObject, itemToBuy, -1);
+                TargetBuyResult(sender, PurchaseError.AlreadyHoldingObject, itemToBuy.Data);
                 return;
             }
 
             int price = itemToBuy.Data.BuyPrice;
             if (BankManager.Instance.Balance < price)
             {
-                TargetBuyResult(sender, PurchaseError.NotEnoughMoney, itemToBuy, price);
+                TargetBuyResult(sender, PurchaseError.NotEnoughMoney, itemToBuy.Data);
                 return;
             }
 
@@ -436,12 +499,15 @@ namespace Game
             itemToBuy.State = Item.ItemState.Idle;
             itemToBuy.ServerTryPickup(buyer);
 
-            TargetBuyResult(sender, PurchaseError.None, itemToBuy, price);
+            var counterItem = itemToBuy.GetComponent<ShopCounterItem>();
+            counterItem.enabled = false;
+
+            TargetBuyResult(sender, PurchaseError.None, itemToBuy.Data);
             _shopkeepAnimator.SetTrigger(ShopkeepOnBuyTrigger);
         }
 
         [TargetRpc]
-        private void TargetBuyResult(NetworkConnection target, PurchaseError err, Item item, int price)
+        private void TargetBuyResult(NetworkConnection target, PurchaseError err, ItemData item)
         {
             OnReceiveBuyResult.Invoke(item, err);
 
@@ -449,7 +515,7 @@ namespace Game
             {
                 case PurchaseError.None:
                 {
-                    Debug.Log($"Successfully purchased {item.name} (price = {price})");
+                    Debug.Log($"Successfully purchased {item.name} (price = {item.BuyPrice})");
 
                     _shopBuy.Post(gameObject);
                     item.BuySfx?.Post(gameObject);
@@ -459,7 +525,7 @@ namespace Game
                 }
                 case PurchaseError.NotEnoughMoney:
                 {
-                    Debug.Log($"Failed to purchase {item.name} (price = {price}, balance = {BankManager.Instance.Balance})");
+                    Debug.Log($"Failed to purchase {item.name} (price = {item.BuyPrice}, balance = {BankManager.Instance.Balance})");
                     break;
                 }
                 case PurchaseError.AlreadyHoldingObject:

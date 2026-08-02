@@ -13,7 +13,7 @@ namespace Game
         protected override void OnValidate()
         {
             base.OnValidate();
-            AttachedBody = GetComponentInParent<Rigidbody>();
+            if (!AttachedBody) AttachedBody = GetComponentInParent<Rigidbody>();
         }
 
         private void OnEnable()

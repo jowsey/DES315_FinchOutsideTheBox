@@ -24,9 +24,14 @@ namespace Game.Items
             Outline.enabled = false;
         }
 
+        private void OnDisable()
+        {
+            Outline.enabled = false;
+        }
+
         public void SetSelected(bool selected)
         {
-            Outline.WidthFactor = selected ? 1f : 0.5f;
+            Outline.WidthFactor = selected ? 1f : 0.35f;
             if (!selected) Outline.Colour = _standardColour;
 
             _selected = selected;
@@ -40,11 +45,6 @@ namespace Game.Items
             Outline.Colour = BankManager.Instance.Balance >= ItemData.BuyPrice
                 ? _validColour
                 : _invalidColour;
-        }
-
-        private void OnDestroy()
-        {
-            Destroy(Outline);
         }
     }
 }

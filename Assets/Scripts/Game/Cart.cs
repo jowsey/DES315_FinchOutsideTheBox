@@ -46,6 +46,10 @@ public class Cart : NetworkBehaviour
 
     [SyncVar] public int ExpectedTotalItemSellPrice;
 
+    [field: SerializeField] public UpgradeSack SackPrefab { get; private set; }
+    
+    [field: SerializeField] public List<Transform> SackPositions { get; private set; } = new();
+
     //Sound effects
     [SerializeField] [Required] private AK.Wwise.Event _carSound;
     [SerializeField] [Required] private AK.Wwise.Event _carOnSurface;
@@ -72,6 +76,8 @@ public class Cart : NetworkBehaviour
         _uiCanvas = GameObject.FindGameObjectWithTag("UICanvas").transform;
         IsPuppet = false;
         Instance = this;
+
+        foreach (var pos in SackPositions) pos.gameObject.SetActive(false);
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         _wheelSeats = GetComponentsInChildren<WheelSeat>();

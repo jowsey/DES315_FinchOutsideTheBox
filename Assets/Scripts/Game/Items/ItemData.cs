@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using Event = AK.Wwise.Event;
 
 namespace Game.Items
 {
@@ -38,6 +39,8 @@ namespace Game.Items
         [field: SerializeField, SuffixLabel("coins")] public int SellPrice { get; private set; } = 5;
 
         [field: SerializeField] public Item Prefab { get; private set; }
+
+        [field: SerializeField] public Event BuySfx { get; private set; }
 
         private void OnEnable()
         {
