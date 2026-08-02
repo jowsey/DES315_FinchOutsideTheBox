@@ -95,6 +95,12 @@ public class Shop : NetworkBehaviour
         Debug.Log($"Loaded {ItemRegistry.Count} shop items");
     }
 
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawLine(_itemSpawnStart.position, _itemSpawnEnd.position);
+    }
+
     private void Awake()
     {
         foreach (CinemachineCamera cam in FindObjectsByType<CinemachineCamera>(FindObjectsInactive.Include, FindObjectsSortMode.None))
@@ -182,24 +188,25 @@ public class Shop : NetworkBehaviour
 
         var equipments = ItemRegistry.Where(i => i.Type == ItemType.Equipment).ToList();
         
-        int numItems = Mathf.Min(_maxAvailableItems, equipments.Count);
-        for (int i = 0; i < numItems; ++i)
+        int cappedItemCount = Mathf.Min(_maxAvailableItems, equipments.Count);
+        for (int i = 0; i < cappedItemCount; ++i)
         {
             //If we can fit the entire registry, deterministically spawn one of each, otherwise pick at random
-            ItemData itemToSpawn = numItems <= equipments.Count
+            ItemData itemToSpawn = cappedItemCount >= equipments.Count
                 ? equipments[i]
                 : equipments[Random.Range(0, equipments.Count)];
 
             //Calculate position along the line
             //If there's only one item, stick it in the middle. Otherwise, space em out evenly
-            float t = (numItems == 1) ? 0.5f : (float)i / (numItems - 1);
+            float t = (cappedItemCount == 1) ? 0.5f : (float)i / (cappedItemCount - 1);
             Vector3 spawnPos = Vector3.Lerp(_itemSpawnStart.position, _itemSpawnEnd.position, t);
 
             //Spawn the networked object and track it
             Item newItem = Instantiate(itemToSpawn.Prefab, spawnPos, _itemSpawnStart.rotation);
-            newItem.Pickuppable = false;
-            newItem.transform.localScale = Vector3.one * 0.5f;
+            newItem.Rb.isKinematic = true; // force immediate kinematic before state change to prevent any possible physics tick
             newItem.State = Item.ItemState.Frozen;
+            newItem.transform.localScale = Vector3.one * 0.5f;
+            newItem.Pickuppable = false;
 
             NetworkServer.Spawn(newItem.gameObject);
             AvailableItemIdentities.Add(newItem.netIdentity);
