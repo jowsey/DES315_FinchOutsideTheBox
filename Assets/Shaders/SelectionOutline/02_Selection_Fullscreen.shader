@@ -5,8 +5,6 @@
         _SamplePrecision ("Sampling Precision", Range(1,3) ) = 1
         _OutlineWidth ("Outline Width", Float ) = 5
 
-        _InnerColor ("Inner Color", Color) = (1, 1, 0, 0.5)
-        _OuterColor( "Outer Color", Color ) = (1, 1, 0, 1)
         _Texture ("Texture", 2D ) = "black" {}
         _TextureSize("Texture Pixels Size", Vector) = (64,64,0,0)
 
@@ -73,9 +71,6 @@
     int _SamplePrecision;
     float _OutlineWidth;
 
-    float4 _InnerColor;
-    float4 _OuterColor;
-
     Texture2D _Texture;
     float2 _TextureSize;
 
@@ -109,12 +104,12 @@
         }
 
         float4 o = float4(0, 0, 0, 0);
-        float4 innerColor = SAMPLE_TEXTURE2D(_Texture, s_trilinear_repeat_sampler, posInput.positionSS / _TextureSize) * _InnerColor;
+        float4 innerColor = SAMPLE_TEXTURE2D(_Texture, s_trilinear_repeat_sampler, posInput.positionSS / _TextureSize) * float4(c.rgb, 1);
 
         innerColor.a *= alphaFactor;
 
-        o = lerp(o, _OuterColor * float4(outline.rgb, 1), step(0.001, outline.a));
-        o = lerp(o, innerColor * float4(c.rgb, 1), obj);
+        o = lerp(o, float4(outline.rgb, 1), step(0.001, outline.a));
+        o = lerp(o, innerColor, obj);
 
         return o;
     }

@@ -9,14 +9,19 @@ namespace Util
     {
         public static readonly List<OutlineTarget> Active = new();
 
-        [Required] public Renderer Renderer;
+        [Required] public Renderer[] Renderers;
         public Color Colour = Color.white;
         [Min(0f)] public float MaxDrawDistance;
-        [SerializeField, Range(0f, 1f)] public float OutlineWidthFactor = 1f;
+        [Range(0f, 1f)] public float WidthFactor = 1f;
 
         private void OnValidate()
         {
-            if (!Renderer) Renderer = GetComponentInChildren<Renderer>();
+            Renderers ??= GetComponentsInChildren<Renderer>();
+        }
+
+        private void Awake()
+        {
+            Renderers ??= GetComponentsInChildren<Renderer>();
         }
 
         private void OnEnable()

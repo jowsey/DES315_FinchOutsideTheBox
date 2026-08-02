@@ -28,26 +28,28 @@ namespace Util
             {
                 if (!outlineTarget) continue;
 
-                var renderer = outlineTarget.Renderer;
-                if (!renderer || !renderer.isVisible) continue;
-
-                propertyBlock.Clear();
-                propertyBlock.SetColor(ShaderIDs.SelectionColor, outlineTarget.Colour);
-                propertyBlock.SetFloat(ShaderIDs.MaxDistance, outlineTarget.MaxDrawDistance);
-                propertyBlock.SetFloat(ShaderIDs.OutlineWidthFactor, outlineTarget.OutlineWidthFactor);
-
-                if (renderer is MeshRenderer)
+                foreach (var renderer in outlineTarget.Renderers)
                 {
-                    var meshFilter = renderer.GetComponent<MeshFilter>();
-                    var mesh = meshFilter ? meshFilter.sharedMesh : null;
-                    if (mesh)
-                    {
-                        cmd.DrawMesh(mesh, renderer.localToWorldMatrix, _outlineMaterial, 0, 0, propertyBlock);
-                        continue;
-                    }
-                }
+                    if (!renderer || !renderer.isVisible) continue;
 
-                cmd.DrawRenderer(renderer, _outlineMaterial, 0, 0);
+                    propertyBlock.Clear();
+                    propertyBlock.SetColor(ShaderIDs.SelectionColor, outlineTarget.Colour);
+                    propertyBlock.SetFloat(ShaderIDs.MaxDistance, outlineTarget.MaxDrawDistance);
+                    propertyBlock.SetFloat(ShaderIDs.OutlineWidthFactor, outlineTarget.WidthFactor);
+
+                    if (renderer is MeshRenderer)
+                    {
+                        var meshFilter = renderer.GetComponent<MeshFilter>();
+                        var mesh = meshFilter ? meshFilter.sharedMesh : null;
+                        if (mesh)
+                        {
+                            cmd.DrawMesh(mesh, renderer.localToWorldMatrix, _outlineMaterial, 0, 0, propertyBlock);
+                            continue;
+                        }
+                    }
+
+                    cmd.DrawRenderer(renderer, _outlineMaterial, 0, 0);
+                }
             }
         }
 
