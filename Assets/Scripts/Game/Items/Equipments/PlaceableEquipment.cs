@@ -32,15 +32,15 @@ namespace Game.Items.Equipments
         protected override void Awake()
         {
             base.Awake();
-            _camera = Camera.main;
+            _camera = FindAnyObjectByType<Camera>(FindObjectsInactive.Include);
             _placeMask = ~LayerMask.GetMask("Player", "Cart", "Item");
         }
 
-        protected override void OnStateChanged(ItemState oldState, ItemState newState)
+        protected override void OnStateChanged(ItemStateData oldState, ItemStateData newState)
         {
             switch (oldState)
             {
-                case ItemState.Held:
+                case HeldStateData:
                 {
                     if (_previewInstance)
                     {
@@ -53,9 +53,9 @@ namespace Game.Items.Equipments
 
             switch (newState)
             {
-                case ItemState.Held:
+                case HeldStateData heldData:
                 {
-                    if (_holder.isLocalPlayer && !_previewInstance)
+                    if (heldData.Holder.isLocalPlayer && !_previewInstance)
                     {
                         _previewInstance = Instantiate(_previewPrefab);
 
@@ -82,15 +82,15 @@ namespace Game.Items.Equipments
         {
             base.LateUpdate();
 
-            if (_previewInstance)
+            if (_previewInstance && StateData is HeldStateData heldData)
             {
                 var ray = _camera.ViewportPointToRay(new Vector2(0.5f, 0.5f));
                 if (Physics.Raycast(ray, out var hit, 100f, _placeMask, QueryTriggerInteraction.Ignore))
                 {
                     _previewInstance.transform.position = hit.point;
-                    _previewInstance.transform.rotation = Quaternion.LookRotation(_previewInstance.transform.position - _holder.transform.position, hit.normal);
+                    _previewInstance.transform.rotation = Quaternion.LookRotation(_previewInstance.transform.position - heldData.Holder.transform.position, hit.normal);
 
-                    var distanceToPlayer = Vector3.Distance(_holder.transform.position, hit.point);
+                    var distanceToPlayer = Vector3.Distance(heldData.Holder.transform.position, hit.point);
                     var validPos = distanceToPlayer <= MaxPlaceDistance && Vector3.Angle(hit.normal, Vector3.up) <= _maxPlacementAngle;
 
                     foreach (var rnd in _previewRenderers)
@@ -109,10 +109,10 @@ namespace Game.Items.Equipments
 
         protected virtual bool OnServerTryPlace(Vector3 position, Quaternion rotation, PlayerController player)
         {
-            if (State != ItemState.Held) return false;
-            if (player != _holder) return false;
+            if (StateData is not HeldStateData heldData) return false;
+            if (player != heldData.Holder) return false;
 
-            var distanceToPlayer = Vector3.Distance(_holder.transform.position, position);
+            var distanceToPlayer = Vector3.Distance(heldData.Holder.transform.position, position);
             if (distanceToPlayer > MaxPlaceDistance) return false;
 
             var normalAngle = Vector3.Angle(Vector3.up, rotation * Vector3.up);

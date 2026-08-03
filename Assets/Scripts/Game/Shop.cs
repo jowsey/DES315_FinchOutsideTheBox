@@ -88,7 +88,7 @@ namespace Game
         public readonly SyncList<Item> AvailableItems = new();
 
         public readonly UnityEvent<ItemData, PurchaseError> OnReceiveBuyResult = new();
-        private readonly UnityEvent OnGlobalHideSack = new();
+        public readonly UnityEvent<bool> OnChangeGlobalSackAvailability = new();
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void LoadAllItems()
@@ -139,7 +139,7 @@ namespace Game
                 }
             }
 
-            _camera = Camera.main!;
+            _camera = FindAnyObjectByType<Camera>(FindObjectsInactive.Include);
             _zoomController = _camera.GetComponent<CameraZoomController>();
             _uiCanvas = GameObject.FindGameObjectWithTag("UICanvas").transform;
         }
@@ -148,6 +148,7 @@ namespace Game
         {
             RespawnTarget.OnBuildRespawnSnapshot.AddListener(OnBuildRespawnSnapshot);
             RespawnTarget.OnRespawn.AddListener(OnRespawn);
+            RespawnTarget.OnPostRespawn.AddListener(OnPostRespawn);
             SpawnPhysicalItems();
 
             _telescope.localRotation = Quaternion.Euler(0, Random.Range(0, 360f), 0);
@@ -157,7 +158,7 @@ namespace Game
         public override void OnStartClient()
         {
             _shopkeepRadio.Post(gameObject);
-            OnGlobalHideSack.AddListener(OnHideSack);
+            OnChangeGlobalSackAvailability.AddListener(OnChangeSackAvailability);
 
             AvailableItems.OnAdd += OnAvailableItemAdded;
             AvailableItems.OnSet += OnAvailableItemChanged;
@@ -172,12 +173,13 @@ namespace Game
         {
             RespawnTarget.OnBuildRespawnSnapshot.RemoveListener(OnBuildRespawnSnapshot);
             RespawnTarget.OnRespawn.RemoveListener(OnRespawn);
+            RespawnTarget.OnPostRespawn.RemoveListener(OnPostRespawn);
         }
 
         public override void OnStopClient()
         {
             _shopkeepRadio.Stop(gameObject);
-            OnGlobalHideSack.RemoveListener(OnHideSack);
+            OnChangeGlobalSackAvailability.RemoveListener(OnChangeSackAvailability);
         }
 
         [Server]
@@ -247,11 +249,11 @@ namespace Game
         }
 
         [Command(requiresAuthority = false)]
-        private void CmdTryBuySack()
+        private void CmdTryBuySack(NetworkConnectionToClient sender = null)
         {
             if (BankManager.Instance.Balance < SackItem.ItemData.BuyPrice)
             {
-                TargetBuyResult(connectionToClient, PurchaseError.NotEnoughMoney, SackItem.ItemData);
+                TargetBuyResult(sender, PurchaseError.NotEnoughMoney, SackItem.ItemData);
                 return;
             }
 
@@ -261,7 +263,7 @@ namespace Game
             // Hide on counter if buying final sack
             if (nextSackPosition == Cart.Instance.SackPositions[^1])
             {
-                RpcGlobalHideSack();
+                RpcSetSackAvailable(false);
             }
 
             BankManager.Instance.Balance -= SackItem.ItemData.BuyPrice;
@@ -270,20 +272,21 @@ namespace Game
             var newSack = Instantiate(Cart.Instance.SackPrefab, nextSackPosition.position, nextSackPosition.rotation);
             newSack.Joint.connectedBody = Cart.Instance.Rb;
             newSack.Joint.connectedAnchor = Cart.Instance.transform.InverseTransformPoint(nextSackPosition.position);
+            newSack.LinkedCartTransform = nextSackPosition;
             NetworkServer.Spawn(newSack.gameObject);
 
             _shopkeepAnimator.SetTrigger(ShopkeepOnBuyTrigger);
         }
 
         [ClientRpc]
-        private void RpcGlobalHideSack()
+        private void RpcSetSackAvailable(bool available)
         {
-            OnGlobalHideSack.Invoke();
+            OnChangeGlobalSackAvailability.Invoke(available);
         }
 
-        private void OnHideSack()
+        private void OnChangeSackAvailability(bool available)
         {
-            SackItem.gameObject.SetActive(false);
+            SackItem.gameObject.SetActive(available);
         }
 
         [Server]
@@ -304,7 +307,7 @@ namespace Game
 
                 var newItem = Instantiate(itemToSpawn.Prefab, spawnPos, _itemSpawnStart.rotation);
                 newItem.Rb.isKinematic = true; // force immediate kinematic before state change to prevent any possible physics tick
-                newItem.State = Item.ItemState.Frozen;
+                newItem.StateData = new Item.FrozenStateData();
                 newItem.transform.localScale = Vector3.one * 0.5f;
                 newItem.Pickuppable = false;
 
@@ -335,13 +338,18 @@ namespace Game
                     float t = (count == 1) ? 0.5f : (float)i / (count - 1);
                     Physics.SyncTransforms();
 
-                    item.State = Item.ItemState.Frozen;
+                    item.StateData = new Item.FrozenStateData();
                     item.Rb.position = Vector3.Lerp(_itemSpawnStart.position, _itemSpawnEnd.position, t);
                     item.Rb.rotation = _itemSpawnStart.rotation;
                     item.transform.localScale = Vector3.one * 0.5f;
                     item.Pickuppable = false;
                 }
             }
+        }
+
+        private void OnPostRespawn(RespawnTarget target)
+        {
+            OnChangeSackAvailability(Cart.Instance.SackPositions.Any(s => !s.gameObject.activeSelf));
         }
 
         [Button, DisableInEditorMode]
@@ -396,8 +404,6 @@ namespace Game
             }
 
             OnboardingPrompt.EnableDetection = false;
-
-            if (_enterPromptInstance) _enterPromptInstance.gameObject.SetActive(false);
         }
 
         [Button, DisableInEditorMode]
@@ -450,8 +456,6 @@ namespace Game
             }
 
             OnboardingPrompt.EnableDetection = true;
-
-            if (_enterPromptInstance) _enterPromptInstance.gameObject.SetActive(true);
         }
 
         [Command(requiresAuthority = false)]
@@ -471,7 +475,7 @@ namespace Game
             }
 
             Item itemToBuy = AvailableItems[index];
-            if (!itemToBuy || itemToBuy.State != Item.ItemState.Frozen)
+            if (!itemToBuy || itemToBuy.StateData is not Item.FrozenStateData)
             {
                 Debug.LogError("Shop.TryBuy() called with index " + index + " which returned a " + (!itemToBuy ? "null item" : "non-frozen item (name = " + itemToBuy.name + ")"));
                 return;
@@ -496,7 +500,7 @@ namespace Game
             AvailableItems[index] = null;
             itemToBuy.Pickuppable = true;
             itemToBuy.transform.localScale = Vector3.one;
-            itemToBuy.State = Item.ItemState.Idle;
+            itemToBuy.StateData = new Item.IdleStateData();
             itemToBuy.ServerTryPickup(buyer);
 
             var counterItem = itemToBuy.GetComponent<ShopCounterItem>();
@@ -515,8 +519,6 @@ namespace Game
             {
                 case PurchaseError.None:
                 {
-                    Debug.Log($"Successfully purchased {item.name} (price = {item.BuyPrice})");
-
                     _shopBuy.Post(gameObject);
                     item.BuySfx?.Post(gameObject);
 
@@ -573,21 +575,35 @@ namespace Game
                     Ease.OutBack
                 );
             }
+        }
 
-            if (!_enterPromptInstance && NetworkClient.localPlayer?.gameObject == other.attachedRigidbody?.gameObject)
+        private void OnTriggerStay(Collider other)
+        {
+            var canShowEnterPrompt = !PlayerController.LocalPlayer?.Seat
+                                     && !PlayerController.LocalPlayer?.HeldObject
+                                     && !PlayerController.LocalPlayer?.ActiveShop
+                                     && !InteractDetection.TargetedTransform
+                                     && PlayerController.ControlEnabled(PlayerController.ControlBlockerFlags.Interact);
+
+            var localPlayer = NetworkClient.localPlayer?.gameObject == other.attachedRigidbody?.gameObject;
+
+            if (!_enterPromptInstance && localPlayer && canShowEnterPrompt)
             {
-                //Don't show players Enter prompt if they're on the cart or holding something
-                if (PlayerController.LocalPlayer?.Seat || PlayerController.LocalPlayer?.HeldObject) return;
-
                 _enterPromptInstance = Instantiate(_enterPromptPrefab, _uiCanvas);
                 _enterPromptInstance.Build(_enterPromptConfig);
                 _enterPromptInstance.WorldFollowUI.TrackingTarget = _enterPromptPosition;
+            }
+            else if (_enterPromptInstance && localPlayer && !canShowEnterPrompt)
+            {
+                _enterPromptInstance.Destroy();
+                _enterPromptInstance = null;
             }
         }
 
         private void OnTriggerExit(Collider other)
         {
-            if (NetworkClient.localPlayer?.gameObject == other.attachedRigidbody?.gameObject && _enterPromptInstance)
+            var localPlayer = NetworkClient.localPlayer?.gameObject == other.attachedRigidbody?.gameObject;
+            if (_enterPromptInstance && localPlayer)
             {
                 _enterPromptInstance.Destroy();
                 _enterPromptInstance = null;

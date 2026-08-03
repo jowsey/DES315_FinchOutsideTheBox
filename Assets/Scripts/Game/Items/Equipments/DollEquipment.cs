@@ -7,8 +7,8 @@ namespace Game.Items.Equipments
         [Command(requiresAuthority = false)]
         private void CmdTryUse(NetworkConnectionToClient sender = null)
         {
-            if (State != ItemState.Held) return;
-            if (sender != _holder.connectionToClient) return;
+            if (StateData is not HeldStateData heldData) return;
+            if (sender != heldData.Holder.connectionToClient) return;
             
             OnServerUse();
         }

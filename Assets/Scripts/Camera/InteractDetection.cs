@@ -1,3 +1,4 @@
+using Game;
 using Game.Items;
 using Game.Items.Equipments;
 using Sirenix.OdinInspector;
@@ -28,9 +29,11 @@ public class InteractDetection : MonoBehaviour
     [SerializeField] private InteractPrompt.InteractPromptConfiguration _attachHookConfig;
     [SerializeField] private InteractPrompt.InteractPromptConfiguration _pullRopeConfig;
     [SerializeField] private InteractPrompt.InteractPromptConfiguration _detachHookConfig;
-    
+
     //The transform of the object currently being looked at
     public static Transform TargetedTransform { get; private set; }
+    
+    private uint _lastTargetMask;
 
     private void Awake()
     {
@@ -65,7 +68,7 @@ public class InteractDetection : MonoBehaviour
         var maxReach = Mathf.Max(_maxInteractDistance, _maxPutdownDistance);
 
         var ray = _camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
-        var didRayHit = Physics.SphereCast(ray, 0.15f, out var rayHit, 100f, detectMask, QueryTriggerInteraction.Ignore);
+        var didRayHit = Physics.SphereCast(ray, 0.1f, out var rayHit, 100f, detectMask, QueryTriggerInteraction.Ignore);
 
         Interactable interactable = null;
         var playerPos = PlayerController.LocalPlayer.transform.position;
@@ -108,16 +111,17 @@ public class InteractDetection : MonoBehaviour
         var interactedTransform = interactable.InteractedTransform;
 
         // New target
-        Item item = null;
+        var sack = interactedTransform.GetComponent<UpgradeSack>();
+        var item = interactedTransform.GetComponent<Item>() ?? sack?.StoredItem;
         var validPickupTarget = distanceToPlayer <= _maxInteractDistance
                                 && PlayerController.LocalPlayer.PickupAllowed
-                                && interactedTransform.TryGetComponent(out item)
+                                && item
                                 && item.Pickuppable
-                                && item.State == Item.ItemState.Idle;
+                                && item.StateData is Item.IdleStateData or Item.SackCarriedStateData;
 
         var validPutdownTarget = distanceToPlayer <= _maxPutdownDistance
                                  && PlayerController.LocalPlayer.PutdownAllowed
-                                 && interactedTransform.CompareTag("TreasureCarrier");
+                                 && (interactedTransform.CompareTag("TreasureCarrier") || (sack && !sack.StoredItem));
 
         var validHookTarget = distanceToPlayer <= _maxInteractDistance
                               && PlayerController.LocalPlayer.UseAllowed
@@ -141,10 +145,14 @@ public class InteractDetection : MonoBehaviour
             return;
         }
 
+        // check whether the new prompt types are different, even if the transform is the same
+        var targetMask = (validPickupTarget ? 1u : 0u) | (validPutdownTarget ? 2u : 0u) | (validHookTarget ? 4u : 0u) | (validPullTarget ? 8u : 0u);
+
         // Build/update prompts for new state
-        if (interactedTransform != TargetedTransform)
+        if (interactedTransform != TargetedTransform || _lastTargetMask != targetMask)
         {
             TargetedTransform = interactable.InteractedTransform;
+            _lastTargetMask = targetMask;
 
             if (!_interactPromptInstance) _interactPromptInstance = Instantiate(_interactPromptPrefab, _uiCanvas);
 

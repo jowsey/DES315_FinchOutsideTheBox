@@ -47,7 +47,7 @@ namespace Networking
         {
             base.OnStartServer();
             RespawnTarget.OnReachNewTarget.AddListener(OnReachRespawnTarget);
-            
+
             _nextPlayerIndex = 0;
             NetworkServer.RegisterHandler<ClientInfoMessage>(OnClientInfoMessage);
         }
@@ -111,7 +111,7 @@ namespace Networking
             var player = conn.identity?.GetComponent<PlayerController>();
             if (player && player.HeldObject)
             {
-                player.HeldObject.State = Item.ItemState.Idle;
+                player.HeldObject.StateData = new Item.IdleStateData();
             }
 
             base.OnServerDisconnect(conn);

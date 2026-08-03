@@ -203,10 +203,9 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private Transform _cameraObstructionDithererRayEndPosition;
 
     public bool PickupAllowed => ControlEnabled(ControlBlockerFlags.Interact) && !Seat && !HeldObject;
-    public bool PutdownAllowed => ControlEnabled(ControlBlockerFlags.Interact) && HeldObject?.State == Item.ItemState.Held && HeldObject is Treasure;
-    public bool UseAllowed => ControlEnabled(ControlBlockerFlags.Interact) && !Seat && HeldObject?.State == Item.ItemState.Held && HeldObject is Equipment;
-    public bool HookAllowed => ControlEnabled(ControlBlockerFlags.Interact) && !Seat && HeldObject?.State == Item.ItemState.Held && HeldObject is YarnEquipment;
-    public bool DropAllowed => ControlEnabled(ControlBlockerFlags.Interact) && HeldObject?.State == Item.ItemState.Held;
+    public bool PutdownAllowed => ControlEnabled(ControlBlockerFlags.Interact) && HeldObject?.StateData is Item.HeldStateData;
+    public bool UseAllowed => ControlEnabled(ControlBlockerFlags.Interact) && !Seat && HeldObject?.StateData is Item.HeldStateData && HeldObject is Equipment;
+    public bool HookAllowed => ControlEnabled(ControlBlockerFlags.Interact) && !Seat && HeldObject?.StateData is Item.HeldStateData && HeldObject is YarnEquipment;
 
     public YarnSegment ActivePullSegment { get; private set; }
     private float _lastPullAckTime = -Mathf.Infinity;
@@ -541,7 +540,7 @@ public class PlayerController : NetworkBehaviour
         {
             if (UseAllowed && InteractDetection.TargetedTransform.CompareTag("YarnHookTarget") && HeldObject is YarnEquipment yarnEquipment)
             {
-                // todo yes it sucks that we're hard-coding interaction types here
+                // todo it sucks that we're hard-coding interaction types here
                 
                 if (yarnEquipment.IsHooking) return;
                 if (InteractDetection.TargetedTransform.TryGetComponent<YarnHookPoint>(out var hookPoint))
@@ -551,17 +550,33 @@ public class PlayerController : NetworkBehaviour
             }
             else if (PickupAllowed)
             {
-                if (!InteractDetection.TargetedTransform.CompareTag("Item")) return;
+                if (InteractDetection.TargetedTransform.CompareTag("Item"))
+                {
+                    Item item = InteractDetection.TargetedTransform.GetComponentInParent<Item>();
+                    if (item.StateData is not Item.IdleStateData) return;
 
-                Item item = InteractDetection.TargetedTransform.GetComponentInParent<Item>();
-                if (item.State != Item.ItemState.Idle) return;
+                    item.CmdTryPickup();
+                }
+                else if (InteractDetection.TargetedTransform.CompareTag("Sack"))
+                {
+                    Item item = InteractDetection.TargetedTransform.GetComponentInParent<UpgradeSack>().StoredItem;
+                    if (!item) return;
 
-                item.CmdTryPickup();
+                    item.CmdTryPickup();
+                }
             }
-            else if (PutdownAllowed && InteractDetection.TargetedTransform.CompareTag("TreasureCarrier"))
+            else if (PutdownAllowed)
             {
-                HeldObjectPutdownTarget carrierTarget = InteractDetection.TargetedTransform.GetComponentInChildren<HeldObjectPutdownTarget>();
-                HeldObject.CmdTryPutdown(carrierTarget);
+                if (InteractDetection.TargetedTransform.CompareTag("TreasureCarrier"))
+                {
+                    var carrierTarget = InteractDetection.TargetedTransform.GetComponentInChildren<HeldObjectPutdownTarget>();
+                    HeldObject.CmdTryPutdown(carrierTarget);
+                }
+                else if (InteractDetection.TargetedTransform.CompareTag("Sack"))
+                {
+                    var sack = InteractDetection.TargetedTransform.GetComponentInParent<UpgradeSack>();
+                    HeldObject.CmdTryStore(sack);
+                }
             }
         }
         else if (UseItemAction.action.WasPressedThisFrame())
@@ -578,7 +593,7 @@ public class PlayerController : NetworkBehaviour
                 segment.CmdDetachRope();
             }
             
-            if (DropAllowed)
+            if (PutdownAllowed)
             {
                 HeldObject.CmdTryDrop();
             }
@@ -880,7 +895,7 @@ public class PlayerController : NetworkBehaviour
             return;
         }
 
-        if (HeldObject) HeldObject.State = Item.ItemState.Idle;
+        if (HeldObject) HeldObject.StateData = new Item.IdleStateData();
 
         var newRotation = Quaternion.LookRotation(Cart.Instance.transform.position - newPosition, Vector3.up);
         newRotation = Quaternion.Euler(0, newRotation.eulerAngles.y, 0); // flatten angle

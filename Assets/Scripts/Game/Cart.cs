@@ -47,7 +47,7 @@ public class Cart : NetworkBehaviour
     [SyncVar] public int ExpectedTotalItemSellPrice;
 
     [field: SerializeField] public UpgradeSack SackPrefab { get; private set; }
-    
+
     [field: SerializeField] public List<Transform> SackPositions { get; private set; } = new();
 
     //Sound effects
@@ -111,9 +111,9 @@ public class Cart : NetworkBehaviour
         IEnumerator SetInitialRespawnTarget()
         {
             yield return new WaitUntil(() => Checkpoints[0].isServer);
-            
+
             Debug.Log($"Hit checkpoint 0: {Checkpoints[0].AreaName}");
-            SetActiveRespawnTarget(Checkpoints[0]);   
+            SetActiveRespawnTarget(Checkpoints[0]);
         }
     }
 
@@ -257,7 +257,7 @@ public class Cart : NetworkBehaviour
 
             if (newIndex <= currentIndex) return;
             Debug.Log($"Hit checkpoint {newIndex}: {checkpoint.AreaName}");
-            
+
             // New checkpoint reached
             if (isServer)
             {
@@ -395,7 +395,7 @@ public class Cart : NetworkBehaviour
         foreach (Treasure treasure in treasuresToRemove)
         {
             //SyncVar hook hides the mesh, make it kinematic, and disable the collider
-            treasure.State = Item.ItemState.Inactive;
+            treasure.StateData = new Item.InactiveStateData();
             RemoveCarriedItem(treasure);
         }
     }

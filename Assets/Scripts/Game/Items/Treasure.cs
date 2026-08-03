@@ -62,15 +62,15 @@ namespace Game.Items
             Smashable = false;
         }
         
-        protected override void OnStateChanged(ItemState oldState, ItemState newState)
+        protected override void OnStateChanged(ItemStateData oldState, ItemStateData newState)
         {
             // Transition out
             switch (oldState)
             {
                 // No longer holding
-                case ItemState.Held:
+                case HeldStateData heldData:
                 {
-                    if (_holder.isLocalPlayer)
+                    if (heldData.Holder.isLocalPlayer)
                     {
                         Highlight.SetHighlightable("TreasureCarrier", false);
                     }
@@ -82,21 +82,21 @@ namespace Game.Items
             // Transition in
             switch (newState)
             {
-                case ItemState.Held:
+                case HeldStateData heldData:
                 {
                     if (isServer)
                     {
                         Smashable = false;
                     }
 
-                    if (_holder.isLocalPlayer)
+                    if (heldData.Holder.isLocalPlayer)
                     {
                         Highlight.SetHighlightable("TreasureCarrier", true);
                     }
 
                     break;
                 }
-                case ItemState.PuttingDown:
+                case PuttingDownStateData puttingDownData:
                 {
                     if (isServer)
                     {
@@ -105,7 +105,7 @@ namespace Game.Items
 
                     break;
                 }
-                case ItemState.Smashed:
+                case SmashedStateData smashedData:
                 {
                     Instantiate(_smashedTreasurePrefab, transform.position, transform.rotation);
                     if (_hasInitialised)
@@ -131,7 +131,7 @@ namespace Game.Items
             {
                 if (Smashable)
                 {
-                    State = ItemState.Smashed;
+                    StateData = new SmashedStateData();
                 }
             }
         }

@@ -7,24 +7,27 @@ namespace Game.Items
     public abstract class Equipment : Item
     {
         [SerializeField] private Event _useSfx;
-        
+
         [SerializeField] protected bool _singleUse = true;
-        
+
         public virtual void TryUse()
         {
         }
 
         protected virtual void OnServerUse()
         {
-            var cachedClient = _holder.connectionToClient;
-
-            if (_singleUse)
+            if (StateData is HeldStateData heldData)
             {
-                State = ItemState.Inactive;
-            }
+                var cachedClient = heldData.Holder.connectionToClient;
 
-            ClientOnSuccessfulUse();
-            TargetOnSuccessfulUse(cachedClient);
+                if (_singleUse)
+                {
+                    StateData = new InactiveStateData();
+                }
+
+                ClientOnSuccessfulUse();
+                TargetOnSuccessfulUse(cachedClient);
+            }
         }
 
         [ClientRpc]

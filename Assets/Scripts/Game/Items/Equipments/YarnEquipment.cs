@@ -29,18 +29,18 @@ namespace Game.Items.Equipments
         private const float _segmentLength = 0.5f;
 
         private Vector3 _lastSightedPosition;
-        private Vector3 _holderTrackingPosition => _holder.transform.position + _holder.transform.up * 0.5f;
+        private Vector3 _holderTrackingPosition => StateData is HeldStateData heldData ? heldData.Holder.transform.position + heldData.Holder.transform.up * 0.5f : Vector3.zero;
         private Vector3 _previewTrackingPosition => _previewInstance.transform.position + _previewInstance.transform.up * 0.1f;
 
         private YarnHookPoint _hookPoint;
 
-        protected override void OnStateChanged(ItemState oldState, ItemState newState)
+        protected override void OnStateChanged(ItemStateData oldState, ItemStateData newState)
         {
             switch (oldState)
             {
-                case ItemState.Held:
+                case HeldStateData heldData:
                 {
-                    if (_holder.isLocalPlayer)
+                    if (heldData.Holder.isLocalPlayer)
                     {
                         SetPreviewVisible(false);
                         IsHooking = false;
@@ -94,9 +94,11 @@ namespace Game.Items.Equipments
             return total;
         }
 
-        private void FixedUpdate()
+        protected override void FixedUpdate()
         {
-            if (IsHooking)
+            base.FixedUpdate();
+            
+            if (IsHooking && StateData is HeldStateData heldData)
             {
                 _line.positionCount = _positions.Count + 2;
                 for (var i = 0; i < _positions.Count; i++)
@@ -115,7 +117,7 @@ namespace Game.Items.Equipments
                 var didHit = Physics.SphereCast(ray, _thickness, out var hit, 1000f, _ropeCollideMask, QueryTriggerInteraction.Ignore);
                 Physics.queriesHitBackfaces = queriesHitBackfaces;
 
-                var hasLineOfSight = didHit && hit.collider.attachedRigidbody == _holder.Rb;
+                var hasLineOfSight = didHit && hit.collider.attachedRigidbody == heldData.Holder.Rb;
 
                 var validLine = hasLineOfSight && GetTotalLineLength() < _segmentLength * _maxSegments;
 
@@ -149,7 +151,7 @@ namespace Game.Items.Equipments
                         ray = new Ray(previousPos, _holderTrackingPosition - previousPos);
                         didHit = Physics.SphereCast(ray, _thickness, out hit, 1000f, _ropeCollideMask, QueryTriggerInteraction.Ignore);
 
-                        hasLineOfSight = didHit && hit.collider.attachedRigidbody == _holder.Rb;
+                        hasLineOfSight = didHit && hit.collider.attachedRigidbody == heldData.Holder.Rb;
                         if (!hasLineOfSight) break;
 
                         // remove the last point
@@ -173,7 +175,7 @@ namespace Game.Items.Equipments
         {
             // we defer until CmdPlaceRope completes, ask client for rope positions instead
             // todo waterfall
-            TargetOnClientPlace(_holderIdentity.connectionToClient);
+            TargetOnClientPlace(StateData is HeldStateData heldData ? heldData.Holder.netIdentity.connectionToClient : null);
         }
 
         [TargetRpc]

@@ -7,10 +7,10 @@ namespace Game.Items.Equipments
     public class YarnRope
     {
         public YarnEquipment ParentEquipment;
-        
+
         public readonly List<YarnSegment> Segments = new();
         public GameObject GroundAnchor;
-        
+
         [Server]
         public void ServerDetach(Vector3 itemPosition)
         {
@@ -21,7 +21,7 @@ namespace Game.Items.Equipments
 
             Segments.Clear();
 
-            ParentEquipment.State = Item.ItemState.Idle;
+            ParentEquipment.StateData = new Item.IdleStateData();
             ParentEquipment.Rb.position = itemPosition;
         }
     }

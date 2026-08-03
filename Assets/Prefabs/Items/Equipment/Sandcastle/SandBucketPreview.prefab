@@ -11,8 +11,6 @@ GameObject:
   - component: {fileID: 8244596497299192445}
   - component: {fileID: 990386382162117211}
   - component: {fileID: 8422765888871514432}
-  - component: {fileID: 4163808459418203715}
-  - component: {fileID: 4687916846287185448}
   m_Layer: 11
   m_Name: MESH_Sandcastle_Bucket
   m_TagString: Untagged
@@ -92,41 +90,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &4163808459418203715
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4930616649732490450}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -3391876141079434609, guid: 52c61a3c7216fcd45b480e7214223009, type: 3}
---- !u!114 &4687916846287185448
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4930616649732490450}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a4c0a2cc04197f4c87580b54c1d9b7f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Interactable
-  <InteractedTransform>k__BackingField: {fileID: 8244596497299192445}
 --- !u!1 &5370888620493101063
 GameObject:
   m_ObjectHideFlags: 0

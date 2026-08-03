@@ -12,9 +12,9 @@ namespace Game.Items.Equipments
         [Command(requiresAuthority = false)]
         private void CmdConsume(NetworkConnectionToClient sender = null)
         {
-            if (State != ItemState.Held) return;
+            if (StateData is not HeldStateData heldData) return;
             var player = sender!.identity.GetComponent<PlayerController>();
-            if (player != _holder) return;
+            if (player != heldData.Holder) return;
 
             OnServerUse();
         }

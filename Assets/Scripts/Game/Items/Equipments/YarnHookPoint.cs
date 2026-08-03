@@ -16,13 +16,15 @@ namespace Game
             if (!AttachedBody) AttachedBody = GetComponentInParent<Rigidbody>();
         }
 
-        private void OnEnable()
+        public override void OnStartServer()
         {
+            base.OnStartServer();
             RespawnTarget.OnPreRespawn.AddListener(OnServerPreRespawn);
         }
-
-        private void OnDisable()
+        
+        public override void OnStopServer()
         {
+            base.OnStopServer();
             RespawnTarget.OnPreRespawn.RemoveListener(OnServerPreRespawn);
         }
 

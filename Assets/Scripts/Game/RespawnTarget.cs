@@ -20,12 +20,13 @@ namespace Game
             {
                 public Vector3 Position;
                 public Quaternion Rotation;
-                public Item.ItemState State;
+                public Item.ItemStateData StateData;
             }
             
             public Dictionary<Item, CarriedItemSnapshot> CarriedItems = new();
             public Dictionary<Item, WorldItemSnapshot> WorldItems = new();
             public Dictionary<Shop, List<Item>> ShopAvailableItems = new();
+            public Dictionary<UpgradeSack, Item> SackStoredItems = new();
             
             public int Balance;
         }
