@@ -611,6 +611,17 @@
 								</Event>
 							</ChildrenList>
 						</Folder>
+						<Event Name="WindVent" ID="{7F3696C5-F54D-4203-B3F8-C4A6230C6EBB}">
+							<ChildrenList>
+								<Action Name="" ID="{AD3AD9C1-AFB4-4D7B-8FE0-03E1C28C17C3}" ShortID="541023005">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="WindVent" ID="{D0DA7B1C-051A-448E-A506-45D234D0E115}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
 					</ChildrenList>
 				</Folder>
 				<Folder Name="Car" ID="{54291B97-324D-461B-A2D3-9AB728386E00}" ShortID="55956342">
@@ -663,12 +674,12 @@
 								</Action>
 							</ChildrenList>
 						</Event>
-						<Event Name="CatLand" ID="{C9E25D14-C85D-463F-8938-05DDBB3EEAA7}">
+						<Event Name="CatGlide" ID="{C9E25D14-C85D-463F-8938-05DDBB3EEAA7}">
 							<ChildrenList>
 								<Action Name="" ID="{94DAB33D-C921-4E57-B176-1AA17C915EFF}" ShortID="612622700">
 									<ReferenceList>
 										<Reference Name="Target">
-											<ObjectRef Name="CatLand" ID="{228F6641-C973-4E46-959F-42430FCE12ED}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+											<ObjectRef Name="CatGlide" ID="{228F6641-C973-4E46-959F-42430FCE12ED}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
 										</Reference>
 									</ReferenceList>
 								</Action>
@@ -735,6 +746,17 @@
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="FrontFlip" ID="{EFABDBC4-D862-4791-8E2B-95D63E129A09}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="CatLand" ID="{54993943-8B80-4703-92BB-D65E980B4D4C}">
+							<ChildrenList>
+								<Action Name="" ID="{6C70DB06-3ABC-48B4-9174-0B1E971D0E80}" ShortID="746498365">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="CatLand" ID="{393C603F-4C3A-4568-A8D1-018C348D5848}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
 										</Reference>
 									</ReferenceList>
 								</Action>
