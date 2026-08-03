@@ -343,7 +343,7 @@ public class Cart : NetworkBehaviour
         }
 
         CurrentRespawnTarget = target;
-        RespawnTarget.OnReachNewTarget.Invoke(newCheckpoint);
+        RespawnTarget.OnReachNewTarget.Invoke(target);
     }
 
     private void OnReachNewTarget(RespawnTarget target)

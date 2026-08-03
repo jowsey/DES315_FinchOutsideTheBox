@@ -1,15 +1,16 @@
-﻿using Sirenix.OdinInspector;
+﻿using Mirror;
+using ReadOnlyAttribute = Sirenix.OdinInspector.ReadOnlyAttribute;
 
 namespace Game.Items.Equipments
 {
     public class Sandcastle : RespawnTarget
     {
-        [ReadOnly] public Checkpoint Parent;
+        [ReadOnly] [SyncVar] public Checkpoint Parent;
 
         public override void OnStartServer()
         {
             base.OnStartServer();
-            
+
             var currentCheckpoint = Cart.Instance.CurrentRespawnTarget switch
             {
                 Checkpoint cp => cp,
