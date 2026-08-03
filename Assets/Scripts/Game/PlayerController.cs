@@ -147,15 +147,18 @@ public class PlayerController : NetworkBehaviour
 
     private float _lastGroundedTime;
     
+    [SerializeField] private LayerMask _fanLifterMask;
+    private bool _insideFanLifter;
+    
     // Called when a player object is done being initially setup
     // Does NOT imply the player has just joined
     public static readonly UnityEvent<PlayerController> OnPlayerReady = new();
 
     //VFX
-    [SerializeField] public GameObject groundImpactVFX;
-    [SerializeField] public GameObject dustVFX;
-    private bool wasGrounded = false;
-    private bool dustGrounded = false;
+    [SerializeField] private GameObject _groundImpactVFX;
+    [SerializeField] private GameObject _dustVFX;
+    
+    private bool _wasGrounded;
 
     //While there are any control blockers for a given action, that action will be blocked
     [Flags]
@@ -723,19 +726,23 @@ public class PlayerController : NetworkBehaviour
                 break;
             }
         }
-
-
-        //SPAWNING GROUND IMPACT VFX
-        Spawn_GroundVFX(grounded);
-        dustGrounded = grounded; //can't pass into invoke (why it exists)
-        Spawn_DustVFX();
-        //Invoke("Spawn_DustVFX", 0.1f);
-
-
-
-        bool groundedOnBumpy = Physics.CheckSphere(Rb.position, _groundedSphereRadius, LayerMask.GetMask("Bumpy"), QueryTriggerInteraction.Ignore);
-
-        WwiseAnimationEvents.EnableFootsteps = !Seat && (grounded || groundedOnBumpy);
+        
+        // Ground vfx
+        if (grounded && !_wasGrounded)
+        {
+            var gv = Instantiate(_groundImpactVFX, transform.position, Quaternion.identity);
+            Destroy(gv, 1f);
+        }
+        
+        if (grounded && _networkAnimator.animator.GetBool(RunningState) && !Seat)
+        {
+            var gv = Instantiate(_dustVFX, transform.position, Quaternion.identity);
+            Destroy(gv, 0.8f);
+        }
+        
+        WwiseAnimationEvents.EnableFootsteps = !Seat && grounded;
+        
+        _wasGrounded = grounded;
 
         if (!authority && !IsPuppet) return;
 
@@ -782,9 +789,8 @@ public class PlayerController : NetworkBehaviour
             return;
         }
 
-        Rb.useGravity = !groundedOnBumpy;
-        _networkAnimator.animator.SetBool(GroundedState, grounded || groundedOnBumpy);
-        if (IsPuppet && !grounded && !groundedOnBumpy && PuppetGravityMultiplier > 1f)
+        _networkAnimator.animator.SetBool(GroundedState, grounded);
+        if (IsPuppet && !grounded && PuppetGravityMultiplier > 1f)
         {
             Rb.AddForce(Physics.gravity * (PuppetGravityMultiplier - 1f), ForceMode.Acceleration);
         }
@@ -813,11 +819,13 @@ public class PlayerController : NetworkBehaviour
         bool isFalling = Rb.linearVelocity.y < _fallAnimationMinDownardsVelocity;
 
         //Player is falling - are they gliding?
-        if (ControlEnabled(ControlBlockerFlags.Glide) && JumpAction.action.IsPressed())
+        //todo ideally this should be if isFalling or is currently being pushed by a fan
+        if (ControlEnabled(ControlBlockerFlags.Glide) && JumpAction.action.IsPressed() && (isFalling || _insideFanLifter))
         {
-            //Player is gliding
+            //Player has extended cape
             if (isFalling)
             {
+                //Player is falling
                 float gravityNegationPercentage01 = _gravityNegationPercentage / 100.0f;
                 Rb.AddForce(-Physics.gravity * gravityNegationPercentage01, ForceMode.Acceleration);
             }
@@ -838,14 +846,13 @@ public class PlayerController : NetworkBehaviour
             _networkAnimator.animator.SetBool(GlideState, false);
         }
 
-        if (grounded || groundedOnBumpy)
+        if (grounded)
         {
             _lastGroundedTime = Time.time;
         }
 
         //Jumping
-        if (((ControlEnabled(ControlBlockerFlags.Jump) && _jumpPressed) || (IsPuppet && PuppetRequestJump))
-            && (grounded || groundedOnBumpy || (Time.time - _lastGroundedTime < _coyoteTime)))
+        if (((ControlEnabled(ControlBlockerFlags.Jump) && _jumpPressed) || (IsPuppet && PuppetRequestJump)) && (grounded || Time.time - _lastGroundedTime < _coyoteTime))
         {
             _networkAnimator.animator.SetTrigger(JumpTrigger);
             float jumpMultiplier = IsPuppet ? PuppetJumpForceMultiplier : 1f;
@@ -914,12 +921,21 @@ public class PlayerController : NetworkBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (!authority) return;
+        
+        var isFanLifter = (_fanLifterMask.value & (1 << other.gameObject.layer)) != 0;
+        if (isFanLifter) _insideFanLifter = true;
 
         WheelSeat newSeat = other.GetComponentInParent<WheelSeat>();
         if (newSeat && !Seat)
         {
             newSeat.CmdTrySitPlayer();
         }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        var isFanLifter = (_fanLifterMask.value & (1 << other.gameObject.layer)) != 0;
+        if (isFanLifter) _insideFanLifter = false;
     }
 
     private void OnCutsceneStarted(PlayableDirector _)
@@ -945,27 +961,6 @@ public class PlayerController : NetworkBehaviour
         if (Rb)
         {
             Gizmos.DrawSphere(Rb.position, _groundedSphereRadius);
-        }
-    }
-
-    private void Spawn_GroundVFX(bool amGrounded)
-    {
-        //SPAWNING GROUND IMPACT VFX
-        if (amGrounded && !wasGrounded)
-        {
-            GameObject gv = Instantiate(groundImpactVFX, transform.position, Quaternion.identity);
-            Destroy(gv, 1f);
-        }
-        wasGrounded = amGrounded;
-    }
-
-    private void Spawn_DustVFX()
-    {
-        //SPAWNING GROUND IMPACT VFX
-        if (dustGrounded && _networkAnimator.animator.GetBool(RunningState) == true)
-        {
-            GameObject gv = Instantiate(dustVFX, transform.position, Quaternion.identity);
-            Destroy(gv, 0.8f);
         }
     }
 }
