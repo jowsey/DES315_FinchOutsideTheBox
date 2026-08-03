@@ -113,6 +113,12 @@ public class PlayerController : NetworkBehaviour
     // Does NOT imply the player has just joined
     public static readonly UnityEvent<PlayerController> OnPlayerReady = new();
 
+    //VFX
+    [SerializeField] public GameObject groundImpactVFX;
+    [SerializeField] public GameObject dustVFX;
+    private bool wasGrounded = false;
+    private bool dustGrounded = false;
+
     //While there are any control blockers for a given action, that action will be blocked
     [Flags]
     public enum ControlBlockerFlags
@@ -582,6 +588,15 @@ public class PlayerController : NetworkBehaviour
             }
         }
 
+
+        //SPAWNING GROUND IMPACT VFX
+        Spawn_GroundVFX(grounded);
+        dustGrounded = grounded; //can't pass into invoke (why it exists)
+        Spawn_DustVFX();
+        //Invoke("Spawn_DustVFX", 0.1f);
+
+
+
         bool groundedOnBumpy = Physics.CheckSphere(Rb.position, _groundedSphereRadius, LayerMask.GetMask("Bumpy"), QueryTriggerInteraction.Ignore);
 
         WwiseAnimationEvents.EnableFootsteps = !Seat && (grounded || groundedOnBumpy);
@@ -661,11 +676,14 @@ public class PlayerController : NetworkBehaviour
         bool isFalling = Rb.linearVelocity.y < _fallAnimationMinDownardsVelocity;
 
         //Player is falling - are they gliding?
-        if (ControlEnabled(ControlBlockerFlags.Glide) && isFalling && JumpAction.action.IsPressed())
+        if (ControlEnabled(ControlBlockerFlags.Glide) && JumpAction.action.IsPressed())
         {
             //Player is gliding
-            float gravityNegationPercentage01 = _gravityNegationPercentage / 100.0f;
-            Rb.AddForce(-Physics.gravity * gravityNegationPercentage01, ForceMode.Acceleration);
+            if (isFalling)
+            {
+                float gravityNegationPercentage01 = _gravityNegationPercentage / 100.0f;
+                Rb.AddForce(-Physics.gravity * gravityNegationPercentage01, ForceMode.Acceleration);
+            }
 
             _networkAnimator.animator.SetBool(FallState, false);
             _networkAnimator.animator.SetBool(GlideState, true);
@@ -785,6 +803,27 @@ public class PlayerController : NetworkBehaviour
         if (Rb)
         {
             Gizmos.DrawSphere(Rb.position, _groundedSphereRadius);
+        }
+    }
+
+    private void Spawn_GroundVFX(bool amGrounded)
+    {
+        //SPAWNING GROUND IMPACT VFX
+        if (amGrounded && !wasGrounded)
+        {
+            GameObject gv = Instantiate(groundImpactVFX, transform.position, Quaternion.identity);
+            Destroy(gv, 1f);
+        }
+        wasGrounded = amGrounded;
+    }
+
+    private void Spawn_DustVFX()
+    {
+        //SPAWNING GROUND IMPACT VFX
+        if (dustGrounded && _networkAnimator.animator.GetBool(RunningState) == true)
+        {
+            GameObject gv = Instantiate(dustVFX, transform.position, Quaternion.identity);
+            Destroy(gv, 0.8f);
         }
     }
 }
