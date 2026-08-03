@@ -41,6 +41,7 @@ public class VehicleLever : NetworkBehaviour
                 //Trigger is now active
                 _onLeverActivate.Invoke();
                 Forward = true;
+                LeverDown.Post(gameObject);
             }
             else if (_triggerCollidingLastTick && !_bothTriggers)
             {

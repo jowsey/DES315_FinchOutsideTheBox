@@ -12,6 +12,7 @@ public class WwiseAnimationEvents : MonoBehaviour
     [Required] public AK.Wwise.Event headNod;
     [Required] public AK.Wwise.Event spin; 
     [Required] public AK.Wwise.Event Frontflip;
+    [Required] public AK.Wwise.Event dustWhenLanding;
 
     [NonSerialized, ShowInInspector, ReadOnly] public bool GlideTriggered;
     [NonSerialized, ShowInInspector, ReadOnly] public bool EnableFootsteps = true;
@@ -65,5 +66,10 @@ public class WwiseAnimationEvents : MonoBehaviour
     public void PlayFlipSound()
     {
         Frontflip.Post(gameObject);
+    }
+
+    public void PlayDustCloud()
+    {
+        dustWhenLanding.Post(gameObject);
     }
 }

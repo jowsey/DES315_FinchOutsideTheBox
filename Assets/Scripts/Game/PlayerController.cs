@@ -696,7 +696,7 @@ public class PlayerController : NetworkBehaviour
 
         if (WwiseAnimationEvents.GlideTriggered && !_networkAnimator.animator.GetBool(GlideState))
         {
-            WwiseAnimationEvents.ResetGlideTrigger();
+            WwiseAnimationEvents.ResetGlideTrigger(); 
         }
 
         //Grounded
@@ -732,6 +732,7 @@ public class PlayerController : NetworkBehaviour
         {
             var gv = Instantiate(_groundImpactVFX, transform.position, Quaternion.identity);
             Destroy(gv, 1f);
+            WwiseAnimationEvents.PlayDustCloud();
         }
         
         if (grounded && _networkAnimator.animator.GetBool(RunningState) && !Seat)

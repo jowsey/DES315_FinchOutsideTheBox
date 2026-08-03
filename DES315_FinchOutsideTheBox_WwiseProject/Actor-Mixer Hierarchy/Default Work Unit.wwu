@@ -12300,7 +12300,7 @@
 								</Property>
 								<Property Name="Volume" Type="Real64">
 									<ValueList>
-										<Value>-23</Value>
+										<Value>-29</Value>
 									</ValueList>
 								</Property>
 							</PropertyList>
@@ -13385,7 +13385,6 @@
 						<RandomSequenceContainer Name="Shopkeep Radio" ID="{40A8A934-EAAB-4A00-8086-76057E1D9849}" ShortID="110844328">
 							<PropertyList>
 								<Property Name="3DSpatialization" Type="int16" Value="2"/>
-								<Property Name="IsGlobalLimit" Type="int16" Value="1"/>
 								<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
 								<Property Name="MaxSoundPerInstance" Type="int16">
 									<ValueList>
@@ -13404,7 +13403,7 @@
 									<Custom>
 										<Attenuation Name="Attenuation (Custom)" ID="{670FBE40-02DC-4F15-B5EE-42C7B52B2E39}" ShortID="136046019">
 											<PropertyList>
-												<Property Name="RadiusMax" Type="Real64" Value="10"/>
+												<Property Name="RadiusMax" Type="Real64" Value="13"/>
 											</PropertyList>
 											<CurveUsageInfoList>
 												<VolumeDryUsage>
@@ -13420,22 +13419,22 @@
 																	<Flags>5</Flags>
 																</Point>
 																<Point>
-																	<XPos>1.99077</XPos>
-																	<YPos>-6.66558</YPos>
+																	<XPos>3.773965</XPos>
+																	<YPos>-10.5497</YPos>
 																	<Flags>0</Flags>
 																</Point>
 																<Point>
-																	<XPos>5.12664</XPos>
-																	<YPos>-17.94075</YPos>
+																	<XPos>8.078668</XPos>
+																	<YPos>-24.09957</YPos>
 																	<Flags>0</Flags>
 																</Point>
 																<Point>
-																	<XPos>9.27882857142857</XPos>
-																	<YPos>-32.35142</YPos>
+																	<XPos>11.857209</XPos>
+																	<YPos>-36.17144</YPos>
 																	<Flags>0</Flags>
 																</Point>
 																<Point>
-																	<XPos>10</XPos>
+																	<XPos>13</XPos>
 																	<YPos>-200</YPos>
 																	<Flags>37</Flags>
 																</Point>
@@ -13462,17 +13461,17 @@
 																	<Flags>5</Flags>
 																</Point>
 																<Point>
-																	<XPos>6.4497</XPos>
+																	<XPos>8.38461</XPos>
 																	<YPos>13</YPos>
 																	<Flags>0</Flags>
 																</Point>
 																<Point>
-																	<XPos>9.70414</XPos>
+																	<XPos>12.615382</XPos>
 																	<YPos>51</YPos>
 																	<Flags>0</Flags>
 																</Point>
 																<Point>
-																	<XPos>10</XPos>
+																	<XPos>13</XPos>
 																	<YPos>100</YPos>
 																	<Flags>37</Flags>
 																</Point>
@@ -14009,7 +14008,19 @@
 							<ChildrenList>
 								<Sound Name="LowHum" ID="{4CDD9ECA-720D-4C6A-ADEC-A0EC50EEA090}" ShortID="675919471">
 									<PropertyList>
+										<Property Name="IgnoreParentMaxSoundInstance" Type="bool" Value="True"/>
 										<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+										<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
+										<Property Name="MaxSoundPerInstance" Type="int16">
+											<ValueList>
+												<Value>1</Value>
+											</ValueList>
+										</Property>
+										<Property Name="UseMaxSoundPerInstance" Type="bool">
+											<ValueList>
+												<Value>True</Value>
+											</ValueList>
+										</Property>
 										<Property Name="Volume" Type="Real64">
 											<ValueList>
 												<Value>-18</Value>
@@ -14093,7 +14104,7 @@
 										</Property>
 										<Property Name="Volume" Type="Real64">
 											<ValueList>
-												<Value>-5</Value>
+												<Value>-10</Value>
 											</ValueList>
 										</Property>
 									</PropertyList>

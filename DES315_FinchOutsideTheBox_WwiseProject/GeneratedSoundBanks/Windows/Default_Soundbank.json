@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{46173D95-DFFE-4BE9-8209-57EB1CFCE1F7}",
     "Language": "SFX",
-    "Hash": "{8C40C622-9B75-9BCE-970E-099BA3BE0EE5}",
+    "Hash": "{301B1320-EAF8-53A5-EA75-7B64AA9DF62D}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Default_Soundbank",
     "ShortName": "Default_Soundbank",
     "Path": "Default_Soundbank.bnk",
@@ -118,6 +118,14 @@
       "Location": "Memory",
       "ShortName": "Cat Jump-012.wav",
       "CachePath": "16/{16935FF0-6D70-F0F3-9DC2-5822F6EF8137}.wem"
+     },
+     {
+      "Id": "96185026",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "BuyDoll.wav",
+      "CachePath": "FF/{FF885EB4-6BE4-3093-6826-BD4B3CEF23BC}.wem"
      },
      {
       "Id": "98700581",
@@ -376,6 +384,14 @@
       "CachePath": "4B/{4B4C456A-D4A9-2D72-DACF-C18E5433F929}.wem"
      },
      {
+      "Id": "323355592",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "LowHum.wav",
+      "CachePath": "2C/{2C6CAB97-6F70-0E5F-ADBE-E69F9748CD97}.wem"
+     },
+     {
       "Id": "324644523",
       "Language": "SFX",
       "Streaming": "false",
@@ -472,6 +488,14 @@
       "CachePath": "DF/{DF78CD04-9C86-B24A-56C2-D6E9546E913F}.wem"
      },
      {
+      "Id": "373906759",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "RopeCreak.wav",
+      "CachePath": "E5/{E54CC31C-5E55-038C-6AC6-7C882EC4F732}.wem"
+     },
+     {
       "Id": "378091100",
       "Language": "SFX",
       "Streaming": "false",
@@ -510,6 +534,14 @@
       "Location": "Memory",
       "ShortName": "CatShopEnter3.wav",
       "CachePath": "0C/{0C60E3C1-8B45-9C6B-C929-C6EFA023AFED}.wem"
+     },
+     {
+      "Id": "432758117",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "Player Land Poof 2.wav",
+      "CachePath": "35/{353D4D93-0BD6-7DB6-9275-F17139435E45}.wem"
      },
      {
       "Id": "433431693",
@@ -896,6 +928,14 @@
       "CachePath": "0D/{0D8A5930-2574-5603-C6CB-486075F00BBE}.wem"
      },
      {
+      "Id": "704368091",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "RopeCreak.wav",
+      "CachePath": "18/{18315863-EF43-A5CA-C6DD-9BD2E464823E}.wem"
+     },
+     {
       "Id": "736609714",
       "Language": "SFX",
       "Streaming": "false",
@@ -1184,6 +1224,14 @@
       "CachePath": "10/{101E0D91-87F2-C239-4FDC-6414D07C2268}.wem"
      },
      {
+      "Id": "949848348",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "PlaceRope.wav",
+      "CachePath": "91/{9147A5A0-32C1-8234-BCE8-DB9EF2F3D8EC}.wem"
+     },
+     {
       "Id": "954948749",
       "Language": "SFX",
       "Streaming": "false",
@@ -1310,6 +1358,14 @@
       "Location": "Memory",
       "ShortName": "WoodFts-008.wav",
       "CachePath": "6E/{6E9D87CB-CC97-FD87-040F-E2B1A5D5C151}.wem"
+     },
+     {
+      "Id": "1061298886",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "WindVent 2.wav",
+      "CachePath": "B7/{B75E0B47-D2B7-7B29-80E5-827494DB17F8}.wem"
      }
     ],
     "Plugins": {
@@ -1439,6 +1495,36 @@
       ]
      },
      {
+      "Id": "1471709650",
+      "Name": "CatGlide",
+      "ObjectPath": "\\Events\\Default Work Unit\\Player\\CatGlide",
+      "GUID": "{C9E25D14-C85D-463F-8938-05DDBB3EEAA7}",
+      "MaxAttenuation": "15",
+      "DurationType": "OneShot",
+      "DurationMin": "0.48",
+      "DurationMax": "0.81",
+      "MediaRefs": [
+       {
+        "Id": "326997513"
+       },
+       {
+        "Id": "704040759"
+       },
+       {
+        "Id": "783580766"
+       },
+       {
+        "Id": "892141038"
+       },
+       {
+        "Id": "971720960"
+       },
+       {
+        "Id": "973468333"
+       }
+      ]
+     },
+     {
       "Id": "244401571",
       "Name": "CatJump",
       "ObjectPath": "\\Events\\Default Work Unit\\Player\\CatJump",
@@ -1490,29 +1576,14 @@
       "Id": "3906859072",
       "Name": "CatLand",
       "ObjectPath": "\\Events\\Default Work Unit\\Player\\CatLand",
-      "GUID": "{C9E25D14-C85D-463F-8938-05DDBB3EEAA7}",
+      "GUID": "{54993943-8B80-4703-92BB-D65E980B4D4C}",
       "MaxAttenuation": "15",
       "DurationType": "OneShot",
-      "DurationMin": "0.48",
-      "DurationMax": "0.81",
+      "DurationMin": "0.9754968",
+      "DurationMax": "1.2650629",
       "MediaRefs": [
        {
-        "Id": "326997513"
-       },
-       {
-        "Id": "704040759"
-       },
-       {
-        "Id": "783580766"
-       },
-       {
-        "Id": "892141038"
-       },
-       {
-        "Id": "971720960"
-       },
-       {
-        "Id": "973468333"
+        "Id": "432758117"
        }
       ]
      },
@@ -1581,6 +1652,33 @@
       "MediaRefs": [
        {
         "Id": "476242004"
+       }
+      ]
+     },
+     {
+      "Id": "3659584350",
+      "Name": "DollBuy",
+      "ObjectPath": "\\Events\\Default Work Unit\\Shop\\Items\\DollBuy",
+      "GUID": "{32BBD4AB-CA94-40E3-86BE-6C5E48E7825A}",
+      "DurationType": "OneShot",
+      "DurationMin": "1.6783752",
+      "DurationMax": "1.6783752",
+      "MediaRefs": [
+       {
+        "Id": "96185026"
+       }
+      ]
+     },
+     {
+      "Id": "3457267156",
+      "Name": "DollHum",
+      "ObjectPath": "\\Events\\Default Work Unit\\Shop\\Items\\DollHum",
+      "GUID": "{EF0C6310-F1BD-4977-95B7-F8927F53CF00}",
+      "MaxAttenuation": "5",
+      "DurationType": "Infinite",
+      "MediaRefs": [
+       {
+        "Id": "323355592"
        }
       ]
      },
@@ -2779,7 +2877,7 @@
       "Name": "ShopkeepRadio",
       "ObjectPath": "\\Events\\Default Work Unit\\Shop\\ShopkeepRadio",
       "GUID": "{368BF370-EA0E-4697-8C6B-464B59D3E0E7}",
-      "MaxAttenuation": "7",
+      "MaxAttenuation": "13",
       "DurationType": "Infinite",
       "MediaRefs": [
        {
@@ -2919,6 +3017,61 @@
       "MediaRefs": [
        {
         "Id": "31480027"
+       }
+      ]
+     },
+     {
+      "Id": "2602924598",
+      "Name": "WindVent",
+      "ObjectPath": "\\Events\\Default Work Unit\\Obstacle\\WindVent",
+      "GUID": "{7F3696C5-F54D-4203-B3F8-C4A6230C6EBB}",
+      "MaxAttenuation": "10",
+      "DurationType": "Infinite",
+      "MediaRefs": [
+       {
+        "Id": "1061298886"
+       }
+      ]
+     },
+     {
+      "Id": "3208817649",
+      "Name": "YarnBuy",
+      "ObjectPath": "\\Events\\Default Work Unit\\Shop\\Items\\YarnBuy",
+      "GUID": "{AD47251B-5449-4DB9-A0B3-36DE6E7D333A}",
+      "DurationType": "OneShot",
+      "DurationMin": "0.7333322",
+      "DurationMax": "0.7333322",
+      "MediaRefs": [
+       {
+        "Id": "704368091"
+       }
+      ]
+     },
+     {
+      "Id": "2787064764",
+      "Name": "YarnPlace",
+      "ObjectPath": "\\Events\\Default Work Unit\\Shop\\Items\\YarnPlace",
+      "GUID": "{ED5B5406-5E7F-4AE3-8D6E-81AF34CBDAD4}",
+      "MaxAttenuation": "10",
+      "DurationType": "OneShot",
+      "DurationMin": "0.89884925",
+      "DurationMax": "0.95229757",
+      "MediaRefs": [
+       {
+        "Id": "949848348"
+       }
+      ]
+     },
+     {
+      "Id": "408652242",
+      "Name": "YarnUnravel",
+      "ObjectPath": "\\Events\\Default Work Unit\\Shop\\Items\\YarnUnravel",
+      "GUID": "{C8B814D8-AED9-47A6-B87B-2ACBFD86FC77}",
+      "MaxAttenuation": "5",
+      "DurationType": "Infinite",
+      "MediaRefs": [
+       {
+        "Id": "373906759"
        }
       ]
      },
@@ -3285,6 +3438,12 @@
       "GUID": "{DDEBEE58-D2A7-4713-B5B7-BEA3F5281352}"
      },
      {
+      "Id": "1753086197",
+      "Name": "RopeOnOff",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\RopeOnOff",
+      "GUID": "{8B3B0840-DB03-4ECF-9291-14426DEE80B7}"
+     },
+     {
       "Id": "1907997609",
       "Name": "PlatformSpeed",
       "ObjectPath": "\\Game Parameters\\Default Work Unit\\Obstacles\\PlatformSpeed",
@@ -3527,6 +3686,6 @@
     ]
    }
   ],
-  "FileHash": "{A9D39875-8759-0FDF-60BD-3A7789B73CC3}"
+  "FileHash": "{24D13779-53F7-A6C1-1473-F5719417A886}"
  }
 }

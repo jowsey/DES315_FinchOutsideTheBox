@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4380717523373247927}
   - component: {fileID: 1802914528262115383}
   - component: {fileID: 8512802849409496592}
+  - component: {fileID: -403403514855273512}
   m_Layer: 0
   m_Name: DoubleButton
   m_TagString: Untagged
@@ -75,11 +76,11 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Door, Assembly-CSharp
-        m_MethodName: Open
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgumentAssemblyTypeName: 
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -93,7 +94,27 @@ MonoBehaviour:
   LeverDown:
     idInternal: 0
     valueGuidInternal: 
-    WwiseObjectReference: {fileID: 0}
+    WwiseObjectReference: {fileID: 11400000, guid: 9e10a6993c0a5de41bbd342721bb943c, type: 2}
+--- !u!114 &-403403514855273512
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2262201858015934374}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f8d9332b27b0b64d9dfb991d8b1cfd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::postLeverScript
+  leverSound:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: 9e10a6993c0a5de41bbd342721bb943c, type: 2}
+  leverUp:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 11400000, guid: c7f24737fc0ccf346ba9ceaa6cc92866, type: 2}
 --- !u!1001 &2041083955460101807
 PrefabInstance:
   m_ObjectHideFlags: 0
