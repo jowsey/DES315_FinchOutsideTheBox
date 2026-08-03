@@ -273,6 +273,7 @@ namespace Game
             newSack.Joint.connectedBody = Cart.Instance.Rb;
             newSack.Joint.connectedAnchor = Cart.Instance.transform.InverseTransformPoint(nextSackPosition.position);
             newSack.LinkedCartTransform = nextSackPosition;
+            newSack.transform.SetParent(nextSackPosition, worldPositionStays: true);
             NetworkServer.Spawn(newSack.gameObject);
 
             _shopkeepAnimator.SetTrigger(ShopkeepOnBuyTrigger);

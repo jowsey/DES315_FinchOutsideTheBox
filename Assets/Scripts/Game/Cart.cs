@@ -377,7 +377,7 @@ public class Cart : NetworkBehaviour
         }
 
         // Respawning at a different target, mainly from dev hotkeys
-        if (CurrentRespawnTarget != target)
+        if (isServer && CurrentRespawnTarget != target)
         {
             SetActiveRespawnTarget(target);
         }
