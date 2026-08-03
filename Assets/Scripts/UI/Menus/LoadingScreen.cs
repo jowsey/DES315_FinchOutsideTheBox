@@ -15,7 +15,6 @@ namespace UI
 
         [SerializeField] private CanvasGroup _artworkGroup;
         [SerializeField] private RectTransform _bottomBar;
-        [SerializeField] private Image _spinner;
         [SerializeField] private Image _progressBar;
 
         [SerializeField] private float _transitionDuration = 0.5f;
@@ -47,7 +46,6 @@ namespace UI
             // prioritise smooth frames over i/o speed
             Application.backgroundLoadingPriority = ThreadPriority.Low;
 
-            Tween.LocalRotationAtSpeed(_spinner.rectTransform, new Vector3(0f, 0f, 180f), 180f, Ease.Linear, cycles: -1, cycleMode: CycleMode.Incremental);
             // unity LoadSceneAsync is lowkey not even async so
             Tween.UIFillAmount(_progressBar, 0f, 1f, 5f, Ease.OutExpo);
             Tween.Scale(_artworkGroup.transform, Vector3.one, Vector3.one * 1.05f, 5f);

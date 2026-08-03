@@ -45,6 +45,7 @@ Transform:
   - {fileID: 4262451585859541057}
   - {fileID: 6015846886383839233}
   - {fileID: 4001309446639880442}
+  - {fileID: 8238280830518449356}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &6402695614377241724
@@ -109,6 +110,7 @@ MonoBehaviour:
   _jumpForce: 110
   _moveForce: 6
   _groundedSphereRadius: 0.1
+  _coyoteTime: 0.16
   Seat: {fileID: 0}
   HeldObject: {fileID: 0}
   AnalogueMoveScale: 0
@@ -120,10 +122,12 @@ MonoBehaviour:
   - {fileID: 6505931977665250467}
   - {fileID: 794730768558143244}
   - {fileID: 3018275018661310622}
-  _actionCurveLinePrefab: {fileID: 7011724201460765554, guid: 8110da47f80f14b1e92c4f0876b3ad30, type: 3}
   <HeldObjectPickupTarget>k__BackingField: {fileID: 6669740496216783317}
-  groundImpactVFX: {fileID: 5486426055205799131, guid: 96a49ec22796e3345a6cfd2c919b7b19, type: 3}
-  dustVFX: {fileID: 4146006849461452634, guid: 4c066304772d8e5478b4b11047299b08, type: 3}
+  _fanLifterMask:
+    serializedVersion: 2
+    m_Bits: 16384
+  _groundImpactVFX: {fileID: 5486426055205799131, guid: 96a49ec22796e3345a6cfd2c919b7b19, type: 3}
+  _dustVFX: {fileID: 4146006849461452634, guid: 4c066304772d8e5478b4b11047299b08, type: 3}
   _cameraObstructionDithererRayEndPosition: {fileID: 6015846886383839233}
   CutscenePlayer: 0
   PuppetWorldSpaceMoveDir: {x: 0, y: 0, z: 0}
@@ -132,6 +136,7 @@ MonoBehaviour:
   PuppetJumpForceMultiplier: 0
   IsPuppet: 0
   ActiveShop: {fileID: 0}
+  _statusEffectBoxPrefab: {fileID: 2862048915561463554, guid: 22a5e000a37d7184c9729af4d555df2c, type: 3}
 --- !u!114 &2406511369735062858
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -674,6 +679,68 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.ContentSizeFitter
   m_HorizontalFit: 2
   m_VerticalFit: 0
+--- !u!1 &3531388344484564557
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8238280830518449356}
+  - component: {fileID: 2429256755415738914}
+  m_Layer: 8
+  m_Name: DropShadowProjector
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8238280830518449356
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3531388344484564557}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 0.1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5379210078007236453}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!114 &2429256755415738914
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3531388344484564557}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f19d9143a39eb3b46bc4563e9889cfbd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.HighDefinition.Runtime::UnityEngine.Rendering.HighDefinition.DecalProjector
+  m_Version: 3
+  m_Material: {fileID: 2100000, guid: 6d0393d03b257a94c84f407cee664db0, type: 2}
+  m_DrawDistance: 250
+  m_FadeScale: 0.9
+  m_StartAngleFade: 180
+  m_EndAngleFade: 180
+  m_UVScale: {x: 1, y: 1}
+  m_UVBias: {x: 0, y: 0}
+  m_AffectsTransparency: 0
+  m_TransparentTextureResolution:
+    m_Override: 256
+    m_UseOverride: 1
+    m_Level: 0
+  m_DecalLayerMask: 1
+  m_ScaleMode: 0
+  m_Offset: {x: 0, y: 0, z: 5}
+  m_Size: {x: 1, y: 1, z: 10}
+  m_FadeFactor: 1
 --- !u!1 &5126379394602529249
 GameObject:
   m_ObjectHideFlags: 0

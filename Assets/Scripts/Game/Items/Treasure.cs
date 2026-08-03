@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using Mirror;
 using UnityEngine;
 
 namespace Game.Items
@@ -9,15 +11,66 @@ namespace Game.Items
         [SerializeField] private GameObject _smashedTreasurePrefab;
         [SerializeField] private AK.Wwise.Event _breakSfx;
 
-        protected override void OnStateChanged(ItemState oldState, ItemState newState)
+        [SerializeField] private MeshFilter _meshFilter;
+        [SerializeField] private MeshCollider _meshCollider;
+        [SerializeField] private List<Mesh> _randomMeshOptions = new();
+
+        [SyncVar(hook = nameof(OnChangeRandomMeshIndex))] private int _randomMeshIndex = -1;
+
+        public override void OnStartServer()
+        {
+            base.OnStartServer();
+            if (_randomMeshOptions.Count > 0)
+            {
+                _randomMeshIndex = Random.Range(0, _randomMeshOptions.Count);
+            }
+            
+            RespawnTarget.OnRespawn.AddListener(OnRespawn);
+        }
+
+        public override void OnStopServer()
+        {
+            base.OnStopServer();
+            RespawnTarget.OnRespawn.RemoveListener(OnRespawn);
+        }
+
+        protected override void OnValidate()
+        {
+            base.OnValidate();
+            if (!_meshFilter) _meshFilter = GetComponentInChildren<MeshFilter>();
+            if (!_meshCollider) _meshCollider = GetComponentInChildren<MeshCollider>();
+        }
+
+        private void OnChangeRandomMeshIndex(int oldValue, int newValue)
+        {
+            if (newValue < 0 || newValue >= _randomMeshOptions.Count) return;
+
+            var newMesh = _randomMeshOptions[newValue];
+            if (_meshFilter.sharedMesh != newMesh) _meshFilter.sharedMesh = newMesh;
+            if (_meshCollider && _meshCollider.sharedMesh != newMesh) _meshCollider.sharedMesh = newMesh;
+        }
+
+        private void OnDestroy()
+        {
+            // fixes hang on scene unload in editor? shrug
+            _meshFilter.sharedMesh = null;
+            _meshCollider.sharedMesh = null;
+        }
+
+        private void OnRespawn(RespawnTarget target)
+        {
+            Smashable = false;
+        }
+        
+        protected override void OnStateChanged(ItemStateData oldState, ItemStateData newState)
         {
             // Transition out
             switch (oldState)
             {
                 // No longer holding
-                case ItemState.Held:
+                case HeldStateData heldData:
                 {
-                    if (_holder.isLocalPlayer)
+                    if (heldData.Holder.isLocalPlayer)
                     {
                         Highlight.SetHighlightable("TreasureCarrier", false);
                     }
@@ -29,21 +82,21 @@ namespace Game.Items
             // Transition in
             switch (newState)
             {
-                case ItemState.Held:
+                case HeldStateData heldData:
                 {
                     if (isServer)
                     {
                         Smashable = false;
                     }
 
-                    if (_holder.isLocalPlayer)
+                    if (heldData.Holder.isLocalPlayer)
                     {
                         Highlight.SetHighlightable("TreasureCarrier", true);
                     }
 
                     break;
                 }
-                case ItemState.PuttingDown:
+                case PuttingDownStateData puttingDownData:
                 {
                     if (isServer)
                     {
@@ -52,7 +105,7 @@ namespace Game.Items
 
                     break;
                 }
-                case ItemState.Smashed:
+                case SmashedStateData smashedData:
                 {
                     Instantiate(_smashedTreasurePrefab, transform.position, transform.rotation);
                     if (_hasInitialised)
@@ -78,7 +131,7 @@ namespace Game.Items
             {
                 if (Smashable)
                 {
-                    State = ItemState.Smashed;
+                    StateData = new SmashedStateData();
                 }
             }
         }

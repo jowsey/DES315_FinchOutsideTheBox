@@ -364,11 +364,10 @@ GameObject:
   m_Component:
   - component: {fileID: 4780182969865770636}
   - component: {fileID: 7712905341838720191}
-  - component: {fileID: 6366647645443363132}
   - component: {fileID: 1324494548247473585}
   - component: {fileID: 2372474046295043779}
   - component: {fileID: 6784212962166236462}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Fan
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -412,41 +411,6 @@ MonoBehaviour:
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
---- !u!114 &6366647645443363132
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2759782772980883796}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8ff3ba0becae47b8b9381191598957c8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Mirror.Components::Mirror.NetworkTransformReliable
-  syncMethod: 0
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  target: {fileID: 4780182969865770636}
-  updateMethod: 0
-  syncPosition: 1
-  syncRotation: 1
-  syncScale: 0
-  onlySyncOnChange: 1
-  compressRotation: 1
-  interpolatePosition: 1
-  interpolateRotation: 1
-  interpolateScale: 1
-  coordinateSpace: 0
-  timelineOffset: 1
-  showGizmos: 0
-  showOverlay: 0
-  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
-  onlySyncOnChangeCorrectionMultiplier: 2
-  rotationSensitivity: 0.01
-  positionPrecision: 0.01
-  scalePrecision: 0.01
 --- !u!54 &1324494548247473585
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -491,11 +455,6 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _jumpForce: 150
-  _innerMesh: {fileID: 0}
-  _bounceSfx:
-    idInternal: 0
-    valueGuidInternal: 
-    WwiseObjectReference: {fileID: 0}
   _bounceLayers:
     serializedVersion: 2
     m_Bits: 2304

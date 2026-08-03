@@ -1,50 +1,85 @@
+using System;
+using System.Linq;
+using Game.Items.Equipments;
 using Mirror;
-using Sirenix.OdinInspector;
 using UnityEngine;
 using Util;
 using Event = AK.Wwise.Event;
 using ReadOnlyAttribute = Sirenix.OdinInspector.ReadOnlyAttribute;
+using ShowInInspectorAttribute = Sirenix.OdinInspector.ShowInInspectorAttribute;
 
 namespace Game.Items
 {
     [RequireComponent(typeof(Rigidbody), typeof(Highlight), typeof(Interactable))]
     public abstract class Item : NetworkBehaviour
     {
-        public enum ItemState
+        [Serializable]
+        public class ItemStateData
         {
-            Idle,
-            Held,
-            PuttingDown,
-            Smashed,
-            Inactive,
-            Frozen
+        }
+
+        [Serializable]
+        public class IdleStateData : ItemStateData
+        {
+        }
+
+        [Serializable]
+        public class HeldStateData : ItemStateData
+        {
+            public PlayerController Holder;
+        }
+
+        [Serializable]
+        public class PuttingDownStateData : ItemStateData
+        {
+            public HeldObjectPutdownTarget Target;
+        }
+
+        [Serializable]
+        public class SmashedStateData : ItemStateData
+        {
+        }
+
+        [Serializable]
+        public class InactiveStateData : ItemStateData
+        {
+        }
+
+        [Serializable]
+        public class FrozenStateData : ItemStateData
+        {
+        }
+
+        [Serializable]
+        public class SackCarriedStateData : ItemStateData
+        {
+            public UpgradeSack Sack;
         }
 
         protected bool _hasInitialised;
 
         public Rigidbody Rb { get; protected set; }
 
-        protected Transform _moveTarget;
         protected Collider[] _colliders;
         protected Renderer[] _renderers;
         protected Light[] _lights;
 
-        [field: SerializeField] [field: Required] public ItemData Data { get; protected set; }
+        [field: SerializeField] public ItemData Data { get; protected set; }
 
-        [SerializeField] protected float _movementSpeed;
-
-        [SyncVar(hook = nameof(OnHolderIdentityChanged))]
-        protected NetworkIdentity _holderIdentity;
-
-        protected PlayerController _holder;
+        public const float PutdownSpeed = 16f;
 
         [SyncVar(hook = nameof(OnStateChanged))]
-        [ReadOnly] public ItemState State;
+        [ReadOnly] public ItemStateData StateData = new IdleStateData();
+        
+        [ShowInInspector] private string StateName => StateData.GetType().Name;
 
         [SyncVar(hook = nameof(OnPickuppableChanged))]
         public bool Pickuppable = true;
 
         [SerializeField] private Event _pickupSfx;
+
+        [field: SerializeField] public bool ShowInfoCard { get; protected set; } = true;
+        [field: SerializeField] public bool ForceMoveOnHeld { get; protected set; } = true;
 
         protected virtual void Awake()
         {
@@ -59,73 +94,148 @@ namespace Game.Items
             _hasInitialised = true;
         }
 
-        private void OnHolderIdentityChanged(NetworkIdentity _, NetworkIdentity newHolder)
+        public override void OnStartServer()
         {
-            // Only assign new holders, we handle removing the old holder ourselves
-            if (newHolder)
+            base.OnStartServer();
+            RespawnTarget.OnBuildRespawnSnapshot.AddListener(OnBuildRespawnSnapshot);
+            RespawnTarget.OnPostRespawn.AddListener(OnPostRespawn);
+        }
+
+        public override void OnStopServer()
+        {
+            base.OnStopServer();
+            RespawnTarget.OnBuildRespawnSnapshot.RemoveListener(OnBuildRespawnSnapshot);
+            RespawnTarget.OnPostRespawn.RemoveListener(OnPostRespawn);
+        }
+
+        private void OnBuildRespawnSnapshot(RespawnTarget.RespawnSnapshot snapshot)
+        {
+            if (this is SandcastleEquipment && StateData is InactiveStateData) return; // sandcastles are persistent across respawns, don't store
+            if (StateData is SackCarriedStateData) return; // handled by UpgradeSack
+            
+            if (Cart.Instance.CarriedItems.Contains(this))
             {
-                _holder = newHolder.GetComponent<PlayerController>();
+                snapshot.CarriedItems[this] = new RespawnTarget.RespawnSnapshot.CarriedItemSnapshot
+                {
+                    LocalPosition = Cart.Instance.transform.InverseTransformPoint(transform.position),
+                    Rotation = transform.rotation
+                };
+            }
+            else
+            {
+                snapshot.WorldItems[this] = new RespawnTarget.RespawnSnapshot.WorldItemSnapshot
+                {
+                    Position = transform.position,
+                    Rotation = transform.rotation,
+                    StateData = StateData switch
+                    {
+                        HeldStateData or PuttingDownStateData => new IdleStateData(),
+                        SmashedStateData => new InactiveStateData(),
+                        _ => StateData
+                    }
+                };
             }
         }
 
-        protected virtual void OnStateChanged(ItemState oldState, ItemState newState)
+        private void OnPostRespawn(RespawnTarget target)
+        {
+            if (target.Snapshot.CarriedItems.ContainsKey(this))
+            {
+                var snapshot = target.Snapshot.CarriedItems[this];
+                transform.position = Cart.Instance.transform.TransformPoint(snapshot.LocalPosition);
+                transform.rotation = snapshot.Rotation;
+                Physics.SyncTransforms();
+                StateData = new IdleStateData();
+
+                Cart.Instance.AddCarriedItem(this);
+            }
+            else if (target.Snapshot.WorldItems.TryGetValue(this, out var worldItemSnapshot))
+            {
+                if (Cart.Instance.CarriedItems.Contains(this))
+                {
+                    Cart.Instance.RemoveCarriedItem(this);
+                }
+
+                transform.position = worldItemSnapshot.Position;
+                transform.rotation = worldItemSnapshot.Rotation;
+                StateData = worldItemSnapshot.StateData;
+            }
+            else if (target.Snapshot.SackStoredItems.ContainsValue(this))
+            {
+                var (sack, item) = target.Snapshot.SackStoredItems.First(x => x.Value == this);
+                StateData = new SackCarriedStateData { Sack = sack };
+            }
+            else
+            {
+                // we didn't exist at the time of this snapshot
+                NetworkServer.Destroy(gameObject); // 🫡
+            }
+        }
+
+        protected virtual void OnStateChanged(ItemStateData oldData, ItemStateData newData)
         {
             // Transition out
-            switch (oldState)
+            switch (oldData)
             {
-                case ItemState.Held:
+                case HeldStateData heldData:
                 {
-                    if (_holder.isLocalPlayer)
+                    if (heldData.Holder)
                     {
-                        Highlight.SetHighlightable("Item", true);
+                        heldData.Holder.HeldObject = null;
+                        if (heldData.Holder.isLocalPlayer)
+                        {
+                            Highlight.SetHighlightable("Item", true);
+                        }
                     }
+
+                    break;
+                }
+                case SackCarriedStateData sackData:
+                {
+                    if (isServer && sackData.Sack.StoredItem == this)
+                    {
+                        sackData.Sack.StoredItem = null;
+                    }
+
+                    foreach (Collider col in _colliders) col.enabled = true;
 
                     break;
                 }
             }
 
             // Transition in
-            switch (newState)
+            switch (newData)
             {
-                case ItemState.Idle:
+                case IdleStateData:
                 {
                     if (isServer)
                     {
                         Rb.isKinematic = false;
                         Rb.linearVelocity = Vector3.zero;
                         Rb.angularVelocity = Vector3.zero;
-                        _moveTarget = null;
                     }
 
                     foreach (Collider col in _colliders) col.enabled = true;
                     foreach (Renderer rend in _renderers) rend.enabled = true;
                     foreach (Light l in _lights) l.enabled = true;
 
-                    if (_holder)
-                    {
-                        _holder.HeldObject = null;
-                        _holder = null;
-                    }
-
                     break;
                 }
-                case ItemState.Held:
+                case HeldStateData heldData:
                 {
                     if (isServer)
                     {
                         Rb.isKinematic = true;
-                        _moveTarget = _holder.HeldObjectPickupTarget;
                     }
 
                     foreach (Collider col in _colliders) col.enabled = false;
 
-                    _holder.HeldObject = this;
-
-                    if (_holder.isLocalPlayer)
+                    heldData.Holder.HeldObject = this;
+                    if (heldData.Holder.isLocalPlayer)
                     {
                         Highlight.SetHighlightable("Item", false);
                     }
-                    
+
                     if (_hasInitialised)
                     {
                         _pickupSfx.Post(gameObject);
@@ -133,14 +243,8 @@ namespace Game.Items
 
                     break;
                 }
-                case ItemState.PuttingDown:
+                case PuttingDownStateData:
                 {
-                    if (isServer)
-                    {
-                        Rb.position = _holder.HeldObjectPickupTarget.position;
-                        Rb.rotation = _holder.HeldObjectPickupTarget.rotation;
-                    }
-
                     if (_hasInitialised)
                     {
                         _pickupSfx.Post(gameObject);
@@ -148,8 +252,8 @@ namespace Game.Items
 
                     break;
                 }
-                case ItemState.Smashed:
-                case ItemState.Inactive:
+                case SmashedStateData:
+                case InactiveStateData:
                 {
                     if (isServer)
                     {
@@ -162,11 +266,21 @@ namespace Game.Items
 
                     break;
                 }
-                case ItemState.Frozen:
+                case FrozenStateData:
                 {
                     if (isServer)
                     {
                         Rb.isKinematic = true;
+                    }
+
+                    break;
+                }
+                case SackCarriedStateData sackData:
+                {
+                    if (isServer)
+                    {
+                        Rb.isKinematic = true;
+                        sackData.Sack.StoredItem = this;
                     }
 
                     foreach (Collider col in _colliders) col.enabled = false;
@@ -189,74 +303,82 @@ namespace Game.Items
             ServerTryPickup(player);
         }
 
-        //because we might be picking up from Shop.CmdTryBuy() and calling a command from a command messes with the sender data or something ?
         [Server]
         public void ServerTryPickup(PlayerController player)
         {
-            if (State != ItemState.Idle) return;
             if (!Pickuppable) return;
             if (player.HeldObject) return;
+            if (StateData is not IdleStateData and not SackCarriedStateData) return;
 
-            _holderIdentity = player.netIdentity;
-            State = ItemState.Held;
+            if (StateData is SackCarriedStateData sackData)
+            {
+                sackData.Sack.StoredItem = null;
+            }
+
+            StateData = new HeldStateData { Holder = player };
         }
 
         [Command(requiresAuthority = false)]
         public void CmdTryPutdown(HeldObjectPutdownTarget target, NetworkConnectionToClient sender = null)
         {
-            if (State != ItemState.Held) return;
+            if (StateData is not HeldStateData heldData) return;
 
             var player = sender!.identity.GetComponent<PlayerController>();
-            if (player != _holder) return;
+            if (player != heldData.Holder) return;
 
-            _moveTarget = target.transform;
+            StateData = new PuttingDownStateData { Target = target };
+        }
 
-            State = ItemState.PuttingDown;
+        [Command(requiresAuthority = false)]
+        public void CmdTryStore(UpgradeSack sack, NetworkConnectionToClient sender = null)
+        {
+            if (StateData is not HeldStateData heldData) return;
+            if (sack.StoredItem) return;
+
+            var player = sender!.identity.GetComponent<PlayerController>();
+            if (player != heldData.Holder) return;
+
+            sack.StoredItem = this;
+            StateData = new SackCarriedStateData { Sack = sack };
         }
 
         [Command(requiresAuthority = false)]
         public void CmdTryDrop(NetworkConnectionToClient sender = null)
         {
-            if (State != ItemState.Held) return;
+            if (StateData is not HeldStateData heldData) return;
 
             var player = sender!.identity.GetComponent<PlayerController>();
-            if (player != _holder) return;
-            ServerSetIdle();
+            if (player != heldData.Holder) return;
+            StateData = new IdleStateData();
         }
 
-        [Server]
-        public void ServerSetIdle()
-        {
-            State = ItemState.Idle;
-            _holderIdentity = null;
-        }
-
-        private void FixedUpdate()
+        protected virtual void FixedUpdate()
         {
             if (!isServer) return;
 
-            if (State == ItemState.Held) return;
-
-            if (State == ItemState.PuttingDown)
+            if (StateData is PuttingDownStateData puttingDownData)
             {
-                Vector3 targetVec = _moveTarget.position - Rb.position;
-                Vector3 delta = targetVec.normalized * (Time.fixedDeltaTime * _movementSpeed);
+                Vector3 targetVec = puttingDownData.Target.transform.position - Rb.position;
+                Vector3 delta = targetVec.normalized * (Time.fixedDeltaTime * PutdownSpeed);
                 Rb.MovePosition(Rb.position + delta);
 
                 if (targetVec.sqrMagnitude < 0.025f)
                 {
-                    ServerSetIdle();
+                    StateData = new IdleStateData();
                 }
             }
         }
 
         protected virtual void LateUpdate()
         {
-            if (State == ItemState.Held)
+            if (StateData is HeldStateData heldData && ForceMoveOnHeld)
             {
-                transform.position = _holder.HeldObjectPickupTarget.position;
                 // todo this follows body which is updated in physics, not camera which is updated every frame - if on local player and first-person, it jitters on rotate specifically 
-                transform.rotation = _holder.HeldObjectPickupTarget.rotation;
+                transform.SetPositionAndRotation(heldData.Holder.HeldObjectPickupTarget.position, heldData.Holder.HeldObjectPickupTarget.rotation);
+            }
+            else if (StateData is SackCarriedStateData sackCarriedData)
+            {
+                transform.SetPositionAndRotation(sackCarriedData.Sack.StorePosition.position, sackCarriedData.Sack.StorePosition.rotation);
             }
         }
     }

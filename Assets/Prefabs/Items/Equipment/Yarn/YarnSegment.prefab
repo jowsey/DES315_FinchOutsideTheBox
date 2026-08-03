@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2204502641320783694}
   - component: {fileID: 7629251588187970192}
   - component: {fileID: 4686661576812459311}
+  - component: {fileID: 1390521179830975453}
   m_Layer: 13
   m_Name: RopeMeshPLACEHOLDER
   m_TagString: Untagged
@@ -29,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0.25}
-  m_LocalScale: {x: 0.12, y: 0.275, z: 0.12}
+  m_LocalScale: {x: 0.25, y: 0.275, z: 0.25}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1134101777615325574}
@@ -98,7 +99,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 255578332200727897}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 8662fae194198384da2e07a7bbe5a139, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -114,6 +115,19 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1390521179830975453
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 255578332200727897}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a4c0a2cc04197f4c87580b54c1d9b7f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Interactable
+  <InteractedTransform>k__BackingField: {fileID: 1134101777615325574}
 --- !u!1 &7626024902671833401
 GameObject:
   m_ObjectHideFlags: 0
@@ -127,6 +141,9 @@ GameObject:
   - component: {fileID: 1791037789270935826}
   - component: {fileID: 3318153292190278696}
   - component: {fileID: 1830892848116719769}
+  - component: {fileID: 7782488029612068296}
+  - component: {fileID: 8835592131843286588}
+  - component: {fileID: -6661722607028156518}
   m_Layer: 13
   m_Name: YarnSegment
   m_TagString: Untagged
@@ -175,8 +192,8 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7626024902671833401}
   serializedVersion: 5
-  m_Mass: 1
-  m_LinearDamping: 0.1
+  m_Mass: 10
+  m_LinearDamping: 0.5
   m_AngularDamping: 0.5
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
@@ -193,7 +210,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!153 &3318153292190278696
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -212,7 +229,7 @@ ConfigurableJoint:
   m_XMotion: 0
   m_YMotion: 0
   m_ZMotion: 0
-  m_AngularXMotion: 2
+  m_AngularXMotion: 0
   m_AngularYMotion: 2
   m_AngularZMotion: 2
   m_LinearLimitSpring:
@@ -287,7 +304,7 @@ ConfigurableJoint:
     useAcceleration: 0
   m_ProjectionMode: 1
   m_ProjectionDistance: 0.01
-  m_ProjectionAngle: 1
+  m_ProjectionAngle: 0.1
   m_ConfiguredInWorldSpace: 0
   m_SwapBodies: 0
   m_BreakForce: Infinity
@@ -331,3 +348,45 @@ MonoBehaviour:
   rotationSensitivity: 0.01
   positionPrecision: 0.01
   scalePrecision: 0.01
+--- !u!114 &7782488029612068296
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7626024902671833401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a4c0a2cc04197f4c87580b54c1d9b7f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Interactable
+  <InteractedTransform>k__BackingField: {fileID: 1134101777615325574}
+--- !u!114 &8835592131843286588
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7626024902671833401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5e5263c28d18964fb87d6ea1a00d5a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Highlight
+--- !u!114 &-6661722607028156518
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7626024902671833401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4e4e6cfb7a8444eba9e2dcacbcdb611, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Items.Equipments.YarnSegment
+  syncMethod: 0
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _pullSpeed: 15

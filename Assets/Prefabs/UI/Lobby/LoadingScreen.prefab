@@ -101,8 +101,9 @@ GameObject:
   - component: {fileID: 6204093999560796584}
   - component: {fileID: 7765132680900416492}
   - component: {fileID: 4227151678748826522}
+  - component: {fileID: 7523914373942382400}
   m_Layer: 5
-  m_Name: Spinner
+  m_Name: LoadingIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -124,7 +125,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -80, y: 8}
+  m_AnchoredPosition: {x: -80, y: 16}
   m_SizeDelta: {x: 96, y: 96}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7765132680900416492
@@ -155,7 +156,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: c148233952f00ef49a42fb1b98066d10, type: 3}
+  m_Sprite: {fileID: 1003531758, guid: 7fbbcb1ad99c7c043857f1714d4871a5, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -165,6 +166,28 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!95 &7523914373942382400
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1407828098141813535}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: b734afe802a1a594aa2a1baefebe1d5f, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1918764127480972191
 GameObject:
   m_ObjectHideFlags: 0
@@ -265,10 +288,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UI.LoadingScreen
   _artworkGroup: {fileID: 3711883230664559608}
   _bottomBar: {fileID: 1666585212379989424}
-  _spinner: {fileID: 4227151678748826522}
   _progressBar: {fileID: 8511961837800706442}
   _transitionDuration: 0.5
-  OnAnimateIn:
+  OnFinishAnimateIn:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1 &3369322227296930659

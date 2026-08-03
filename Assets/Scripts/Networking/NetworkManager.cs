@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Linq;
 using Epic.OnlineServices.Lobby;
+using Game;
 using Game.Items;
 using Mirror;
 using UI;
@@ -45,10 +46,16 @@ namespace Networking
         public override void OnStartServer()
         {
             base.OnStartServer();
+            RespawnTarget.OnReachNewTarget.AddListener(OnReachRespawnTarget);
 
             _nextPlayerIndex = 0;
-
             NetworkServer.RegisterHandler<ClientInfoMessage>(OnClientInfoMessage);
+        }
+
+        public override void OnStopServer()
+        {
+            base.OnStopServer();
+            RespawnTarget.OnReachNewTarget.RemoveListener(OnReachRespawnTarget);
         }
 
         public override void OnStartClient()
@@ -104,21 +111,15 @@ namespace Networking
             var player = conn.identity?.GetComponent<PlayerController>();
             if (player && player.HeldObject)
             {
-                player.HeldObject.State = Item.ItemState.Idle;
+                player.HeldObject.StateData = new Item.IdleStateData();
             }
 
             base.OnServerDisconnect(conn);
         }
 
-        public override Transform GetStartPosition()
+        private void OnReachRespawnTarget(RespawnTarget target)
         {
-            // todo eventually this should first assign the player to a cart, and then get *that* cart's checkpoints
-            // todo also it should cache this on reaching checkpoint instead of re-running on every join
-            var cart = FindAnyObjectByType<Cart>();
-            var activeCheckpoint = cart.Checkpoints[cart.CurrentCheckpointIndex];
-            startPositions = activeCheckpoint.playerRespawnLocalTransforms.ToList();
-
-            return base.GetStartPosition();
+            startPositions = target.PlayerSpawnPoints.ToList();
         }
 
         private void OnClientInfoMessage(NetworkConnectionToClient conn, ClientInfoMessage msg)

@@ -11,22 +11,22 @@ namespace Obstacles
 
         private Rigidbody _rb;
 
+        private Quaternion _initialRotation;
+
         private void Awake()
         {
             _rb = GetComponent<Rigidbody>();
-        }
-        
-        public override void OnStartClient()
-        {
-            base.OnStartClient();
-            Quaternion elapsedRotation = Quaternion.Euler(0, 0, (float)(NetworkTime.time * _spinSpeed));
-            _rb.MoveRotation(_rb.rotation * elapsedRotation);
+            _initialRotation = _rb.rotation;
         }
 
         private void FixedUpdate()
         {
-            Quaternion totalRotation = Quaternion.Euler(0, 0, _spinSpeed * Time.fixedDeltaTime);
-            _rb.MoveRotation(_rb.rotation * totalRotation);
+            if (netId == 0) return;
+
+            var angle = (float)((_spinSpeed * NetworkTime.time) % 360.0);
+
+            var addedRotation = Quaternion.Euler(0, 0, angle);
+            _rb.MoveRotation(_initialRotation * addedRotation);
         }
     }
 }

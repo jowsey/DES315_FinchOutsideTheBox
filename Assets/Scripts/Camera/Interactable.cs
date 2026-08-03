@@ -7,6 +7,10 @@ public class Interactable : MonoBehaviour
 
     private void OnValidate()
     {
-        if (!InteractedTransform) { InteractedTransform = transform; }
+        if (!InteractedTransform)
+        {
+            var parentInteractable = transform.parent ? transform.parent.GetComponentInParent<Interactable>() : null;
+            InteractedTransform = parentInteractable ? parentInteractable.InteractedTransform : transform;
+        }
     }
 }

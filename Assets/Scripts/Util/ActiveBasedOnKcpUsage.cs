@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Net.NetworkInformation;
 using kcp2k;
 using Sirenix.OdinInspector;
@@ -58,8 +59,15 @@ namespace Util
         {
             if (GloballyLockedButton.Locked && _globalLock) return;
 
-            var portInUse = IsUdpPortInUse(_kcpTransport.Port);
-            _button.interactable = _activeIf == ActiveIf.Free ? !portInUse : portInUse;
+            try
+            {
+                var portInUse = IsUdpPortInUse(_kcpTransport.Port);
+                _button.interactable = _activeIf == ActiveIf.Free ? !portInUse : portInUse;
+            }
+            catch (NotImplementedException)
+            {
+                _button.interactable = true;
+            }
         }
     }
 }

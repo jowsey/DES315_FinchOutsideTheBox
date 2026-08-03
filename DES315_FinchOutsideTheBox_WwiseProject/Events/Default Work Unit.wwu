@@ -847,6 +847,65 @@
 								</Action>
 							</ChildrenList>
 						</Event>
+						<Folder Name="Items" ID="{EF26864E-69D7-472B-B07F-B30F93AE7E1D}" ShortID="174915434">
+							<ChildrenList>
+								<Event Name="DollHum" ID="{EF0C6310-F1BD-4977-95B7-F8927F53CF00}">
+									<ChildrenList>
+										<Action Name="" ID="{01DEED8F-DA43-4E50-ADB5-1A3E244B2C99}" ShortID="759803869">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="LowHum" ID="{4CDD9ECA-720D-4C6A-ADEC-A0EC50EEA090}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+								<Event Name="DollBuy" ID="{32BBD4AB-CA94-40E3-86BE-6C5E48E7825A}">
+									<ChildrenList>
+										<Action Name="" ID="{BBDF97FC-099F-4F93-B975-2365A79E7051}" ShortID="761997768">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="BuyDoll" ID="{42E70704-2F88-4340-AEEF-B75F62B1C018}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+								<Event Name="YarnBuy" ID="{AD47251B-5449-4DB9-A0B3-36DE6E7D333A}">
+									<ChildrenList>
+										<Action Name="" ID="{54365AD5-CE84-4B34-BA65-782E9D11158E}" ShortID="579924566">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="YarnBuy" ID="{BADE4652-717D-4020-9853-C81D80227BAC}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+								<Event Name="YarnUnravel" ID="{C8B814D8-AED9-47A6-B87B-2ACBFD86FC77}">
+									<ChildrenList>
+										<Action Name="" ID="{ACE8198F-9FB3-466F-81B9-8C634C6890DC}" ShortID="987985048">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="RopeCreak" ID="{7DCE6081-FB61-44EE-9DEF-990B26D4E10F}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+								<Event Name="YarnPlace" ID="{ED5B5406-5E7F-4AE3-8D6E-81AF34CBDAD4}">
+									<ChildrenList>
+										<Action Name="" ID="{3C555342-A6E8-42E8-B318-BA07F693733E}" ShortID="959015074">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="PlaceRope" ID="{1315F91B-D759-4545-996A-0CA780D296B6}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+							</ChildrenList>
+						</Folder>
 					</ChildrenList>
 				</Folder>
 				<Folder Name="PushToTalk" ID="{BAA9D189-BC42-4623-928F-E256A4436F93}" ShortID="568184641">

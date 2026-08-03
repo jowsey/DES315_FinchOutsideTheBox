@@ -9,10 +9,18 @@ namespace UI
     [RequireComponent(typeof(WorldFollowUI))]
     public class ItemInfoCard : MonoBehaviour
     {
+        public enum ItemInfoCardPriceDisplay
+        {
+            None,
+            BuyPrice,
+            SellPrice
+        }
+        
         [field: SerializeField] public WorldFollowUI WorldFollowUI { get; private set; }
 
         [SerializeField] private TextMeshProUGUI _nameText;
         [SerializeField] private TextMeshProUGUI _descriptionText;
+        [SerializeField] private TextMeshProUGUI _priceText;
 
         [SerializeField] private Image[] _rarityIcons;
 
@@ -27,13 +35,24 @@ namespace UI
         private void OnEnable()
         {
             transform.localScale = Vector3.zero;
-            Tween.Scale(transform, Vector3.one, _transitionDuration, Ease.OutCubic);
+            SetVisible(true);
         }
 
-        public void Build(ItemData data)
+        public void SetVisible(bool visible)
+        {
+            Tween.Scale(transform, visible ? Vector3.one : Vector3.zero, _transitionDuration, Ease.OutCubic);
+        }
+
+        public void Build(ItemData data, ItemInfoCardPriceDisplay priceDisplay)
         {
             _nameText.text = data.ItemName;
             _descriptionText.text = data.Description;
+            _priceText.text = priceDisplay switch
+            {
+                ItemInfoCardPriceDisplay.BuyPrice => $"Buy for <b>{data.BuyPrice}</b> coins",
+                ItemInfoCardPriceDisplay.SellPrice => $"Sell for <b>{data.SellPrice}</b> coins",
+                _ => _priceText.text
+            };
 
             for (var i = 0; i < _rarityIcons.Length; i++)
             {
