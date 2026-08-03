@@ -368,8 +368,8 @@ namespace Game
             _cinemachineCamera.Follow = _cameraLockLocation;
             _cinemachineCamera.LookAt = _cameraLockLocation;
 
-            _orbitalFollow.HorizontalAxis.Value = _cameraLockLocation.localEulerAngles.y;
-            _orbitalFollow.VerticalAxis.Value = _cameraLockLocation.localEulerAngles.x;
+            _orbitalFollow.HorizontalAxis.Value = _cameraLockLocation.eulerAngles.y;
+            _orbitalFollow.VerticalAxis.Value = _cameraLockLocation.eulerAngles.x;
 
             _initialRotationComposerDamping = _rotationComposer.Damping;
             _rotationComposer.Damping = Vector2.one * 0.5f;
