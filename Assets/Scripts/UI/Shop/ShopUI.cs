@@ -57,7 +57,7 @@ namespace UI.Shop
                 if (!counterItem) continue;
 
                 var itemCard = Instantiate(_itemCardPrefab, transform);
-                itemCard.Build(counterItem.ItemData, ItemInfoCard.ItemInfoCardPriceDisplay.BuyPrice);
+                itemCard.Build(counterItem.ItemData, ItemInfoCard.SubtextDisplayType.BuyPrice);
 
                 itemCard.WorldFollowUI.TrackingTarget = counterItem.transform;
                 ((RectTransform)itemCard.transform).pivot = new Vector2(0, 0.5f);

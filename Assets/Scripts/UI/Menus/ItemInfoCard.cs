@@ -9,11 +9,13 @@ namespace UI
     [RequireComponent(typeof(WorldFollowUI))]
     public class ItemInfoCard : MonoBehaviour
     {
-        public enum ItemInfoCardPriceDisplay
+        public enum SubtextDisplayType
         {
             None,
             BuyPrice,
-            SellPrice
+            SellPrice,
+            BuySpeculate,
+            UsageHint
         }
         
         [field: SerializeField] public WorldFollowUI WorldFollowUI { get; private set; }
@@ -43,14 +45,17 @@ namespace UI
             Tween.Scale(transform, visible ? Vector3.one : Vector3.zero, _transitionDuration, Ease.OutCubic);
         }
 
-        public void Build(ItemData data, ItemInfoCardPriceDisplay priceDisplay)
+        public void Build(ItemData data, SubtextDisplayType subtextDisplayType)
         {
             _nameText.text = data.ItemName;
             _descriptionText.text = data.Description;
-            _priceText.text = priceDisplay switch
+            _priceText.text = subtextDisplayType switch
             {
-                ItemInfoCardPriceDisplay.BuyPrice => $"Buy for <b>{data.BuyPrice}</b> coins",
-                ItemInfoCardPriceDisplay.SellPrice => $"Sell for <b>{data.SellPrice}</b> coins",
+                SubtextDisplayType.None => string.Empty,
+                SubtextDisplayType.BuyPrice => $"<size=150%>Buy for <b>{data.BuyPrice}</b> coins",
+                SubtextDisplayType.SellPrice => $"<size=150%>Sell for <b>{data.SellPrice}</b> coins",
+                SubtextDisplayType.BuySpeculate => "Could be worth something in the shop...",
+                SubtextDisplayType.UsageHint => "Items can be used to overcome tough obstacles.",
                 _ => _priceText.text
             };
 

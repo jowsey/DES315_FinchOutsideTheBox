@@ -32,7 +32,7 @@ public class InteractDetection : MonoBehaviour
 
     //The transform of the object currently being looked at
     public static Transform TargetedTransform { get; private set; }
-    
+
     private uint _lastTargetMask;
 
     private void Awake()
@@ -179,7 +179,7 @@ public class InteractDetection : MonoBehaviour
                 if (showInfoCard)
                 {
                     if (!_itemInfoCardInstance) _itemInfoCardInstance = Instantiate(_itemInfoCardPrefab, _uiCanvas);
-                    _itemInfoCardInstance.Build(item.Data, ItemInfoCard.ItemInfoCardPriceDisplay.None);
+                    _itemInfoCardInstance.Build(item.Data, item is Treasure ? ItemInfoCard.SubtextDisplayType.BuySpeculate : ItemInfoCard.SubtextDisplayType.UsageHint);
 
                     // Info card below it
                     _itemInfoCardInstance.WorldFollowUI.TrackingTarget = TargetedTransform;
