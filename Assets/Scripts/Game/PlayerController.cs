@@ -728,21 +728,20 @@ public class PlayerController : NetworkBehaviour
         }
         
         // Ground vfx
-        if (grounded && !_wasGrounded)
+        if (grounded && !_wasGrounded && _groundImpactVFX)
         {
-            var gv = Instantiate(_groundImpactVFX, transform.position, Quaternion.identity);
+            var gv = Instantiate(_groundImpactVFX, Rb.position, Quaternion.identity);
             Destroy(gv, 1f);
             WwiseAnimationEvents.PlayDustCloud();
         }
         
-        if (grounded && _networkAnimator.animator.GetBool(RunningState) && !Seat)
+        if (grounded && _networkAnimator.animator.GetBool(RunningState) && !Seat && _dustVFX)
         {
-            var gv = Instantiate(_dustVFX, transform.position, Quaternion.identity);
+            var gv = Instantiate(_dustVFX, Rb.position, Quaternion.identity);
             Destroy(gv, 0.8f);
         }
         
         WwiseAnimationEvents.EnableFootsteps = !Seat && grounded;
-        
         _wasGrounded = grounded;
 
         if (!authority && !IsPuppet) return;
