@@ -228,6 +228,9 @@ public class PlayerController : NetworkBehaviour
     
     public Emoter Emoter { get; private set; }
 
+    private GameObject _dropControlReference;
+    private GameObject _useControlReference;
+
     // Control blockers
     public static void AddControlBlockerFlags(Object blocker, ControlBlockerFlags flags)
     {
@@ -444,6 +447,9 @@ public class PlayerController : NetworkBehaviour
         gameObject.AddComponent<AkAudioListener>();
 
         ObstructionDitherer.PlayerTransform = _cameraObstructionDithererRayEndPosition;
+
+        _dropControlReference = GameObject.FindWithTag("DropItemControlReference");
+        _useControlReference = GameObject.FindWithTag("UseItemControlReference");
     }
 
     public override void OnStopLocalPlayer()
@@ -454,7 +460,7 @@ public class PlayerController : NetworkBehaviour
 
     private void OnDestroy()
     {
-        Checkpoint.OnRespawn.RemoveListener(OnRespawn);
+        RespawnTarget.OnRespawn.RemoveListener(OnRespawn);
 
         PlayableDirector director = FindAnyObjectByType<PlayableDirector>();
         if (director)
@@ -630,6 +636,21 @@ public class PlayerController : NetworkBehaviour
         }
         
         _activeStatusEffects.RemoveAll(e => completedEffects.Contains(e));
+
+        // Dynamic control references
+        if (_dropControlReference && _useControlReference)
+        {
+            if (HeldObject && !_dropControlReference.activeSelf)
+            {
+                _dropControlReference.SetActive(true);
+                _useControlReference.SetActive(true);
+            }
+            else if (!HeldObject && _dropControlReference.activeSelf)
+            {
+                _dropControlReference.SetActive(false);
+                _useControlReference.SetActive(false);
+            }
+        }
     }
 
     private void LateUpdate()

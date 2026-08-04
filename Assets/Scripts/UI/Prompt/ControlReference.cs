@@ -1,4 +1,4 @@
-﻿using PrimeTween;
+using PrimeTween;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -13,7 +13,7 @@ namespace UI
         private const float _transitionDuration = 0.15f;
 
         private bool _isPressed;
-
+        
         private void Start()
         {
             _inputIconManager.SetAction(_input);
