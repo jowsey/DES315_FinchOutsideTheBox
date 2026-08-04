@@ -35,6 +35,7 @@ namespace UI
         private void OnEnable()
         {
             InputSystem.onActionChange += OnActionChange;
+            _image.sprite = null;
             UpdateIcons();
         }
 
@@ -70,21 +71,21 @@ namespace UI
         {
             if (!_actionRef) return;
 
-            _image.sprite = null;
             if (_iconHandle.IsValid()) Addressables.Release(_iconHandle);
 
-            bool deviceNativeControl = true;
+            var isControlDeviceNative = true;
             var activeControl = _actionRef.action.controls.FirstOrDefault(control => control.device == _lastActiveDevice);
             if (activeControl == null)
             {
-                deviceNativeControl = false;
+                isControlDeviceNative = false;
                 activeControl = _actionRef.action.controls.Count > 0 ? _actionRef.action.controls[0] : null;
             }
+
             if (activeControl == null) return;
 
             var inputPath = activeControl.path;
 
-            if (deviceNativeControl && _lastActiveDevice is Gamepad)
+            if (isControlDeviceNative && _lastActiveDevice is Gamepad)
             {
                 inputPath = inputPath.Replace(inputPath.Split('/')[1], _lastActiveDevice is DualShockGamepad ? "PlayStation" : "Xbox");
             }
@@ -92,17 +93,17 @@ namespace UI
             var assetPath = $"InputIcon{inputPath}";
 
             _iconHandle = Addressables.LoadAssetAsync<Sprite>(assetPath);
-            _iconHandle.WaitForCompletion();
-
-            if (_iconHandle.Status == AsyncOperationStatus.Succeeded)
+            _iconHandle.Completed += handle =>
             {
-                _image.sprite = _iconHandle.Result;
-            }
-            else
-            {
-                Debug.LogWarning($"Input icon '{assetPath}' for {_actionRef.action.name} not found in Addressables!");
-                Addressables.Release(_iconHandle);
-            }
+                if (handle.Status == AsyncOperationStatus.Succeeded)
+                {
+                    if (_image) _image.sprite = handle.Result;
+                }
+                else
+                {
+                    Debug.LogWarning($"Input icon '{assetPath}' for {_actionRef.action.name} not found in Addressables!");
+                }
+            };
         }
 
         public void SetAction(InputActionReference action)
