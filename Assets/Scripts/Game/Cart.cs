@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,7 +45,7 @@ public class Cart : NetworkBehaviour
 
     [field: SyncVar(hook = nameof(OnTotalCarriedItemsChanged))] public int TotalCarriedItems { get; private set; }
 
-    [SyncVar] public int TotalItemSellPrice;
+    [field: SyncVar] public int TotalItemSellPrice { get; private set; }
 
     [field: SerializeField] public UpgradeSack SackPrefab { get; private set; }
 
@@ -58,9 +59,6 @@ public class Cart : NetworkBehaviour
     [SerializeField] [Required] private AK.Wwise.Event _glassInVehicle;
     [SerializeField] [Required] private AK.Wwise.RTPC _cartSpeedRTPC;
     [SerializeField] [Required] private AK.Wwise.RTPC _numCarriedTreasuresRTPC;
-
-    [SerializeField] [Required] private WorldFollowUI _lowTreasureWarningPrefab;
-    private WorldFollowUI _lowTreasureWarningUI;
 
     //Velocity doesn't exist on non-authed client, so we use this to calculate our own rough speed
     private Vector3 _positionLastFrame;
