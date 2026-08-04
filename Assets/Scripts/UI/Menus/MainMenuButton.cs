@@ -16,17 +16,16 @@ namespace UI
         private Color _originalColor;
         [SerializeField] private Color _highlightColor = Color.hotPink;
 
-        private static Texture2D _highlightCursor;
+        public static Texture2D HighlightCursor { get; private set; }
         public bool Active;
 
         private void Awake()
         {
-            if (!_highlightCursor) _highlightCursor = Resources.Load<Texture2D>("UI/paw");
+            if (!HighlightCursor) HighlightCursor = Resources.Load<Texture2D>("UI/paw");
 
             Button = GetComponent<Button>();
             _text = GetComponent<TextMeshProUGUI>();
             _originalColor = _text.color;
-
 
             if (Active)
             {
@@ -57,7 +56,6 @@ namespace UI
             {
                 _text.color = _highlightColor;
                 _text.fontStyle |= FontStyles.Bold;
-                
             }
         }
         private void Unhighlight()
@@ -72,7 +70,7 @@ namespace UI
         public void OnPointerEnter(PointerEventData eventData)
         {
             EventSystem.current.SetSelectedGameObject(gameObject);
-            Cursor.SetCursor(_highlightCursor, new Vector2(_highlightCursor.width / 2f, _highlightCursor.height / 2f), CursorMode.Auto);
+            Cursor.SetCursor(HighlightCursor, new Vector2(HighlightCursor.width / 2f, HighlightCursor.height / 2f), CursorMode.Auto);
             Highlight();
             buttonSfx.Post(gameObject);
         }
