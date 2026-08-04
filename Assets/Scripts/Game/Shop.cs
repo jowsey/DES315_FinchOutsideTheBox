@@ -109,9 +109,9 @@ namespace Game
             if (!newItem) return; // will be null if already bought on join
 
             var counterItem = newItem.gameObject.GetComponent<ShopCounterItem>() ?? newItem.gameObject.AddComponent<ShopCounterItem>();
-            counterItem.enabled = true;
             counterItem.ItemData = newItem.Data;
             counterItem.SetSelected(false);
+            counterItem.enabled = false;
         }
 
         private void OnAvailableItemChanged(int index, Item oldValue)
@@ -119,7 +119,7 @@ namespace Game
             var newValue = AvailableItems[index];
             if (!newValue && oldValue.TryGetComponent(out ShopCounterItem counterItem))
             {
-                counterItem.Outline.enabled = false;
+                counterItem.enabled = false;
                 if (counterItem == _hoveredItem) _hoveredItem = null;
             }
         }
@@ -146,6 +146,8 @@ namespace Game
             _camera = FindAnyObjectByType<Camera>(FindObjectsInactive.Include);
             _zoomController = _camera.GetComponent<CameraZoomController>();
             _uiCanvas = GameObject.FindGameObjectWithTag("UICanvas").transform;
+
+            SackItem.enabled = false;
         }
 
         public override void OnStartServer()
@@ -399,13 +401,13 @@ namespace Game
             }
 
             // Enable item outlines
-            SackItem.Outline.enabled = true;
+            SackItem.enabled = true;
             foreach (var item in AvailableItems)
             {
                 if (!item) continue;
                 var counterItem = item.GetComponent<ShopCounterItem>();
-                if (counterItem) counterItem.Outline.enabled = true;
-            }
+                if (counterItem) counterItem.enabled = true;
+            }   
 
             //Hide action UIs & enter prompt
             foreach (CanvasGroup uiElement in _hiddenUIElements)
@@ -451,12 +453,12 @@ namespace Game
                 _hoveredItem = null;
             }
 
-            SackItem.Outline.enabled = false;
+            SackItem.enabled = false;
             foreach (var item in AvailableItems)
             {
                 if (!item) continue;
                 var counterItem = item.GetComponent<ShopCounterItem>();
-                if (counterItem) counterItem.Outline.enabled = false;
+                if (counterItem) counterItem.enabled = false;
             }
 
             //Show action UIs & enter prompt
@@ -512,9 +514,6 @@ namespace Game
             itemToBuy.transform.localScale = Vector3.one;
             itemToBuy.StateData = new Item.IdleStateData();
             itemToBuy.ServerTryPickup(buyer);
-
-            var counterItem = itemToBuy.GetComponent<ShopCounterItem>();
-            counterItem.enabled = false;
 
             TargetBuyResult(sender, PurchaseError.None, itemToBuy.Data);
             _shopkeepAnimator.SetTrigger(ShopkeepOnBuyTrigger);
