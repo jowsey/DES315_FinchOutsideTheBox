@@ -238,7 +238,7 @@ namespace Game.Items
 
                     if (_hasInitialised)
                     {
-                        _pickupSfx.Post(gameObject);
+                        _pickupSfx?.Post(gameObject);
                     }
 
                     break;
@@ -247,7 +247,7 @@ namespace Game.Items
                 {
                     if (_hasInitialised)
                     {
-                        _pickupSfx.Post(gameObject);
+                        _pickupSfx?.Post(gameObject);
                     }
 
                     break;

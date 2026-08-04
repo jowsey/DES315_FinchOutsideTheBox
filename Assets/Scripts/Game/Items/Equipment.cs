@@ -33,7 +33,7 @@ namespace Game.Items
         [ClientRpc]
         protected void ClientOnSuccessfulUse()
         {
-            _useSfx.Post(gameObject);
+            _useSfx?.Post(gameObject);
         }
 
         [TargetRpc]
