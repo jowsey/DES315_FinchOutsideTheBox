@@ -24,7 +24,7 @@ namespace Game.Items
             {
                 _randomMeshIndex = Random.Range(0, _randomMeshOptions.Count);
             }
-            
+
             RespawnTarget.OnRespawn.AddListener(OnRespawn);
         }
 
@@ -61,7 +61,7 @@ namespace Game.Items
         {
             Smashable = false;
         }
-        
+
         protected override void OnStateChanged(ItemStateData oldState, ItemStateData newState)
         {
             // Transition out
@@ -96,7 +96,7 @@ namespace Game.Items
 
                     break;
                 }
-                case PuttingDownStateData puttingDownData:
+                case PuttingDownStateData:
                 {
                     if (isServer)
                     {
@@ -105,12 +105,14 @@ namespace Game.Items
 
                     break;
                 }
-                case SmashedStateData smashedData:
+                case SmashedStateData:
                 {
+                    if (!_smashedTreasurePrefab) break;
+
                     Instantiate(_smashedTreasurePrefab, transform.position, transform.rotation);
                     if (_hasInitialised)
                     {
-                        _breakSfx.Post(gameObject);
+                        _breakSfx?.Post(gameObject);
                     }
 
                     break;
