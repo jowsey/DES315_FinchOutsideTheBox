@@ -70,7 +70,7 @@ namespace Game.Items
 
         [SyncVar(hook = nameof(OnStateChanged))]
         [ReadOnly] public ItemStateData StateData = new IdleStateData();
-        
+
         [ShowInInspector] private string StateName => StateData.GetType().Name;
 
         [SyncVar(hook = nameof(OnPickuppableChanged))]
@@ -112,7 +112,7 @@ namespace Game.Items
         {
             if (this is SandcastleEquipment && StateData is InactiveStateData) return; // sandcastles are persistent across respawns, don't store
             if (StateData is SackCarriedStateData) return; // handled by UpgradeSack
-            
+
             if (Cart.Instance.CarriedItems.Contains(this))
             {
                 snapshot.CarriedItems[this] = new RespawnTarget.RespawnSnapshot.CarriedItemSnapshot
@@ -226,6 +226,12 @@ namespace Game.Items
                     if (isServer)
                     {
                         Rb.isKinematic = true;
+
+                        if (Cart.Instance.CarriedItems.Contains(this))
+                        {
+                            // workaround physics not noticing the trigger exit
+                            Cart.Instance.RemoveCarriedItem(this);
+                        }
                     }
 
                     foreach (Collider col in _colliders) col.enabled = false;
