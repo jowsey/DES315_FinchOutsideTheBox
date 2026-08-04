@@ -5233,7 +5233,7 @@
 													<Custom>
 														<Attenuation Name="Attenuation (Custom)" ID="{9C5AA8AD-0832-47EB-BB75-32F3921084FC}" ShortID="618672537">
 															<PropertyList>
-																<Property Name="RadiusMax" Type="Real64" Value="45"/>
+																<Property Name="RadiusMax" Type="Real64" Value="65"/>
 															</PropertyList>
 															<CurveUsageInfoList>
 																<VolumeDryUsage>
@@ -5245,36 +5245,46 @@
 																			<PointList>
 																				<Point>
 																					<XPos>0</XPos>
-																					<YPos>0</YPos>
+																					<YPos>-1.72504</YPos>
 																					<Flags>5</Flags>
 																				</Point>
 																				<Point>
-																					<XPos>20.058825</XPos>
-																					<YPos>-0.69293</YPos>
+																					<XPos>10.15807</XPos>
+																					<YPos>-5.22109</YPos>
 																					<Flags>0</Flags>
 																				</Point>
 																				<Point>
-																					<XPos>37.53426</XPos>
-																					<YPos>-2.89825</YPos>
+																					<XPos>35.17229</XPos>
+																					<YPos>-7.80907</YPos>
 																					<Flags>0</Flags>
 																				</Point>
 																				<Point>
-																					<XPos>41.71879</XPos>
-																					<YPos>-6.75552</YPos>
+																					<XPos>41.44468</XPos>
+																					<YPos>-8.6691</YPos>
 																					<Flags>0</Flags>
 																				</Point>
 																				<Point>
-																					<XPos>43.71016</XPos>
-																					<YPos>-11.93399</YPos>
+																					<XPos>44.32111</XPos>
+																					<YPos>-13.84757</YPos>
 																					<Flags>0</Flags>
 																				</Point>
 																				<Point>
-																					<XPos>44.37837</XPos>
-																					<YPos>-20.4868</YPos>
+																					<XPos>45.2863</XPos>
+																					<YPos>-22.40038</YPos>
 																					<Flags>0</Flags>
 																				</Point>
 																				<Point>
-																					<XPos>45</XPos>
+																					<XPos>48.69298</XPos>
+																					<YPos>-33.36772</YPos>
+																					<Flags>0</Flags>
+																				</Point>
+																				<Point>
+																					<XPos>55.30702</XPos>
+																					<YPos>-41.32652</YPos>
+																					<Flags>0</Flags>
+																				</Point>
+																				<Point>
+																					<XPos>65</XPos>
 																					<YPos>-200</YPos>
 																					<Flags>37</Flags>
 																				</Point>
@@ -5301,17 +5311,17 @@
 																					<Flags>5</Flags>
 																				</Point>
 																				<Point>
-																					<XPos>42.33439</XPos>
+																					<XPos>61.1496744444444</XPos>
 																					<YPos>15</YPos>
 																					<Flags>0</Flags>
 																				</Point>
 																				<Point>
-																					<XPos>44.21738</XPos>
+																					<XPos>63.8695488888889</XPos>
 																					<YPos>68</YPos>
 																					<Flags>0</Flags>
 																				</Point>
 																				<Point>
-																					<XPos>45</XPos>
+																					<XPos>65</XPos>
 																					<YPos>100</YPos>
 																					<Flags>37</Flags>
 																				</Point>
@@ -15070,6 +15080,361 @@
 									</ObjectLists>
 									<ActiveSourceList>
 										<ActiveSource Name="RopeCreak" ID="{D6363664-A201-4EF0-A0D8-525552BB6AC5}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+							</ChildrenList>
+						</Folder>
+						<Folder Name="Treasure" ID="{5607F0D1-ED57-40F8-8CA5-72C051E23780}" ShortID="1020229087">
+							<ChildrenList>
+								<RandomSequenceContainer Name="Gems" ID="{2EB04F0A-CE48-488D-B204-DCCAFF90D30A}" ShortID="159371827">
+									<PropertyList>
+										<Property Name="Pitch" Type="int32">
+											<ModifierList>
+												<ModifierInfo>
+													<Modifier Name="" ID="{0CDD2E73-A106-4A04-AEA6-BF2F748FEC0D}">
+														<PropertyList>
+															<Property Name="Enabled" Type="bool" Value="True"/>
+															<Property Name="Max" Type="Real64" Value="225"/>
+															<Property Name="Min" Type="Real64" Value="-125"/>
+														</PropertyList>
+													</Modifier>
+												</ModifierInfo>
+											</ModifierList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<Sound Name="Gem-001" ID="{53F4F77A-9379-4BFB-94FD-6B296C9FE3D1}" ShortID="45579270">
+											<PropertyList>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-26</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="Gem-001" ID="{48CCCC57-CB27-4572-8B52-482878E213F8}">
+													<Language>SFX</Language>
+													<AudioFile>Gem-001.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="173530550"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="Gem-001" ID="{48CCCC57-CB27-4572-8B52-482878E213F8}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Gem-002" ID="{B028429A-4655-4367-8865-181294EA18D6}" ShortID="662998371">
+											<PropertyList>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-21</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="Gem-002" ID="{D10C9131-A1BE-404D-A81C-A989EA654B70}">
+													<Language>SFX</Language>
+													<AudioFile>Gem-002.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="332087323"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="Gem-002" ID="{D10C9131-A1BE-404D-A81C-A989EA654B70}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Gem-003" ID="{A82E3DDB-C08C-44BF-895F-1F0C794B6F8B}" ShortID="285489185">
+											<PropertyList>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-21</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="Gem-003" ID="{8864BEAE-C129-499F-BCDD-1A1C30E98B10}">
+													<Language>SFX</Language>
+													<AudioFile>Gem-003.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="403639694"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="Gem-003" ID="{8864BEAE-C129-499F-BCDD-1A1C30E98B10}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Gem-004" ID="{9CA8379E-D0A0-4EFB-93CE-A0B94DA13A45}" ShortID="537191633">
+											<PropertyList>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-16</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="Gem-004" ID="{BE24B84B-D815-40E8-B9FE-B1557D3A048A}">
+													<Language>SFX</Language>
+													<AudioFile>Gem-004.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="309677158"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="Gem-004" ID="{BE24B84B-D815-40E8-B9FE-B1557D3A048A}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Gem-005" ID="{8A35EC67-E049-47E6-83CE-6025DE7B901C}" ShortID="566482199">
+											<PropertyList>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>-16</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="Gem-005" ID="{4CA623D6-68C5-49E2-810B-DF23B6261AD3}">
+													<Language>SFX</Language>
+													<AudioFile>Gem-005.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="4557049"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="Gem-005" ID="{4CA623D6-68C5-49E2-810B-DF23B6261AD3}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+									</ChildrenList>
+									<ObjectLists>
+										<ObjectList Name="RTPC">
+											<Reference>
+												<Local>
+													<RTPC Name="" ID="{E5C9ED1C-D08B-4322-A91B-270851088705}" ShortID="975255753">
+														<PropertyList>
+															<Property Name="PropertyName" Type="string" Value="Volume"/>
+														</PropertyList>
+														<ReferenceList>
+															<Reference Name="ControlInput">
+																<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+															</Reference>
+															<Reference Name="Curve">
+																<Custom>
+																	<Curve Name="" ID="{D3D27461-2B00-4AFE-A89A-3DE550507E5C}">
+																		<PropertyList>
+																			<Property Name="Flags" Type="int32" Value="3"/>
+																		</PropertyList>
+																		<PointList>
+																			<Point>
+																				<XPos>0</XPos>
+																				<YPos>-200</YPos>
+																				<Flags>5</Flags>
+																			</Point>
+																			<Point>
+																				<XPos>30</XPos>
+																				<YPos>6</YPos>
+																				<Flags>37</Flags>
+																			</Point>
+																		</PointList>
+																	</Curve>
+																</Custom>
+															</Reference>
+														</ReferenceList>
+													</RTPC>
+												</Local>
+											</Reference>
+										</ObjectList>
+									</ObjectLists>
+								</RandomSequenceContainer>
+							</ChildrenList>
+						</Folder>
+						<Folder Name="Sandcastle" ID="{00D725F8-C203-4CE2-8C50-94ABAADEEAAB}" ShortID="698206392">
+							<ChildrenList>
+								<Sound Name="Sandcastle Fall" ID="{11D1BB51-3065-40E0-BC7A-CBFE1D11E1BC}" ShortID="349038907">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-5</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Sandcastle Fall" ID="{F04DA76C-76A2-44BF-AE83-9C9B7923C7C5}">
+											<Language>SFX</Language>
+											<AudioFile>Sandcastle Fall.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="613055327"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists>
+										<ObjectList Name="RTPC">
+											<Reference>
+												<Local>
+													<RTPC Name="" ID="{6E4B65A8-82AD-499A-B835-AC8073D474E6}" ShortID="111096049">
+														<PropertyList>
+															<Property Name="PropertyName" Type="string" Value="Volume"/>
+														</PropertyList>
+														<ReferenceList>
+															<Reference Name="ControlInput">
+																<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+															</Reference>
+															<Reference Name="Curve">
+																<Custom>
+																	<Curve Name="" ID="{8A24AE90-4705-476D-B2AE-A802D28E39B1}">
+																		<PropertyList>
+																			<Property Name="Flags" Type="int32" Value="3"/>
+																		</PropertyList>
+																		<PointList>
+																			<Point>
+																				<XPos>0</XPos>
+																				<YPos>-200</YPos>
+																				<Flags>5</Flags>
+																			</Point>
+																			<Point>
+																				<XPos>30</XPos>
+																				<YPos>6</YPos>
+																				<Flags>37</Flags>
+																			</Point>
+																		</PointList>
+																	</Curve>
+																</Custom>
+															</Reference>
+														</ReferenceList>
+													</RTPC>
+												</Local>
+											</Reference>
+										</ObjectList>
+									</ObjectLists>
+									<ActiveSourceList>
+										<ActiveSource Name="Sandcastle Fall" ID="{F04DA76C-76A2-44BF-AE83-9C9B7923C7C5}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Sandcastle Place" ID="{83DE2837-7CD3-4A18-BABB-FE9CE33E6990}" ShortID="3127648">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-29</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{096019F9-693C-4B3C-8941-B8CC6B186320}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{72C7744E-CC81-40A4-A70E-E3BDCAC0ADE4}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Sandcastle Place" ID="{A81B5A09-C5FA-4B8F-887D-C0C2D09A06A3}">
+											<Language>SFX</Language>
+											<AudioFile>Sandcastle Place.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="248451988"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists>
+										<ObjectList Name="RTPC">
+											<Reference>
+												<Local>
+													<RTPC Name="" ID="{12BC31B9-8C35-435B-BDF9-47222C99D105}" ShortID="134033809">
+														<PropertyList>
+															<Property Name="PropertyName" Type="string" Value="Volume"/>
+														</PropertyList>
+														<ReferenceList>
+															<Reference Name="ControlInput">
+																<ObjectRef Name="SFXVolume" ID="{325CF82D-F2ED-4A25-A957-CF7D3E0FD459}" WorkUnitID="{D84AE87C-3D23-4186-BCD6-E035E3506B22}"/>
+															</Reference>
+															<Reference Name="Curve">
+																<Custom>
+																	<Curve Name="" ID="{74FE4495-249B-4FC7-AD25-E334B30837C5}">
+																		<PropertyList>
+																			<Property Name="Flags" Type="int32" Value="3"/>
+																		</PropertyList>
+																		<PointList>
+																			<Point>
+																				<XPos>0</XPos>
+																				<YPos>-200</YPos>
+																				<Flags>5</Flags>
+																			</Point>
+																			<Point>
+																				<XPos>30</XPos>
+																				<YPos>6</YPos>
+																				<Flags>37</Flags>
+																			</Point>
+																		</PointList>
+																	</Curve>
+																</Custom>
+															</Reference>
+														</ReferenceList>
+													</RTPC>
+												</Local>
+											</Reference>
+										</ObjectList>
+									</ObjectLists>
+									<ActiveSourceList>
+										<ActiveSource Name="Sandcastle Place" ID="{A81B5A09-C5FA-4B8F-887D-C0C2D09A06A3}" Platform="Linked"/>
 									</ActiveSourceList>
 								</Sound>
 							</ChildrenList>
