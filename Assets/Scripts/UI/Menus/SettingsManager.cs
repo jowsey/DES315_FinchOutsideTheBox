@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Threading;
 using AK.Wwise;
 using Mirror;
 using Newtonsoft.Json;
@@ -80,6 +82,8 @@ namespace UI
         [SerializeField] [Required] private RTPC _sfxVolumeRtpc;
 
         private static string _sessionRandomName;
+
+        private static CancellationTokenSource _saveCts;
 
         // Gets the player's name, generating a session-consistent random one if none is set
         public static string GetSafeName()
@@ -168,7 +172,7 @@ namespace UI
         private void OnPlayerNameChanged(string val)
         {
             ActiveSettings.PlayerName = val;
-            SaveToDisk();
+            QueueSaveToDisk();
 
             // If currently in a game, sync name
             if (NetworkClient.active && PlayerController.LocalPlayer)
@@ -180,7 +184,7 @@ namespace UI
         private void OnFirstPersonFovChanged(float val)
         {
             ActiveSettings.FirstPersonFov = val;
-            SaveToDisk();
+            QueueSaveToDisk();
 
             if (CameraZoomController.FirstPerson && Camera.main)
             {
@@ -191,13 +195,13 @@ namespace UI
         private void OnFirstPersonSensitivityChanged(float val)
         {
             ActiveSettings.FirstPersonSensPercent = val;
-            SaveToDisk();
+            QueueSaveToDisk();
         }
 
         private void OnMasterVolumeChanged(float val)
         {
             ActiveSettings.MasterVolumePercent = val;
-            SaveToDisk();
+            QueueSaveToDisk();
 
             _masterVolumeRtpc.SetGlobalValue((val / 100) * MaxRtpcVolume);
         }
@@ -205,7 +209,7 @@ namespace UI
         private void OnMusicVolumeChanged(float val)
         {
             ActiveSettings.MusicVolumePercent = val;
-            SaveToDisk();
+            QueueSaveToDisk();
 
             _musicVolumeRtpc.SetGlobalValue((val / 100) * MaxRtpcVolume);
         }
@@ -213,7 +217,7 @@ namespace UI
         private void OnSfxVolumeChanged(float val)
         {
             ActiveSettings.SfxVolumePercent = val;
-            SaveToDisk();
+            QueueSaveToDisk();
 
             _sfxVolumeRtpc.SetGlobalValue((val / 100) * MaxRtpcVolume);
         }
@@ -221,58 +225,76 @@ namespace UI
         private void OnPttToggleChanged(bool val)
         {
             ActiveSettings.PushToTalk = val;
-            SaveToDisk();
+            QueueSaveToDisk();
         }
 
         private void OnPttSfxToggleChanged(bool val)
         {
             ActiveSettings.PushToTalkSfx = val;
-            SaveToDisk();
+            QueueSaveToDisk();
         }
 
         private void OnNoiseSuppressionToggleChanged(bool val)
         {
             ActiveSettings.NoiseSuppression = val;
-            SaveToDisk();
+            QueueSaveToDisk();
         }
 
         private void OnInputDeviceChanged(int val)
         {
             string uiText = _inputDeviceDropdown.options[val].text;
             SetInputDevice(uiText == "None" ? null : uiText);
-            SaveToDisk();
+            QueueSaveToDisk();
         }
 
         private void ResetSettings()
         {
             Tween.Scale(_resetButton.transform, Vector3.one * 0.95f, 0.1f, Ease.OutCubic, 2, CycleMode.Yoyo);
 
-            if (System.IO.File.Exists(SettingsFilePath))
+            if (File.Exists(SettingsFilePath))
             {
-                System.IO.File.Delete(SettingsFilePath);
+                File.Delete(SettingsFilePath);
             }
 
             LoadFromDisk();
         }
 
-        public static void SaveToDisk()
+        public static void QueueSaveToDisk()
         {
-            var json = JsonConvert.SerializeObject(ActiveSettings, Formatting.Indented);
-            System.IO.File.WriteAllText(SettingsFilePath, json);
+            _saveCts?.Cancel();
+            _saveCts?.Dispose();
+
+            _saveCts = new CancellationTokenSource();
+            _ = SaveDebounced(_saveCts.Token);
+        }
+
+        private static async Awaitable SaveDebounced(CancellationToken token)
+        {
+            try
+            {
+                await Awaitable.WaitForSecondsAsync(0.5f, token);
+
+                var json = JsonConvert.SerializeObject(ActiveSettings, Formatting.Indented);
+                await File.WriteAllTextAsync(SettingsFilePath, json, token);
+            }
+            catch (OperationCanceledException)
+            {
+                // another queued call
+            }
         }
 
         public void LoadFromDisk()
         {
-            if (System.IO.File.Exists(SettingsFilePath))
+            if (File.Exists(SettingsFilePath))
             {
-                var json = System.IO.File.ReadAllText(SettingsFilePath);
+                var json = File.ReadAllText(SettingsFilePath);
                 ActiveSettings = JsonConvert.DeserializeObject<UserSettings>(json);
             }
             else
             {
                 Debug.Log("Tried loading settings but no file found, using defaults");
                 ActiveSettings = new UserSettings();
-                SaveToDisk();
+                QueueSaveToDisk();
             }
 
             if (!Microphone.devices.Contains(ActiveSettings.InputDevice))

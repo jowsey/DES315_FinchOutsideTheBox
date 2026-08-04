@@ -66,7 +66,7 @@ namespace UI
         private void OnVoiceVolumeChanged(float value)
         {
             SettingsManager.ActiveSettings.PlayerVoiceVolumePercents[_player.PlayerUID] = value;
-            SettingsManager.SaveToDisk();
+            SettingsManager.QueueSaveToDisk();
         }
     }
 }
