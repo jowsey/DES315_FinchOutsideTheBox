@@ -168,7 +168,7 @@ namespace Util
             RebuildPresence();
         }
 
-        private void OnStatusChanged(Client.Status status, Client.Error error, int errorDetail)
+        private static void OnStatusChanged(Client.Status status, Client.Error error, int errorDetail)
         {
             Debug.Log($"Discord status changed: {status}");
             if (error != Client.Error.None)
@@ -177,18 +177,20 @@ namespace Util
             }
         }
 
-        private void OnLog(string message, LoggingSeverity severity)
+        private static void OnLog(string message, LoggingSeverity severity)
         {
             switch (severity)
             {
                 case LoggingSeverity.Error:
-                    Debug.LogError(message);
+                    Debug.LogError($"[Discord SDK]: {message}");
                     break;
                 case LoggingSeverity.Warning:
-                    Debug.LogWarning(message);
+#if UNITY_EDITOR
+                    Debug.LogWarning($"[Discord SDK]: {message}");
+#endif
                     break;
                 default:
-                    Debug.Log(message);
+                    // Debug.Log($"[Discord SDK]: {message}");
                     break;
             }
         }
