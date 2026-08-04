@@ -284,6 +284,8 @@ namespace Game.Items
                     }
 
                     foreach (Collider col in _colliders) col.enabled = false;
+                    foreach (Renderer rend in _renderers) rend.enabled = true;
+                    foreach (Light l in _lights) l.enabled = true;
 
                     break;
                 }
