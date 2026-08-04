@@ -56,6 +56,7 @@ namespace UI
         private void OnDisable()
         {
             GloballyLockedButton.RemoveLockSource(this);
+            Application.backgroundLoadingPriority = ThreadPriority.BelowNormal;
         }
     }
 }
