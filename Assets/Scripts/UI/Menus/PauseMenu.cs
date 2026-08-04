@@ -78,6 +78,8 @@ namespace UI
 
         private void OnOpen(bool active)
         {
+            if (active && !PlayerController.LocalPlayer) return; // don't open until client has finished joining
+            
             _isActive = active;
 
             Cursor.lockState = active ? CursorLockMode.None : CursorLockMode.Locked;

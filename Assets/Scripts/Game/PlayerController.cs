@@ -240,7 +240,7 @@ public class PlayerController : NetworkBehaviour
             _controlBlockers.Add(blocker, flags);
         }
 
-        if (flags.HasFlag(ControlBlockerFlags.Look) && _cinemachineInput.enabled)
+        if (_cinemachineInput && _cinemachineInput.enabled && flags.HasFlag(ControlBlockerFlags.Look))
         {
             _cinemachineInput.enabled = false;
         }
@@ -261,12 +261,9 @@ public class PlayerController : NetworkBehaviour
             }
         }
 
-        if (_cinemachineInput)
+        if (_cinemachineInput && !_cinemachineInput.enabled && ControlEnabled(ControlBlockerFlags.Look))
         {
-            if (ControlEnabled(ControlBlockerFlags.Look) && !_cinemachineInput.enabled)
-            {
-                _cinemachineInput.enabled = true;
-            }
+            _cinemachineInput.enabled = true;
         }
     }
 
@@ -274,12 +271,9 @@ public class PlayerController : NetworkBehaviour
     {
         _controlBlockers.Remove(blocker);
 
-        if (_cinemachineInput)
+        if (_cinemachineInput && !_cinemachineInput.enabled && ControlEnabled(ControlBlockerFlags.Look))
         {
-            if (ControlEnabled(ControlBlockerFlags.Look) && !_cinemachineInput.enabled)
-            {
-                _cinemachineInput.enabled = true;
-            }
+            _cinemachineInput.enabled = true;
         }
     }
 
