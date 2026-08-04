@@ -89,8 +89,8 @@ public class Cart : NetworkBehaviour
     public override void OnStartServer()
     {
         base.OnStartServer();
-        RespawnTarget.OnRespawn.AddListener(OnRespawn);
         RespawnTarget.OnReachNewTarget.AddListener(OnReachNewTarget);
+        RespawnTarget.OnRespawn.AddListener(OnRespawn);
 
         // First checkpoint runs on Frame 0 before treasures run OnTriggerEnter so we need to manually init
         // - Bounds check isn't perfectly accurate, but we can reasonably assume
@@ -121,6 +121,8 @@ public class Cart : NetworkBehaviour
 
     public override void OnStartClient()
     {
+        if (!isServer) RespawnTarget.OnReachNewTarget.AddListener(OnReachNewTarget);
+        
         _carSound.Post(gameObject);
         _carOnSurface.Post(gameObject);
         _glassInVehicle.Post(gameObject);
@@ -132,6 +134,12 @@ public class Cart : NetworkBehaviour
     {
         base.OnStopServer();
         RespawnTarget.OnRespawn.RemoveListener(OnRespawn);
+        RespawnTarget.OnReachNewTarget.RemoveListener(OnReachNewTarget);
+    }
+
+    public override void OnStopClient()
+    {
+        base.OnStopClient();
         RespawnTarget.OnReachNewTarget.RemoveListener(OnReachNewTarget);
     }
 
@@ -245,31 +253,24 @@ public class Cart : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Checkpoint"))
+        if (!isServer) return;
+        if (!other.CompareTag("Checkpoint")) return;
+
+        var checkpoint = other.GetComponent<Checkpoint>();
+        var newIndex = Checkpoints.IndexOf(checkpoint);
+
+        var currentIndex = CurrentRespawnTarget switch
         {
-            Checkpoint checkpoint = other.GetComponent<Checkpoint>();
-            var newIndex = Checkpoints.IndexOf(checkpoint);
+            Checkpoint currentCheckpoint => Checkpoints.IndexOf(currentCheckpoint),
+            Sandcastle currentSandcastle => Checkpoints.IndexOf(currentSandcastle.Parent),
+            _ => -1
+        };
 
-            var currentIndex = CurrentRespawnTarget switch
-            {
-                Checkpoint currentCheckpoint => Checkpoints.IndexOf(currentCheckpoint),
-                Sandcastle currentSandcastle => Checkpoints.IndexOf(currentSandcastle.Parent),
-                _ => -1
-            };
+        if (newIndex <= currentIndex) return;
+        Debug.Log($"Hit checkpoint {newIndex}: {checkpoint.AreaName}");
 
-            if (newIndex <= currentIndex) return;
-            Debug.Log($"Hit checkpoint {newIndex}: {checkpoint.AreaName}");
-
-            // New checkpoint reached
-            if (isServer)
-            {
-                SetActiveRespawnTarget(checkpoint);
-                checkpoint.ActivateVFX();
-            }
-
-            var checkpointBanner = Instantiate(_checkpointBannerPrefab, _uiCanvas.transform);
-            checkpointBanner.Checkpoint = checkpoint;
-        }
+        // New checkpoint reached!
+        SetActiveRespawnTarget(checkpoint);
     }
 
     private void OnRespawn(RespawnTarget target)
@@ -350,11 +351,27 @@ public class Cart : NetworkBehaviour
         }
 
         CurrentRespawnTarget = target;
+        RespawnTarget.OnReachNewTarget.Invoke(target); // ensure we immediately run on server
+        RpcReachTarget(target);
+    }
+    
+    [ClientRpc(includeOwner = false)]
+    private void RpcReachTarget(RespawnTarget target)
+    {
         RespawnTarget.OnReachNewTarget.Invoke(target);
     }
 
     private void OnReachNewTarget(RespawnTarget target)
     {
+        if (target is Checkpoint checkpoint)
+        {
+            var checkpointBanner = Instantiate(_checkpointBannerPrefab, _uiCanvas.transform);
+            checkpointBanner.Checkpoint = checkpoint;
+
+            checkpoint.ActivateVFX();
+        }
+
+        if (!isServer) return;
         Physics.SyncTransforms();
 
         var snapshot = new RespawnTarget.RespawnSnapshot();
