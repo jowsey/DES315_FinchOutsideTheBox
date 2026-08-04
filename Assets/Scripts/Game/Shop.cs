@@ -117,9 +117,10 @@ namespace Game
         private void OnAvailableItemChanged(int index, Item oldValue)
         {
             var newValue = AvailableItems[index];
-            if (!newValue && oldValue.TryGetComponent(out ShopCounterItem counterItem) && counterItem == _hoveredItem)
+            if (!newValue && oldValue.TryGetComponent(out ShopCounterItem counterItem))
             {
-                _hoveredItem = null;
+                counterItem.Outline.enabled = false;
+                if (counterItem == _hoveredItem) _hoveredItem = null;
             }
         }
 
