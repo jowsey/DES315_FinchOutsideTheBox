@@ -35,7 +35,6 @@ namespace UI
         private void OnEnable()
         {
             InputSystem.onActionChange += OnActionChange;
-            _image.sprite = null;
             UpdateIcons();
         }
 
@@ -106,6 +105,14 @@ namespace UI
             };
         }
 
+        private void LateUpdate()
+        {
+            if (_iconHandle.IsValid() && !_iconHandle.IsDone)
+            {
+                _iconHandle.WaitForCompletion();
+            }
+        }
+        
         public void SetAction(InputActionReference action)
         {
             _actionRef = action;
