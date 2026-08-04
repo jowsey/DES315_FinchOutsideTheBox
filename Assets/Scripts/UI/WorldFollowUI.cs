@@ -39,7 +39,7 @@ namespace UI
             var newPos = _camera.WorldToScreenPoint(trackingPosition) + (Vector3)UIPositionOffset * _parentCanvas.scaleFactor;
             transform.position = Vector3.Lerp(transform.position, newPos, 1 - Mathf.Exp(-_followSpeed * Time.deltaTime));
 
-            var visible = transform.position.z >= 0;
+            var visible = newPos.z >= 0;
             foreach (var canvasRenderer in _canvasRenderers)
             {
                 canvasRenderer.cull = !visible;
