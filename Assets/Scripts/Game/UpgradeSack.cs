@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Game.Items;
 using Mirror;
 using UnityEngine;
@@ -19,7 +19,7 @@ namespace Game
         public Rigidbody Rb { get; private set; }
         public ConfigurableJoint Joint { get; private set; }
         [field: SerializeField] public Transform StorePosition { get; private set; }
-        
+
         private void Awake()
         {
             Rb = GetComponent<Rigidbody>();
@@ -35,6 +35,11 @@ namespace Game
             _fullSack.SetActive(newValue);
 
             _sackInOut.Post(gameObject);
+
+            if (isServer)
+            {
+                Cart.Instance.ReevaluateTotalItemSellPrice();
+            }
         }
 
         public override void OnStartServer()
@@ -60,6 +65,7 @@ namespace Game
         {
             if (!target.Snapshot.SackStoredItems.ContainsKey(this))
             {
+                Cart.Instance.Sacks.Remove(this);
                 CartPositionTransform.gameObject.SetActive(false);
                 NetworkServer.Destroy(gameObject);
             }

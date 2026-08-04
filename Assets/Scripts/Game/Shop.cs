@@ -284,6 +284,8 @@ namespace Game
             newSack.transform.SetParent(nextSackPosition, worldPositionStays: true);
             NetworkServer.Spawn(newSack.gameObject);
 
+            Cart.Instance.Sacks.Add(newSack);
+
             _shopkeepAnimator.SetTrigger(ShopkeepOnBuyTrigger);
         }
 
@@ -548,8 +550,24 @@ namespace Game
         [Command(requiresAuthority = false)]
         public void CmdSellAll()
         {
-            BankManager.Instance.Balance += Cart.Instance.EvaluateTotalItemSellPrice(); //must be done before removing all the treasure, obviously
-            Cart.Instance.RemoveAllTreasures();
+            var cart = Cart.Instance;
+
+            BankManager.Instance.Balance += cart.TotalItemSellPrice;
+
+            var sackTreasures = cart.Sacks.Select(s => s.StoredItem).OfType<Treasure>().ToList();
+            var carriedTreasures = cart.CarriedItems.OfType<Treasure>().ToList();
+
+            foreach (var treasure in sackTreasures)
+            {
+                // transitioning out of the sack state will automatically un-store it
+                treasure.StateData = new Item.InactiveStateData();
+            }
+
+            foreach (var treasure in carriedTreasures)
+            {
+                treasure.StateData = new Item.InactiveStateData();
+                cart.RemoveCarriedItem(treasure);
+            }
         }
 
         private void OnTriggerEnter(Collider other)

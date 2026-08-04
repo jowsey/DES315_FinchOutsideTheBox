@@ -73,7 +73,7 @@ namespace UI.Shop
 
         private void Update()
         {
-            _sellAllEstimateText.text = $"You will receive <b>{Cart.Instance.ExpectedTotalItemSellPrice}</b> coins.";
+            _sellAllEstimateText.text = $"You will receive <b>{Cart.Instance.TotalItemSellPrice}</b> coins.";
             _balanceText.text = BankManager.Instance.Balance.ToString();
         }
 
@@ -81,7 +81,7 @@ namespace UI.Shop
 
         public void SellAll()
         {
-            if (Cart.Instance.ExpectedTotalItemSellPrice > 0)
+            if (Cart.Instance.TotalItemSellPrice > 0)
             {
                 _sellSfx.Post(gameObject);
                 _shop.CmdSellAll();

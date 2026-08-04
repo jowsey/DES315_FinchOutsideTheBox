@@ -44,11 +44,13 @@ public class Cart : NetworkBehaviour
 
     [field: SyncVar(hook = nameof(OnTotalCarriedItemsChanged))] public int TotalCarriedItems { get; private set; }
 
-    [SyncVar] public int ExpectedTotalItemSellPrice;
+    [SyncVar] public int TotalItemSellPrice;
 
     [field: SerializeField] public UpgradeSack SackPrefab { get; private set; }
 
     [field: SerializeField] public List<Transform> SackPositions { get; private set; } = new();
+
+    public List<UpgradeSack> Sacks { get; private set; } = new();
 
     //Sound effects
     [SerializeField] [Required] private AK.Wwise.Event _carSound;
@@ -307,7 +309,7 @@ public class Cart : NetworkBehaviour
         TotalCarriedItems = CarriedItems.Count;
 
         // we sync this since we don't sync individual items
-        ExpectedTotalItemSellPrice = EvaluateTotalItemSellPrice();
+        ReevaluateTotalItemSellPrice();
     }
 
     [Server]
@@ -316,11 +318,15 @@ public class Cart : NetworkBehaviour
         CarriedItems.Remove(item);
         TotalCarriedItems = CarriedItems.Count;
 
-        ExpectedTotalItemSellPrice = EvaluateTotalItemSellPrice();
+        ReevaluateTotalItemSellPrice();
     }
 
     [Server]
-    public int EvaluateTotalItemSellPrice() => CarriedItems.Sum(item => item.Data.SellPrice);
+    public void ReevaluateTotalItemSellPrice()
+    {
+        var allTreasures = CarriedItems.OfType<Treasure>().Concat(Sacks.Select(sack => sack.StoredItem).OfType<Treasure>());
+        TotalItemSellPrice = allTreasures.Sum(treasure => treasure.Data.SellPrice);
+    }
 
     private void OnTotalCarriedItemsChanged(int oldValue, int newValue)
     {
@@ -386,18 +392,5 @@ public class Cart : NetworkBehaviour
         RespawnTarget.OnPreRespawn.Invoke(target);
         RespawnTarget.OnRespawn.Invoke(target);
         RespawnTarget.OnPostRespawn.Invoke(target);
-    }
-
-    [Server]
-    public void RemoveAllTreasures()
-    {
-        //To prevent iterator invalidation from setting the state (which disables collider which runs OnTriggerExit which removes the treasure from Cart.CarriedTreasures)
-        List<Treasure> treasuresToRemove = CarriedItems.OfType<Treasure>().ToList();
-        foreach (Treasure treasure in treasuresToRemove)
-        {
-            //SyncVar hook hides the mesh, make it kinematic, and disable the collider
-            treasure.StateData = new Item.InactiveStateData();
-            RemoveCarriedItem(treasure);
-        }
     }
 }
