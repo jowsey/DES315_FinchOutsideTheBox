@@ -41,21 +41,5 @@ namespace Game.Items
         [field: SerializeField] public Item Prefab { get; private set; }
 
         [field: SerializeField] public Event BuySfx { get; private set; }
-
-        private void OnEnable()
-        {
-#if UNITY_EDITOR
-            // Check if addressable
-            var settings = UnityEditor.AddressableAssets.AddressableAssetSettingsDefaultObject.Settings;
-
-            var assetPath = UnityEditor.AssetDatabase.GetAssetPath(this);
-            var guid = UnityEditor.AssetDatabase.AssetPathToGUID(assetPath);
-
-            var entry = settings.FindAssetEntry(guid);
-
-            if (settings && entry != null) return;
-            Debug.LogWarning($"Item {ItemName} ({name}) isn't registered with Addressables, remember to do so!");
-#endif
-        }
     }
 }
