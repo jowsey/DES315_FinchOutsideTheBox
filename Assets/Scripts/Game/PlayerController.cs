@@ -728,7 +728,7 @@ public class PlayerController : NetworkBehaviour
         }
         
         // Ground vfx
-        if (grounded && !_wasGrounded && _groundImpactVFX)
+        if (grounded && !_wasGrounded && !Seat && _groundImpactVFX)
         {
             var gv = Instantiate(_groundImpactVFX, Rb.position, Quaternion.identity);
             Destroy(gv, 1f);
