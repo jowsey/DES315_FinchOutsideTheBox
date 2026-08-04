@@ -476,10 +476,12 @@ public class PlayerController : NetworkBehaviour
 
     private void OnRespawn(RespawnTarget target)
     {
-        if (!authority) return;
+        if (!isLocalPlayer) return;
         _cinemachineCamera.PreviousStateIsValid = false;
         ActiveShop?.LeaveShop();
 
+        PruneStatusEffects(true);
+        
         // Cart will take us with it
         if (Seat) return;
 
@@ -630,17 +632,8 @@ public class PlayerController : NetworkBehaviour
         }
         
         // Prune completed status effects
-        var completedEffects = _activeStatusEffects.Where(effect => Time.time - effect.StartTime >= effect.Duration);
+        PruneStatusEffects();
         
-        var boxesToRemove = _statusEffectBoxes.Where(kvp => completedEffects.Contains(kvp.Key)).ToList();
-        foreach (var box in boxesToRemove)
-        {
-            _statusEffectBoxes.Remove(box.Key);
-            box.Value.Destroy();
-        }
-        
-        _activeStatusEffects.RemoveAll(e => completedEffects.Contains(e));
-
         // Dynamic control references
         var showDrop = HeldObject;
         var showUse = HeldObject is Equipment { HasUseAbility: true };
@@ -659,6 +652,22 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
+    private void PruneStatusEffects(bool forceEndAll = false)
+    {
+        var completedEffects = forceEndAll
+            ? _activeStatusEffects
+            : _activeStatusEffects.Where(effect => Time.time - effect.StartTime >= effect.Duration);
+
+        var boxesToRemove = _statusEffectBoxes.Where(kvp => completedEffects.Contains(kvp.Key)).ToList();
+        foreach (var box in boxesToRemove)
+        {
+            _statusEffectBoxes.Remove(box.Key);
+            box.Value.Destroy();
+        }
+
+        _activeStatusEffects.RemoveAll(e => completedEffects.Contains(e));
+    }
+    
     private void LateUpdate()
     {
         if (Seat)
