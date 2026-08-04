@@ -138,7 +138,7 @@ public class WheelSeat : NetworkBehaviour
         if (!SeatedPlayer) return;
         
         var torqueAxis = Vector3.Cross(Vector3.up, SeatedPlayer.WorldSpaceMoveDir);
-        _wheelRb.AddTorque(torqueAxis * (MoveForce * SeatedPlayer.AnalogueMoveScale));
+        _wheelRb.AddTorque(torqueAxis * (MoveForce * Mathf.Min(SeatedPlayer.AnalogueMoveScale, 1f)));
     }
 
     private void OnDrawGizmosSelected()
