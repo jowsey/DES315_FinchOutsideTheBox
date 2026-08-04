@@ -1,4 +1,5 @@
-﻿using Game.Items;
+﻿using System;
+using Game.Items;
 using Mirror;
 using UnityEngine;
 using ReadOnlyAttribute = Sirenix.OdinInspector.ReadOnlyAttribute;
@@ -13,7 +14,7 @@ namespace Game
         [SerializeField] public AK.Wwise.Event _sackInOut;
 
         [field: SyncVar(hook = nameof(OnStoredItemChanged))] public Item StoredItem;
-        [ReadOnly] public Transform LinkedCartTransform;
+        [ReadOnly, NonSerialized] public Transform CartPositionTransform;
 
         public Rigidbody Rb { get; private set; }
         public ConfigurableJoint Joint { get; private set; }
@@ -59,7 +60,7 @@ namespace Game
         {
             if (!target.Snapshot.SackStoredItems.ContainsKey(this))
             {
-                LinkedCartTransform.gameObject.SetActive(false);
+                CartPositionTransform.gameObject.SetActive(false);
                 NetworkServer.Destroy(gameObject);
             }
         }
