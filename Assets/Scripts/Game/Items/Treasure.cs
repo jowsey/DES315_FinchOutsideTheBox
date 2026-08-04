@@ -126,24 +126,17 @@ namespace Game.Items
         private void OnCollisionEnter(Collision col)
         {
             if (!isServer) return;
+            if (!Smashable) return;
 
-            if (!col.collider.CompareTag("Item") &&
-                !col.collider.CompareTag("TreasureCarrier") &&
-                LayerMask.LayerToName(col.collider.gameObject.layer) != "Cart")
-            {
-                if (Smashable)
-                {
-                    StateData = new SmashedStateData();
-                }
-            }
+            var otherLayerName = LayerMask.LayerToName(col.collider.gameObject.layer);
+            if (otherLayerName is "Cart" or "Item") return;
+            
+            StateData = new SmashedStateData();
         }
 
         private void OnTriggerEnter(Collider other)
         {
-            if (!isServer)
-            {
-                return;
-            }
+            if (!isServer) return;
 
             if (other.CompareTag("TreasureCarrier"))
             {
@@ -155,10 +148,7 @@ namespace Game.Items
 
         private void OnTriggerExit(Collider other)
         {
-            if (!isServer)
-            {
-                return;
-            }
+            if (!isServer) return;
 
             if (other.CompareTag("TreasureCarrier"))
             {
