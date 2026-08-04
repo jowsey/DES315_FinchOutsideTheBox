@@ -253,6 +253,7 @@ GameObject:
   - component: {fileID: 881608894191477936}
   - component: {fileID: 5913164811247410245}
   - component: {fileID: 7222048835803269429}
+  - component: {fileID: 6379674044488429808}
   - component: {fileID: 6697090648195557465}
   - component: {fileID: 1162844433815169417}
   - component: {fileID: 8341627996662084912}
@@ -324,6 +325,18 @@ MonoBehaviour:
   _bottomRight:
     Radius: 12
     TriangleCount: 16
+--- !u!225 &6379674044488429808
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6510000440063553251}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!114 &6697090648195557465
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -379,3 +392,4 @@ MonoBehaviour:
   _input: {fileID: 0}
   _affectedBlockerFlags: 0
   _inputIconManager: {fileID: 3848881830370665628}
+  _canvasGroup: {fileID: 6379674044488429808}

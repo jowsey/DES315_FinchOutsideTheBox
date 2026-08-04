@@ -6,6 +6,8 @@ namespace Game.Items
 {
     public abstract class Equipment : Item
     {
+        [field: SerializeField] public bool HasUseAbility { get; protected set; } = true;
+        
         [SerializeField] private Event _useSfx;
 
         [SerializeField] protected bool _singleUse = true;

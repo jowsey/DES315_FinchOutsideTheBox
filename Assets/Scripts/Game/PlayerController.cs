@@ -228,8 +228,8 @@ public class PlayerController : NetworkBehaviour
     
     public Emoter Emoter { get; private set; }
 
-    private GameObject _dropControlReference;
-    private GameObject _useControlReference;
+    private ControlReference _dropControlReference;
+    private ControlReference _useControlReference;
 
     // Control blockers
     public static void AddControlBlockerFlags(Object blocker, ControlBlockerFlags flags)
@@ -448,8 +448,12 @@ public class PlayerController : NetworkBehaviour
 
         ObstructionDitherer.PlayerTransform = _cameraObstructionDithererRayEndPosition;
 
-        _dropControlReference = GameObject.FindWithTag("DropItemControlReference");
-        _useControlReference = GameObject.FindWithTag("UseItemControlReference");
+        // Item prompts
+        _dropControlReference = GameObject.FindWithTag("DropItemControlReference").GetComponent<ControlReference>();
+        _useControlReference = GameObject.FindWithTag("UseItemControlReference").GetComponent<ControlReference>();
+        
+        _dropControlReference.ToggleVisible(false, true);
+        _useControlReference.ToggleVisible(false, true);
     }
 
     public override void OnStopLocalPlayer()
@@ -638,18 +642,20 @@ public class PlayerController : NetworkBehaviour
         _activeStatusEffects.RemoveAll(e => completedEffects.Contains(e));
 
         // Dynamic control references
+        var showDrop = HeldObject;
+        var showUse = HeldObject is Equipment { HasUseAbility: true };
+        
         if (_dropControlReference && _useControlReference)
         {
-            if (HeldObject && !_dropControlReference.activeSelf)
-            {
-                _dropControlReference.SetActive(true);
-                _useControlReference.SetActive(true);
-            }
-            else if (!HeldObject && _dropControlReference.activeSelf)
-            {
-                _dropControlReference.SetActive(false);
-                _useControlReference.SetActive(false);
-            }
+            if (showDrop && !_dropControlReference.Visible)
+                _dropControlReference.ToggleVisible(true);
+            else if (!showDrop && _dropControlReference.Visible)
+                _dropControlReference.ToggleVisible(false);
+
+            if (showUse && !_useControlReference.Visible)
+                _useControlReference.ToggleVisible(true);
+            else if (!showUse && _useControlReference.Visible)
+                _useControlReference.ToggleVisible(false);
         }
     }
 
