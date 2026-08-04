@@ -363,7 +363,7 @@ public class Cart : NetworkBehaviour
 
     private void OnReachNewTarget(RespawnTarget target)
     {
-        if (target is Checkpoint checkpoint)
+        if (target is Checkpoint checkpoint && Checkpoints.IndexOf(checkpoint) > 0)
         {
             var checkpointBanner = Instantiate(_checkpointBannerPrefab, _uiCanvas.transform);
             checkpointBanner.Checkpoint = checkpoint;
