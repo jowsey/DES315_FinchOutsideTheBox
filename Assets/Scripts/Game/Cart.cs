@@ -120,7 +120,7 @@ public class Cart : NetworkBehaviour
     public override void OnStartClient()
     {
         if (!isServer) RespawnTarget.OnReachNewTarget.AddListener(OnReachNewTarget);
-        
+
         _carSound.Post(gameObject);
         _carOnSurface.Post(gameObject);
         _glassInVehicle.Post(gameObject);
@@ -352,10 +352,11 @@ public class Cart : NetworkBehaviour
         RespawnTarget.OnReachNewTarget.Invoke(target); // ensure we immediately run on server
         RpcReachTarget(target);
     }
-    
-    [ClientRpc(includeOwner = false)]
+
+    [ClientRpc]
     private void RpcReachTarget(RespawnTarget target)
     {
+        if (isServer) return; // mitigate host mode double proc
         RespawnTarget.OnReachNewTarget.Invoke(target);
     }
 
