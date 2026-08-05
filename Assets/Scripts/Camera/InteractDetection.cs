@@ -26,6 +26,7 @@ public class InteractDetection : MonoBehaviour
 
     [SerializeField] private InteractPrompt.InteractPromptConfiguration _pickupConfig;
     [SerializeField] private InteractPrompt.InteractPromptConfiguration _putdownConfig;
+    [SerializeField] private InteractPrompt.InteractPromptConfiguration _storeConfig;
     [SerializeField] private InteractPrompt.InteractPromptConfiguration _attachHookConfig;
     [SerializeField] private InteractPrompt.InteractPromptConfiguration _pullRopeConfig;
     [SerializeField] private InteractPrompt.InteractPromptConfiguration _detachHookConfig;
@@ -157,7 +158,7 @@ public class InteractDetection : MonoBehaviour
             if (!_interactPromptInstance) _interactPromptInstance = Instantiate(_interactPromptPrefab, _uiCanvas);
 
             if (validPickupTarget) _interactPromptInstance.Build(_pickupConfig);
-            else if (validPutdownTarget) _interactPromptInstance.Build(_putdownConfig);
+            else if (validPutdownTarget) _interactPromptInstance.Build(sack ? _storeConfig : _putdownConfig);
             else if (validHookTarget) _interactPromptInstance.Build(_attachHookConfig);
             else if (validPullTarget)
             {
