@@ -26,7 +26,7 @@ namespace Game
 
         private static readonly int ShopkeepOnBuyTrigger = Animator.StringToHash("OnBuy");
 
-        public static List<ItemData> ItemRegistry { get; private set; }
+        public static Dictionary<string, ItemData> ItemRegistry { get; private set; } = new();
 
         private CinemachineCamera _cinemachineCamera;
         private CinemachineOrbitalFollow _orbitalFollow;
@@ -94,11 +94,20 @@ namespace Game
         [SyncVar(hook = nameof(OnSackAvailabilityChanged))] private bool _sackAvailable = true;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        private static void LoadAllItems()
+        private static async void LoadAllItems()
         {
-            var handle = Addressables.LoadAssetsAsync<ItemData>("Item");
-            var items = handle.WaitForCompletion();
-            ItemRegistry = items.ToList();
+            var handle = Addressables.LoadResourceLocationsAsync("Item");
+            await handle.Task;
+
+            foreach (var location in handle.Result)
+            {
+                var itemHandle = Addressables.LoadAssetAsync<ItemData>(location);
+                await itemHandle.Task;
+
+                if (itemHandle.Status != UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationStatus.Succeeded) continue;
+                var item = itemHandle.Result;
+                ItemRegistry[item.name] = item;
+            }
 
             Debug.Log($"Loaded {ItemRegistry.Count} shop items");
         }
@@ -190,6 +199,8 @@ namespace Game
         [Server]
         private void RunNextTelescopeTween()
         {
+            if (!gameObject) return;
+
             Tween.CompleteAll(_telescopeRotationTween);
 
             var absRot = Random.Range(45f, 180f);
@@ -260,9 +271,11 @@ namespace Game
         [Command(requiresAuthority = false)]
         private void CmdTryBuySack(NetworkConnectionToClient sender = null)
         {
+            var sackKey = ItemRegistry.FirstOrDefault(kvp => kvp.Value == SackItem.ItemData).Key;
+
             if (BankManager.Instance.Balance < SackItem.ItemData.BuyPrice)
             {
-                TargetBuyResult(sender, PurchaseError.NotEnoughMoney, SackItem.ItemData);
+                TargetBuyResult(sender, PurchaseError.NotEnoughMoney, sackKey);
                 return;
             }
 
@@ -279,6 +292,7 @@ namespace Game
 
             BankManager.Instance.Balance -= SackItem.ItemData.BuyPrice;
             nextSackPosition.gameObject.SetActive(true);
+            _shopkeepAnimator.SetTrigger(ShopkeepOnBuyTrigger);
 
             var newSack = Instantiate(Cart.Instance.SackPrefab, nextSackPosition.position, nextSackPosition.rotation);
             newSack.Joint.connectedBody = Cart.Instance.Rb;
@@ -288,8 +302,7 @@ namespace Game
             NetworkServer.Spawn(newSack.gameObject);
 
             Cart.Instance.Sacks.Add(newSack);
-
-            _shopkeepAnimator.SetTrigger(ShopkeepOnBuyTrigger);
+            TargetBuyResult(sender, PurchaseError.None, sackKey);
         }
 
         [Server]
@@ -309,7 +322,7 @@ namespace Game
         {
             AvailableItems.Clear();
 
-            var allEquipment = ItemRegistry.Where(i => i.Type == ItemType.Equipment && i.Prefab).ToList();
+            var allEquipment = ItemRegistry.Values.Where(i => i.Type == ItemType.Equipment && i.Prefab).ToList();
             var cappedItemCount = Mathf.Min(_maxAvailableItems, allEquipment.Count);
             var itemsToSpawn = allEquipment.OrderBy(_ => Random.value).Take(cappedItemCount).ToList();
 
@@ -407,7 +420,7 @@ namespace Game
                 if (!item) continue;
                 var counterItem = item.GetComponent<ShopCounterItem>();
                 if (counterItem) counterItem.enabled = true;
-            }   
+            }
 
             //Hide action UIs & enter prompt
             foreach (CanvasGroup uiElement in _hiddenUIElements)
@@ -493,17 +506,19 @@ namespace Game
                 return;
             }
 
+            var itemKey = ItemRegistry.FirstOrDefault(kvp => kvp.Value == itemToBuy.Data).Key;
+
             PlayerController buyer = sender!.identity.GetComponent<PlayerController>();
             if (buyer.HeldObject)
             {
-                TargetBuyResult(sender, PurchaseError.AlreadyHoldingObject, itemToBuy.Data);
+                TargetBuyResult(sender, PurchaseError.AlreadyHoldingObject, itemKey);
                 return;
             }
 
             int price = itemToBuy.Data.BuyPrice;
             if (BankManager.Instance.Balance < price)
             {
-                TargetBuyResult(sender, PurchaseError.NotEnoughMoney, itemToBuy.Data);
+                TargetBuyResult(sender, PurchaseError.NotEnoughMoney, itemKey);
                 return;
             }
 
@@ -515,33 +530,40 @@ namespace Game
             itemToBuy.StateData = new Item.IdleStateData();
             itemToBuy.ServerTryPickup(buyer);
 
-            TargetBuyResult(sender, PurchaseError.None, itemToBuy.Data);
+            TargetBuyResult(sender, PurchaseError.None, itemKey);
             _shopkeepAnimator.SetTrigger(ShopkeepOnBuyTrigger);
         }
 
         [TargetRpc]
-        private void TargetBuyResult(NetworkConnection target, PurchaseError err, ItemData item)
+        private void TargetBuyResult(NetworkConnection target, PurchaseError err, string itemKey)
         {
-            OnReceiveBuyResult.Invoke(item, err);
+            var itemData = ItemRegistry.GetValueOrDefault(itemKey);
+            if (!itemData)
+            {
+                Debug.LogWarning($"Server sent buy result for item we don't know about ('{itemKey}')!");
+                return;
+            }
+
+            OnReceiveBuyResult.Invoke(itemData, err);
 
             switch (err)
             {
                 case PurchaseError.None:
                 {
                     _shopBuy.Post(gameObject);
-                    item.BuySfx?.Post(gameObject);
+                    itemData.BuySfx?.Post(gameObject);
 
-                    LeaveShop();
+                    if (itemData != SackItem.ItemData) LeaveShop();
                     break;
                 }
                 case PurchaseError.NotEnoughMoney:
                 {
-                    Debug.Log($"Failed to purchase {item.name} (price = {item.BuyPrice}, balance = {BankManager.Instance.Balance})");
+                    Debug.Log($"Failed to purchase {itemData.name} (price = {itemData.BuyPrice}, balance = {BankManager.Instance.Balance})");
                     break;
                 }
                 case PurchaseError.AlreadyHoldingObject:
                 {
-                    Debug.Log($"Failed to purchase {item.name} (already holding an object)");
+                    Debug.Log($"Failed to purchase {itemData.name} (already holding an object)");
                     break;
                 }
             }
