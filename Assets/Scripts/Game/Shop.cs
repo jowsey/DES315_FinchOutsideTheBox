@@ -234,7 +234,6 @@ namespace Game
                 if (hitItem == SackItem)
                 {
                     CmdTryBuySack();
-                    _shopBuy.Post(gameObject);
                 }
                 else
                 {
@@ -247,8 +246,9 @@ namespace Game
 
             if (_hoveredItem) _hoveredItem.SetSelected(false);
             _hoveredItem = hitItem;
-            if (_hoveredItem) _hoveredItem.SetSelected(true);
+            if (_hoveredItem)
             {
+                _hoveredItem.SetSelected(true);
                 _itemHoverOverSFX.Post(gameObject);
             }
         }
