@@ -19,7 +19,7 @@ namespace UI
 
         private AsyncOperationHandle<Sprite> _iconHandle;
 
-        private static InputDevice _lastActiveDevice;
+        public static InputDevice LastActiveDevice { get; private set; }
 
         private void OnValidate()
         {
@@ -49,7 +49,7 @@ namespace UI
 
             var action = (InputAction)obj;
             var control = action.activeControl;
-            if (control != null) _lastActiveDevice = control.device;
+            if (control != null) LastActiveDevice = control.device;
         }
 
         private void OnDestroy()
@@ -73,7 +73,7 @@ namespace UI
             if (_iconHandle.IsValid()) Addressables.Release(_iconHandle);
 
             var isControlDeviceNative = true;
-            var activeControl = _actionRef.action.controls.FirstOrDefault(control => control.device == _lastActiveDevice);
+            var activeControl = _actionRef.action.controls.FirstOrDefault(control => control.device == LastActiveDevice);
             if (activeControl == null)
             {
                 isControlDeviceNative = false;
@@ -84,9 +84,9 @@ namespace UI
 
             var inputPath = activeControl.path;
 
-            if (isControlDeviceNative && _lastActiveDevice is Gamepad)
+            if (isControlDeviceNative && LastActiveDevice is Gamepad)
             {
-                inputPath = inputPath.Replace(inputPath.Split('/')[1], _lastActiveDevice is DualShockGamepad ? "PlayStation" : "Xbox");
+                inputPath = inputPath.Replace(inputPath.Split('/')[1], LastActiveDevice is DualShockGamepad ? "PlayStation" : "Xbox");
             }
 
             var assetPath = $"InputIcon{inputPath}";
