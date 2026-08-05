@@ -41,7 +41,6 @@ public class VehicleLever : NetworkBehaviour
                 //Trigger is now active
                 _onLeverActivate.Invoke();
                 Forward = true;
-                
             }
             else if (_triggerCollidingLastTick && !_bothTriggers)
             {
