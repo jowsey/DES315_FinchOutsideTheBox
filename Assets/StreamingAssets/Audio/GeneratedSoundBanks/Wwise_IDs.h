@@ -15,10 +15,14 @@ namespace AK
     {
         static const AkUniqueID BOULDER = 3054124956U;
         static const AkUniqueID BOULDER_01 = 2821397570U;
+        static const AkUniqueID BOUNCEPAD = 3009932360U;
+        static const AkUniqueID BOUNCEPADPLACE = 3042170729U;
         static const AkUniqueID CARMOVEMENT = 2594767402U;
         static const AkUniqueID CARMOVEMENTTERRAIN = 2369444485U;
+        static const AkUniqueID CATGLIDE = 1471709650U;
         static const AkUniqueID CATJUMP = 244401571U;
         static const AkUniqueID CATLAND = 3906859072U;
+        static const AkUniqueID CATNIPUSE = 3743990741U;
         static const AkUniqueID CATPING = 3173738935U;
         static const AkUniqueID CATSHOPENTER = 1950057143U;
         static const AkUniqueID CHECKPOINTDRUMS = 2509294038U;
@@ -26,8 +30,11 @@ namespace AK
         static const AkUniqueID DOLLHUM = 3457267156U;
         static const AkUniqueID DOORSMOVING = 758278606U;
         static const AkUniqueID EMOTEHOVERTICK = 151557060U;
+        static const AkUniqueID FISHINGRODTHROW = 1172487408U;
+        static const AkUniqueID FISHINGRODUNSPOOL = 2949285970U;
         static const AkUniqueID FOOTSTEPS = 2385628198U;
         static const AkUniqueID FRONTFLIP = 3219038647U;
+        static const AkUniqueID GEMS = 1239954461U;
         static const AkUniqueID GLASSINVEHILCE = 2158283652U;
         static const AkUniqueID GLASSPICKUP = 1188386847U;
         static const AkUniqueID GLASSSHATTER = 206611762U;
@@ -72,6 +79,9 @@ namespace AK
         static const AkUniqueID PUSHER_TEMPLE_2 = 3651444619U;
         static const AkUniqueID PUSHER_TEMPLE_3 = 3651444618U;
         static const AkUniqueID RESPAWNPING = 814740291U;
+        static const AkUniqueID SACKS = 3168078110U;
+        static const AkUniqueID SANDCASTLEBUY = 3781447909U;
+        static const AkUniqueID SANDCASTLEPLACE = 1123187128U;
         static const AkUniqueID SANDFALL = 3076940544U;
         static const AkUniqueID SHOPBUY = 1153606107U;
         static const AkUniqueID SHOPKEEPERINQUISITIVE = 1947196283U;
@@ -85,6 +95,10 @@ namespace AK
         static const AkUniqueID TIPJAR = 680758647U;
         static const AkUniqueID VERTSPINMOVING = 2481782438U;
         static const AkUniqueID WINDNSAND = 3811731857U;
+        static const AkUniqueID WINDVENT = 2602924598U;
+        static const AkUniqueID YARNBUY = 3208817649U;
+        static const AkUniqueID YARNPLACE = 2787064764U;
+        static const AkUniqueID YARNUNRAVEL = 408652242U;
         static const AkUniqueID ZIPPER = 1558183U;
         static const AkUniqueID ZIPPER_01 = 1618850795U;
         static const AkUniqueID ZIPPER_02 = 1618850792U;
@@ -168,6 +182,7 @@ namespace AK
         static const AkUniqueID BOULDER = 3054124956U;
         static const AkUniqueID CAROVERSTONE = 588369366U;
         static const AkUniqueID DOORSSPEED = 1853166429U;
+        static const AkUniqueID FISHINGRODUNSPOOL = 2949285970U;
         static const AkUniqueID GLASSAMOUNT = 1090606811U;
         static const AkUniqueID INCAVE = 91271595U;
         static const AkUniqueID ISESCPRESSED = 651854690U;
@@ -201,6 +216,7 @@ namespace AK
         static const AkUniqueID PUSHER_TEMPLE_1 = 3651444616U;
         static const AkUniqueID PUSHER_TEMPLE_2 = 3651444619U;
         static const AkUniqueID PUSHER_TEMPLE_3 = 3651444618U;
+        static const AkUniqueID ROPEONOFF = 1753086197U;
         static const AkUniqueID SFXVOLUME = 988953028U;
         static const AkUniqueID SIDESWEEPER = 988175737U;
         static const AkUniqueID VERTSPINNYONOFF = 1139057927U;

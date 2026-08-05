@@ -84,6 +84,7 @@ namespace Game
         [SerializeField] private AK.Wwise.Event _shopBuy;
         [SerializeField] private AK.Wwise.Event _shopTipJar;
         [SerializeField] private AK.Wwise.Event _shopkeepRadio;
+        [SerializeField] private AK.Wwise.Event _itemHoverOverSFX;
 
         public readonly SyncList<Item> AvailableItems = new();
 
@@ -245,7 +246,11 @@ namespace Game
 
             if (_hoveredItem) _hoveredItem.SetSelected(false);
             _hoveredItem = hitItem;
-            if (_hoveredItem) _hoveredItem.SetSelected(true);
+            if (_hoveredItem)
+            {
+                _hoveredItem.SetSelected(true);
+                _itemHoverOverSFX.Post(gameObject);
+            }
         }
 
         [Command(requiresAuthority = false)]

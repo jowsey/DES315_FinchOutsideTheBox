@@ -8,6 +8,8 @@ namespace Obstacles
         [SerializeField] private float _jumpForce;
         [SerializeField] private LayerMask _bounceLayers;
 
+        [SerializeField] public AK.Wwise.Event _windVent;
+
         private void OnTriggerStay(Collider collision)
         {
             if ((_bounceLayers.value & (1 << collision.gameObject.layer)) == 0) return;
@@ -21,6 +23,11 @@ namespace Obstacles
             {
                 collision.attachedRigidbody.AddForce(transform.up * _jumpForce, ForceMode.Force);
             }
+        }
+
+        private void Start()
+        {
+            _windVent.Post(gameObject);
         }
     }
 }
