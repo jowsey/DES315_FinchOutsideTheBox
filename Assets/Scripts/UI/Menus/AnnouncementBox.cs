@@ -37,14 +37,10 @@ namespace UI.Menus
 
         public void OpenLink() => Application.OpenURL(_itemLink);
 
-        private IEnumerator Start()
+        private async Awaitable<bool> AttemptPostDownload()
         {
-            // hide until ready
-            _standardAnchoredY = _rt.anchoredPosition.y;
-            _rt.anchoredPosition = new Vector2(_rt.anchoredPosition.x, _standardAnchoredY - _rt.sizeDelta.y);
-
             using var req = UnityWebRequest.Get(_rssFeedUrl);
-            yield return req.SendWebRequest();
+            await req.SendWebRequest();
 
             if (req.result == UnityWebRequest.Result.Success)
             {
@@ -53,7 +49,7 @@ namespace UI.Menus
 
                 var latestItemNode = rssFeed.SelectSingleNode("//item");
 
-                if (latestItemNode == null) throw new System.Exception("No <item> found in RSS feed");
+                if (latestItemNode == null) return false;
 
                 var titleNode = latestItemNode.SelectSingleNode("title");
                 var linkNode = latestItemNode.SelectSingleNode("link");
@@ -81,7 +77,7 @@ namespace UI.Menus
                 else
                 {
                     using var imageReq = UnityWebRequestTexture.GetTexture(imageUrl);
-                    yield return imageReq.SendWebRequest();
+                    await imageReq.SendWebRequest();
 
                     if (imageReq.result == UnityWebRequest.Result.Success)
                     {
@@ -99,11 +95,35 @@ namespace UI.Menus
             else
             {
                 Debug.LogError($"Failed to fetch RSS feed: {req.error}");
-                yield break;
+                return false;
             }
 
-            // appear
-            Tween.UIAnchoredPositionY(_rt, _standardAnchoredY, 1f, Ease.OutBack);
+            return true;
+        }
+
+        private async void Start()
+        {
+            try
+            {
+                // hide until ready
+                _standardAnchoredY = _rt.anchoredPosition.y;
+                _rt.anchoredPosition = new Vector2(_rt.anchoredPosition.x, _standardAnchoredY - _rt.sizeDelta.y);
+
+                var success = false;
+                var triesRemaining = 3;
+                while (!success && triesRemaining-- > 0)
+                {
+                    await Awaitable.WaitForSecondsAsync(1f);
+                    success = await AttemptPostDownload();
+                }
+
+                // appear on success
+                _ = Tween.UIAnchoredPositionY(_rt, _standardAnchoredY, 1f, Ease.OutBack);
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning($"Error while fetching post: {e}");
+            }
         }
 
         private void OnDestroy()
