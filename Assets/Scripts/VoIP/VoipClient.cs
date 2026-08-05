@@ -50,9 +50,7 @@ namespace VoIP
         private float _lastTalkTime;
         private const float _talkHangTime = 0.15f; //keep the talking colour for 150ms after data stops being sent
 
-        [SerializeField] private Image _nameplateIcon;
-        [SerializeField] private Sprite _nameplateActiveIcon;
-        [SerializeField] private Sprite _nameplateInactiveIcon;
+        [SerializeField] private Outline _speakingOutline;
 
         [SerializeField] private PlayerController _player;
 
@@ -162,7 +160,7 @@ namespace VoIP
 
                 if (!_player.CutscenePlayer)
                 {
-                    _nameplateIcon.sprite = _nameplateInactiveIcon;
+                    _speakingOutline.enabled = false;
                 }
 
                 SettingsManager.ActiveSettings.PlayerVoiceVolumePercents.TryAdd(_player.PlayerUID, 100);
@@ -277,7 +275,7 @@ namespace VoIP
         {
             if (!isLocalPlayer)
             {
-                _nameplateIcon.sprite = _playbackActive ? _nameplateActiveIcon : _nameplateInactiveIcon;
+                _speakingOutline.enabled = _playbackActive;
                 return;
             }
 

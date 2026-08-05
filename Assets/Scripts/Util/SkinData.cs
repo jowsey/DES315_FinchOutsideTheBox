@@ -8,6 +8,7 @@ namespace Util
     {
         [PreviewField] public Material Material;
         [PreviewField] public Sprite Icon;
+        [PreviewField] public Sprite VCIcon;
         public Color AccentColor = Color.white;
     }
 }

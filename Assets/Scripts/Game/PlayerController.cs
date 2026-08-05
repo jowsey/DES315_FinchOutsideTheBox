@@ -84,9 +84,10 @@ public class PlayerController : NetworkBehaviour
     private NetworkAnimator _networkAnimator;
     [SerializeField] private Canvas _nameplateCanvas;
     [SerializeField] public TextMeshProUGUI PlayerNameText; //Public for cutscene puppeteering
+    [SerializeField] public Image NameplateIcon;
 
     [Header("Animation")]
-    [Tooltip("The minimum velocity required to initiate the gliding animation (should be negative)")]
+    [Tooltip("The minimum velocity required to initiate the gliding animation (should be negative)")]   
     [SerializeField] private float _fallAnimationMinDownardsVelocity;
 
     [Header("Input")]
@@ -401,8 +402,13 @@ public class PlayerController : NetworkBehaviour
         }
 
         PlayerNameText.text = PlayerName;
+        name = $"Player ({PlayerName})";
 
-        if (!CutscenePlayer) { OnPlayerReady.Invoke(this); }
+        if (!CutscenePlayer)
+        {
+            NameplateIcon.sprite = LoadedSkins[PlayerSkinIndex].VCIcon;
+            OnPlayerReady.Invoke(this);
+        }
     }
 
     public override void OnStopClient()
@@ -507,8 +513,9 @@ public class PlayerController : NetworkBehaviour
 
     private void OnPlayerNameChanged(string oldValue, string newValue)
     {
-        // Update nameplate
-        if (PlayerNameText) { PlayerNameText.text = newValue; }
+        name = $"Player ({newValue})";
+
+        if (PlayerNameText) PlayerNameText.text = newValue;
         LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)_nameplateCanvas.transform);
     }
     
