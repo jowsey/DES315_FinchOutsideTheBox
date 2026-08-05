@@ -10,6 +10,8 @@ namespace Game
         [SerializeField] private GameObject _emptySack;
         [SerializeField] private GameObject _fullSack;
 
+        [SerializeField] public AK.Wwise.Event _sackInOut;
+
         [field: SyncVar(hook = nameof(OnStoredItemChanged))] public Item StoredItem;
         [ReadOnly] public Transform LinkedCartTransform;
 
@@ -30,6 +32,8 @@ namespace Game
         {
             _emptySack.SetActive(!newValue);
             _fullSack.SetActive(newValue);
+
+            _sackInOut.Post(gameObject);
         }
 
         public override void OnStartServer()
