@@ -95,6 +95,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e7591529487ae8f4e89704b0589313a3, type: 3}
       insertIndex: -1
       addedObject: {fileID: 146017116495038040}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e7591529487ae8f4e89704b0589313a3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1834762675748182653}
   m_SourcePrefab: {fileID: 100100000, guid: e7591529487ae8f4e89704b0589313a3, type: 3}
 --- !u!1 &1285902056698544731 stripped
 GameObject:
@@ -123,6 +126,26 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -5468707489666114790, guid: e7591529487ae8f4e89704b0589313a3, type: 3}
+--- !u!114 &1834762675748182653
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1285902056698544731}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e973bb948130d014d88a8086a95f5ffc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Obstacles.SucculentPad2
+  _jumpForce: 100
+  _bounceSfx:
+    idInternal: 0
+    valueGuidInternal: 
+    WwiseObjectReference: {fileID: 0}
+  _bounceLayers:
+    serializedVersion: 2
+    m_Bits: 2304
 --- !u!4 &1915052074245445857 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: e7591529487ae8f4e89704b0589313a3, type: 3}
