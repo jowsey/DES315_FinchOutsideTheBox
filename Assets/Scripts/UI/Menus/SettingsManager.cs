@@ -48,6 +48,7 @@ namespace UI
         {
             "Buttons", "Jupiter", "Misha", "Squid", // Becca's
             "Avocado", "Kato", // Paolo's
+            "Ekko", // Joshua's
             "Marley", "Mittens", "Chez", "Batman", "Bella", // Jowsey's
             "Felix", "Mollie", "Luna", "Kylo", "Padmé", "Clyde", "Julita", // Ellis'
             "Zak", // Zo's
