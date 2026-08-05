@@ -3,6 +3,7 @@ using Game.Items;
 using PrimeTween;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace UI.Shop
 {
@@ -14,9 +15,13 @@ namespace UI.Shop
         [SerializeField] private TextMeshProUGUI _balanceText;
         [SerializeField] private TextMeshProUGUI _errorText;
 
+        [SerializeField] private Button _sellAllButton;
+        
         [SerializeField] private ItemInfoCard _itemCardPrefab;
 
         [SerializeField] private AK.Wwise.Event _sellSfx;
+
+        private const float MaxCartSellDistance = 25f;
 
         private void OnEnable()
         {
@@ -51,7 +56,7 @@ namespace UI.Shop
                 .Where(i => i)
                 .Select(i => i.GetComponent<ShopCounterItem>())
                 .Append(shop.SackItem);
-            
+
             foreach (var counterItem in allPurchasableItems)
             {
                 if (!counterItem) continue;
@@ -62,9 +67,9 @@ namespace UI.Shop
                 itemCard.WorldFollowUI.TrackingTarget = counterItem.transform;
                 ((RectTransform)itemCard.transform).pivot = new Vector2(0, 0.5f);
                 itemCard.WorldFollowUI.UIPositionOffset = new Vector2(64, 0);
-                
+
                 counterItem.OnSelectedChange.AddListener(itemCard.SetVisible);
-                
+
                 // Force card immediately hidden
                 Tween.CompleteAll(itemCard.transform);
                 itemCard.transform.localScale = Vector3.zero;
@@ -73,7 +78,17 @@ namespace UI.Shop
 
         private void Update()
         {
-            _sellAllEstimateText.text = $"You will receive <b>{Cart.Instance.TotalItemSellPrice}</b> coins.";
+            if (Vector3.Distance(Cart.Instance.transform.position, _shop.transform.position) > MaxCartSellDistance)
+            {
+                _sellAllButton.interactable = false;
+                _sellAllEstimateText.text = "Bring the cart closer to sell.";
+            }
+            else
+            {
+                _sellAllButton.interactable = Cart.Instance.TotalItemSellPrice > 0;
+                _sellAllEstimateText.text = $"You will receive <b>{Cart.Instance.TotalItemSellPrice}</b> coins.";
+            }
+
             _balanceText.text = BankManager.Instance.Balance.ToString();
         }
 
