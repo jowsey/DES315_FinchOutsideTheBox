@@ -296,21 +296,30 @@ namespace UI
                 var copyInfoOptions = new LobbyDetailsCopyInfoOptions();
                 lobbyDetails.CopyInfo(ref copyInfoOptions, out var lobbyInfo);
 
+                var sameVersion = lobbyGameVersion == Application.version;
+
                 listing.LobbyNameText.text = lobbyName;
                 listing.MetadataText.text = $"{memberCount}/{lobbyInfo.Value.MaxMembers} players" +
                                             $" <color=#999>–</color> " +
-                                            $"Created by <b>{ownerName}</b>" +
+                                            $"Creator: <b>{ownerName}</b>" +
                                             $" <color=#999>–</color> " +
-                                            $"<color={(lobbyGameVersion == Application.version ? "white" : "red")}>v{lobbyGameVersion}</color>";
+                                            $"<color={(sameVersion ? "white" : "red")}>v{lobbyGameVersion}</color>";
 
-                listing.JoinButton.Button.onClick.AddListener(() =>
+                if (sameVersion)
                 {
-                    _activeJoinAttempt = listing;
-                    listing.JoinButton.SetLoading(true);
-                    GloballyLockedButton.AddLockSource(this);
+                    listing.JoinButton.Button.onClick.AddListener(() =>
+                    {
+                        _activeJoinAttempt = listing;
+                        listing.JoinButton.SetLoading(true);
+                        GloballyLockedButton.AddLockSource(this);
 
-                    EosLobby.JoinLobby(lobbyDetails);
-                });
+                        EosLobby.JoinLobby(lobbyDetails);
+                    });
+                }
+                else
+                {
+                    listing.JoinButton.Button.interactable = false;
+                }
             }
 
             _emptyListNotice.SetActive(lobbiesFilteredSorted.Count == 0);
