@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Mirror;
 using Sirenix.OdinInspector;
+using UI;
 using UnityEngine;
 
 namespace Game.Items.Equipments
@@ -10,7 +11,10 @@ namespace Game.Items.Equipments
     {
         [SerializeField] private YarnSegment _yarnSegmentPrefab;
         [SerializeField] private ConfigurableJoint _yarnBallPrefab;
+        [SerializeField] private YarnDistanceVisual _distanceVisualPrefab;
         [SerializeField, Min(1)] private int _maxSegments;
+
+        private YarnDistanceVisual _distanceVisualInstance;
 
         [SerializeField] public AK.Wwise.RTPC YarnVol;
         [SerializeField] public AK.Wwise.Event YarnStretch;
@@ -22,8 +26,8 @@ namespace Game.Items.Equipments
         private readonly List<Transform> _positions = new();
         public bool IsHooking { get; private set; }
 
-        private static readonly Color ValidColour = new(0f, 1f, 0f, 0.5f);
-        private static readonly Color InvalidColour = new(1f, 0f, 0f, 0.5f);
+        public float TotalLineSize { get; private set; }
+        public float MaxLineSize => _maxSegments * _segmentLength;
 
         private const float _thickness = 0.15f;
         private const float _segmentLength = 0.5f;
@@ -33,6 +37,7 @@ namespace Game.Items.Equipments
         private Vector3 _previewTrackingPosition => _previewInstance.transform.position + _previewInstance.transform.up * 0.1f;
 
         private YarnHookPoint _hookPoint;
+        private Transform _uiCanvas;
 
         protected override void OnStateChanged(ItemStateData oldState, ItemStateData newState)
         {
@@ -50,6 +55,11 @@ namespace Game.Items.Equipments
 
                         YarnVol.SetGlobalValue(0);
                         YarnStretch.Stop(gameObject);
+
+                        if (_distanceVisualInstance)
+                        {
+                            Destroy(_distanceVisualInstance.gameObject);
+                        }
                     }
 
                     break;
@@ -63,6 +73,8 @@ namespace Game.Items.Equipments
         {
             base.Awake();
             SetPreviewVisible(false);
+
+            _uiCanvas = GameObject.FindWithTag("UICanvas").transform;
         }
 
         public void TryStartHook(YarnHookPoint hookPoint)
@@ -81,23 +93,15 @@ namespace Game.Items.Equipments
 
             YarnStretch.Post(gameObject);
             YarnVol.SetGlobalValue(1);
-        }
 
-        private float GetTotalLineLength()
-        {
-            var total = 0f;
-            for (var i = 0; i < _line.positionCount - 1; i++)
-            {
-                total += Vector3.Distance(_line.GetPosition(i), _line.GetPosition(i + 1));
-            }
-
-            return total;
+            _distanceVisualInstance = Instantiate(_distanceVisualPrefab, _uiCanvas);
+            _distanceVisualInstance.Build(this);
         }
 
         protected override void FixedUpdate()
         {
             base.FixedUpdate();
-            
+
             if (IsHooking && StateData is HeldStateData heldData)
             {
                 _line.positionCount = _positions.Count + 2;
@@ -119,13 +123,11 @@ namespace Game.Items.Equipments
 
                 var hasLineOfSight = didHit && hit.collider.attachedRigidbody == heldData.Holder.Rb;
 
-                var validLine = hasLineOfSight && GetTotalLineLength() < _segmentLength * _maxSegments;
-
-                // var lineColour = validLine
-                //     ? ValidColour
-                //     : InvalidColour;
-                // _line.startColor = lineColour;
-                // _line.endColor = lineColour;
+                TotalLineSize = 0f;
+                for (var i = 0; i < _line.positionCount - 1; i++)
+                {
+                    TotalLineSize += Vector3.Distance(_line.GetPosition(i), _line.GetPosition(i + 1));
+                }
 
                 if (hasLineOfSight)
                 {
@@ -166,7 +168,7 @@ namespace Game.Items.Equipments
         public override void TryUse()
         {
             if (!IsHooking || !_hookPoint) return;
-            if (GetTotalLineLength() > _segmentLength * _maxSegments) return;
+            if (TotalLineSize > _segmentLength * _maxSegments) return;
 
             base.TryUse();
         }
