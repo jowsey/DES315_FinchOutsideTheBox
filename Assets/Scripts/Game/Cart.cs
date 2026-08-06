@@ -262,6 +262,7 @@ public class Cart : NetworkBehaviour
             if (isServer)
             {
                 SetActiveRespawnTarget(checkpoint);
+                checkpoint.ActivateVFX();
             }
 
             var checkpointBanner = Instantiate(_checkpointBannerPrefab, _uiCanvas.transform);

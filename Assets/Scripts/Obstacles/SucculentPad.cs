@@ -10,10 +10,10 @@ namespace Obstacles
         private const float TransitionDuration = 1.25f;
 
         [SerializeField] private float _jumpForce;
-        [SerializeField] private Transform _innerMesh;
+        [SerializeField] private Transform _innerRotator;
 
+        [SerializeField] private float _bounceScaling = 1.35f;
         [SerializeField] private Event _bounceSfx;
-
         [SerializeField] private LayerMask _bounceLayers;
 
         private float _lastBounceTime;
@@ -22,14 +22,18 @@ namespace Obstacles
         private void Start()
         {
             Tween.Scale(transform, Vector3.zero, transform.localScale, TransitionDuration, Ease.OutBounce);
-            Tween.LocalEulerAngles(
-                _innerMesh,
-                _innerMesh.localEulerAngles,
-                _innerMesh.localEulerAngles + (Vector3.up * 360f * 1.5f),
-                TransitionDuration,
-                Ease.OutCubic,
-                startDelay: TransitionDuration * 0.25f
-            );
+
+            if (_innerRotator)
+            {
+                Tween.LocalEulerAngles(
+                    _innerRotator,
+                    _innerRotator.localEulerAngles,
+                    _innerRotator.localEulerAngles + (Vector3.up * 360f * 1.5f),
+                    TransitionDuration,
+                    Ease.OutCubic,
+                    startDelay: TransitionDuration * 0.25f
+                );
+            }
         }
 
         private void OnDrawGizmosSelected()
@@ -41,7 +45,7 @@ namespace Obstacles
         private void OnCollisionStay(Collision collision)
         {
             if ((_bounceLayers.value & (1 << collision.gameObject.layer)) == 0) return;
-            
+
             if (Time.time - _lastBounceTime < _bounceCooldown) return;
             if (collision.rigidbody.isKinematic) return;
 
@@ -65,7 +69,7 @@ namespace Obstacles
         private void RpcPlayerBounce()
         {
             Sequence.Create()
-                .Chain(Tween.ScaleY(transform, 1.35f, 0.18f, Ease.InOutBack))
+                .Chain(Tween.ScaleY(transform, _bounceScaling, 0.18f, Ease.InOutBack))
                 .Chain(Tween.ScaleY(transform, 1f, 0.16f, Ease.OutBack));
 
             _bounceSfx?.Post(gameObject);

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Game.Items.Equipments;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Game
 {
@@ -12,7 +13,9 @@ namespace Game
         [field: SerializeField] [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)] public RuntimeAnimatorController AnimatorController { get; private set; }
 
         public List<Sandcastle> Sandcastles = new();
-        
+
+        [SerializeField] private GameObject VFX;
+
         protected override void OnValidate()
         {
             base.OnValidate();
@@ -20,6 +23,11 @@ namespace Game
             {
                 name = $"Checkpoint [{AreaName}]";
             }
+        }
+
+        public void ActivateVFX()
+        {
+            VFX.SetActive(true);
         }
     }
 }
