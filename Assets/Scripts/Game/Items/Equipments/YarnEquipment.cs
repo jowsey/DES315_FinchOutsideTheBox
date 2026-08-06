@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Mirror;
 using Sirenix.OdinInspector;
@@ -47,19 +47,7 @@ namespace Game.Items.Equipments
                 {
                     if (heldData.Holder.isLocalPlayer)
                     {
-                        SetPreviewVisible(false);
-                        IsHooking = false;
-
-                        _positions.Clear();
-                        _line.positionCount = 0;
-
-                        YarnVol.SetGlobalValue(0);
-                        YarnStretch.Stop(gameObject);
-
-                        if (_distanceVisualInstance)
-                        {
-                            Destroy(_distanceVisualInstance.gameObject);
-                        }
+                        StopHooking();
                     }
 
                     break;
@@ -96,6 +84,23 @@ namespace Game.Items.Equipments
 
             _distanceVisualInstance = Instantiate(_distanceVisualPrefab, _uiCanvas);
             _distanceVisualInstance.Build(this);
+        }
+
+        private void StopHooking()
+        {
+            SetPreviewVisible(false);
+            IsHooking = false;
+
+            _positions.Clear();
+            _line.positionCount = 0;
+
+            YarnVol.SetGlobalValue(0);
+            YarnStretch.Stop(gameObject);
+
+            if (_distanceVisualInstance)
+            {
+                Destroy(_distanceVisualInstance.gameObject);
+            }
         }
 
         protected override void FixedUpdate()
@@ -187,10 +192,8 @@ namespace Game.Items.Equipments
             _line.GetPositions(positions);
             CmdPlaceRope(_hookPoint, positions[1..^1]);
 
-            YarnVol.SetGlobalValue(0);
-            YarnStretch.Stop(gameObject);
+            StopHooking();
             YarnOut.Post(gameObject);
-            IsHooking = false;
         }
 
         [Command(requiresAuthority = false)]
