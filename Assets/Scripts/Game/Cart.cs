@@ -57,9 +57,12 @@ public class Cart : NetworkBehaviour
     [SerializeField] [Required] private AK.Wwise.Event _carSound;
     [SerializeField] [Required] private AK.Wwise.Event _carOnSurface;
     [SerializeField] [Required] private AK.Wwise.Event _glassInVehicle;
+    [SerializeField] [Required] private AK.Wwise.Event _collisionSfx;
     [SerializeField] [Required] private AK.Wwise.RTPC _cartSpeedRTPC;
     [SerializeField] [Required] private AK.Wwise.RTPC _numCarriedTreasuresRTPC;
 
+    [SerializeField] private float _minimumCollisionMagnitudeForSfx = 2f;
+    
     //Velocity doesn't exist on non-authed client, so we use this to calculate our own rough speed
     private Vector3 _positionLastFrame;
 
@@ -249,9 +252,24 @@ public class Cart : NetworkBehaviour
         Rb.AddTorque(_tiltCorrection * rotExp * transform.forward);
     }
 
+    public void OnCollisionEnter(Collision collision)
+    {
+        if (!isServer) return;
+        if (collision.relativeVelocity.magnitude < _minimumCollisionMagnitudeForSfx) return;
+
+        RpcPlayCollisionSfx();
+    }
+
+    [ClientRpc]
+    private void RpcPlayCollisionSfx()
+    {
+        _collisionSfx?.Post(gameObject);
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (!isServer) return;
+
         if (!other.CompareTag("Checkpoint")) return;
 
         var checkpoint = other.GetComponent<Checkpoint>();
