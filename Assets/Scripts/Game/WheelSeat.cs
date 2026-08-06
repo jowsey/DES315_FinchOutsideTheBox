@@ -132,6 +132,12 @@ public class WheelSeat : NetworkBehaviour
         }
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        // propagate to Cart for events/sfx/whatnot
+        _cart.OnCollisionEnter(collision);
+    }
+
     private void FixedUpdate()
     {
         if (!isServer) return;
