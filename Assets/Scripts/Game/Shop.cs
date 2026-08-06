@@ -156,6 +156,8 @@ namespace Game
             _zoomController = _camera.GetComponent<CameraZoomController>();
             _uiCanvas = GameObject.FindGameObjectWithTag("UICanvas").transform;
 
+            // replace sack's ItemData with ItemRegistry version so pointer comparison works, todo this sucks, clean up entire system
+            SackItem.ItemData = ItemRegistry.FirstOrDefault(kvp => kvp.Value.name == SackItem.ItemData.name).Value;
             SackItem.enabled = false;
         }
 
