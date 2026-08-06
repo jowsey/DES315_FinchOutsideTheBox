@@ -90,7 +90,7 @@ namespace UI
             }
 
             var assetPath = $"InputIcon{inputPath}";
-
+            
             _iconHandle = Addressables.LoadAssetAsync<Sprite>(assetPath);
             _iconHandle.Completed += handle =>
             {
