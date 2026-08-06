@@ -248,7 +248,7 @@ namespace Game
 
             if (hitItem && _buyAction.action.WasPressedThisFrame())
             {
-                if (hitItem == SackItem)
+                if (hitItem == SackItem && BankManager.Instance.Balance >= SackItem.ItemData.BuyPrice)
                 {
                     CmdTryBuySack();
                 }
