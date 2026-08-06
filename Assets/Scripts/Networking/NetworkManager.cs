@@ -111,7 +111,7 @@ namespace Networking
             var player = conn.identity?.GetComponent<PlayerController>();
             if (player && player.HeldObject)
             {
-                player.HeldObject.StateData = new Item.IdleStateData();
+                player.HeldObject.ServerSetState(new Item.IdleStateData());
             }
 
             base.OnServerDisconnect(conn);

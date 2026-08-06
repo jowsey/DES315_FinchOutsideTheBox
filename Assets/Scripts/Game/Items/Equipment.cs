@@ -6,6 +6,8 @@ namespace Game.Items
 {
     public abstract class Equipment : Item
     {
+        [field: SerializeField] public bool HasUseAbility { get; protected set; } = true;
+        
         [SerializeField] private Event _useSfx;
 
         [SerializeField] protected bool _singleUse = true;
@@ -22,7 +24,7 @@ namespace Game.Items
 
                 if (_singleUse)
                 {
-                    StateData = new InactiveStateData();
+                    ServerSetState(new InactiveStateData());
                 }
 
                 ClientOnSuccessfulUse();
@@ -33,7 +35,7 @@ namespace Game.Items
         [ClientRpc]
         protected void ClientOnSuccessfulUse()
         {
-            _useSfx.Post(gameObject);
+            _useSfx?.Post(gameObject);
         }
 
         [TargetRpc]

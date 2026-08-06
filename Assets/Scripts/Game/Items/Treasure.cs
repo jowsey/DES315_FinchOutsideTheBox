@@ -24,7 +24,7 @@ namespace Game.Items
             {
                 _randomMeshIndex = Random.Range(0, _randomMeshOptions.Count);
             }
-            
+
             RespawnTarget.OnRespawn.AddListener(OnRespawn);
         }
 
@@ -61,8 +61,8 @@ namespace Game.Items
         {
             Smashable = false;
         }
-        
-        protected override void OnStateChanged(ItemStateData oldState, ItemStateData newState)
+
+        protected override void UpdateState(ItemStateData oldState, ItemStateData newState)
         {
             // Transition out
             switch (oldState)
@@ -96,7 +96,7 @@ namespace Game.Items
 
                     break;
                 }
-                case PuttingDownStateData puttingDownData:
+                case PuttingDownStateData:
                 {
                     if (isServer)
                     {
@@ -105,12 +105,14 @@ namespace Game.Items
 
                     break;
                 }
-                case SmashedStateData smashedData:
+                case SmashedStateData:
                 {
+                    if (!_smashedTreasurePrefab) break;
+
                     Instantiate(_smashedTreasurePrefab, transform.position, transform.rotation);
                     if (_hasInitialised)
                     {
-                        _breakSfx.Post(gameObject);
+                        _breakSfx?.Post(gameObject);
                     }
 
                     break;
@@ -118,30 +120,23 @@ namespace Game.Items
             }
 
             // base clears references, cleans up etc, so call last
-            base.OnStateChanged(oldState, newState);
+            base.UpdateState(oldState, newState);
         }
 
         private void OnCollisionEnter(Collision col)
         {
             if (!isServer) return;
+            if (!Smashable) return;
 
-            if (!col.collider.CompareTag("Item") &&
-                !col.collider.CompareTag("TreasureCarrier") &&
-                LayerMask.LayerToName(col.collider.gameObject.layer) != "Cart")
-            {
-                if (Smashable)
-                {
-                    StateData = new SmashedStateData();
-                }
-            }
+            var otherLayerName = LayerMask.LayerToName(col.collider.gameObject.layer);
+            if (otherLayerName is "Cart" or "Item") return;
+            
+            ServerSetState(new SmashedStateData());
         }
 
         private void OnTriggerEnter(Collider other)
         {
-            if (!isServer)
-            {
-                return;
-            }
+            if (!isServer) return;
 
             if (other.CompareTag("TreasureCarrier"))
             {
@@ -153,10 +148,7 @@ namespace Game.Items
 
         private void OnTriggerExit(Collider other)
         {
-            if (!isServer)
-            {
-                return;
-            }
+            if (!isServer) return;
 
             if (other.CompareTag("TreasureCarrier"))
             {

@@ -1,4 +1,5 @@
-﻿using Mirror;
+﻿using Game;
+using Mirror;
 using PrimeTween;
 using UnityEngine;
 using Event = AK.Wwise.Event;
@@ -19,8 +20,24 @@ namespace Obstacles
         private float _lastBounceTime;
         private float _bounceCooldown = 0.35f;
 
-        private void Start()
+        public override void OnStartServer()
         {
+            base.OnStartServer();
+            RespawnTarget.OnBuildRespawnSnapshot.AddListener(OnBuildRespawnSnapshot);
+            RespawnTarget.OnRespawn.AddListener(OnRespawn);
+        }
+
+        public override void OnStopServer()
+        {
+            base.OnStopServer();
+            RespawnTarget.OnBuildRespawnSnapshot.RemoveListener(OnBuildRespawnSnapshot);
+            RespawnTarget.OnRespawn.RemoveListener(OnRespawn);
+        }
+
+        public override void OnStartClient()
+        {
+            base.OnStartClient();
+
             Tween.Scale(transform, Vector3.zero, transform.localScale, TransitionDuration, Ease.OutBounce);
 
             if (_innerRotator)
@@ -73,6 +90,19 @@ namespace Obstacles
                 .Chain(Tween.ScaleY(transform, 1f, 0.16f, Ease.OutBack));
 
             _bounceSfx?.Post(gameObject);
+        }
+
+        private void OnBuildRespawnSnapshot(RespawnTarget.RespawnSnapshot snapshot)
+        {
+            snapshot.PlacedObjects.Add(gameObject);
+        }
+
+        private void OnRespawn(RespawnTarget target)
+        {
+            if (!target.Snapshot.PlacedObjects.Contains(gameObject))
+            {
+                NetworkServer.Destroy(gameObject);
+            }
         }
     }
 }

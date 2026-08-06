@@ -21,7 +21,11 @@ namespace Game.Items
         private void Awake()
         {
             Outline = GetComponent<OutlineTarget>();
-            Outline.enabled = false;
+        }
+
+        private void OnEnable()
+        {
+            Outline.enabled = true;
         }
 
         private void OnDisable()

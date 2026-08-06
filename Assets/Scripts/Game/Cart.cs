@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,11 +45,13 @@ public class Cart : NetworkBehaviour
 
     [field: SyncVar(hook = nameof(OnTotalCarriedItemsChanged))] public int TotalCarriedItems { get; private set; }
 
-    [SyncVar] public int ExpectedTotalItemSellPrice;
+    [field: SyncVar] public int TotalItemSellPrice { get; private set; }
 
     [field: SerializeField] public UpgradeSack SackPrefab { get; private set; }
 
     [field: SerializeField] public List<Transform> SackPositions { get; private set; } = new();
+
+    public List<UpgradeSack> Sacks { get; private set; } = new();
 
     //Sound effects
     [SerializeField] [Required] private AK.Wwise.Event _carSound;
@@ -56,9 +59,6 @@ public class Cart : NetworkBehaviour
     [SerializeField] [Required] private AK.Wwise.Event _glassInVehicle;
     [SerializeField] [Required] private AK.Wwise.RTPC _cartSpeedRTPC;
     [SerializeField] [Required] private AK.Wwise.RTPC _numCarriedTreasuresRTPC;
-
-    [SerializeField] [Required] private WorldFollowUI _lowTreasureWarningPrefab;
-    private WorldFollowUI _lowTreasureWarningUI;
 
     //Velocity doesn't exist on non-authed client, so we use this to calculate our own rough speed
     private Vector3 _positionLastFrame;
@@ -87,8 +87,8 @@ public class Cart : NetworkBehaviour
     public override void OnStartServer()
     {
         base.OnStartServer();
-        RespawnTarget.OnRespawn.AddListener(OnRespawn);
         RespawnTarget.OnReachNewTarget.AddListener(OnReachNewTarget);
+        RespawnTarget.OnRespawn.AddListener(OnRespawn);
 
         // First checkpoint runs on Frame 0 before treasures run OnTriggerEnter so we need to manually init
         // - Bounds check isn't perfectly accurate, but we can reasonably assume
@@ -119,6 +119,8 @@ public class Cart : NetworkBehaviour
 
     public override void OnStartClient()
     {
+        if (!isServer) RespawnTarget.OnReachNewTarget.AddListener(OnReachNewTarget);
+
         _carSound.Post(gameObject);
         _carOnSurface.Post(gameObject);
         _glassInVehicle.Post(gameObject);
@@ -130,6 +132,12 @@ public class Cart : NetworkBehaviour
     {
         base.OnStopServer();
         RespawnTarget.OnRespawn.RemoveListener(OnRespawn);
+        RespawnTarget.OnReachNewTarget.RemoveListener(OnReachNewTarget);
+    }
+
+    public override void OnStopClient()
+    {
+        base.OnStopClient();
         RespawnTarget.OnReachNewTarget.RemoveListener(OnReachNewTarget);
     }
 
@@ -243,31 +251,24 @@ public class Cart : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Checkpoint"))
+        if (!isServer) return;
+        if (!other.CompareTag("Checkpoint")) return;
+
+        var checkpoint = other.GetComponent<Checkpoint>();
+        var newIndex = Checkpoints.IndexOf(checkpoint);
+
+        var currentIndex = CurrentRespawnTarget switch
         {
-            Checkpoint checkpoint = other.GetComponent<Checkpoint>();
-            var newIndex = Checkpoints.IndexOf(checkpoint);
+            Checkpoint currentCheckpoint => Checkpoints.IndexOf(currentCheckpoint),
+            Sandcastle currentSandcastle => Checkpoints.IndexOf(currentSandcastle.Parent),
+            _ => -1
+        };
 
-            var currentIndex = CurrentRespawnTarget switch
-            {
-                Checkpoint currentCheckpoint => Checkpoints.IndexOf(currentCheckpoint),
-                Sandcastle currentSandcastle => Checkpoints.IndexOf(currentSandcastle.Parent),
-                _ => -1
-            };
+        if (newIndex <= currentIndex) return;
+        Debug.Log($"Hit checkpoint {newIndex}: {checkpoint.AreaName}");
 
-            if (newIndex <= currentIndex) return;
-            Debug.Log($"Hit checkpoint {newIndex}: {checkpoint.AreaName}");
-
-            // New checkpoint reached
-            if (isServer)
-            {
-                SetActiveRespawnTarget(checkpoint);
-                checkpoint.ActivateVFX();
-            }
-
-            var checkpointBanner = Instantiate(_checkpointBannerPrefab, _uiCanvas.transform);
-            checkpointBanner.Checkpoint = checkpoint;
-        }
+        // New checkpoint reached!
+        SetActiveRespawnTarget(checkpoint);
     }
 
     private void OnRespawn(RespawnTarget target)
@@ -307,7 +308,7 @@ public class Cart : NetworkBehaviour
         TotalCarriedItems = CarriedItems.Count;
 
         // we sync this since we don't sync individual items
-        ExpectedTotalItemSellPrice = EvaluateTotalItemSellPrice();
+        ReevaluateTotalItemSellPrice();
     }
 
     [Server]
@@ -316,11 +317,15 @@ public class Cart : NetworkBehaviour
         CarriedItems.Remove(item);
         TotalCarriedItems = CarriedItems.Count;
 
-        ExpectedTotalItemSellPrice = EvaluateTotalItemSellPrice();
+        ReevaluateTotalItemSellPrice();
     }
 
     [Server]
-    public int EvaluateTotalItemSellPrice() => CarriedItems.Sum(item => item.Data.SellPrice);
+    public void ReevaluateTotalItemSellPrice()
+    {
+        var allTreasures = CarriedItems.OfType<Treasure>().Concat(Sacks.Select(sack => sack.StoredItem).OfType<Treasure>());
+        TotalItemSellPrice = allTreasures.Sum(treasure => treasure.Data.SellPrice);
+    }
 
     private void OnTotalCarriedItemsChanged(int oldValue, int newValue)
     {
@@ -344,11 +349,28 @@ public class Cart : NetworkBehaviour
         }
 
         CurrentRespawnTarget = target;
+        RespawnTarget.OnReachNewTarget.Invoke(target); // ensure we immediately run on server
+        RpcReachTarget(target);
+    }
+
+    [ClientRpc]
+    private void RpcReachTarget(RespawnTarget target)
+    {
+        if (isServer) return; // mitigate host mode double proc
         RespawnTarget.OnReachNewTarget.Invoke(target);
     }
 
     private void OnReachNewTarget(RespawnTarget target)
     {
+        if (target is Checkpoint checkpoint && Checkpoints.IndexOf(checkpoint) > 0)
+        {
+            var checkpointBanner = Instantiate(_checkpointBannerPrefab, _uiCanvas.transform);
+            checkpointBanner.Checkpoint = checkpoint;
+
+            checkpoint.ActivateVFX();
+        }
+
+        if (!isServer) return;
         Physics.SyncTransforms();
 
         var snapshot = new RespawnTarget.RespawnSnapshot();
@@ -386,18 +408,5 @@ public class Cart : NetworkBehaviour
         RespawnTarget.OnPreRespawn.Invoke(target);
         RespawnTarget.OnRespawn.Invoke(target);
         RespawnTarget.OnPostRespawn.Invoke(target);
-    }
-
-    [Server]
-    public void RemoveAllTreasures()
-    {
-        //To prevent iterator invalidation from setting the state (which disables collider which runs OnTriggerExit which removes the treasure from Cart.CarriedTreasures)
-        List<Treasure> treasuresToRemove = CarriedItems.OfType<Treasure>().ToList();
-        foreach (Treasure treasure in treasuresToRemove)
-        {
-            //SyncVar hook hides the mesh, make it kinematic, and disable the collider
-            treasure.StateData = new Item.InactiveStateData();
-            RemoveCarriedItem(treasure);
-        }
     }
 }

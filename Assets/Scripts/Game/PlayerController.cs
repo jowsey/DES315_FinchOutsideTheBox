@@ -84,9 +84,10 @@ public class PlayerController : NetworkBehaviour
     private NetworkAnimator _networkAnimator;
     [SerializeField] private Canvas _nameplateCanvas;
     [SerializeField] public TextMeshProUGUI PlayerNameText; //Public for cutscene puppeteering
+    [SerializeField] public Image NameplateIcon;
 
     [Header("Animation")]
-    [Tooltip("The minimum velocity required to initiate the gliding animation (should be negative)")]
+    [Tooltip("The minimum velocity required to initiate the gliding animation (should be negative)")]   
     [SerializeField] private float _fallAnimationMinDownardsVelocity;
 
     [Header("Input")]
@@ -228,6 +229,9 @@ public class PlayerController : NetworkBehaviour
     
     public Emoter Emoter { get; private set; }
 
+    private ControlReference _dropControlReference;
+    private ControlReference _useControlReference;
+
     // Control blockers
     public static void AddControlBlockerFlags(Object blocker, ControlBlockerFlags flags)
     {
@@ -240,7 +244,7 @@ public class PlayerController : NetworkBehaviour
             _controlBlockers.Add(blocker, flags);
         }
 
-        if (flags.HasFlag(ControlBlockerFlags.Look) && _cinemachineInput.enabled)
+        if (_cinemachineInput && _cinemachineInput.enabled && flags.HasFlag(ControlBlockerFlags.Look))
         {
             _cinemachineInput.enabled = false;
         }
@@ -261,12 +265,9 @@ public class PlayerController : NetworkBehaviour
             }
         }
 
-        if (_cinemachineInput)
+        if (_cinemachineInput && !_cinemachineInput.enabled && ControlEnabled(ControlBlockerFlags.Look))
         {
-            if (ControlEnabled(ControlBlockerFlags.Look) && !_cinemachineInput.enabled)
-            {
-                _cinemachineInput.enabled = true;
-            }
+            _cinemachineInput.enabled = true;
         }
     }
 
@@ -274,12 +275,9 @@ public class PlayerController : NetworkBehaviour
     {
         _controlBlockers.Remove(blocker);
 
-        if (_cinemachineInput)
+        if (_cinemachineInput && !_cinemachineInput.enabled && ControlEnabled(ControlBlockerFlags.Look))
         {
-            if (ControlEnabled(ControlBlockerFlags.Look) && !_cinemachineInput.enabled)
-            {
-                _cinemachineInput.enabled = true;
-            }
+            _cinemachineInput.enabled = true;
         }
     }
 
@@ -404,8 +402,13 @@ public class PlayerController : NetworkBehaviour
         }
 
         PlayerNameText.text = PlayerName;
+        name = $"Player ({PlayerName})";
 
-        if (!CutscenePlayer) { OnPlayerReady.Invoke(this); }
+        if (!CutscenePlayer)
+        {
+            NameplateIcon.sprite = LoadedSkins[PlayerSkinIndex].VCIcon;
+            OnPlayerReady.Invoke(this);
+        }
     }
 
     public override void OnStopClient()
@@ -450,6 +453,13 @@ public class PlayerController : NetworkBehaviour
         gameObject.AddComponent<AkAudioListener>();
 
         ObstructionDitherer.PlayerTransform = _cameraObstructionDithererRayEndPosition;
+
+        // Item prompts
+        _dropControlReference = GameObject.FindWithTag("DropItemControlReference").GetComponent<ControlReference>();
+        _useControlReference = GameObject.FindWithTag("UseItemControlReference").GetComponent<ControlReference>();
+        
+        _dropControlReference.ToggleVisible(false, true);
+        _useControlReference.ToggleVisible(false, true);
     }
 
     public override void OnStopLocalPlayer()
@@ -460,7 +470,7 @@ public class PlayerController : NetworkBehaviour
 
     private void OnDestroy()
     {
-        Checkpoint.OnRespawn.RemoveListener(OnRespawn);
+        RespawnTarget.OnRespawn.RemoveListener(OnRespawn);
 
         PlayableDirector director = FindAnyObjectByType<PlayableDirector>();
         if (director)
@@ -472,10 +482,12 @@ public class PlayerController : NetworkBehaviour
 
     private void OnRespawn(RespawnTarget target)
     {
-        if (!authority) return;
+        if (!isLocalPlayer) return;
         _cinemachineCamera.PreviousStateIsValid = false;
         ActiveShop?.LeaveShop();
 
+        PruneStatusEffects(true);
+        
         // Cart will take us with it
         if (Seat) return;
 
@@ -501,8 +513,9 @@ public class PlayerController : NetworkBehaviour
 
     private void OnPlayerNameChanged(string oldValue, string newValue)
     {
-        // Update nameplate
-        if (PlayerNameText) { PlayerNameText.text = newValue; }
+        name = $"Player ({newValue})";
+
+        if (PlayerNameText) PlayerNameText.text = newValue;
         LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)_nameplateCanvas.transform);
     }
     
@@ -626,18 +639,42 @@ public class PlayerController : NetworkBehaviour
         }
         
         // Prune completed status effects
-        var completedEffects = _activeStatusEffects.Where(effect => Time.time - effect.StartTime >= effect.Duration);
+        PruneStatusEffects();
         
+        // Dynamic control references
+        var showDrop = HeldObject;
+        var showUse = HeldObject is Equipment { HasUseAbility: true };
+        
+        if (_dropControlReference && _useControlReference)
+        {
+            if (showDrop && !_dropControlReference.Visible)
+                _dropControlReference.ToggleVisible(true);
+            else if (!showDrop && _dropControlReference.Visible)
+                _dropControlReference.ToggleVisible(false);
+
+            if (showUse && !_useControlReference.Visible)
+                _useControlReference.ToggleVisible(true);
+            else if (!showUse && _useControlReference.Visible)
+                _useControlReference.ToggleVisible(false);
+        }
+    }
+
+    private void PruneStatusEffects(bool forceEndAll = false)
+    {
+        var completedEffects = forceEndAll
+            ? _activeStatusEffects
+            : _activeStatusEffects.Where(effect => Time.time - effect.StartTime >= effect.Duration);
+
         var boxesToRemove = _statusEffectBoxes.Where(kvp => completedEffects.Contains(kvp.Key)).ToList();
         foreach (var box in boxesToRemove)
         {
             _statusEffectBoxes.Remove(box.Key);
             box.Value.Destroy();
         }
-        
+
         _activeStatusEffects.RemoveAll(e => completedEffects.Contains(e));
     }
-
+    
     private void LateUpdate()
     {
         if (Seat)
@@ -728,21 +765,20 @@ public class PlayerController : NetworkBehaviour
         }
         
         // Ground vfx
-        if (grounded && !_wasGrounded)
+        if (grounded && !_wasGrounded && !Seat && _groundImpactVFX)
         {
-            var gv = Instantiate(_groundImpactVFX, transform.position, Quaternion.identity);
+            var gv = Instantiate(_groundImpactVFX, Rb.position, Quaternion.identity);
             Destroy(gv, 1f);
             WwiseAnimationEvents.PlayDustCloud();
         }
         
-        if (grounded && _networkAnimator.animator.GetBool(RunningState) && !Seat)
+        if (grounded && _networkAnimator.animator.GetBool(RunningState) && !Seat && _dustVFX)
         {
-            var gv = Instantiate(_dustVFX, transform.position, Quaternion.identity);
+            var gv = Instantiate(_dustVFX, Rb.position, Quaternion.identity);
             Destroy(gv, 0.8f);
         }
         
         WwiseAnimationEvents.EnableFootsteps = !Seat && grounded;
-        
         _wasGrounded = grounded;
 
         if (!authority && !IsPuppet) return;
@@ -903,7 +939,7 @@ public class PlayerController : NetworkBehaviour
             return;
         }
 
-        if (HeldObject) HeldObject.StateData = new Item.IdleStateData();
+        if (HeldObject) HeldObject.ServerSetState(new Item.IdleStateData());
 
         var newRotation = Quaternion.LookRotation(Cart.Instance.transform.position - newPosition, Vector3.up);
         newRotation = Quaternion.Euler(0, newRotation.eulerAngles.y, 0); // flatten angle

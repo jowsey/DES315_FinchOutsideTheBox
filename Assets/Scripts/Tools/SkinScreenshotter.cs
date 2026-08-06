@@ -63,6 +63,7 @@ namespace Tools
                 var skinData = ScriptableObject.CreateInstance<SkinData>();
                 skinData.Material = material;
                 skinData.Icon = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>(path);
+                skinData.VCIcon = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>($"Assets/Resources/PlayerSkins/VCIcons/Skin_{i + 1}.png");
                 skinData.AccentColor = ((Texture2D)material.GetTexture(MainTex)).GetPixelBilinear(_accentSampleUV.x, _accentSampleUV.y);
                 UnityEditor.AssetDatabase.CreateAsset(skinData, $"Assets/Resources/PlayerSkins/Skin_{i + 1}.asset");
                 UnityEditor.EditorUtility.SetDirty(skinData);

@@ -58,9 +58,10 @@ public class MovingPlatform : NetworkBehaviour
         PlatformSound.Post(_rb.gameObject);
     }
 
-    [Server]
     public void StartMoving()
     {
+        if (!isServer) return;
+
         if (!_moveStartTime.HasValue)
         {
             _moveStartTime = NetworkTime.time - _pausedElapsedTime;
@@ -69,9 +70,10 @@ public class MovingPlatform : NetworkBehaviour
         _useTargetTime = false;
     }
 
-    [Server]
     public void StopMoving()
     {
+        if (!isServer) return;
+
         if (_moveStartTime.HasValue)
         {
             _pausedElapsedTime = NetworkTime.time - _moveStartTime.Value;
@@ -81,16 +83,18 @@ public class MovingPlatform : NetworkBehaviour
         _useTargetTime = false;
     }
 
-    [Server]
     public void SetTargetTime01(float time01)
     {
+        if (!isServer) return;
+
         _useTargetTime = true;
         _targetTime = time01 * _duration;
     }
 
-    [Server]
     public void ResetIfNotMoving()
     {
+        if (!isServer) return;
+
         if (!_moveStartTime.HasValue)
         {
             _pausedElapsedTime = 0;

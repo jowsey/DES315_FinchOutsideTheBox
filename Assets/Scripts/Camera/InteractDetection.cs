@@ -26,13 +26,14 @@ public class InteractDetection : MonoBehaviour
 
     [SerializeField] private InteractPrompt.InteractPromptConfiguration _pickupConfig;
     [SerializeField] private InteractPrompt.InteractPromptConfiguration _putdownConfig;
+    [SerializeField] private InteractPrompt.InteractPromptConfiguration _storeConfig;
     [SerializeField] private InteractPrompt.InteractPromptConfiguration _attachHookConfig;
     [SerializeField] private InteractPrompt.InteractPromptConfiguration _pullRopeConfig;
     [SerializeField] private InteractPrompt.InteractPromptConfiguration _detachHookConfig;
 
     //The transform of the object currently being looked at
     public static Transform TargetedTransform { get; private set; }
-    
+
     private uint _lastTargetMask;
 
     private void Awake()
@@ -157,7 +158,7 @@ public class InteractDetection : MonoBehaviour
             if (!_interactPromptInstance) _interactPromptInstance = Instantiate(_interactPromptPrefab, _uiCanvas);
 
             if (validPickupTarget) _interactPromptInstance.Build(_pickupConfig);
-            else if (validPutdownTarget) _interactPromptInstance.Build(_putdownConfig);
+            else if (validPutdownTarget) _interactPromptInstance.Build(sack ? _storeConfig : _putdownConfig);
             else if (validHookTarget) _interactPromptInstance.Build(_attachHookConfig);
             else if (validPullTarget)
             {
@@ -179,7 +180,7 @@ public class InteractDetection : MonoBehaviour
                 if (showInfoCard)
                 {
                     if (!_itemInfoCardInstance) _itemInfoCardInstance = Instantiate(_itemInfoCardPrefab, _uiCanvas);
-                    _itemInfoCardInstance.Build(item.Data, ItemInfoCard.ItemInfoCardPriceDisplay.None);
+                    _itemInfoCardInstance.Build(item.Data, item is Treasure ? ItemInfoCard.SubtextDisplayType.BuySpeculate : ItemInfoCard.SubtextDisplayType.UsageHint);
 
                     // Info card below it
                     _itemInfoCardInstance.WorldFollowUI.TrackingTarget = TargetedTransform;

@@ -26,7 +26,7 @@ namespace Game
 
         private static readonly int ShopkeepOnBuyTrigger = Animator.StringToHash("OnBuy");
 
-        public static List<ItemData> ItemRegistry { get; private set; }
+        public static Dictionary<string, ItemData> ItemRegistry { get; private set; } = new();
 
         private CinemachineCamera _cinemachineCamera;
         private CinemachineOrbitalFollow _orbitalFollow;
@@ -89,14 +89,25 @@ namespace Game
         public readonly SyncList<Item> AvailableItems = new();
 
         public readonly UnityEvent<ItemData, PurchaseError> OnReceiveBuyResult = new();
-        public readonly UnityEvent<bool> OnChangeGlobalSackAvailability = new();
+        private static readonly UnityEvent<bool> OnGlobalSackAvailabilityChange = new();
+
+        [SyncVar(hook = nameof(OnSackAvailabilityChanged))] private bool _sackAvailable = true;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        private static void LoadAllItems()
+        private static async void LoadAllItems()
         {
-            var handle = Addressables.LoadAssetsAsync<ItemData>("Item");
-            var items = handle.WaitForCompletion();
-            ItemRegistry = items.ToList();
+            var handle = Addressables.LoadResourceLocationsAsync("Item");
+            await handle.Task;
+
+            foreach (var location in handle.Result)
+            {
+                var itemHandle = Addressables.LoadAssetAsync<ItemData>(location);
+                await itemHandle.Task;
+
+                if (itemHandle.Status != UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationStatus.Succeeded) continue;
+                var item = itemHandle.Result;
+                ItemRegistry[item.name] = item;
+            }
 
             Debug.Log($"Loaded {ItemRegistry.Count} shop items");
         }
@@ -107,17 +118,18 @@ namespace Game
             if (!newItem) return; // will be null if already bought on join
 
             var counterItem = newItem.gameObject.GetComponent<ShopCounterItem>() ?? newItem.gameObject.AddComponent<ShopCounterItem>();
-            counterItem.enabled = true;
             counterItem.ItemData = newItem.Data;
             counterItem.SetSelected(false);
+            counterItem.enabled = false;
         }
 
         private void OnAvailableItemChanged(int index, Item oldValue)
         {
             var newValue = AvailableItems[index];
-            if (!newValue && oldValue.TryGetComponent(out ShopCounterItem counterItem) && counterItem == _hoveredItem)
+            if (!newValue && oldValue.TryGetComponent(out ShopCounterItem counterItem))
             {
-                _hoveredItem = null;
+                counterItem.enabled = false;
+                if (counterItem == _hoveredItem) _hoveredItem = null;
             }
         }
 
@@ -143,6 +155,10 @@ namespace Game
             _camera = FindAnyObjectByType<Camera>(FindObjectsInactive.Include);
             _zoomController = _camera.GetComponent<CameraZoomController>();
             _uiCanvas = GameObject.FindGameObjectWithTag("UICanvas").transform;
+
+            // replace sack's ItemData with ItemRegistry version so pointer comparison works, todo this sucks, clean up entire system
+            SackItem.ItemData = ItemRegistry.FirstOrDefault(kvp => kvp.Value.name == SackItem.ItemData.name).Value;
+            SackItem.enabled = false;
         }
 
         public override void OnStartServer()
@@ -150,6 +166,7 @@ namespace Game
             RespawnTarget.OnBuildRespawnSnapshot.AddListener(OnBuildRespawnSnapshot);
             RespawnTarget.OnRespawn.AddListener(OnRespawn);
             RespawnTarget.OnPostRespawn.AddListener(OnPostRespawn);
+            OnGlobalSackAvailabilityChange.AddListener(OnGlobalSackAvailabilityChanged);
             SpawnPhysicalItems();
 
             _telescope.localRotation = Quaternion.Euler(0, Random.Range(0, 360f), 0);
@@ -159,7 +176,6 @@ namespace Game
         public override void OnStartClient()
         {
             _shopkeepRadio.Post(gameObject);
-            OnChangeGlobalSackAvailability.AddListener(OnChangeSackAvailability);
 
             AvailableItems.OnAdd += OnAvailableItemAdded;
             AvailableItems.OnSet += OnAvailableItemChanged;
@@ -180,12 +196,13 @@ namespace Game
         public override void OnStopClient()
         {
             _shopkeepRadio.Stop(gameObject);
-            OnChangeGlobalSackAvailability.RemoveListener(OnChangeSackAvailability);
         }
 
         [Server]
         private void RunNextTelescopeTween()
         {
+            if (!gameObject) return;
+
             Tween.CompleteAll(_telescopeRotationTween);
 
             var absRot = Random.Range(45f, 180f);
@@ -231,7 +248,7 @@ namespace Game
 
             if (hitItem && _buyAction.action.WasPressedThisFrame())
             {
-                if (hitItem == SackItem)
+                if (hitItem == SackItem && BankManager.Instance.Balance >= SackItem.ItemData.BuyPrice)
                 {
                     CmdTryBuySack();
                 }
@@ -256,9 +273,11 @@ namespace Game
         [Command(requiresAuthority = false)]
         private void CmdTryBuySack(NetworkConnectionToClient sender = null)
         {
+            var sackKey = ItemRegistry.FirstOrDefault(kvp => kvp.Value == SackItem.ItemData).Key;
+
             if (BankManager.Instance.Balance < SackItem.ItemData.BuyPrice)
             {
-                TargetBuyResult(sender, PurchaseError.NotEnoughMoney, SackItem.ItemData);
+                TargetBuyResult(sender, PurchaseError.NotEnoughMoney, sackKey);
                 return;
             }
 
@@ -268,31 +287,36 @@ namespace Game
             // Hide on counter if buying final sack
             if (nextSackPosition == Cart.Instance.SackPositions[^1])
             {
-                RpcSetSackAvailable(false);
+                // event invokes on server -> all shop instances on server set a syncvar -> all clients update based on syncvar changing
+                // ^ building around syncvars because they run on client late join. not ideal but
+                OnGlobalSackAvailabilityChange.Invoke(false);
             }
 
             BankManager.Instance.Balance -= SackItem.ItemData.BuyPrice;
             nextSackPosition.gameObject.SetActive(true);
+            _shopkeepAnimator.SetTrigger(ShopkeepOnBuyTrigger);
 
             var newSack = Instantiate(Cart.Instance.SackPrefab, nextSackPosition.position, nextSackPosition.rotation);
             newSack.Joint.connectedBody = Cart.Instance.Rb;
             newSack.Joint.connectedAnchor = Cart.Instance.transform.InverseTransformPoint(nextSackPosition.position);
-            newSack.LinkedCartTransform = nextSackPosition;
+            newSack.CartPositionTransform = nextSackPosition;
             newSack.transform.SetParent(nextSackPosition, worldPositionStays: true);
             NetworkServer.Spawn(newSack.gameObject);
 
-            _shopkeepAnimator.SetTrigger(ShopkeepOnBuyTrigger);
+            Cart.Instance.Sacks.Add(newSack);
+            TargetBuyResult(sender, PurchaseError.None, sackKey);
         }
 
-        [ClientRpc]
-        private void RpcSetSackAvailable(bool available)
+        [Server]
+        private void OnGlobalSackAvailabilityChanged(bool value)
         {
-            OnChangeGlobalSackAvailability.Invoke(available);
+            // todo this is a dumb stupid way of propagating a global value
+            _sackAvailable = value;
         }
 
-        private void OnChangeSackAvailability(bool available)
+        private void OnSackAvailabilityChanged(bool oldValue, bool newValue)
         {
-            SackItem.gameObject.SetActive(available);
+            SackItem.gameObject.SetActive(newValue);
         }
 
         [Server]
@@ -300,7 +324,7 @@ namespace Game
         {
             AvailableItems.Clear();
 
-            var allEquipment = ItemRegistry.Where(i => i.Type == ItemType.Equipment && i.Prefab).ToList();
+            var allEquipment = ItemRegistry.Values.Where(i => i.Type == ItemType.Equipment && i.Prefab).ToList();
             var cappedItemCount = Mathf.Min(_maxAvailableItems, allEquipment.Count);
             var itemsToSpawn = allEquipment.OrderBy(_ => Random.value).Take(cappedItemCount).ToList();
 
@@ -313,7 +337,7 @@ namespace Game
 
                 var newItem = Instantiate(itemToSpawn.Prefab, spawnPos, _itemSpawnStart.rotation);
                 newItem.Rb.isKinematic = true; // force immediate kinematic before state change to prevent any possible physics tick
-                newItem.StateData = new Item.FrozenStateData();
+                newItem.ServerSetState(new Item.FrozenStateData());
                 newItem.transform.localScale = Vector3.one * 0.5f;
                 newItem.Pickuppable = false;
 
@@ -334,38 +358,35 @@ namespace Game
             AvailableItems.Clear();
             AvailableItems.AddRange(target.Snapshot.ShopAvailableItems[this]);
 
-            //Put the items back on the display rack
-            int count = AvailableItems.Count;
-            for (int i = 0; i < count; ++i)
+            // Put the items back on the counter
+            var count = AvailableItems.Count;
+            for (var i = 0; i < count; ++i)
             {
-                Item item = AvailableItems[i];
-                if (item)
-                {
-                    float t = (count == 1) ? 0.5f : (float)i / (count - 1);
-                    Physics.SyncTransforms();
+                var item = AvailableItems[i];
+                if (!item) continue;
 
-                    item.StateData = new Item.FrozenStateData();
-                    item.Rb.position = Vector3.Lerp(_itemSpawnStart.position, _itemSpawnEnd.position, t);
-                    item.Rb.rotation = _itemSpawnStart.rotation;
-                    item.transform.localScale = Vector3.one * 0.5f;
-                    item.Pickuppable = false;
-                }
+                var t = count == 1 ? 0.5f : (float)i / (count - 1);
+                Physics.SyncTransforms();
+
+                item.ServerSetState(new Item.FrozenStateData());
+                item.Rb.position = Vector3.Lerp(_itemSpawnStart.position, _itemSpawnEnd.position, t);
+                item.Rb.rotation = _itemSpawnStart.rotation;
+                item.transform.localScale = Vector3.one * 0.5f;
+                item.Pickuppable = false;
             }
         }
 
+        [Server]
         private void OnPostRespawn(RespawnTarget target)
         {
-            OnChangeSackAvailability(Cart.Instance.SackPositions.Any(s => !s.gameObject.activeSelf));
+            OnGlobalSackAvailabilityChange.Invoke(Cart.Instance.SackPositions.Any(s => !s.gameObject.activeSelf));
         }
 
         [Button, DisableInEditorMode]
         public void EnterShop()
         {
             //Don't let the player enter the shop if they're on the cart
-            if (PlayerController.LocalPlayer.Seat)
-            {
-                return;
-            }
+            if (PlayerController.LocalPlayer.Seat) return;
 
             //Move camera
             _zoomController.OnForceThirdPersonActionStarted();
@@ -395,12 +416,12 @@ namespace Game
             }
 
             // Enable item outlines
-            SackItem.Outline.enabled = true;
+            SackItem.enabled = true;
             foreach (var item in AvailableItems)
             {
                 if (!item) continue;
                 var counterItem = item.GetComponent<ShopCounterItem>();
-                if (counterItem) counterItem.Outline.enabled = true;
+                if (counterItem) counterItem.enabled = true;
             }
 
             //Hide action UIs & enter prompt
@@ -447,12 +468,12 @@ namespace Game
                 _hoveredItem = null;
             }
 
-            SackItem.Outline.enabled = false;
+            SackItem.enabled = false;
             foreach (var item in AvailableItems)
             {
                 if (!item) continue;
                 var counterItem = item.GetComponent<ShopCounterItem>();
-                if (counterItem) counterItem.Outline.enabled = false;
+                if (counterItem) counterItem.enabled = false;
             }
 
             //Show action UIs & enter prompt
@@ -487,17 +508,19 @@ namespace Game
                 return;
             }
 
+            var itemKey = ItemRegistry.FirstOrDefault(kvp => kvp.Value == itemToBuy.Data).Key;
+
             PlayerController buyer = sender!.identity.GetComponent<PlayerController>();
             if (buyer.HeldObject)
             {
-                TargetBuyResult(sender, PurchaseError.AlreadyHoldingObject, itemToBuy.Data);
+                TargetBuyResult(sender, PurchaseError.AlreadyHoldingObject, itemKey);
                 return;
             }
 
             int price = itemToBuy.Data.BuyPrice;
             if (BankManager.Instance.Balance < price)
             {
-                TargetBuyResult(sender, PurchaseError.NotEnoughMoney, itemToBuy.Data);
+                TargetBuyResult(sender, PurchaseError.NotEnoughMoney, itemKey);
                 return;
             }
 
@@ -506,39 +529,43 @@ namespace Game
             AvailableItems[index] = null;
             itemToBuy.Pickuppable = true;
             itemToBuy.transform.localScale = Vector3.one;
-            itemToBuy.StateData = new Item.IdleStateData();
+            itemToBuy.ServerSetState(new Item.IdleStateData());
             itemToBuy.ServerTryPickup(buyer);
 
-            var counterItem = itemToBuy.GetComponent<ShopCounterItem>();
-            counterItem.enabled = false;
-
-            TargetBuyResult(sender, PurchaseError.None, itemToBuy.Data);
+            TargetBuyResult(sender, PurchaseError.None, itemKey);
             _shopkeepAnimator.SetTrigger(ShopkeepOnBuyTrigger);
         }
 
         [TargetRpc]
-        private void TargetBuyResult(NetworkConnection target, PurchaseError err, ItemData item)
+        private void TargetBuyResult(NetworkConnection target, PurchaseError err, string itemKey)
         {
-            OnReceiveBuyResult.Invoke(item, err);
+            var itemData = ItemRegistry.GetValueOrDefault(itemKey);
+            if (!itemData)
+            {
+                Debug.LogWarning($"Server sent buy result for item we don't know about ('{itemKey}')!");
+                return;
+            }
+
+            OnReceiveBuyResult.Invoke(itemData, err);
 
             switch (err)
             {
                 case PurchaseError.None:
                 {
                     _shopBuy.Post(gameObject);
-                    item.BuySfx?.Post(gameObject);
-
-                    LeaveShop();
+                    itemData.BuySfx?.Post(gameObject);
+                    
+                    if (itemData != SackItem.ItemData) LeaveShop();
                     break;
                 }
                 case PurchaseError.NotEnoughMoney:
                 {
-                    Debug.Log($"Failed to purchase {item.name} (price = {item.BuyPrice}, balance = {BankManager.Instance.Balance})");
+                    Debug.Log($"Failed to purchase {itemData.name} (price = {itemData.BuyPrice}, balance = {BankManager.Instance.Balance})");
                     break;
                 }
                 case PurchaseError.AlreadyHoldingObject:
                 {
-                    Debug.Log($"Failed to purchase {item.name} (already holding an object)");
+                    Debug.Log($"Failed to purchase {itemData.name} (already holding an object)");
                     break;
                 }
             }
@@ -547,8 +574,24 @@ namespace Game
         [Command(requiresAuthority = false)]
         public void CmdSellAll()
         {
-            BankManager.Instance.Balance += Cart.Instance.EvaluateTotalItemSellPrice(); //must be done before removing all the treasure, obviously
-            Cart.Instance.RemoveAllTreasures();
+            var cart = Cart.Instance;
+
+            BankManager.Instance.Balance += cart.TotalItemSellPrice;
+
+            var sackTreasures = cart.Sacks.Select(s => s.StoredItem).OfType<Treasure>().ToList();
+            var carriedTreasures = cart.CarriedItems.OfType<Treasure>().ToList();
+
+            foreach (var treasure in sackTreasures)
+            {
+                // transitioning out of the sack state will automatically un-store it
+                treasure.ServerSetState(new Item.InactiveStateData());
+            }
+
+            foreach (var treasure in carriedTreasures)
+            {
+                treasure.ServerSetState(new Item.InactiveStateData());
+                cart.RemoveCarriedItem(treasure);
+            }
         }
 
         private void OnTriggerEnter(Collider other)

@@ -19,7 +19,7 @@ namespace UI
 
         private AsyncOperationHandle<Sprite> _iconHandle;
 
-        private static InputDevice _lastActiveDevice;
+        public static InputDevice LastActiveDevice { get; private set; }
 
         private void OnValidate()
         {
@@ -49,7 +49,7 @@ namespace UI
 
             var action = (InputAction)obj;
             var control = action.activeControl;
-            if (control != null) _lastActiveDevice = control.device;
+            if (control != null) LastActiveDevice = control.device;
         }
 
         private void OnDestroy()
@@ -70,41 +70,49 @@ namespace UI
         {
             if (!_actionRef) return;
 
-            _image.sprite = null;
             if (_iconHandle.IsValid()) Addressables.Release(_iconHandle);
 
-            bool deviceNativeControl = true;
-            var activeControl = _actionRef.action.controls.FirstOrDefault(control => control.device == _lastActiveDevice);
+            var isControlDeviceNative = true;
+            var activeControl = _actionRef.action.controls.FirstOrDefault(control => control.device == LastActiveDevice);
             if (activeControl == null)
             {
-                deviceNativeControl = false;
+                isControlDeviceNative = false;
                 activeControl = _actionRef.action.controls.Count > 0 ? _actionRef.action.controls[0] : null;
             }
+
             if (activeControl == null) return;
 
             var inputPath = activeControl.path;
 
-            if (deviceNativeControl && _lastActiveDevice is Gamepad)
+            if (isControlDeviceNative && LastActiveDevice is Gamepad)
             {
-                inputPath = inputPath.Replace(inputPath.Split('/')[1], _lastActiveDevice is DualShockGamepad ? "PlayStation" : "Xbox");
+                inputPath = inputPath.Replace(inputPath.Split('/')[1], LastActiveDevice is DualShockGamepad ? "PlayStation" : "Xbox");
             }
 
             var assetPath = $"InputIcon{inputPath}";
-
+            
             _iconHandle = Addressables.LoadAssetAsync<Sprite>(assetPath);
-            _iconHandle.WaitForCompletion();
-
-            if (_iconHandle.Status == AsyncOperationStatus.Succeeded)
+            _iconHandle.Completed += handle =>
             {
-                _image.sprite = _iconHandle.Result;
-            }
-            else
-            {
-                Debug.LogWarning($"Input icon '{assetPath}' for {_actionRef.action.name} not found in Addressables!");
-                Addressables.Release(_iconHandle);
-            }
+                if (handle.Status == AsyncOperationStatus.Succeeded)
+                {
+                    if (_image) _image.sprite = handle.Result;
+                }
+                else
+                {
+                    Debug.LogWarning($"Input icon '{assetPath}' for {_actionRef.action.name} not found in Addressables!");
+                }
+            };
         }
 
+        private void LateUpdate()
+        {
+            if (_iconHandle.IsValid() && !_iconHandle.IsDone)
+            {
+                _iconHandle.WaitForCompletion();
+            }
+        }
+        
         public void SetAction(InputActionReference action)
         {
             _actionRef = action;

@@ -26,7 +26,7 @@ namespace Game.Items
         public override void OnStartServer()
         {
             base.OnStartServer();
-            var treasureData = Shop.ItemRegistry
+            var treasureData = Shop.ItemRegistry.Values
                 .Where(i => i.Type == ItemType.Treasure && i.Rarity == _rarity)
                 .OrderBy(x => Guid.NewGuid())
                 .FirstOrDefault();

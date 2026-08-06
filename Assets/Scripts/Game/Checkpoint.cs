@@ -10,7 +10,7 @@ namespace Game
     {
         public string AreaName = "Unnamed Checkpoint";
 
-        [field: SerializeField] [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)] public RuntimeAnimatorController AnimatorController { get; private set; }
+        [field: SerializeField] [RequiredIn(PrefabKind.PrefabInstanceAndNonPrefabInstance)] public Sprite BannerSprite { get; private set; }
 
         public List<Sandcastle> Sandcastles = new();
 
