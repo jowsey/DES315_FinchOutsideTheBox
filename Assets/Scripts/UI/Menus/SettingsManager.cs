@@ -10,6 +10,7 @@ using PrimeTween;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 using VoIP;
 using Random = UnityEngine.Random;
@@ -32,6 +33,11 @@ namespace UI
         public bool NoiseSuppression = true;
         public bool PushToTalkSfx = true;
         public string InputDevice = null;
+        
+        // Video
+        public bool Fullscreen = true;
+        public bool VerticalSync = true;
+        public float UpscalingPercent = 100.0f;
 
         public Dictionary<string, float> PlayerVoiceVolumePercents = new();
 
@@ -81,6 +87,11 @@ namespace UI
         [SerializeField] [Required] private RTPC _masterVolumeRtpc;
         [SerializeField] [Required] private RTPC _musicVolumeRtpc;
         [SerializeField] [Required] private RTPC _sfxVolumeRtpc;
+        
+        // Video
+        [SerializeField] [Required] private TMP_Dropdown _windowModeDropdown;
+        [SerializeField] [Required] private Toggle _vsyncToggle;
+        [SerializeField] [Required] private Slider _upscalerPercentSlider;
 
         private static string _sessionRandomName;
 
@@ -117,6 +128,11 @@ namespace UI
             _pttSfxToggle.onValueChanged.AddListener(OnPttSfxToggleChanged);
             _noiseSuppressionToggle.onValueChanged.AddListener(OnNoiseSuppressionToggleChanged);
             _inputDeviceDropdown.onValueChanged.AddListener(OnInputDeviceChanged);
+            
+            // Video
+            _windowModeDropdown.onValueChanged.AddListener(OnWindowModeChanged);
+            _vsyncToggle.onValueChanged.AddListener(OnVsyncToggleChanged);
+            _upscalerPercentSlider.onValueChanged.AddListener(OnUpscalerPercentChanged);
         }
 
         private void OnDisable()
@@ -138,6 +154,11 @@ namespace UI
             _noiseSuppressionToggle.onValueChanged.RemoveListener(OnNoiseSuppressionToggleChanged);
             _inputDeviceDropdown.onValueChanged.RemoveListener(OnInputDeviceChanged);
             _inputDeviceDropdown.ClearOptions();
+            
+            // Video
+            _windowModeDropdown.onValueChanged.RemoveListener(OnWindowModeChanged);
+            _vsyncToggle.onValueChanged.RemoveListener(OnVsyncToggleChanged);
+            _upscalerPercentSlider.onValueChanged.RemoveListener(OnUpscalerPercentChanged);
         }
 
         private void Start()
@@ -248,6 +269,30 @@ namespace UI
             QueueSaveToDisk();
         }
 
+        private void OnWindowModeChanged(int val)
+        {
+            ActiveSettings.Fullscreen = val == 0;
+            QueueSaveToDisk();
+
+            Screen.fullScreenMode = val == 0 ? FullScreenMode.FullScreenWindow : FullScreenMode.Windowed;
+        }
+
+        private void OnVsyncToggleChanged(bool val)
+        {
+            ActiveSettings.VerticalSync = val;
+            QueueSaveToDisk();
+
+            QualitySettings.vSyncCount = val ? 1 : 0;
+        }
+
+        private void OnUpscalerPercentChanged(float val)
+        {
+            ActiveSettings.UpscalingPercent = val;
+            QueueSaveToDisk();
+
+            DynamicResolutionHandler.SetDynamicResScaler(() => val, DynamicResScalePolicyType.ReturnsPercentage);
+        }
+
         private void ResetSettings()
         {
             Tween.Scale(_resetButton.transform, Vector3.one * 0.95f, 0.1f, Ease.OutCubic, 2, CycleMode.Yoyo);
@@ -297,19 +342,7 @@ namespace UI
                 ActiveSettings = new UserSettings();
                 QueueSaveToDisk();
             }
-
-            if (!Microphone.devices.Contains(ActiveSettings.InputDevice))
-            {
-                ActiveSettings.InputDevice = null;
-            }
-
-            SetInputDevice(ActiveSettings.InputDevice);
-
-            ApplySettings();
-        }
-
-        private void ApplySettings()
-        {
+            
             // Game
             _playerNameText.text = ActiveSettings.PlayerName;
             _firstPersonFovSlider.value = ActiveSettings.FirstPersonFov;
@@ -329,6 +362,9 @@ namespace UI
             _pttToggle.isOn = ActiveSettings.PushToTalk;
             _pttSfxToggle.isOn = ActiveSettings.PushToTalkSfx;
 
+            if (!Microphone.devices.Contains(ActiveSettings.InputDevice)) ActiveSettings.InputDevice = null;
+            SetInputDevice(ActiveSettings.InputDevice);
+
             _inputDeviceDropdown.ClearOptions();
             _inputDeviceDropdown.AddOptions(new List<string> { "None" });
             _inputDeviceDropdown.AddOptions(Microphone.devices.ToList());
@@ -337,6 +373,11 @@ namespace UI
             _masterVolumeRtpc.SetGlobalValue((ActiveSettings.MasterVolumePercent / 100) * MaxRtpcVolume);
             _musicVolumeRtpc.SetGlobalValue((ActiveSettings.MusicVolumePercent / 100) * MaxRtpcVolume);
             _sfxVolumeRtpc.SetGlobalValue((ActiveSettings.SfxVolumePercent / 100) * MaxRtpcVolume);
+            
+            // Video
+            _windowModeDropdown.value = ActiveSettings.Fullscreen ? 0 : 1;
+            _vsyncToggle.isOn = ActiveSettings.VerticalSync;
+            _upscalerPercentSlider.value = ActiveSettings.UpscalingPercent;
         }
     }
 }
