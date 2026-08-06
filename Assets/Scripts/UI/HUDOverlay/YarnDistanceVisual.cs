@@ -1,4 +1,5 @@
-﻿using Game.Items.Equipments;
+﻿using System;
+using Game.Items.Equipments;
 using PrimeTween;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,6 +24,8 @@ namespace UI
         private YarnEquipment _yarn;
         private float _lastRecordedLength;
 
+        private Tween _catScaleTween;
+
         public void Build(YarnEquipment yarn)
         {
             _yarn = yarn;
@@ -46,10 +49,18 @@ namespace UI
             if (Mathf.Abs(delta) > DirectionUpdateLengthDelta)
             {
                 var forwards = delta > 0;
-                Tween.ScaleX(_catIcon.transform, forwards ? 1 : -1, TransitionDuration, Ease.InOutCubic);
+
+                PrimeTweenConfig.warnEndValueEqualsCurrent = false;
+                _catScaleTween = Tween.ScaleX(_catIcon.transform, forwards ? 1 : -1, TransitionDuration, Ease.InOutCubic);
+                PrimeTweenConfig.warnEndValueEqualsCurrent = true;
 
                 _lastRecordedLength = _yarn.TotalLineSize;
             }
+        }
+
+        private void OnDestroy()
+        {
+            if (_catScaleTween.isAlive) _catScaleTween.Stop();
         }
     }
 }
