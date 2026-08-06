@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Mirror;
 using Sirenix.OdinInspector;
@@ -39,7 +39,7 @@ namespace Game.Items.Equipments
         private YarnHookPoint _hookPoint;
         private Transform _uiCanvas;
 
-        protected override void OnStateChanged(ItemStateData oldState, ItemStateData newState)
+        protected override void UpdateState(ItemStateData oldState, ItemStateData newState)
         {
             switch (oldState)
             {
@@ -66,7 +66,7 @@ namespace Game.Items.Equipments
                 }
             }
 
-            base.OnStateChanged(oldState, newState);
+            base.UpdateState(oldState, newState);
         }
 
         protected override void Awake()

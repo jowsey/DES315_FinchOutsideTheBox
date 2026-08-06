@@ -337,7 +337,7 @@ namespace Game
 
                 var newItem = Instantiate(itemToSpawn.Prefab, spawnPos, _itemSpawnStart.rotation);
                 newItem.Rb.isKinematic = true; // force immediate kinematic before state change to prevent any possible physics tick
-                newItem.StateData = new Item.FrozenStateData();
+                newItem.ServerSetState(new Item.FrozenStateData());
                 newItem.transform.localScale = Vector3.one * 0.5f;
                 newItem.Pickuppable = false;
 
@@ -368,7 +368,7 @@ namespace Game
                 var t = count == 1 ? 0.5f : (float)i / (count - 1);
                 Physics.SyncTransforms();
 
-                item.StateData = new Item.FrozenStateData();
+                item.ServerSetState(new Item.FrozenStateData());
                 item.Rb.position = Vector3.Lerp(_itemSpawnStart.position, _itemSpawnEnd.position, t);
                 item.Rb.rotation = _itemSpawnStart.rotation;
                 item.transform.localScale = Vector3.one * 0.5f;
@@ -529,7 +529,7 @@ namespace Game
             AvailableItems[index] = null;
             itemToBuy.Pickuppable = true;
             itemToBuy.transform.localScale = Vector3.one;
-            itemToBuy.StateData = new Item.IdleStateData();
+            itemToBuy.ServerSetState(new Item.IdleStateData());
             itemToBuy.ServerTryPickup(buyer);
 
             TargetBuyResult(sender, PurchaseError.None, itemKey);
@@ -554,7 +554,7 @@ namespace Game
                 {
                     _shopBuy.Post(gameObject);
                     itemData.BuySfx?.Post(gameObject);
-
+                    
                     if (itemData != SackItem.ItemData) LeaveShop();
                     break;
                 }
@@ -584,12 +584,12 @@ namespace Game
             foreach (var treasure in sackTreasures)
             {
                 // transitioning out of the sack state will automatically un-store it
-                treasure.StateData = new Item.InactiveStateData();
+                treasure.ServerSetState(new Item.InactiveStateData());
             }
 
             foreach (var treasure in carriedTreasures)
             {
-                treasure.StateData = new Item.InactiveStateData();
+                treasure.ServerSetState(new Item.InactiveStateData());
                 cart.RemoveCarriedItem(treasure);
             }
         }

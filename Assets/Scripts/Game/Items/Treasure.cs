@@ -62,7 +62,7 @@ namespace Game.Items
             Smashable = false;
         }
 
-        protected override void OnStateChanged(ItemStateData oldState, ItemStateData newState)
+        protected override void UpdateState(ItemStateData oldState, ItemStateData newState)
         {
             // Transition out
             switch (oldState)
@@ -120,7 +120,7 @@ namespace Game.Items
             }
 
             // base clears references, cleans up etc, so call last
-            base.OnStateChanged(oldState, newState);
+            base.UpdateState(oldState, newState);
         }
 
         private void OnCollisionEnter(Collision col)
@@ -131,7 +131,7 @@ namespace Game.Items
             var otherLayerName = LayerMask.LayerToName(col.collider.gameObject.layer);
             if (otherLayerName is "Cart" or "Item") return;
             
-            StateData = new SmashedStateData();
+            ServerSetState(new SmashedStateData());
         }
 
         private void OnTriggerEnter(Collider other)

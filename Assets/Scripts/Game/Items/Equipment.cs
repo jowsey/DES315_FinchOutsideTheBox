@@ -24,7 +24,7 @@ namespace Game.Items
 
                 if (_singleUse)
                 {
-                    StateData = new InactiveStateData();
+                    ServerSetState(new InactiveStateData());
                 }
 
                 ClientOnSuccessfulUse();

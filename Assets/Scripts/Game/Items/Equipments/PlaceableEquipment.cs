@@ -36,7 +36,7 @@ namespace Game.Items.Equipments
             _placeMask = ~LayerMask.GetMask("Player", "Cart", "Item");
         }
 
-        protected override void OnStateChanged(ItemStateData oldState, ItemStateData newState)
+        protected override void UpdateState(ItemStateData oldState, ItemStateData newState)
         {
             switch (oldState)
             {
@@ -75,7 +75,7 @@ namespace Game.Items.Equipments
                 }
             }
 
-            base.OnStateChanged(oldState, newState);
+            base.UpdateState(oldState, newState);
         }
 
         protected override void LateUpdate()

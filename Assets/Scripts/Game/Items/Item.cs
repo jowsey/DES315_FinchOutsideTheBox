@@ -68,8 +68,7 @@ namespace Game.Items
 
         public const float PutdownSpeed = 16f;
 
-        [SyncVar(hook = nameof(OnStateChanged))]
-        [ReadOnly] public ItemStateData StateData = new IdleStateData();
+        [SyncVar] [ReadOnly] public ItemStateData StateData = new IdleStateData();
 
         [ShowInInspector] private string StateName => StateData.GetType().Name;
 
@@ -91,6 +90,7 @@ namespace Game.Items
 
         public override void OnStartClient()
         {
+            UpdateState(null, StateData);
             _hasInitialised = true;
         }
 
@@ -145,7 +145,7 @@ namespace Game.Items
                 transform.position = Cart.Instance.transform.TransformPoint(snapshot.LocalPosition);
                 transform.rotation = snapshot.Rotation;
                 Physics.SyncTransforms();
-                StateData = new IdleStateData();
+                ServerSetState(new IdleStateData());
 
                 Cart.Instance.AddCarriedItem(this);
             }
@@ -158,12 +158,12 @@ namespace Game.Items
 
                 transform.position = worldItemSnapshot.Position;
                 transform.rotation = worldItemSnapshot.Rotation;
-                StateData = worldItemSnapshot.StateData;
+                ServerSetState(worldItemSnapshot.StateData);
             }
             else if (target.Snapshot.SackStoredItems.ContainsValue(this))
             {
                 var (sack, item) = target.Snapshot.SackStoredItems.First(x => x.Value == this);
-                StateData = new SackCarriedStateData { Sack = sack };
+                ServerSetState(new SackCarriedStateData { Sack = sack });
             }
             else
             {
@@ -172,7 +172,23 @@ namespace Game.Items
             }
         }
 
-        protected virtual void OnStateChanged(ItemStateData oldData, ItemStateData newData)
+        [Server]
+        public void ServerSetState(ItemStateData newState)
+        {
+            var oldState = StateData;
+            UpdateState(oldState, newState);
+            if (isServer) RpcUpdateState(oldState, newState);
+            StateData = newState;
+        }
+
+        [ClientRpc]
+        private void RpcUpdateState(ItemStateData oldState, ItemStateData newState)
+        {
+            if (isServer) return;
+            UpdateState(oldState, newState);
+        }
+
+        protected virtual void UpdateState(ItemStateData oldData, ItemStateData newData)
         {
             // Transition out
             switch (oldData)
@@ -318,12 +334,7 @@ namespace Game.Items
             if (player.HeldObject) return;
             if (StateData is not IdleStateData and not SackCarriedStateData) return;
 
-            if (StateData is SackCarriedStateData sackData)
-            {
-                sackData.Sack.StoredItem = null;
-            }
-
-            StateData = new HeldStateData { Holder = player };
+            ServerSetState(new HeldStateData { Holder = player });
         }
 
         [Command(requiresAuthority = false)]
@@ -334,7 +345,7 @@ namespace Game.Items
             var player = sender!.identity.GetComponent<PlayerController>();
             if (player != heldData.Holder) return;
 
-            StateData = new PuttingDownStateData { Target = target };
+            ServerSetState(new PuttingDownStateData { Target = target });
         }
 
         [Command(requiresAuthority = false)]
@@ -346,8 +357,7 @@ namespace Game.Items
             var player = sender!.identity.GetComponent<PlayerController>();
             if (player != heldData.Holder) return;
 
-            sack.StoredItem = this;
-            StateData = new SackCarriedStateData { Sack = sack };
+            ServerSetState(new SackCarriedStateData { Sack = sack });
         }
 
         [Command(requiresAuthority = false)]
@@ -357,7 +367,7 @@ namespace Game.Items
 
             var player = sender!.identity.GetComponent<PlayerController>();
             if (player != heldData.Holder) return;
-            StateData = new IdleStateData();
+            ServerSetState(new IdleStateData());
         }
 
         protected virtual void FixedUpdate()
@@ -372,7 +382,7 @@ namespace Game.Items
 
                 if (targetVec.sqrMagnitude < 0.025f)
                 {
-                    StateData = new IdleStateData();
+                    ServerSetState(new IdleStateData());
                 }
             }
         }

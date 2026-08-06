@@ -939,7 +939,7 @@ public class PlayerController : NetworkBehaviour
             return;
         }
 
-        if (HeldObject) HeldObject.StateData = new Item.IdleStateData();
+        if (HeldObject) HeldObject.ServerSetState(new Item.IdleStateData());
 
         var newRotation = Quaternion.LookRotation(Cart.Instance.transform.position - newPosition, Vector3.up);
         newRotation = Quaternion.Euler(0, newRotation.eulerAngles.y, 0); // flatten angle
