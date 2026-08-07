@@ -18,6 +18,8 @@ namespace Game.Items
 
         [SyncVar(hook = nameof(OnChangeRandomMeshIndex))] private int _randomMeshIndex = -1;
 
+        private const float SmashSpeed = 5f;
+
         public override void OnStartServer()
         {
             base.OnStartServer();
@@ -71,6 +73,11 @@ namespace Game.Items
                 // No longer holding
                 case HeldStateData heldData:
                 {
+                    if (isServer)
+                    {
+                        Smashable = true;
+                    }
+
                     if (heldData.Holder.isLocalPlayer)
                     {
                         Highlight.SetHighlightable("TreasureCarrier", false);
@@ -107,15 +114,6 @@ namespace Game.Items
 
                     break;
                 }
-                case PuttingDownStateData:
-                {
-                    if (isServer)
-                    {
-                        Smashable = true;
-                    }
-
-                    break;
-                }
                 case SmashedStateData:
                 {
                     if (!_smashedTreasurePrefab) break;
@@ -144,6 +142,8 @@ namespace Game.Items
         {
             if (!isServer) return;
             if (!Smashable) return;
+
+            if (col.relativeVelocity.magnitude < SmashSpeed) return;
 
             var otherLayerName = LayerMask.LayerToName(col.collider.gameObject.layer);
             if (otherLayerName is "Cart" or "Item") return;
