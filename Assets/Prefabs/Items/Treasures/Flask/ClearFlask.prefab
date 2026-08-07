@@ -494,22 +494,22 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   <Data>k__BackingField: {fileID: 11400000, guid: c83d23450903fa446a181d744e79b75e, type: 2}
-  _movementSpeed: 16
-  State: 0
   Pickuppable: 1
   _pickupSfx:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: fb4eeb34be92fdc47ab02109d737e816, type: 2}
+  <ShowInfoCard>k__BackingField: 1
+  <ForceMoveOnHeld>k__BackingField: 1
   Smashable: 0
-  _smashedTreasurePrefab: {fileID: 8121012120109722422, guid: 05ec8daeb1916d64cb76ff281b17a95c, type: 3}
   _breakSfx:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: d4d41d3b09f327b4b8b3466dc22fe8a0, type: 2}
-  _meshFilter: {fileID: 0}
-  _meshCollider: {fileID: 0}
+  _meshFilter: {fileID: 997054608359469715}
+  _meshCollider: {fileID: 4785554424625269083}
   _randomMeshOptions: []
+  _smashedPrefab: {fileID: 8121012120109722422, guid: 05ec8daeb1916d64cb76ff281b17a95c, type: 3}
 --- !u!114 &-4395463060295971911
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -805,6 +805,11 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 6358569425574371000}
   m_SourcePrefab: {fileID: 100100000, guid: b5ea9efc5e464924b817fdcc4c75c863, type: 3}
+--- !u!33 &997054608359469715 stripped
+MeshFilter:
+  m_CorrespondingSourceObject: {fileID: -5968009625842896985, guid: b5ea9efc5e464924b817fdcc4c75c863, type: 3}
+  m_PrefabInstance: {fileID: 2376600152709995828}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2842290618864401119 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: b5ea9efc5e464924b817fdcc4c75c863, type: 3}

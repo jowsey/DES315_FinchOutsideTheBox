@@ -1,7 +1,11 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using Mirror;
+using Sirenix.OdinInspector;
 using UI;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Game.Items
 {
@@ -9,12 +13,21 @@ namespace Game.Items
     {
         public bool Smashable;
 
-        [SerializeField] private GameObject _smashedTreasurePrefab;
+        [Serializable]
+        public class TreasureMeshPair
+        {
+            public Mesh Mesh;
+            public GameObject SmashedGroup;
+        }
+
         [SerializeField] private AK.Wwise.Event _breakSfx;
 
         [SerializeField] private MeshFilter _meshFilter;
+        [SerializeField] private MeshRenderer _meshRenderer;
         [SerializeField] private MeshCollider _meshCollider;
-        [SerializeField] private List<Mesh> _randomMeshOptions = new();
+
+        [SerializeField] private List<TreasureMeshPair> _randomMeshOptions = new();
+        [SerializeField, ShowIf("@_randomMeshOptions.Count == 0")] private GameObject _smashedPrefab;
 
         [SyncVar(hook = nameof(OnChangeRandomMeshIndex))] private int _randomMeshIndex = -1;
 
@@ -41,16 +54,22 @@ namespace Game.Items
         {
             base.OnValidate();
             if (!_meshFilter) _meshFilter = GetComponentInChildren<MeshFilter>();
+            if (!_meshRenderer) _meshRenderer = GetComponentInChildren<MeshRenderer>();
             if (!_meshCollider) _meshCollider = GetComponentInChildren<MeshCollider>();
+
+            if (_randomMeshOptions.Count > 0)
+            {
+                _smashedPrefab = null;
+            }
         }
 
         private void OnChangeRandomMeshIndex(int oldValue, int newValue)
         {
             if (newValue < 0 || newValue >= _randomMeshOptions.Count) return;
 
-            var newMesh = _randomMeshOptions[newValue];
-            if (_meshFilter.sharedMesh != newMesh) _meshFilter.sharedMesh = newMesh;
-            if (_meshCollider && _meshCollider.sharedMesh != newMesh) _meshCollider.sharedMesh = newMesh;
+            var newPair = _randomMeshOptions[newValue];
+            if (_meshFilter.sharedMesh != newPair.Mesh) _meshFilter.sharedMesh = newPair.Mesh;
+            if (_meshCollider && _meshCollider.sharedMesh != newPair.Mesh) _meshCollider.sharedMesh = newPair.Mesh;
         }
 
         private void OnDestroy()
@@ -116,12 +135,34 @@ namespace Game.Items
                 }
                 case SmashedStateData:
                 {
-                    if (!_smashedTreasurePrefab) break;
+                    var prefab = _randomMeshIndex >= 0 && _randomMeshOptions.Count >= _randomMeshIndex - 1
+                        ? _randomMeshOptions[_randomMeshIndex].SmashedGroup
+                        : _smashedPrefab;
 
-                    Instantiate(_smashedTreasurePrefab, transform.position, transform.rotation);
+                    if (!prefab) break;
+
                     if (_hasInitialised)
                     {
                         _breakSfx?.Post(gameObject);
+
+                        var smashInstance = Instantiate(prefab, transform.position, transform.rotation);
+                        smashInstance.transform.localScale = _meshFilter.transform.lossyScale;
+
+                        // if we're using a randomised group, we're responsible for "building" it
+                        if (prefab != _smashedPrefab)
+                        {
+                            foreach (var meshCol in smashInstance.GetComponentsInChildren<MeshCollider>())
+                            {
+                                meshCol.convex = true;
+                                meshCol.gameObject.AddComponent<Rigidbody>();
+
+                                // some of our smashed objects have both an inside and an outside material (presumably an oversight)
+                                var meshRen = meshCol.GetComponent<MeshRenderer>();
+                                meshRen.SetSharedMaterials(Enumerable.Repeat(_meshRenderer.sharedMaterial, meshRen.sharedMaterials.Length).ToList());
+                            }
+                        }
+
+                        // Destroy(smashInstance.gameObject, 30f); // todo animate away
 
                         // if (!HintPrompt.HasShown.TreasureSmash)
                         // {

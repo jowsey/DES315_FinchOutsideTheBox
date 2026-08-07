@@ -142,17 +142,21 @@ MonoBehaviour:
   <ShowInfoCard>k__BackingField: 1
   <ForceMoveOnHeld>k__BackingField: 1
   Smashable: 0
-  _smashedTreasurePrefab: {fileID: 0}
   _breakSfx:
     idInternal: 0
     valueGuidInternal: 
     WwiseObjectReference: {fileID: 11400000, guid: d4d41d3b09f327b4b8b3466dc22fe8a0, type: 2}
   _meshFilter: {fileID: 4251217571578473010}
+  _meshRenderer: {fileID: 2097459796327636728}
   _meshCollider: {fileID: 5336229947527225493}
   _randomMeshOptions:
-  - {fileID: -3672357163476800346, guid: cc314b74022a41b45bab624c0fa083d9, type: 3}
-  - {fileID: -3364533596105655069, guid: 0f0c48cfc109c574d963c2cb842e16c0, type: 3}
-  - {fileID: 6633607014715315878, guid: 9df8640dd1a1ad64b8f30ac0c140da41, type: 3}
+  - Mesh: {fileID: -3672357163476800346, guid: cc314b74022a41b45bab624c0fa083d9, type: 3}
+    SmashedGroup: {fileID: 919132149155446097, guid: 6f1ef27b7eca95f41b3847dedd185235, type: 3}
+  - Mesh: {fileID: -3364533596105655069, guid: 0f0c48cfc109c574d963c2cb842e16c0, type: 3}
+    SmashedGroup: {fileID: 919132149155446097, guid: 1269566b651f80d48952e8e7ffaebc3f, type: 3}
+  - Mesh: {fileID: 6633607014715315878, guid: 9df8640dd1a1ad64b8f30ac0c140da41, type: 3}
+    SmashedGroup: {fileID: 919132149155446097, guid: 3433dcc77d4503b4a9eda00b176092a0, type: 3}
+  _smashedPrefab: {fileID: 0}
 --- !u!114 &1857523720962797764
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -188,15 +192,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: cc314b74022a41b45bab624c0fa083d9, type: 3}
       propertyPath: m_LocalScale.x
-      value: 55
+      value: 0.55
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: cc314b74022a41b45bab624c0fa083d9, type: 3}
       propertyPath: m_LocalScale.y
-      value: 55
+      value: 0.55
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: cc314b74022a41b45bab624c0fa083d9, type: 3}
       propertyPath: m_LocalScale.z
-      value: 55
+      value: 0.55
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: cc314b74022a41b45bab624c0fa083d9, type: 3}
       propertyPath: m_LocalPosition.x
@@ -243,7 +247,7 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: cc314b74022a41b45bab624c0fa083d9, type: 3}
-      propertyPath: m_Materials.Array.data[0]
+      propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 873af1f0ad7f72d4b99f0cc32f3c370e, type: 2}
     - target: {fileID: 919132149155446097, guid: cc314b74022a41b45bab624c0fa083d9, type: 3}
@@ -316,6 +320,11 @@ MonoBehaviour:
 --- !u!4 &959407796461921687 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: cc314b74022a41b45bab624c0fa083d9, type: 3}
+  m_PrefabInstance: {fileID: 782000379602076284}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &2097459796327636728 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: cc314b74022a41b45bab624c0fa083d9, type: 3}
   m_PrefabInstance: {fileID: 782000379602076284}
   m_PrefabAsset: {fileID: 0}
 --- !u!33 &4251217571578473010 stripped
