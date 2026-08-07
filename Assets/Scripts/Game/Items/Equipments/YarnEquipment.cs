@@ -37,7 +37,6 @@ namespace Game.Items.Equipments
         private Vector3 _previewTrackingPosition => _previewInstance.transform.position + _previewInstance.transform.up * 0.1f;
 
         private YarnHookPoint _hookPoint;
-        private Transform _uiCanvas;
 
         protected override void UpdateState(ItemStateData oldState, ItemStateData newState)
         {
@@ -61,8 +60,6 @@ namespace Game.Items.Equipments
         {
             base.Awake();
             SetPreviewVisible(false);
-
-            _uiCanvas = GameObject.FindWithTag("UICanvas").transform;
         }
 
         public void TryStartHook(YarnHookPoint hookPoint)
@@ -82,7 +79,7 @@ namespace Game.Items.Equipments
             YarnStretch.Post(gameObject);
             YarnVol.SetGlobalValue(1);
 
-            _distanceVisualInstance = Instantiate(_distanceVisualPrefab, _uiCanvas);
+            _distanceVisualInstance = Instantiate(_distanceVisualPrefab, UIGlobals.MainCanvas.transform);
             _distanceVisualInstance.Build(this);
         }
 

@@ -8,7 +8,6 @@ using UnityEngine;
 public class InteractDetection : MonoBehaviour
 {
     private Camera _camera;
-    private Transform _uiCanvas;
 
     [SerializeField] private float _maxInteractDistance = 4.0f;
     [SerializeField] private float _maxPutdownDistance = 8.0f;
@@ -39,7 +38,6 @@ public class InteractDetection : MonoBehaviour
     private void Awake()
     {
         _camera = GetComponent<Camera>();
-        _uiCanvas = GameObject.FindGameObjectWithTag("UICanvas").transform;
     }
 
     private void CleanupInteractPrompt()
@@ -155,7 +153,7 @@ public class InteractDetection : MonoBehaviour
             TargetedTransform = interactable.InteractedTransform;
             _lastTargetMask = targetMask;
 
-            if (!_interactPromptInstance) _interactPromptInstance = Instantiate(_interactPromptPrefab, _uiCanvas);
+            if (!_interactPromptInstance) _interactPromptInstance = Instantiate(_interactPromptPrefab, UIGlobals.MainCanvas.transform);
 
             if (validPickupTarget) _interactPromptInstance.Build(_pickupConfig);
             else if (validPutdownTarget) _interactPromptInstance.Build(sack ? _storeConfig : _putdownConfig);
@@ -164,7 +162,7 @@ public class InteractDetection : MonoBehaviour
             {
                 _interactPromptInstance.Build(_pullRopeConfig);
 
-                if (!_secondaryInteractPromptInstance) _secondaryInteractPromptInstance = Instantiate(_interactPromptPrefab, _uiCanvas);
+                if (!_secondaryInteractPromptInstance) _secondaryInteractPromptInstance = Instantiate(_interactPromptPrefab, UIGlobals.MainCanvas.transform);
                 _secondaryInteractPromptInstance.Build(_detachHookConfig);
                 _secondaryInteractPromptInstance.transform.localScale = Vector3.one * 0.75f;
             }
@@ -179,7 +177,7 @@ public class InteractDetection : MonoBehaviour
 
                 if (showInfoCard)
                 {
-                    if (!_itemInfoCardInstance) _itemInfoCardInstance = Instantiate(_itemInfoCardPrefab, _uiCanvas);
+                    if (!_itemInfoCardInstance) _itemInfoCardInstance = Instantiate(_itemInfoCardPrefab, UIGlobals.MainCanvas.transform);
                     _itemInfoCardInstance.Build(item.Data, item is Treasure ? ItemInfoCard.SubtextDisplayType.BuySpeculate : ItemInfoCard.SubtextDisplayType.UsageHint);
 
                     // Info card below it

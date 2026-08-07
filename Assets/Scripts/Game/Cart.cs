@@ -34,9 +34,6 @@ public class Cart : NetworkBehaviour
     [Tooltip("Exponent for how much the amount of tilt-correction increases in response to tilting. 1 means consistent, higher makes it kick in far more when tilting more.")]
     [SerializeField] private float _tiltCorrectionScaling = 2f;
 
-    // UI
-    private Transform _uiCanvas;
-
     // Treasure carrying
     [SerializeField] [Required] private Collider _carryBounds;
 
@@ -76,7 +73,6 @@ public class Cart : NetworkBehaviour
     private void Awake()
     {
         Rb = GetComponent<Rigidbody>();
-        _uiCanvas = GameObject.FindGameObjectWithTag("UICanvas").transform;
         IsPuppet = false;
         Instance = this;
 
@@ -382,7 +378,7 @@ public class Cart : NetworkBehaviour
     {
         if (target is Checkpoint checkpoint && Checkpoints.IndexOf(checkpoint) > 0)
         {
-            var checkpointBanner = Instantiate(_checkpointBannerPrefab, _uiCanvas.transform);
+            var checkpointBanner = Instantiate(_checkpointBannerPrefab, UIGlobals.MainCanvas.transform);
             checkpointBanner.Checkpoint = checkpoint;
 
             checkpoint.ActivateVFX();
