@@ -36,6 +36,8 @@ namespace UI
         [SerializeField] private RectTransform _timerBarBackground;
         [SerializeField] private RectTransform _timerBar;
 
+        [SerializeField] private RectTransform _catIcon;
+
         [SerializeField] private CanvasGroup _canvasGroup;
 
         private HintPromptData _data;
@@ -70,6 +72,8 @@ namespace UI
 
             transform.localScale = Vector3.zero;
             Tween.Scale(transform, Vector3.one, TransitionDuration, Ease.OutBack);
+
+            Tween.ScaleY(_catIcon, 1.05f, 0.5f, Ease.OutSine, -1, CycleMode.Rewind);
         }
 
         private void Update()
