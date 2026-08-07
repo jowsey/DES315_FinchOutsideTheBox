@@ -271,6 +271,13 @@ namespace VoIP
             Debug.Log("Streaming stopped.");
         }
 
+        public void ResetMicReadingState()
+        {
+            _micReadPos = Microphone.GetPosition(_device);
+            _sendAccumulationBuffer?.Clear();
+            _opus.ResetEncoderState();
+        }
+        
         public void Update()
         {
             if (!isLocalPlayer)
@@ -301,9 +308,7 @@ namespace VoIP
                     }
 
                     //When starting a new PTT block, reset reading state
-                    _micReadPos = micWritePos;
-                    _sendAccumulationBuffer.Clear();
-                    _opus.ResetEncoderState();
+                    ResetMicReadingState();
                 }
                 else if (_pushToTalkAction.action.WasReleasedThisFrame())
                 {
@@ -315,18 +320,22 @@ namespace VoIP
             }
             else
             {
-                //Treat PTT action as toggle mute
-                if (_pushToTalkAction.action.WasPressedThisFrame())
+                if (Muted)
                 {
-                    Muted = !Muted;
-
-                    if (!Muted)
-                    {
-                        _micReadPos = micWritePos;
-                        _sendAccumulationBuffer.Clear();
-                        _opus.ResetEncoderState();
-                    }
+                    Muted = false;
+                    ResetMicReadingState();
                 }
+                    
+                //Treat PTT action as toggle mute
+                // if (_pushToTalkAction.action.WasPressedThisFrame())
+                // {
+                //     Muted = !Muted;
+                //
+                //     if (!Muted)
+                //     {
+                //         ResetMicReadingState();
+                //     }
+                // }
             }
 
             Sprite idealSprite = Muted ? _mutedMicSprite : _defaultMicSprite;
