@@ -12,9 +12,16 @@ namespace Util
 
         private readonly Vector3[] _points = new Vector3[80];
 
+        private Tween _alphaTween;
+
         private void OnEnable()
         {
-            Tween.Custom(Color.clear, _line.startColor, 0.5f, col => _line.startColor = col, Ease.OutCubic);
+            _alphaTween = Tween.Custom(Color.clear, _line.sharedMaterial.color, 0.75f, col => _line.sharedMaterial.color = col, Ease.OutCubic);
+        }
+
+        private void OnDestroy()
+        {
+            _alphaTween.Stop();
         }
 
         public void Build(Rigidbody target, Vector3 impulse)
