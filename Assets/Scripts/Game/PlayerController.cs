@@ -150,6 +150,16 @@ public class PlayerController : NetworkBehaviour
     
     [SerializeField] private LayerMask _fanLifterMask;
     private bool _insideFanLifter;
+
+    [SerializeField] private TrajectoryRenderer _trajectoryRendererPrefab;
+    private TrajectoryRenderer _trajectoryRendererInstance;
+
+    [SerializeField] private float _throwHoldMaxTime;
+    [SerializeField] private float _throwDeadzone;
+
+    public Vector3 ThrowDirection => transform.forward + transform.up * 0.25f;
+    
+    private float _throwHeldTime;
     
     // Called when a player object is done being initially setup
     // Does NOT imply the player has just joined
@@ -595,12 +605,9 @@ public class PlayerController : NetworkBehaviour
                 }
             }
         }
-        else if (UseItemAction.action.WasPressedThisFrame())
+        else if (UseItemAction.action.WasPressedThisFrame() && UseAllowed && HeldObject is Equipment equipment)
         {
-            if (UseAllowed && HeldObject is Equipment equipment)
-            {
-                equipment.TryUse();
-            }
+            equipment.TryUse();
         }
         else if (DropItemAction.action.WasPressedThisFrame())
         {
@@ -608,10 +615,39 @@ public class PlayerController : NetworkBehaviour
             {
                 segment.CmdDetachRope();
             }
+
+            _throwHeldTime = 0f;
+        }
+        else if (DropItemAction.action.IsPressed() && PutdownAllowed)
+        {
+            _throwHeldTime += Time.deltaTime;
+
+            if (_throwHeldTime > _throwDeadzone && !_trajectoryRendererInstance)
+            {
+                _trajectoryRendererInstance = Instantiate(_trajectoryRendererPrefab, transform);
+            }
             
-            if (PutdownAllowed)
+            if (_trajectoryRendererInstance)
+            {
+                var impulseForce = Item.MaxThrowForce * Mathf.Clamp01(_throwHeldTime / _throwHoldMaxTime);
+                _trajectoryRendererInstance.Build(HeldObject.Rb, ThrowDirection * impulseForce);
+            }
+        }
+        else if (DropItemAction.action.WasReleasedThisFrame() && PutdownAllowed)
+        {
+            if (_throwHeldTime < _throwDeadzone)
             {
                 HeldObject.CmdTryDrop();
+            }
+            else
+            {
+                HeldObject.CmdTryThrow(Mathf.Clamp01(_throwHeldTime / _throwHoldMaxTime));
+            }
+
+            if (_trajectoryRendererInstance)
+            {
+                Destroy(_trajectoryRendererInstance.gameObject);
+                _trajectoryRendererInstance = null;
             }
         }
 
