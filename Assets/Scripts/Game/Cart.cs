@@ -59,7 +59,7 @@ public class Cart : NetworkBehaviour
     [SerializeField] [Required] private AK.Wwise.RTPC _numCarriedTreasuresRTPC;
 
     [SerializeField] private float _minimumCollisionMagnitudeForSfx = 2f;
-    
+
     //Velocity doesn't exist on non-authed client, so we use this to calculate our own rough speed
     private Vector3 _positionLastFrame;
 
@@ -382,6 +382,17 @@ public class Cart : NetworkBehaviour
             checkpointBanner.Checkpoint = checkpoint;
 
             checkpoint.ActivateVFX();
+
+            if (!HintPrompt.HasShown.ReachCheckpoint)
+            {
+                HintPrompt.HasShown.ReachCheckpoint = true;
+                HintPrompt.RequestNew(new HintPrompt.HintPromptData
+                {
+                    Title = "A place to rest?",
+                    Description = "It's important to rest and take stock!\n\n" +
+                                  "Checkpoints save your progress: the items and upgrades you had are always returned to you upon respawning."
+                });
+            }
         }
 
         if (!isServer) return;

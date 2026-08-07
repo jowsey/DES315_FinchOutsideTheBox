@@ -413,6 +413,17 @@ namespace Game
                 _shopEnter.Post(gameObject);
             }
 
+            // Show prompt
+            if (!HintPrompt.HasShown.Shop)
+            {
+                HintPrompt.HasShown.Shop = true;
+                HintPrompt.RequestNew(new HintPrompt.HintPromptData
+                {
+                    Title = "See something you like?",
+                    Description = "Those treasures you've been collecting might have some value! Trade for useful items to aid on your journey.",
+                });
+            }
+
             // Enable item outlines
             SackItem.enabled = true;
             foreach (var item in AvailableItems)
@@ -552,7 +563,7 @@ namespace Game
                 {
                     _shopBuy.Post(gameObject);
                     itemData.BuySfx?.Post(gameObject);
-                    
+
                     if (itemData != SackItem.ItemData) LeaveShop();
                     break;
                 }
