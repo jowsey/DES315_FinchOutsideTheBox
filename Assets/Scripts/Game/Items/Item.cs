@@ -67,6 +67,7 @@ namespace Game.Items
         [field: SerializeField] public ItemData Data { get; protected set; }
 
         public const float PutdownSpeed = 16f;
+        public const float MaxThrowForce = 100f;
 
         [SyncVar] [ReadOnly] public ItemStateData StateData = new IdleStateData();
 
@@ -368,6 +369,21 @@ namespace Game.Items
             var player = sender!.identity.GetComponent<PlayerController>();
             if (player != heldData.Holder) return;
             ServerSetState(new IdleStateData());
+        }
+
+        [Command(requiresAuthority = false)]
+        public void CmdTryThrow(float forceRatio, NetworkConnectionToClient sender = null)
+        {
+            if (StateData is not HeldStateData heldData) return;
+
+            var player = sender!.identity.GetComponent<PlayerController>();
+            if (player != heldData.Holder) return;
+
+            ServerSetState(new IdleStateData());
+            
+            var impulseForce = MaxThrowForce * Mathf.Clamp01(forceRatio);
+            Rb.AddForce(player.ThrowDirection * impulseForce, ForceMode.Impulse);
+            Rb.AddTorque(player.ThrowDirection * (impulseForce * 0.01f), ForceMode.Impulse);
         }
 
         protected virtual void FixedUpdate()
