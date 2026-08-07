@@ -24,7 +24,7 @@ namespace UI
         public string PlayerName;
         public float FirstPersonFov = 80f;
         public float FirstPersonSensPercent = 25f;
-        public bool HideTutorialPrompts = true;
+        public bool HideTutorialPrompts = false;
 
         // Audio
         public float MasterVolumePercent = 100.0f;
