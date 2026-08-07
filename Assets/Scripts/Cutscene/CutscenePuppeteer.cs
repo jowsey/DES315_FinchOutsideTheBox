@@ -347,7 +347,6 @@ public class CutscenePuppeteer : MonoBehaviour
 
     public void RollCredits()
     {
-        var uiCanvas = GameObject.FindWithTag("UICanvas");
-        Instantiate(_creditsPrefab, uiCanvas.transform);
+        Instantiate(_creditsPrefab, UIGlobals.MainCanvas.transform);
     }
 }

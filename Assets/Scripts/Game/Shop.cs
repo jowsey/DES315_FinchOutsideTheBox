@@ -76,7 +76,6 @@ namespace Game
         [SerializeField] private Transform _itemSpawnEnd;
         [SerializeField] private int _maxAvailableItems;
 
-        private Transform _uiCanvas;
         [SerializeField] private CanvasGroup[] _hiddenUIElements;
 
         //Wwise Thangs
@@ -154,7 +153,6 @@ namespace Game
 
             _camera = FindAnyObjectByType<Camera>(FindObjectsInactive.Include);
             _zoomController = _camera.GetComponent<CameraZoomController>();
-            _uiCanvas = GameObject.FindGameObjectWithTag("UICanvas").transform;
 
             // replace sack's ItemData with ItemRegistry version so pointer comparison works, todo this sucks, clean up entire system
             SackItem.ItemData = ItemRegistry.FirstOrDefault(kvp => kvp.Value.name == SackItem.ItemData.name).Value;
@@ -410,7 +408,7 @@ namespace Game
             //Show UI
             if (!_shopUIInstance)
             {
-                _shopUIInstance = Instantiate(_shopUIPrefab, _uiCanvas);
+                _shopUIInstance = Instantiate(_shopUIPrefab, UIGlobals.MainCanvas.transform);
                 _shopUIInstance.Build(this);
                 _shopEnter.Post(gameObject);
             }
@@ -638,7 +636,7 @@ namespace Game
 
             if (!_enterPromptInstance && localPlayer && canShowEnterPrompt)
             {
-                _enterPromptInstance = Instantiate(_enterPromptPrefab, _uiCanvas);
+                _enterPromptInstance = Instantiate(_enterPromptPrefab, UIGlobals.MainCanvas.transform);
                 _enterPromptInstance.Build(_enterPromptConfig);
                 _enterPromptInstance.WorldFollowUI.TrackingTarget = _enterPromptPosition;
             }
