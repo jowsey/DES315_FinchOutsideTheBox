@@ -13,6 +13,8 @@ namespace Game.Items.Equipments
         private static readonly Color ValidPositionColour = new(0f, 1f, 0f, 0.5f);
         private static readonly Color InvalidPositionColour = new(1f, 0f, 0f, 0.5f);
 
+        [SerializeField] private LayerMask _placeMask;
+
         [SerializeField] protected GameObject _placePrefab;
         protected GameObject _placeInstance { get; private set; }
 
@@ -24,7 +26,6 @@ namespace Game.Items.Equipments
         private Renderer[] _previewRenderers;
         private bool _previewVisible = true;
         private MaterialPropertyBlock _mpb;
-        private LayerMask _placeMask;
         private Camera _camera;
 
         private bool _previewBelievedValid;
@@ -33,7 +34,6 @@ namespace Game.Items.Equipments
         {
             base.Awake();
             _camera = FindAnyObjectByType<Camera>(FindObjectsInactive.Include);
-            _placeMask = ~LayerMask.GetMask("Player", "Cart", "Item");
         }
 
         protected override void UpdateState(ItemStateData oldState, ItemStateData newState)
