@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Mirror;
+using UI;
 using UnityEngine;
 
 namespace Game.Items
@@ -92,6 +93,16 @@ namespace Game.Items
                     if (heldData.Holder.isLocalPlayer)
                     {
                         Highlight.SetHighlightable("TreasureCarrier", true);
+
+                        if (!HintPrompt.HasShown.PickupTreasure)
+                        {
+                            HintPrompt.HasShown.PickupTreasure = true;
+                            HintPrompt.RequestNew(new HintPrompt.HintPromptData
+                            {
+                                Title = "What's this?",
+                                Description = "If it shines, it might just be worth something!\n\nTreasures like this can be stored for safekeeping in your caravan."
+                            });
+                        }
                     }
 
                     break;
@@ -113,6 +124,12 @@ namespace Game.Items
                     if (_hasInitialised)
                     {
                         _breakSfx?.Post(gameObject);
+
+                        // if (!HintPrompt.HasShown.TreasureSmash)
+                        // {
+                        //     HintPrompt.HasShown.TreasureSmash = true;
+                        //     HintPrompt.RequestNew(new HintPrompt.HintPromptData());
+                        // }
                     }
 
                     break;
@@ -130,7 +147,7 @@ namespace Game.Items
 
             var otherLayerName = LayerMask.LayerToName(col.collider.gameObject.layer);
             if (otherLayerName is "Cart" or "Item") return;
-            
+
             ServerSetState(new SmashedStateData());
         }
 

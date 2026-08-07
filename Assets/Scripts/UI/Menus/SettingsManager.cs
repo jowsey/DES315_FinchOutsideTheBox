@@ -24,6 +24,7 @@ namespace UI
         public string PlayerName;
         public float FirstPersonFov = 80f;
         public float FirstPersonSensPercent = 25f;
+        public bool HideTutorialPrompts = true;
 
         // Audio
         public float MasterVolumePercent = 100.0f;
@@ -72,7 +73,8 @@ namespace UI
         [SerializeField] [Required] private TMP_InputField _playerNameText;
         [SerializeField] [Required] private Slider _firstPersonFovSlider;
         [SerializeField] [Required] private Slider _firstPersonSensitivitySlider;
-
+        [SerializeField] [Required] private Toggle _showTutorialPromptsToggle;
+        
         // Audio
         [SerializeField] [Required] private Slider _masterVolumeSlider;
         [SerializeField] [Required] private Slider _musicVolumeSlider;
@@ -118,6 +120,7 @@ namespace UI
             _playerNameText.onValueChanged.AddListener(OnPlayerNameChanged);
             _firstPersonFovSlider.onValueChanged.AddListener(OnFirstPersonFovChanged);
             _firstPersonSensitivitySlider.onValueChanged.AddListener(OnFirstPersonSensitivityChanged);
+            _showTutorialPromptsToggle.onValueChanged.AddListener(OnShowTutorialPromptsChanged);
 
             // Audio
             _masterVolumeSlider.onValueChanged.AddListener(OnMasterVolumeChanged);
@@ -143,6 +146,7 @@ namespace UI
             _playerNameText.onValueChanged.RemoveListener(OnPlayerNameChanged);
             _firstPersonFovSlider.onValueChanged.RemoveListener(OnFirstPersonFovChanged);
             _firstPersonSensitivitySlider.onValueChanged.RemoveListener(OnFirstPersonSensitivityChanged);
+            _showTutorialPromptsToggle.onValueChanged.RemoveListener(OnShowTutorialPromptsChanged);
 
             // Audio
             _masterVolumeSlider.onValueChanged.RemoveListener(OnMasterVolumeChanged);
@@ -217,6 +221,12 @@ namespace UI
         private void OnFirstPersonSensitivityChanged(float val)
         {
             ActiveSettings.FirstPersonSensPercent = val;
+            QueueSaveToDisk();
+        }
+
+        private void OnShowTutorialPromptsChanged(bool val)
+        {
+            ActiveSettings.HideTutorialPrompts = val;
             QueueSaveToDisk();
         }
 
@@ -347,6 +357,7 @@ namespace UI
             _playerNameText.text = ActiveSettings.PlayerName;
             _firstPersonFovSlider.value = ActiveSettings.FirstPersonFov;
             _firstPersonSensitivitySlider.value = ActiveSettings.FirstPersonSensPercent;
+            _showTutorialPromptsToggle.isOn = ActiveSettings.HideTutorialPrompts;
 
             if (CameraZoomController.FirstPerson && Camera.main)
             {
