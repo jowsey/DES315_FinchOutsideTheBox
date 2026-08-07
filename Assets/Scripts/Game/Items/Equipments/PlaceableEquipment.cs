@@ -1,4 +1,4 @@
-﻿using Mirror;
+using Mirror;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -87,8 +87,13 @@ namespace Game.Items.Equipments
                 var ray = _camera.ViewportPointToRay(new Vector2(0.5f, 0.5f));
                 if (Physics.Raycast(ray, out var hit, 100f, _placeMask, QueryTriggerInteraction.Ignore))
                 {
-                    _previewInstance.transform.position = hit.point;
-                    _previewInstance.transform.rotation = Quaternion.LookRotation(_previewInstance.transform.position - heldData.Holder.transform.position, hit.normal);
+                    var lerpT = 1 - Mathf.Exp(-20f * Time.deltaTime);
+                    _previewInstance.transform.position = Vector3.Lerp(_previewInstance.transform.position, hit.point, lerpT);
+                    _previewInstance.transform.rotation = Quaternion.Slerp(
+                        _previewInstance.transform.rotation,
+                        Quaternion.LookRotation(_previewInstance.transform.position - heldData.Holder.transform.position, hit.normal),
+                        lerpT
+                    );
 
                     var distanceToPlayer = Vector3.Distance(heldData.Holder.transform.position, hit.point);
                     var validPos = distanceToPlayer <= MaxPlaceDistance && Vector3.Angle(hit.normal, Vector3.up) <= _maxPlacementAngle;
