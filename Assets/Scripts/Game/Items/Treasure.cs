@@ -31,7 +31,7 @@ namespace Game.Items
 
         [SyncVar(hook = nameof(OnChangeRandomMeshIndex))] private int _randomMeshIndex = -1;
 
-        private const float SmashSpeed = 5f;
+        private const float SmashSpeed = 5.5f;
 
         public override void OnStartServer()
         {
@@ -187,7 +187,7 @@ namespace Game.Items
             if (col.relativeVelocity.magnitude < SmashSpeed) return;
 
             var otherLayerName = LayerMask.LayerToName(col.collider.gameObject.layer);
-            if (otherLayerName is "Cart" or "Item") return;
+            if (otherLayerName is "Cart" or "Item" or "Player") return;
 
             ServerSetState(new SmashedStateData());
         }
