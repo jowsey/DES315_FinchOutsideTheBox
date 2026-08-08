@@ -372,7 +372,7 @@ namespace Game.Items
         }
 
         [Command(requiresAuthority = false)]
-        public void CmdTryThrow(float forceRatio, NetworkConnectionToClient sender = null)
+        public void CmdTryThrow(float forceRatio, Vector3 worldThrowDir, NetworkConnectionToClient sender = null)
         {
             if (StateData is not HeldStateData heldData) return;
 
@@ -380,10 +380,12 @@ namespace Game.Items
             if (player != heldData.Holder) return;
 
             ServerSetState(new IdleStateData());
-            
+
+            var dir = worldThrowDir.normalized;
             var impulseForce = MaxThrowForce * Mathf.Clamp01(forceRatio);
-            Rb.AddForce(player.ThrowDirection * impulseForce, ForceMode.Impulse);
-            Rb.AddTorque(player.ThrowDirection * (impulseForce * 0.01f), ForceMode.Impulse);
+
+            Rb.AddForce(dir * impulseForce, ForceMode.Impulse);
+            Rb.AddTorque(dir * (impulseForce * 0.01f), ForceMode.Impulse);
         }
 
         protected virtual void FixedUpdate()

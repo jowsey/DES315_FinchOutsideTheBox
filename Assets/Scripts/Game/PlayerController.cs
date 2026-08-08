@@ -156,8 +156,6 @@ public class PlayerController : NetworkBehaviour
 
     [SerializeField] private float _throwHoldMaxTime;
     [SerializeField] private float _throwDeadzone;
-
-    public Vector3 ThrowDirection => transform.forward + transform.up * 0.25f;
     
     private float _throwHeldTime;
     
@@ -307,6 +305,8 @@ public class PlayerController : NetworkBehaviour
     private Dictionary<PlayerStatusEffect, StatusEffectBox> _statusEffectBoxes = new();
     
     private List<PlayerStatusEffect> _activeStatusEffects = new();
+    
+    private Vector3 _cameraForward => CameraZoomController.FirstPerson ? _camera.transform.forward : _cinemachineCamera.State.GetFinalOrientation() * Vector3.forward;
 
     // Status effects
     public void AddStatusEffect(PlayerStatusEffect effect)
@@ -630,7 +630,7 @@ public class PlayerController : NetworkBehaviour
             if (_trajectoryRendererInstance)
             {
                 var impulseForce = Item.MaxThrowForce * Mathf.Clamp01(_throwHeldTime / _throwHoldMaxTime);
-                _trajectoryRendererInstance.Build(HeldObject.Rb, ThrowDirection * impulseForce);
+                _trajectoryRendererInstance.Build(HeldObject.Rb, _cameraForward * impulseForce);
             }
         }
         else if (DropItemAction.action.WasReleasedThisFrame() && PutdownAllowed)
@@ -641,7 +641,7 @@ public class PlayerController : NetworkBehaviour
             }
             else
             {
-                HeldObject.CmdTryThrow(Mathf.Clamp01(_throwHeldTime / _throwHoldMaxTime));
+                HeldObject.CmdTryThrow(Mathf.Clamp01(_throwHeldTime / _throwHoldMaxTime), _cameraForward);
             }
 
             if (_trajectoryRendererInstance)
