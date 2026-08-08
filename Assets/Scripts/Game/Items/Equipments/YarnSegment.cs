@@ -9,7 +9,7 @@ namespace Game.Items.Equipments
         public YarnRope ParentRope;
 
         public const float MaxPullAckTimeout = 1f;
-        [SerializeField] private float _pullSpeed = 15f;
+        [SerializeField] private float _maxPullSpeed = 6f;
 
         public Rigidbody Rb { get; private set; }
         public ConfigurableJoint Joint { get; private set; }
@@ -40,7 +40,7 @@ namespace Game.Items.Equipments
         [Command(requiresAuthority = false)]
         public void CmdDetachRope(NetworkConnectionToClient sender = null)
         {
-            ParentRope.ServerDetach(Rb.position + transform.up * 0.5f);
+            ParentRope.ServerDetach(Rb.position + transform.up * 0.75f);
         }
 
         private void FixedUpdate()
@@ -49,10 +49,13 @@ namespace Game.Items.Equipments
 
             if (Time.time - _lastPullTime < MaxPullAckTimeout)
             {
-                var magnitudeDifference = _pullSpeed - Rb.linearVelocity.magnitude;
+                var magnitudeDifference = _maxPullSpeed - Rb.linearVelocity.magnitude;
+                if (magnitudeDifference < 0f) return;
+
+                var force = (magnitudeDifference * magnitudeDifference) * (Rb.mass * 0.1f);
 
                 var direction = (Rb.position - Joint.connectedBody.position).normalized;
-                Rb.AddForce(direction * magnitudeDifference, ForceMode.VelocityChange);
+                Rb.AddForce(direction * force, ForceMode.VelocityChange);
             }
         }
     }

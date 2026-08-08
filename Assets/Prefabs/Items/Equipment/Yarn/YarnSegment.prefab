@@ -30,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0.25}
-  m_LocalScale: {x: 0.25, y: 0.275, z: 0.25}
+  m_LocalScale: {x: 0.225, y: 0.275, z: 0.225}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1134101777615325574}
@@ -99,7 +99,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 255578332200727897}
-  m_Material: {fileID: 13400000, guid: 5da3cb218a91eee4d87fb38fe595b150, type: 2}
+  m_Material: {fileID: 13400000, guid: b93843b0395272b4d9361302329353bc, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -192,8 +192,8 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7626024902671833401}
   serializedVersion: 5
-  m_Mass: 10
-  m_LinearDamping: 0.5
+  m_Mass: 50
+  m_LinearDamping: 0.25
   m_AngularDamping: 0.5
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
@@ -226,9 +226,9 @@ ConfigurableJoint:
   m_AutoConfigureConnectedAnchor: 0
   m_ConnectedAnchor: {x: 0, y: 0, z: 0.5}
   m_SecondaryAxis: {x: 1, y: 0, z: 0}
-  m_XMotion: 0
-  m_YMotion: 0
-  m_ZMotion: 0
+  m_XMotion: 2
+  m_YMotion: 2
+  m_ZMotion: 2
   m_AngularXMotion: 0
   m_AngularYMotion: 2
   m_AngularZMotion: 2
@@ -265,20 +265,20 @@ ConfigurableJoint:
   m_TargetVelocity: {x: 0, y: 0, z: 0}
   m_XDrive:
     serializedVersion: 4
-    positionSpring: 0
-    positionDamper: 0
+    positionSpring: 10000000
+    positionDamper: 100000
     maximumForce: 3.4028233e+38
     useAcceleration: 0
   m_YDrive:
     serializedVersion: 4
-    positionSpring: 0
-    positionDamper: 0
+    positionSpring: 10000000
+    positionDamper: 100000
     maximumForce: 3.4028233e+38
     useAcceleration: 0
   m_ZDrive:
     serializedVersion: 4
-    positionSpring: 0
-    positionDamper: 0
+    positionSpring: 10000000
+    positionDamper: 100000
     maximumForce: 3.4028233e+38
     useAcceleration: 0
   m_TargetRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -302,7 +302,7 @@ ConfigurableJoint:
     positionDamper: 0
     maximumForce: 3.4028233e+38
     useAcceleration: 0
-  m_ProjectionMode: 1
+  m_ProjectionMode: 0
   m_ProjectionDistance: 0.01
   m_ProjectionAngle: 0.1
   m_ConfiguredInWorldSpace: 0
@@ -310,7 +310,7 @@ ConfigurableJoint:
   m_BreakForce: Infinity
   m_BreakTorque: Infinity
   m_EnableCollision: 0
-  m_EnablePreprocessing: 1
+  m_EnablePreprocessing: 0
   m_MassScale: 1
   m_ConnectedMassScale: 1
 --- !u!114 &1830892848116719769
@@ -389,4 +389,4 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _pullSpeed: 15
+  _maxPullSpeed: 4.5
