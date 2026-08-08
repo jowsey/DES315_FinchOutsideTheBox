@@ -633,6 +633,17 @@
 								</Action>
 							</ChildrenList>
 						</Event>
+						<Event Name="VentPush" ID="{38F32B6A-3D53-4BD7-AD38-53B9F9FF43BB}">
+							<ChildrenList>
+								<Action Name="" ID="{4147991C-0B19-45AE-8020-E189C688AB32}" ShortID="190312419">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="VentPush" ID="{5AAF095C-6D77-4F8F-952A-CF54C95EACF2}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
 					</ChildrenList>
 				</Folder>
 				<Folder Name="Car" ID="{54291B97-324D-461B-A2D3-9AB728386E00}" ShortID="55956342">
@@ -665,6 +676,17 @@
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="GlassInVehicle" ID="{F1648B82-7036-41A0-A2DA-67925D9B74A6}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="FastCollision" ID="{66D612C2-A1C0-4E85-BFE3-AC64EAE4237C}">
+							<ChildrenList>
+								<Action Name="" ID="{E6263579-A653-41A8-8044-47ECCD4593D9}" ShortID="797310622">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="FastCollision" ID="{B2493CF8-FD43-4BA9-935A-E734293CFA22}" WorkUnitID="{E387CF7C-AB24-4775-8EEE-0BA94CFE8E70}"/>
 										</Reference>
 									</ReferenceList>
 								</Action>

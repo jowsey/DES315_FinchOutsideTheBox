@@ -30,6 +30,7 @@ namespace AK
         static const AkUniqueID DOLLHUM = 3457267156U;
         static const AkUniqueID DOORSMOVING = 758278606U;
         static const AkUniqueID EMOTEHOVERTICK = 151557060U;
+        static const AkUniqueID FASTCOLLISION = 2092587649U;
         static const AkUniqueID FISHINGRODTHROW = 1172487408U;
         static const AkUniqueID FISHINGRODUNSPOOL = 2949285970U;
         static const AkUniqueID FOOTSTEPS = 2385628198U;
@@ -94,6 +95,7 @@ namespace AK
         static const AkUniqueID TESTSOUJD1 = 1035878255U;
         static const AkUniqueID TEXTBLIP = 1387752797U;
         static const AkUniqueID TIPJAR = 680758647U;
+        static const AkUniqueID VENTPUSH = 3558418356U;
         static const AkUniqueID VERTSPINMOVING = 2481782438U;
         static const AkUniqueID WINDNSAND = 3811731857U;
         static const AkUniqueID WINDVENT = 2602924598U;
