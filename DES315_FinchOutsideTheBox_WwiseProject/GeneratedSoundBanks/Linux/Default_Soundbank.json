@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{46173D95-DFFE-4BE9-8209-57EB1CFCE1F7}",
     "Language": "SFX",
-    "Hash": "{AEA4CFCF-D701-02F8-E9EC-7D1550C22FFC}",
+    "Hash": "{DC516708-C05A-A379-B6B3-210C8B2CB530}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Default_Soundbank",
     "ShortName": "Default_Soundbank",
     "Path": "Default_Soundbank.bnk",
@@ -269,7 +269,7 @@
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "Catnip use.wav",
-      "CachePath": "08/{0895219C-7135-34BB-8C14-AC0447977BF3}.wem"
+      "CachePath": "12/{12DCDFE6-B9B1-2FB2-D72B-52DC204A71F2}.wem"
      },
      {
       "Id": "161924512",
@@ -285,7 +285,7 @@
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "Gem-001.wav",
-      "CachePath": "53/{5380350F-1552-1D01-0D94-B48DF6F4ACFA}.wem"
+      "CachePath": "7F/{7FD8164C-43C7-1222-4B91-DBCCE3A819F7}.wem"
      },
      {
       "Id": "184010131",
@@ -485,7 +485,7 @@
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "LowHum.wav",
-      "CachePath": "2C/{2C6CAB97-6F70-0E5F-ADBE-E69F9748CD97}.wem"
+      "CachePath": "1D/{1D0DAF3F-8124-E750-D85B-E85CF4822C91}.wem"
      },
      {
       "Id": "324644523",
@@ -638,6 +638,14 @@
       "Location": "Memory",
       "ShortName": "Gem-003.wav",
       "CachePath": "71/{71EAFEE5-3F6A-6659-44FC-AFCC11059BBE}.wem"
+     },
+     {
+      "Id": "411105785",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "CarCrash.wav",
+      "CachePath": "1F/{1FD14A5A-A02D-1B04-1136-CFAE00A8A988}.wem"
      },
      {
       "Id": "417458870",
@@ -1253,7 +1261,7 @@
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "Bouncepaduse.wav",
-      "CachePath": "68/{6845C259-BCD8-85C4-DE20-BD4282EED142}.wem"
+      "CachePath": "D3/{D34F4711-44BA-62D2-D6D3-62E2DF5F2290}.wem"
      },
      {
       "Id": "864515579",
@@ -1286,6 +1294,14 @@
       "Location": "Memory",
       "ShortName": "PlatformMoving.wav",
       "CachePath": "CC/{CC5F79B8-4C71-35B7-88EB-24AC5CF1F6E6}.wem"
+     },
+     {
+      "Id": "880550336",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "WindVent 2.wav",
+      "CachePath": "4F/{4FB83697-1024-773E-3B1B-397CD3C0778C}.wem"
      },
      {
       "Id": "885506170",
@@ -1914,9 +1930,10 @@
       "Name": "DollBuy",
       "ObjectPath": "\\Events\\Default Work Unit\\Shop\\Items\\DollBuy",
       "GUID": "{32BBD4AB-CA94-40E3-86BE-6C5E48E7825A}",
+      "MaxAttenuation": "5",
       "DurationType": "OneShot",
-      "DurationMin": "1.6783752",
-      "DurationMax": "1.6783752",
+      "DurationMin": "0.99221987",
+      "DurationMax": "0.99221987",
       "MediaRefs": [
        {
         "Id": "96185026"
@@ -2003,10 +2020,26 @@
       }
      },
      {
+      "Id": "2092587649",
+      "Name": "FastCollision",
+      "ObjectPath": "\\Events\\Default Work Unit\\Car\\FastCollision",
+      "GUID": "{66D612C2-A1C0-4E85-BFE3-AC64EAE4237C}",
+      "MaxAttenuation": "15",
+      "DurationType": "OneShot",
+      "DurationMin": "1.6493403",
+      "DurationMax": "2.201605",
+      "MediaRefs": [
+       {
+        "Id": "411105785"
+       }
+      ]
+     },
+     {
       "Id": "1172487408",
       "Name": "FishingRodThrow",
       "ObjectPath": "\\Events\\Default Work Unit\\Shop\\Items\\FishingRodThrow",
       "GUID": "{B730C7EE-A3EB-4AB4-9F93-C97C7268834F}",
+      "MaxAttenuation": "15",
       "DurationType": "OneShot",
       "DurationMin": "0.53",
       "DurationMax": "0.9272917",
@@ -3126,6 +3159,19 @@
       ]
      },
      {
+      "Id": "3651444621",
+      "Name": "Pusher_Temple_4",
+      "ObjectPath": "\\Events\\Default Work Unit\\Obstacle\\Pusher\\Pusher_Temple_4",
+      "GUID": "{E423DDAA-E32D-45F8-85BC-4CB683E93826}",
+      "MaxAttenuation": "32",
+      "DurationType": "Infinite",
+      "MediaRefs": [
+       {
+        "Id": "83499910"
+       }
+      ]
+     },
+     {
       "Id": "814740291",
       "Name": "Respawnping",
       "ObjectPath": "\\Events\\Default Work Unit\\Respawnping",
@@ -3165,6 +3211,7 @@
       "Name": "SandcastleBuy",
       "ObjectPath": "\\Events\\Default Work Unit\\Shop\\Items\\SandcastleBuy",
       "GUID": "{B79CF441-1524-480A-94AB-A4B45F447293}",
+      "MaxAttenuation": "15",
       "DurationType": "OneShot",
       "DurationMin": "0.910585",
       "DurationMax": "1.0828742",
@@ -3371,6 +3418,21 @@
        },
        {
         "Id": "1007576323"
+       }
+      ]
+     },
+     {
+      "Id": "3558418356",
+      "Name": "VentPush",
+      "ObjectPath": "\\Events\\Default Work Unit\\Obstacle\\VentPush",
+      "GUID": "{38F32B6A-3D53-4BD7-AD38-53B9F9FF43BB}",
+      "MaxAttenuation": "10",
+      "DurationType": "OneShot",
+      "DurationMin": "0.68717194",
+      "DurationMax": "0.68717194",
+      "MediaRefs": [
+       {
+        "Id": "880550336"
        }
       ]
      },
@@ -3913,6 +3975,12 @@
       "GUID": "{2E6E306A-FED2-4481-8159-D730E4B0D674}"
      },
      {
+      "Id": "3651444621",
+      "Name": "Pusher_Temple_4",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\Obstacles\\Pusher\\Pusher_Temple_4",
+      "GUID": "{D6572A18-25A2-46A7-8D04-88AC5281F0B8}"
+     },
+     {
       "Id": "3935922712",
       "Name": "Pusher_Cave_SOS_1",
       "ObjectPath": "\\Game Parameters\\Default Work Unit\\Obstacles\\Pusher\\Pusher_Cave_SOS_1",
@@ -4071,6 +4139,6 @@
     ]
    }
   ],
-  "FileHash": "{EE94730C-A39A-EACA-3706-319B10F12290}"
+  "FileHash": "{69A4F977-F7C6-7E0A-0027-4D521A5D2198}"
  }
 }

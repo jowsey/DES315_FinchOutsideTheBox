@@ -52,6 +52,12 @@ public class VehicleLever : NetworkBehaviour
             //Reset
             _triggerCollidingLastTick = _bothTriggers;
             _bothTriggers = false;
+
         }
+    }
+
+    public void ButtonDown()
+    {
+        LeverDown.Post(gameObject);
     }
 }
