@@ -254,6 +254,7 @@ public class Cart : NetworkBehaviour
     {
         if (!isServer) return;
         if (collision.relativeVelocity.magnitude < _minimumCollisionMagnitudeForSfx) return;
+        if (collision.collider.CompareTag("Player") || collision.collider.CompareTag("Item")) return;
 
         RpcPlayCollisionSfx();
     }
