@@ -15,7 +15,7 @@ namespace UI
 
         public void Update()
         {
-            _settingsTab.gameObject.SetActive(_mainMenuButton.Active);
+            _settingsTab.gameObject.SetActive(_mainMenuButton.ForcedActive);
         }
     }
 }

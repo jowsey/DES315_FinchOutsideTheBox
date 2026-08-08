@@ -15,7 +15,7 @@ namespace UI
         {
             foreach (MainMenuButton button in navbarButtons)
             {
-                button.SetActive(button == clickedButton);
+                button.SetForcedActive(button == clickedButton);
             }
         }
     }
