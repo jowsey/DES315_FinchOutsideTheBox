@@ -243,9 +243,11 @@ public class Cart : NetworkBehaviour
         if (!isServer && !IsPuppet) return;
         // Re-center rotation around local Z axis
         var localWorldUp = transform.InverseTransformDirection(Vector3.up);
+        var correctionMultiplier = Mathf.Max(0, localWorldUp.y);
+        // correctionMultiplier = Mathf.SmoothStep(0f, 1f, uprightAmount * 2f); 
         var rollError = -Mathf.Atan2(localWorldUp.x, localWorldUp.y) * Mathf.Rad2Deg;
         var rotExp = Mathf.Sign(rollError) * Mathf.Pow(Mathf.Abs(rollError), _tiltCorrectionScaling);
-        Rb.AddTorque(_tiltCorrection * rotExp * transform.forward);
+        Rb.AddTorque(_tiltCorrection * rotExp * correctionMultiplier * transform.forward);
     }
 
     public void OnCollisionEnter(Collision collision)
