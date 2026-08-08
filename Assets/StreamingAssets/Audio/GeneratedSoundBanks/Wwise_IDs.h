@@ -78,6 +78,7 @@ namespace AK
         static const AkUniqueID PUSHER_TEMPLE_1 = 3651444616U;
         static const AkUniqueID PUSHER_TEMPLE_2 = 3651444619U;
         static const AkUniqueID PUSHER_TEMPLE_3 = 3651444618U;
+        static const AkUniqueID PUSHER_TEMPLE_4 = 3651444621U;
         static const AkUniqueID RESPAWNPING = 814740291U;
         static const AkUniqueID SACKS = 3168078110U;
         static const AkUniqueID SANDCASTLEBUY = 3781447909U;
@@ -216,6 +217,7 @@ namespace AK
         static const AkUniqueID PUSHER_TEMPLE_1 = 3651444616U;
         static const AkUniqueID PUSHER_TEMPLE_2 = 3651444619U;
         static const AkUniqueID PUSHER_TEMPLE_3 = 3651444618U;
+        static const AkUniqueID PUSHER_TEMPLE_4 = 3651444621U;
         static const AkUniqueID ROPEONOFF = 1753086197U;
         static const AkUniqueID SFXVOLUME = 988953028U;
         static const AkUniqueID SIDESWEEPER = 988175737U;
