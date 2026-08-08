@@ -17,7 +17,7 @@ namespace UI
         [SerializeField] private Color _highlightColor = Color.hotPink;
 
         public static Texture2D HighlightCursor { get; private set; }
-        public bool Active;
+        public bool ForcedActive;
 
         private void Awake()
         {
@@ -27,17 +27,17 @@ namespace UI
             _text = GetComponent<TextMeshProUGUI>();
             _originalColor = _text.color;
 
-            if (Active)
+            if (ForcedActive)
             {
                 _text.color = _highlightColor;
                 _text.fontStyle |= FontStyles.Bold;
             }
         }
 
-        public void SetActive(bool val)
+        public void SetForcedActive(bool val)
         {
-            Active = val;
-            if (Active)
+            ForcedActive = val;
+            if (ForcedActive)
             {
                 _text.color = _highlightColor;
                 _text.fontStyle |= FontStyles.Bold;
@@ -51,28 +51,31 @@ namespace UI
 
         private void Highlight()
         {
-            if (!Button.interactable) { return; }
-            if (!Active)
-            {
-                _text.color = _highlightColor;
-                _text.fontStyle |= FontStyles.Bold;
-            }
+            if (ForcedActive) return;
+            if (!Button.interactable) return;
+
+            _text.color = _highlightColor;
+            _text.fontStyle |= FontStyles.Bold;
         }
+
         private void Unhighlight()
         {
-            if (!Active)
-            {
-                _text.color = _originalColor;
-                _text.fontStyle &= ~FontStyles.Bold;
-            }
+            if (ForcedActive) return;
+
+            _text.color = _originalColor;
+            _text.fontStyle &= ~FontStyles.Bold;
         }
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            EventSystem.current.SetSelectedGameObject(gameObject);
-            Cursor.SetCursor(HighlightCursor, new Vector2(HighlightCursor.width / 2f, HighlightCursor.height / 2f), CursorMode.Auto);
-            Highlight();
-            buttonSfx.Post(gameObject);
+            if (Button.IsInteractable())
+            {
+                EventSystem.current.SetSelectedGameObject(gameObject);
+                Cursor.SetCursor(HighlightCursor, new Vector2(HighlightCursor.width / 2f, HighlightCursor.height / 2f), CursorMode.Auto);
+                Highlight();
+
+                buttonSfx.Post(gameObject);
+            }
         }
 
         public void OnPointerExit(PointerEventData eventData)
