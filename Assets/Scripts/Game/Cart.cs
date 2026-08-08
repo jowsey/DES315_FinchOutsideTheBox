@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +10,6 @@ using UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[RequireComponent(typeof(Rigidbody))]
 public class Cart : NetworkBehaviour
 {
     public Rigidbody Rb;
@@ -72,14 +70,13 @@ public class Cart : NetworkBehaviour
 
     private void Awake()
     {
-        Rb = GetComponent<Rigidbody>();
         IsPuppet = false;
         Instance = this;
 
         foreach (var pos in SackPositions) pos.gameObject.SetActive(false);
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-        _wheelSeats = GetComponentsInChildren<WheelSeat>();
+        _wheelSeats = transform.parent.GetComponentsInChildren<WheelSeat>();
 #endif
     }
 
@@ -294,28 +291,27 @@ public class Cart : NetworkBehaviour
 
         Transform newTransform = target.CartSpawnPoint;
 
-        var rbs = GetComponentsInChildren<Rigidbody>();
-        var wasNonKinematic = new List<Rigidbody>();
+        var chassis = transform;
+        var parent = chassis.parent;
 
-        foreach (var rb in rbs)
-        {
-            if (rb.isKinematic) continue;
-
-            rb.isKinematic = true;
-            wasNonKinematic.Add(rb);
-        }
+        var rbs = parent.GetComponentsInChildren<Rigidbody>();
+        var parentRelativePositions = rbs.Select(rb => chassis.InverseTransformPoint(rb.transform.position)).ToList();
 
         transform.position = newTransform.position;
         transform.rotation = newTransform.rotation;
 
-        Physics.SyncTransforms();
-
-        foreach (var rb in wasNonKinematic)
+        for (var i = 0; i < parentRelativePositions.Count; i++)
         {
-            rb.isKinematic = false;
+            var relativePosition = parentRelativePositions[i];
+            var rb = rbs[i];
+
+            if (!rb) continue;
             rb.linearVelocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
+            rb.transform.position = chassis.TransformPoint(relativePosition);
         }
+
+        Physics.SyncTransforms();
     }
 
     [Server]

@@ -998,7 +998,7 @@ public class PlayerController : NetworkBehaviour
         var isFanLifter = (_fanLifterMask.value & (1 << other.gameObject.layer)) != 0;
         if (isFanLifter) _insideFanLifter = true;
 
-        WheelSeat newSeat = other.GetComponentInParent<WheelSeat>();
+        WheelSeat newSeat = other.GetComponentInParent<WheelSeatTrigger>()?.Seat;
         if (newSeat && !Seat)
         {
             newSeat.CmdTrySitPlayer();

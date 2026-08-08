@@ -15,7 +15,7 @@ public class WheelSeat : NetworkBehaviour
 
     [Header("Components")]
     [Tooltip("The parent cart's rigidbody")]
-    [SerializeField] [RequiredIn(PrefabKind.InstanceInScene)] [DisableIn(PrefabKind.Regular)] private Rigidbody _cartRb;
+    [SerializeField] [RequiredIn(PrefabKind.InstanceInScene)] private Rigidbody _cartRb;
 
     [Tooltip("The rigidbody of the sphere that will rotate")]
     [SerializeField] [Required] private Rigidbody _wheelRb;
@@ -37,7 +37,7 @@ public class WheelSeat : NetworkBehaviour
     private float _lastUnsitTime = -Mathf.Infinity;
 
     public Vector3 SeatedPosition => transform.position + Vector3.up * (_sphereCollider.radius * transform.lossyScale.y);
-
+    
     public override void OnStartClient()
     {
         base.OnStartClient();
