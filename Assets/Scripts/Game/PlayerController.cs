@@ -624,7 +624,7 @@ public class PlayerController : NetworkBehaviour
 
             if (_throwHeldTime > _throwDeadzone && !_trajectoryRendererInstance)
             {
-                _trajectoryRendererInstance = Instantiate(_trajectoryRendererPrefab, transform);
+                _trajectoryRendererInstance = Instantiate(_trajectoryRendererPrefab);
             }
             
             if (_trajectoryRendererInstance)
