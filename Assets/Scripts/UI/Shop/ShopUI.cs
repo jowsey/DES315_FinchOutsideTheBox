@@ -3,6 +3,7 @@ using Game.Items;
 using PrimeTween;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 namespace UI.Shop
@@ -14,19 +15,15 @@ namespace UI.Shop
         [SerializeField] private TextMeshProUGUI _sellAllEstimateText;
         [SerializeField] private TextMeshProUGUI _balanceText;
         [SerializeField] private TextMeshProUGUI _errorText;
-
         [SerializeField] private Button _sellAllButton;
         
+        [SerializeField] private InputActionReference _sellAllAction;
+        [SerializeField] private InputActionReference _exitAction;
+        
         [SerializeField] private ItemInfoCard _itemCardPrefab;
-
         [SerializeField] private AK.Wwise.Event _sellSfx;
 
         private const float MaxCartSellDistance = 25f;
-
-        private void OnEnable()
-        {
-            if (_shop) _shop.OnReceiveBuyResult.AddListener(OnReceiveBuyResult);
-        }
 
         private void OnDisable()
         {
@@ -78,6 +75,9 @@ namespace UI.Shop
 
         private void Update()
         {
+            if (_sellAllAction.action.WasPressedThisFrame()) SellAll();
+            if (_exitAction.action.WasPressedThisFrame()) Leave();
+            
             if (Vector3.Distance(Cart.Instance.transform.position, _shop.transform.position) > MaxCartSellDistance)
             {
                 _sellAllButton.interactable = false;

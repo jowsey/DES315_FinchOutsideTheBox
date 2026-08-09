@@ -11,6 +11,7 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using Util;
 using Random = UnityEngine.Random;
 
 namespace Game
@@ -35,7 +36,7 @@ namespace Game
 
         private Vector2 _initialRotationComposerDamping;
 
-        [SerializeField] private InputActionReference _interactAction;
+        [SerializeField] private InputActionReference _enterAction;
         [SerializeField] private InputActionReference _buyAction;
 
         [Tooltip("The transform that the camera will be moved to when the shop is entered")]
@@ -75,8 +76,6 @@ namespace Game
         [Header("Item Spawning")] [SerializeField] private Transform _itemSpawnStart;
         [SerializeField] private Transform _itemSpawnEnd;
         [SerializeField] private int _maxAvailableItems;
-
-        [SerializeField] private CanvasGroup[] _hiddenUIElements;
 
         //Wwise Thangs
         [SerializeField] private AK.Wwise.Event _shopEnter;
@@ -219,15 +218,25 @@ namespace Game
         private void Update()
         {
             // Existence of enter prompt implies we're within range, saves a distance check
-            if (_enterPromptInstance && _interactAction.action.WasPressedThisFrame())
+            if (_enterPromptInstance && _enterAction.action.WasPressedThisFrame())
             {
                 EnterShop();
             }
 
             if (_shopUIInstance)
             {
+                Vector2 mousePos;
+                if (InputIconManager.LastActiveDevice is Gamepad gamepad)
+                {
+                    var screenSize = new Vector2(Screen.width, Screen.height);
+                    mousePos = gamepad.rightStick.ReadValue() * screenSize / 2f + screenSize / 2f;
+                }
+                else
+                {
+                    mousePos = Mouse.current.position.ReadValue();
+                }
+                
                 var extents = new Vector2(0.05f, 0.075f);
-                var mousePos = Mouse.current.position.ReadValue();
                 _rotationComposer.Composition.ScreenPosition = new Vector2(
                     Mathf.Lerp(extents.x, -extents.x, mousePos.x / Screen.width),
                     Mathf.Lerp(-extents.y, extents.y, mousePos.y / Screen.height)
@@ -430,10 +439,7 @@ namespace Game
             }
 
             //Hide action UIs & enter prompt
-            foreach (CanvasGroup uiElement in _hiddenUIElements)
-            {
-                Tween.Alpha(uiElement, 0, 0.25f, Ease.OutCubic);
-            }
+            GloballyHiddenGroup.AddHideSource(this);
 
             OnboardingPrompt.EnableDetection = false;
         }
@@ -482,10 +488,7 @@ namespace Game
             }
 
             //Show action UIs & enter prompt
-            foreach (CanvasGroup uiElement in _hiddenUIElements)
-            {
-                Tween.Alpha(uiElement, 1, 0.25f, Ease.OutCubic);
-            }
+            GloballyHiddenGroup.RemoveHideSource(this);
 
             OnboardingPrompt.EnableDetection = true;
         }
