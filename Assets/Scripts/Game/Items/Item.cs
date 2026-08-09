@@ -157,9 +157,9 @@ namespace Game.Items
                     Cart.Instance.RemoveCarriedItem(this);
                 }
 
-                transform.position = worldItemSnapshot.Position;
-                transform.rotation = worldItemSnapshot.Rotation;
                 ServerSetState(worldItemSnapshot.StateData);
+                Rb.position = worldItemSnapshot.Position;
+                Rb.rotation = worldItemSnapshot.Rotation;
             }
             else if (target.Snapshot.SackStoredItems.ContainsValue(this))
             {
