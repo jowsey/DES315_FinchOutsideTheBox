@@ -98,7 +98,7 @@ Transform:
   m_GameObject: {fileID: 1628648895090051755}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.000017285347, y: 1.6699982, z: -3.6}
+  m_LocalPosition: {x: 0, y: 1.6699982, z: -3.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -252,6 +252,7 @@ GameObject:
   - component: {fileID: 4238968003895655482}
   - component: {fileID: 5747990677712701338}
   - component: {fileID: 903567817228930228}
+  - component: {fileID: 7604402035179283691}
   - component: {fileID: 1672188035990956434}
   m_Layer: 7
   m_Name: Chassis
@@ -407,6 +408,19 @@ MonoBehaviour:
   _minimumCollisionMagnitudeForSfx: 2
   IsPuppet: 0
   _alternateWheelMoveAction: {fileID: 5266011620394464008, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
+--- !u!114 &7604402035179283691
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2704890176993970807}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a4c0a2cc04197f4c87580b54c1d9b7f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Interactable
+  <InteractedTransform>k__BackingField: {fileID: 2306079051354658473}
 --- !u!114 &1672188035990956434
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -508,7 +522,7 @@ Transform:
   m_GameObject: {fileID: 3213205800609717158}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.0000230968, y: 2, z: -2.4200015}
+  m_LocalPosition: {x: 0, y: 2, z: -2.4200015}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -561,7 +575,6 @@ GameObject:
   - component: {fileID: 2934175773372239080}
   - component: {fileID: 581364601676529307}
   - component: {fileID: 1201822933279046488}
-  - component: {fileID: 822409010293383377}
   - component: {fileID: 4248026749609250909}
   - component: {fileID: 5233150376113775939}
   m_Layer: 7
@@ -772,19 +785,6 @@ MonoBehaviour:
   rotationSensitivity: 0.01
   positionPrecision: 0.01
   scalePrecision: 0.01
---- !u!114 &822409010293383377
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3260413456745295566}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a4c0a2cc04197f4c87580b54c1d9b7f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Interactable
-  <InteractedTransform>k__BackingField: {fileID: 2306079051354658473}
 --- !u!114 &4248026749609250909
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1019,7 +1019,6 @@ GameObject:
   - component: {fileID: 5075877183547857033}
   - component: {fileID: 2952331688203868135}
   - component: {fileID: 8187580731708349158}
-  - component: {fileID: 6163553749779814467}
   - component: {fileID: 3566238775168628646}
   - component: {fileID: 7893627205750076653}
   m_Layer: 7
@@ -1230,19 +1229,6 @@ MonoBehaviour:
   rotationSensitivity: 0.01
   positionPrecision: 0.01
   scalePrecision: 0.01
---- !u!114 &6163553749779814467
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5622442516862309749}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a4c0a2cc04197f4c87580b54c1d9b7f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Interactable
-  <InteractedTransform>k__BackingField: {fileID: 2306079051354658473}
 --- !u!114 &3566238775168628646
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1306,7 +1292,7 @@ Transform:
   m_GameObject: {fileID: 5634286368640321818}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.0000230968, y: 2, z: 2.4200015}
+  m_LocalPosition: {x: 0, y: 2, z: 2.4200015}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3635,9 +3621,6 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 322b0d7381be12949a47602b4e2085c9, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 4494353513862411130}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 322b0d7381be12949a47602b4e2085c9, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 4159049716138068759}
   m_SourcePrefab: {fileID: 100100000, guid: 322b0d7381be12949a47602b4e2085c9, type: 3}
 --- !u!1 &3588985499045328614 stripped
@@ -3645,19 +3628,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 322b0d7381be12949a47602b4e2085c9, type: 3}
   m_PrefabInstance: {fileID: 4399958124452301751}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &4494353513862411130
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3588985499045328614}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a4c0a2cc04197f4c87580b54c1d9b7f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Interactable
-  <InteractedTransform>k__BackingField: {fileID: 2306079051354658473}
 --- !u!64 &4159049716138068759
 MeshCollider:
   m_ObjectHideFlags: 0
