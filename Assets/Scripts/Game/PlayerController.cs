@@ -13,6 +13,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.Playables;
+using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.UI;
 using Util;
 using Object = UnityEngine.Object;
@@ -158,6 +159,8 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private float _throwDeadzone;
     
     private float _throwHeldTime;
+
+    [SerializeField] private DecalProjector _dropShadowProjector;
     
     // Called when a player object is done being initially setup
     // Does NOT imply the player has just joined
@@ -797,6 +800,23 @@ public class PlayerController : NetworkBehaviour
                 //Player has collided with something other than themselves
                 grounded = true;
                 break;
+            }
+        }
+
+        if (grounded)
+        {
+            _dropShadowProjector.transform.position = Rb.position + Vector3.up * 0.1f;
+        }
+        else
+        {
+            if (Physics.Raycast(Rb.position + Vector3.up * 0.1f, Vector3.down, out var groundHit, 100f, ~(1 << gameObject.layer), QueryTriggerInteraction.Ignore))
+            {
+                _dropShadowProjector.enabled = true;
+                _dropShadowProjector.transform.position = groundHit.point + Vector3.up * (_dropShadowProjector.size.z * 0.5f);
+            }
+            else
+            {
+                _dropShadowProjector.enabled = false;
             }
         }
         
