@@ -62,18 +62,18 @@ public class CutscenePuppeteer : MonoBehaviour
         }
         _cart.IsPuppet = true;
 
-        foreach (Rigidbody rb in _cart.GetComponentsInChildren<Rigidbody>())
+        foreach (Rigidbody rb in _cart.transform.parent.GetComponentsInChildren<Rigidbody>())
         {
             if (rb.gameObject.CompareTag("Item")) { continue; }
 
+            rb.isKinematic = true;
             rb.interpolation = RigidbodyInterpolation.None;
             rb.position = rb.transform.position;
             rb.rotation = rb.transform.rotation;
-            rb.isKinematic = true;
         }
 
         _savedJointMotions.Clear();
-        foreach (ConfigurableJoint joint in _cart.GetComponentsInChildren<ConfigurableJoint>())
+        foreach (ConfigurableJoint joint in _cart.transform.parent.GetComponentsInChildren<ConfigurableJoint>())
         {
             _savedJointMotions[joint] = (
                 joint.xMotion, joint.yMotion, joint.zMotion,
@@ -149,7 +149,7 @@ public class CutscenePuppeteer : MonoBehaviour
 
         _cart.GetComponent<Animator>().enabled = false;
 
-        foreach (Rigidbody rb in _cart.GetComponentsInChildren<Rigidbody>())
+        foreach (Rigidbody rb in _cart.transform.parent.GetComponentsInChildren<Rigidbody>())
         {
             if (rb.gameObject.CompareTag("Item")) { continue; }
             rb.position = rb.transform.position;
@@ -160,7 +160,7 @@ public class CutscenePuppeteer : MonoBehaviour
 
         foreach (var kvp in _savedJointMotions)
         {
-            if (kvp.Key != null)
+            if (kvp.Key)
             {
                 kvp.Key.xMotion = kvp.Value.x;
                 kvp.Key.yMotion = kvp.Value.y;
@@ -258,7 +258,7 @@ public class CutscenePuppeteer : MonoBehaviour
     private IEnumerator NudgeCartCoroutine()
     {
         Vector3 dir = Vector3.ProjectOnPlane(_cartNudgeDirection.forward, Vector3.up).normalized;
-        WheelSeat[] wheels = _cart.GetComponentsInChildren<WheelSeat>();
+        WheelSeat[] wheels = _cart.transform.parent.GetComponentsInChildren<WheelSeat>();
 
         float timer = 0f;
         while (timer < _cartNudgeDuration)

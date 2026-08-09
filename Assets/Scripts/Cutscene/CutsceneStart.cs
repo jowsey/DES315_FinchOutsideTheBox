@@ -43,11 +43,8 @@ public class CutsceneStart : NetworkBehaviour
                 objectSnapshots[item] = (_cart.transform.InverseTransformPoint(item.transform.position), item.transform.rotation);
             }
 
-            _cart.transform.position = _cartStartTransform.position;
-            _cart.transform.rotation = _cartStartTransform.rotation;
-            _cart.Rb.position = _cartStartTransform.position;
-            _cart.Rb.rotation = _cartStartTransform.rotation;
-            Physics.SyncTransforms();
+            _cart.ServerTeleportTo(_cartStartTransform);
+            
             foreach (var kvp in objectSnapshots)
             {
                 Vector3 worldPos = _cart.transform.TransformPoint(kvp.Value.localPos);

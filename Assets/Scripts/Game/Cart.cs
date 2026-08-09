@@ -295,16 +295,20 @@ public class Cart : NetworkBehaviour
     {
         if (!isServer) return;
 
-        Transform newTransform = target.CartSpawnPoint;
+        ServerTeleportTo(target.CartSpawnPoint);
+    }
 
+    [Server]
+    public void ServerTeleportTo(Transform target)
+    {
         var chassis = transform;
         var parent = chassis.parent;
 
         var rbs = parent.GetComponentsInChildren<Rigidbody>();
         var parentRelativePositions = rbs.Select(rb => chassis.InverseTransformPoint(rb.transform.position)).ToList();
 
-        transform.position = newTransform.position;
-        transform.rotation = newTransform.rotation;
+        transform.position = target.position;
+        transform.rotation = target.rotation;
 
         for (var i = 0; i < parentRelativePositions.Count; i++)
         {
