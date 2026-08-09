@@ -178,7 +178,7 @@ namespace UI.Menus
                 }
 
                 // appear on success
-                _ = Tween.UIAnchoredPositionY(_rt, _standardAnchoredY, 1f, Ease.OutBack);
+                if (success) _ = Tween.UIAnchoredPositionY(_rt, _standardAnchoredY, 1f, Ease.OutBack);
             }
             catch (Exception e)
             {
