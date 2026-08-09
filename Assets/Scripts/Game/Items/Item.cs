@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Linq;
 using Game.Items.Equipments;
 using Mirror;
@@ -82,7 +83,7 @@ namespace Game.Items
         [field: SerializeField] public bool ForceMoveOnHeld { get; protected set; } = true;
 
         [field: SerializeField] public float GlobalDisplayScale { get; private set; } = 1f;
-        
+
         protected virtual void Awake()
         {
             Rb = GetComponent<Rigidbody>();
@@ -381,6 +382,15 @@ namespace Game.Items
             var player = sender!.identity.GetComponent<PlayerController>();
             if (player != heldData.Holder) return;
 
+            var playerColliders = player.Rb.GetComponentsInChildren<Collider>();
+            var itemColliders = Rb.GetComponentsInChildren<Collider>();
+
+            // Disable all player<->item collisions
+            foreach (var playerCollider in playerColliders)
+            foreach (var itemCollider in itemColliders)
+                if (playerCollider != itemCollider)
+                    Physics.IgnoreCollision(playerCollider, itemCollider);
+
             ServerSetState(new IdleStateData());
 
             var dir = worldThrowDir.normalized;
@@ -388,6 +398,19 @@ namespace Game.Items
 
             Rb.AddForce(dir * impulseForce, ForceMode.Impulse);
             Rb.AddTorque(dir * (impulseForce * 0.01f), ForceMode.Impulse);
+
+            StartCoroutine(ReenableCollisions(0.5f));
+            return;
+
+            IEnumerator ReenableCollisions(float delay)
+            {
+                yield return new WaitForSeconds(delay);
+
+                foreach (var playerCollider in playerColliders)
+                foreach (var itemCollider in itemColliders)
+                    if (playerCollider != itemCollider)
+                        Physics.IgnoreCollision(playerCollider, itemCollider, false);
+            }
         }
 
         protected virtual void FixedUpdate()
