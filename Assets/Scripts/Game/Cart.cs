@@ -137,16 +137,16 @@ public class Cart : NetworkBehaviour
         RespawnTarget.OnReachNewTarget.RemoveListener(OnReachNewTarget);
     }
 
-    private bool GetPreviousRespawnTarget(RespawnTarget target, out RespawnTarget previousTarget)
+    private bool GetPreviousRespawnTarget(RespawnTarget current, out RespawnTarget previousTarget)
     {
-        if (target is Sandcastle sandcastle)
+        if (current is Sandcastle sandcastle)
         {
             var siblingIndex = sandcastle.Parent.Sandcastles.IndexOf(sandcastle);
             previousTarget = siblingIndex > 0 ? sandcastle.Parent.Sandcastles[siblingIndex - 1] : sandcastle.Parent;
             return true;
         }
 
-        if (target is Checkpoint checkpoint)
+        if (current is Checkpoint checkpoint)
         {
             var index = Checkpoints.IndexOf(checkpoint);
             if (index > 0)
@@ -160,14 +160,14 @@ public class Cart : NetworkBehaviour
             return false;
         }
 
-        Debug.LogWarning($"Current respawn target {target} is not a checkpoint or sandcastle, can't get previous");
+        Debug.LogWarning($"Current respawn target {current} is not a checkpoint or sandcastle, can't get previous");
         previousTarget = null;
         return false;
     }
 
-    private bool GetNextRespawnTarget(RespawnTarget target, out RespawnTarget nextTarget)
+    private bool GetNextRespawnTarget(RespawnTarget current, out RespawnTarget nextTarget)
     {
-        if (target is Sandcastle sandcastle)
+        if (current is Sandcastle sandcastle)
         {
             var siblingIndex = sandcastle.Parent.Sandcastles.IndexOf(sandcastle);
             if (siblingIndex < sandcastle.Parent.Sandcastles.Count - 1)
@@ -178,10 +178,10 @@ public class Cart : NetworkBehaviour
 
             var parentIndex = Checkpoints.IndexOf(sandcastle.Parent);
             nextTarget = parentIndex < Checkpoints.Count - 1 ? Checkpoints[parentIndex + 1] : null;
-            return true;
+            return nextTarget;
         }
 
-        if (target is Checkpoint checkpoint)
+        if (current is Checkpoint checkpoint)
         {
             if (checkpoint.Sandcastles.Count > 0)
             {
@@ -191,10 +191,10 @@ public class Cart : NetworkBehaviour
 
             var index = Checkpoints.IndexOf(checkpoint);
             nextTarget = index < Checkpoints.Count - 1 ? Checkpoints[index + 1] : null;
-            return true;
+            return nextTarget;
         }
 
-        Debug.LogWarning($"Current respawn target {target} is not a checkpoint or sandcastle, can't get next");
+        Debug.LogWarning($"Current respawn target {current} is not a checkpoint or sandcastle, can't get next");
         nextTarget = null;
         return false;
     }
