@@ -1,25 +1,27 @@
-﻿using PrimeTween;
+﻿using System;
+using PrimeTween;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
-using UnityEngine.Playables;
 using UnityEngine.UI;
 
 namespace UI
 {
     public class Credits : MonoBehaviour
     {
+        [field: SerializeField] public CanvasGroup CanvasGroup { get; private set; }
+        
         [SerializeField] private float _pixelsPerSecond = 100;
         [SerializeField] private InputActionReference _speedUpAction;
 
         private Tween _scrollTween;
 
         [SerializeField] private float _speedUpMultiplier = 3.5f;
-        
+
+        public readonly UnityEvent OnCreditsFinished = new();
+
         private void Start()
         {
-            var director = FindAnyObjectByType<PlayableDirector>();
-            director.Pause();
-
             var canvasScaler = GetComponentInParent<CanvasScaler>();
             var rt = (RectTransform)transform;
 
@@ -30,11 +32,13 @@ namespace UI
             var totalHeight = contentHeight + canvasHeight;
 
             _scrollTween = Tween.UIAnchoredPositionY(rt, 0, totalHeight, totalHeight / _pixelsPerSecond, Ease.Linear)
-                .OnComplete(() =>
-                {
-                    director.Resume();
-                    Destroy(gameObject);
-                });
+                .OnComplete(() => Destroy(gameObject));
+        }
+
+        private void OnDestroy()
+        {
+            if (_scrollTween.isAlive) _scrollTween.Stop();
+            OnCreditsFinished.Invoke();
         }
 
         private void Update()

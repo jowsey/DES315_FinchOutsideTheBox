@@ -42,7 +42,7 @@ namespace UI
             if (!_isPressed && (_input.action.IsPressed() && PlayerController.ControlEnabled(_affectedBlockerFlags)))
             {
                 _isPressed = true;
-                Tween.Scale(transform, Vector3.one * 0.9f, _transitionDuration, Ease.OutCubic);
+                Tween.Scale(transform, Vector3.one * 0.95f, _transitionDuration, Ease.OutCubic);
             }
             else if (_isPressed && !_input.action.IsPressed())
             {

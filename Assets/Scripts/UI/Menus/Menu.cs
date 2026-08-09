@@ -5,6 +5,7 @@ using Mirror;
 using PrimeTween;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace UI
 {
@@ -18,11 +19,19 @@ namespace UI
         private static EosTransport _eosTransport;
         private static KcpTransport _kcpTransport;
 
+        [SerializeField] [Required] private CanvasGroup _mainCanvasGroup;
         [SerializeField] [Required] private LobbyBrowser _lobbyBrowser;
         [SerializeField] [Required] private SettingsManager _settingsMenu;
+        [SerializeField] [Required] private Credits _creditsPrefab;
+
+        private Credits _creditsInstance;
+        private Tween _creditsFadeTween;
 
         [SerializeField] [Required] private MainMenuButton _lobbyBrowserButton;
         [SerializeField] [Required] private MainMenuButton _settingsButton;
+        [SerializeField] [Required] private MainMenuButton _creditsButton;
+
+        [SerializeField] [Required] private InputActionReference _skipCreditsAction;
 
         private void ResetTransports()
         {
@@ -72,6 +81,8 @@ namespace UI
 
             _settingsMenu.LoadFromDisk();
             _settingsMenu.gameObject.SetActive(false);
+
+            _skipCreditsAction.action.performed += SkipCredits;
         }
 
         private IEnumerator Start()
@@ -84,6 +95,7 @@ namespace UI
         private void OnDestroy()
         {
             Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto); // if set by button
+            _skipCreditsAction.action.performed -= SkipCredits;
         }
 
         public void Quit()
@@ -94,13 +106,13 @@ namespace UI
             Application.Quit();
 #endif
         }
-        
+
         // override for button
         public void ToggleLobbyBrowser() => ToggleLobbyBrowser(false);
-        
+
         private void ToggleLobbyBrowser(bool force)
         {
-            if (_settingsButton.Active)
+            if (_settingsButton.ForcedActive)
             {
                 ToggleSettingsMenu();
             }
@@ -109,8 +121,8 @@ namespace UI
             if (Tween.GetTweensCount(lbrt) > 0 && !force) return; // be patient DAMN
 
             var active = _lobbyBrowser.gameObject.activeSelf;
-            
-            _lobbyBrowserButton.SetActive(!active);
+
+            _lobbyBrowserButton.SetForcedActive(!active);
 
             if (!active)
             {
@@ -160,17 +172,36 @@ namespace UI
         public void ToggleSettingsMenu()
         {
             // todo ideally we have a proper extensible Pages system
-            if (_lobbyBrowserButton.Active)
+            if (_lobbyBrowserButton.ForcedActive)
             {
                 ToggleLobbyBrowser(true);
             }
 
             _settingsMenu.gameObject.SetActive(!_settingsMenu.gameObject.activeSelf);
-            _settingsButton.SetActive(_settingsMenu.gameObject.activeSelf);
+            _settingsButton.SetForcedActive(_settingsMenu.gameObject.activeSelf);
         }
 
-        public void OpenBluesky() => Application.OpenURL("https://finchoutsidethebox.bsky.social");
-        public void OpenInstagram() => Application.OpenURL("https://instagram.com/finchoutsidethebox");
-        public void OpenItch() => Application.OpenURL("https://fotb.itch.io");
+        public void RollCredits()
+        {
+            Tween.Alpha(_mainCanvasGroup, 0f, 1f, Ease.InCubic);
+            _mainCanvasGroup.interactable = false;
+
+            _creditsInstance = Instantiate(_creditsPrefab, transform.parent);
+            _creditsInstance.OnCreditsFinished.AddListener(() =>
+            {
+                _mainCanvasGroup.interactable = true;
+                Tween.Alpha(_mainCanvasGroup, 1f, 1f, Ease.OutCubic);
+            });
+        }
+
+        private void SkipCredits(InputAction.CallbackContext ctx)
+        {
+            if (!_creditsInstance || _creditsFadeTween.isAlive) return;
+
+            _creditsFadeTween = Tween.Alpha(_creditsInstance.CanvasGroup, 0f, 1f, Ease.InCubic)
+                .OnComplete(() => Destroy(_creditsInstance.gameObject), warnIfTargetDestroyed: false);
+        }
+
+        public void OpenURL(string url) => Application.OpenURL(url);
     }
 }

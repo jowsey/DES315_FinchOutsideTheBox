@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1055038332339683578}
   - component: {fileID: 425738957050815675}
   - component: {fileID: 4072677021300164750}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Obs_LiftLever
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -133,7 +133,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1584907471020933718}
   - component: {fileID: 7243662632033014506}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Spline
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -246,7 +246,7 @@ GameObject:
   - component: {fileID: 3227128878267537900}
   - component: {fileID: 338052362808424347}
   - component: {fileID: 7336205728367891120}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Platform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -344,9 +344,17 @@ PrefabInstance:
       propertyPath: m_RenderingLayerMask
       value: 32769
       objectReference: {fileID: 0}
+    - target: {fileID: 857736052135062898, guid: 91c314f9076ddce499602d37efd21609, type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 3771989270487757262, guid: 91c314f9076ddce499602d37efd21609, type: 3}
       propertyPath: m_Name
       value: Arch
+      objectReference: {fileID: 0}
+    - target: {fileID: 3771989270487757262, guid: 91c314f9076ddce499602d37efd21609, type: 3}
+      propertyPath: m_Layer
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 4545008253963185012, guid: 91c314f9076ddce499602d37efd21609, type: 3}
       propertyPath: m_LocalScale.x

@@ -150,6 +150,14 @@ public class PlayerController : NetworkBehaviour
     
     [SerializeField] private LayerMask _fanLifterMask;
     private bool _insideFanLifter;
+
+    [SerializeField] private TrajectoryRenderer _trajectoryRendererPrefab;
+    private TrajectoryRenderer _trajectoryRendererInstance;
+
+    [SerializeField] private float _throwHoldMaxTime;
+    [SerializeField] private float _throwDeadzone;
+    
+    private float _throwHeldTime;
     
     // Called when a player object is done being initially setup
     // Does NOT imply the player has just joined
@@ -297,6 +305,8 @@ public class PlayerController : NetworkBehaviour
     private Dictionary<PlayerStatusEffect, StatusEffectBox> _statusEffectBoxes = new();
     
     private List<PlayerStatusEffect> _activeStatusEffects = new();
+    
+    private Vector3 _throwDir => CameraZoomController.FirstPerson ? _camera.transform.forward : _cinemachineCamera.State.GetFinalOrientation() * Vector3.forward + Vector3.up * 0.3f;
 
     // Status effects
     public void AddStatusEffect(PlayerStatusEffect effect)
@@ -595,12 +605,9 @@ public class PlayerController : NetworkBehaviour
                 }
             }
         }
-        else if (UseItemAction.action.WasPressedThisFrame())
+        else if (UseItemAction.action.WasPressedThisFrame() && UseAllowed && HeldObject is Equipment equipment)
         {
-            if (UseAllowed && HeldObject is Equipment equipment)
-            {
-                equipment.TryUse();
-            }
+            equipment.TryUse();
         }
         else if (DropItemAction.action.WasPressedThisFrame())
         {
@@ -608,10 +615,39 @@ public class PlayerController : NetworkBehaviour
             {
                 segment.CmdDetachRope();
             }
+
+            _throwHeldTime = 0f;
+        }
+        else if (DropItemAction.action.IsPressed() && PutdownAllowed)
+        {
+            _throwHeldTime += Time.deltaTime;
+
+            if (_throwHeldTime > _throwDeadzone && !_trajectoryRendererInstance)
+            {
+                _trajectoryRendererInstance = Instantiate(_trajectoryRendererPrefab);
+            }
             
-            if (PutdownAllowed)
+            if (_trajectoryRendererInstance)
+            {
+                var impulseForce = Item.MaxThrowForce * Mathf.Clamp01(_throwHeldTime / _throwHoldMaxTime);
+                _trajectoryRendererInstance.Build(HeldObject.Rb, _throwDir * impulseForce);
+            }
+        }
+        else if (DropItemAction.action.WasReleasedThisFrame() && PutdownAllowed)
+        {
+            if (_throwHeldTime < _throwDeadzone)
             {
                 HeldObject.CmdTryDrop();
+            }
+            else
+            {
+                HeldObject.CmdTryThrow(Mathf.Clamp01(_throwHeldTime / _throwHoldMaxTime), _throwDir);
+            }
+
+            if (_trajectoryRendererInstance)
+            {
+                Destroy(_trajectoryRendererInstance.gameObject);
+                _trajectoryRendererInstance = null;
             }
         }
 
@@ -962,7 +998,7 @@ public class PlayerController : NetworkBehaviour
         var isFanLifter = (_fanLifterMask.value & (1 << other.gameObject.layer)) != 0;
         if (isFanLifter) _insideFanLifter = true;
 
-        WheelSeat newSeat = other.GetComponentInParent<WheelSeat>();
+        WheelSeat newSeat = other.GetComponentInParent<WheelSeatTrigger>()?.Seat;
         if (newSeat && !Seat)
         {
             newSeat.CmdTrySitPlayer();

@@ -13,18 +13,18 @@ namespace Game.Items.Equipments
         private static readonly Color ValidPositionColour = new(0f, 1f, 0f, 0.5f);
         private static readonly Color InvalidPositionColour = new(1f, 0f, 0f, 0.5f);
 
+        [SerializeField] private LayerMask _placeMask;
+
         [SerializeField] protected GameObject _placePrefab;
         protected GameObject _placeInstance { get; private set; }
 
-        [SerializeField] protected GameObject _previewPrefab;
-        protected GameObject _previewInstance { get; private set; }
+        [SerializeField] protected PlaceablePreview _previewPrefab;
+        protected PlaceablePreview _previewInstance { get; private set; }
 
         [SerializeField, Range(0, 180f), SuffixLabel("degs")] private float _maxPlacementAngle = 30;
 
-        private Renderer[] _previewRenderers;
         private bool _previewVisible = true;
         private MaterialPropertyBlock _mpb;
-        private LayerMask _placeMask;
         private Camera _camera;
 
         private bool _previewBelievedValid;
@@ -33,7 +33,6 @@ namespace Game.Items.Equipments
         {
             base.Awake();
             _camera = FindAnyObjectByType<Camera>(FindObjectsInactive.Include);
-            _placeMask = ~LayerMask.GetMask("Player", "Cart", "Item");
         }
 
         protected override void UpdateState(ItemStateData oldState, ItemStateData newState)
@@ -44,7 +43,7 @@ namespace Game.Items.Equipments
                 {
                     if (_previewInstance)
                     {
-                        Destroy(_previewInstance);
+                        Destroy(_previewInstance.gameObject);
                     }
 
                     break;
@@ -63,8 +62,7 @@ namespace Game.Items.Equipments
                         _mpb.SetColor(BaseColorID, ValidPositionColour);
                         _mpb.SetColor(BaseColourID, ValidPositionColour);
 
-                        _previewRenderers = _previewInstance.GetComponentsInChildren<Renderer>();
-                        foreach (var rnd in _previewRenderers)
+                        foreach (var rnd in _previewInstance.ColouredRenderers)
                         {
                             rnd.SetPropertyBlock(_mpb);
                             rnd.enabled = _previewVisible;
@@ -87,13 +85,18 @@ namespace Game.Items.Equipments
                 var ray = _camera.ViewportPointToRay(new Vector2(0.5f, 0.5f));
                 if (Physics.Raycast(ray, out var hit, 100f, _placeMask, QueryTriggerInteraction.Ignore))
                 {
-                    _previewInstance.transform.position = hit.point;
-                    _previewInstance.transform.rotation = Quaternion.LookRotation(_previewInstance.transform.position - heldData.Holder.transform.position, hit.normal);
+                    var lerpT = 1 - Mathf.Exp(-20f * Time.deltaTime);
+                    _previewInstance.transform.position = Vector3.Lerp(_previewInstance.transform.position, hit.point, lerpT);
+                    _previewInstance.transform.rotation = Quaternion.Slerp(
+                        _previewInstance.transform.rotation,
+                        Quaternion.LookRotation(_previewInstance.transform.position - heldData.Holder.transform.position, hit.normal),
+                        lerpT
+                    );
 
                     var distanceToPlayer = Vector3.Distance(heldData.Holder.transform.position, hit.point);
                     var validPos = distanceToPlayer <= MaxPlaceDistance && Vector3.Angle(hit.normal, Vector3.up) <= _maxPlacementAngle;
 
-                    foreach (var rnd in _previewRenderers)
+                    foreach (var rnd in _previewInstance.ColouredRenderers)
                     {
                         rnd.GetPropertyBlock(_mpb);
                         var colour = validPos ? ValidPositionColour : InvalidPositionColour;
@@ -145,7 +148,7 @@ namespace Game.Items.Equipments
             _previewVisible = visible;
             if (!_previewInstance) return;
 
-            foreach (var rnd in _previewRenderers)
+            foreach (var rnd in _previewInstance.ColouredRenderers)
             {
                 rnd.enabled = visible;
             }

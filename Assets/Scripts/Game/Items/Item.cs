@@ -67,6 +67,7 @@ namespace Game.Items
         [field: SerializeField] public ItemData Data { get; protected set; }
 
         public const float PutdownSpeed = 16f;
+        public const float MaxThrowForce = 100f;
 
         [SyncVar] [ReadOnly] public ItemStateData StateData = new IdleStateData();
 
@@ -80,6 +81,8 @@ namespace Game.Items
         [field: SerializeField] public bool ShowInfoCard { get; protected set; } = true;
         [field: SerializeField] public bool ForceMoveOnHeld { get; protected set; } = true;
 
+        [field: SerializeField] public float GlobalDisplayScale { get; private set; } = 1f;
+        
         protected virtual void Awake()
         {
             Rb = GetComponent<Rigidbody>();
@@ -156,9 +159,9 @@ namespace Game.Items
                     Cart.Instance.RemoveCarriedItem(this);
                 }
 
-                transform.position = worldItemSnapshot.Position;
-                transform.rotation = worldItemSnapshot.Rotation;
                 ServerSetState(worldItemSnapshot.StateData);
+                Rb.position = worldItemSnapshot.Position;
+                Rb.rotation = worldItemSnapshot.Rotation;
             }
             else if (target.Snapshot.SackStoredItems.ContainsValue(this))
             {
@@ -368,6 +371,23 @@ namespace Game.Items
             var player = sender!.identity.GetComponent<PlayerController>();
             if (player != heldData.Holder) return;
             ServerSetState(new IdleStateData());
+        }
+
+        [Command(requiresAuthority = false)]
+        public void CmdTryThrow(float forceRatio, Vector3 worldThrowDir, NetworkConnectionToClient sender = null)
+        {
+            if (StateData is not HeldStateData heldData) return;
+
+            var player = sender!.identity.GetComponent<PlayerController>();
+            if (player != heldData.Holder) return;
+
+            ServerSetState(new IdleStateData());
+
+            var dir = worldThrowDir.normalized;
+            var impulseForce = MaxThrowForce * Mathf.Clamp01(forceRatio);
+
+            Rb.AddForce(dir * impulseForce, ForceMode.Impulse);
+            Rb.AddTorque(dir * (impulseForce * 0.01f), ForceMode.Impulse);
         }
 
         protected virtual void FixedUpdate()

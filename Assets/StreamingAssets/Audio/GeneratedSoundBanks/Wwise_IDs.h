@@ -30,6 +30,7 @@ namespace AK
         static const AkUniqueID DOLLHUM = 3457267156U;
         static const AkUniqueID DOORSMOVING = 758278606U;
         static const AkUniqueID EMOTEHOVERTICK = 151557060U;
+        static const AkUniqueID FASTCOLLISION = 2092587649U;
         static const AkUniqueID FISHINGRODTHROW = 1172487408U;
         static const AkUniqueID FISHINGRODUNSPOOL = 2949285970U;
         static const AkUniqueID FOOTSTEPS = 2385628198U;
@@ -78,6 +79,7 @@ namespace AK
         static const AkUniqueID PUSHER_TEMPLE_1 = 3651444616U;
         static const AkUniqueID PUSHER_TEMPLE_2 = 3651444619U;
         static const AkUniqueID PUSHER_TEMPLE_3 = 3651444618U;
+        static const AkUniqueID PUSHER_TEMPLE_4 = 3651444621U;
         static const AkUniqueID RESPAWNPING = 814740291U;
         static const AkUniqueID SACKS = 3168078110U;
         static const AkUniqueID SANDCASTLEBUY = 3781447909U;
@@ -93,6 +95,7 @@ namespace AK
         static const AkUniqueID TESTSOUJD1 = 1035878255U;
         static const AkUniqueID TEXTBLIP = 1387752797U;
         static const AkUniqueID TIPJAR = 680758647U;
+        static const AkUniqueID VENTPUSH = 3558418356U;
         static const AkUniqueID VERTSPINMOVING = 2481782438U;
         static const AkUniqueID WINDNSAND = 3811731857U;
         static const AkUniqueID WINDVENT = 2602924598U;
@@ -216,6 +219,7 @@ namespace AK
         static const AkUniqueID PUSHER_TEMPLE_1 = 3651444616U;
         static const AkUniqueID PUSHER_TEMPLE_2 = 3651444619U;
         static const AkUniqueID PUSHER_TEMPLE_3 = 3651444618U;
+        static const AkUniqueID PUSHER_TEMPLE_4 = 3651444621U;
         static const AkUniqueID ROPEONOFF = 1753086197U;
         static const AkUniqueID SFXVOLUME = 988953028U;
         static const AkUniqueID SIDESWEEPER = 988175737U;

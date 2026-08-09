@@ -9,6 +9,7 @@ namespace Obstacles
         [SerializeField] private LayerMask _bounceLayers;
 
         [SerializeField] public AK.Wwise.Event _windVent;
+        [SerializeField] public AK.Wwise.Event _ventUp;
 
         private void OnTriggerStay(Collider collision)
         {
@@ -22,6 +23,7 @@ namespace Obstacles
             if (PlayerController.LocalPlayer.JumpAction.action.IsPressed())
             {
                 collision.attachedRigidbody.AddForce(transform.up * _jumpForce, ForceMode.Force);
+                _ventUp.Post(gameObject);
             }
         }
 

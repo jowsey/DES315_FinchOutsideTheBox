@@ -1,5 +1,72 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &851716463042589741
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2751488858022975309}
+  - component: {fileID: 5042194611125354353}
+  - component: {fileID: 3163024750291891932}
+  m_Layer: 0
+  m_Name: HintPromptTrigger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2751488858022975309
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 851716463042589741}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5463845564423500410}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5042194611125354353
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 851716463042589741}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecf847cf36f04372a1aa618e65ff3539, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Util.HintPromptWorldTrigger
+  Type: 2
+--- !u!135 &3163024750291891932
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 851716463042589741}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 65143
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 15
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &3884725913614012442
 GameObject:
   m_ObjectHideFlags: 0
@@ -13,7 +80,7 @@ GameObject:
   - component: {fileID: 8071709239853400798}
   - component: {fileID: 5771797528646739128}
   - component: {fileID: 4271577709322274925}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Obs_Lever
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -36,6 +103,7 @@ Transform:
   - {fileID: 7907543576973137176}
   - {fileID: 4594232293338995619}
   - {fileID: 6901895102553717640}
+  - {fileID: 2751488858022975309}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &-4547239413256368747
@@ -124,7 +192,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 165161686299800156}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Top
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -157,7 +225,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6901895102553717640}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Middle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -192,7 +260,7 @@ GameObject:
   - component: {fileID: 6426871891912995006}
   - component: {fileID: 8843608279382130294}
   - component: {fileID: 5247645680433414712}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Trigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -360,6 +428,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Lever_Plate_01_MESH
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 39093b64ecaca0e46af44936775ce2da, type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 2301564815224799011, guid: 39093b64ecaca0e46af44936775ce2da, type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -463,6 +539,14 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: b50bdedb635e89f4792b5fd9e3683f43, type: 3}
       propertyPath: m_Name
       value: Lever_Plate_03_MESH
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: b50bdedb635e89f4792b5fd9e3683f43, type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 8681703611618566331, guid: b50bdedb635e89f4792b5fd9e3683f43, type: 3}
+      propertyPath: m_Layer
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 8894129440317553440, guid: b50bdedb635e89f4792b5fd9e3683f43, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -572,6 +656,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Lever_Plate_02_MESH
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 65ec69851687fe64bbfd65e01b16c33a, type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1761571960821774346, guid: 65ec69851687fe64bbfd65e01b16c33a, type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 6408579546808736739, guid: 65ec69851687fe64bbfd65e01b16c33a, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -679,6 +771,14 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: a3030b94149fb5340bf7c14a43ba2465, type: 3}
       propertyPath: m_Name
       value: Lever_Decor_MESH_02
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: a3030b94149fb5340bf7c14a43ba2465, type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 3510079839483278356, guid: a3030b94149fb5340bf7c14a43ba2465, type: 3}
+      propertyPath: m_Layer
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 5955881855184502675, guid: a3030b94149fb5340bf7c14a43ba2465, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'

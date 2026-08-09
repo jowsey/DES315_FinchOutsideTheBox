@@ -4,6 +4,7 @@ using Game.Items;
 using Sirenix.OdinInspector;
 using UI;
 using UnityEngine;
+using UnityEngine.Playables;
 
 public class CutscenePuppeteer : MonoBehaviour
 {
@@ -347,7 +348,10 @@ public class CutscenePuppeteer : MonoBehaviour
 
     public void RollCredits()
     {
-        var uiCanvas = GameObject.FindWithTag("UICanvas");
-        Instantiate(_creditsPrefab, uiCanvas.transform);
+        var director = FindAnyObjectByType<PlayableDirector>();
+        director.Pause();
+
+        var credits = Instantiate(_creditsPrefab, UIGlobals.MainCanvas.transform);
+        credits.OnCreditsFinished.AddListener(director.Resume);
     }
 }

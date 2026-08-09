@@ -1,6 +1,7 @@
 using Game.Items;
 using Mirror;
 using Sirenix.OdinInspector;
+using UI;
 using UnityEngine;
 
 public class WheelSeat : NetworkBehaviour
@@ -14,7 +15,7 @@ public class WheelSeat : NetworkBehaviour
 
     [Header("Components")]
     [Tooltip("The parent cart's rigidbody")]
-    [SerializeField] [RequiredIn(PrefabKind.InstanceInScene)] [DisableIn(PrefabKind.Regular)] private Rigidbody _cartRb;
+    [SerializeField] [RequiredIn(PrefabKind.InstanceInScene)] private Rigidbody _cartRb;
 
     [Tooltip("The rigidbody of the sphere that will rotate")]
     [SerializeField] [Required] private Rigidbody _wheelRb;
@@ -23,20 +24,20 @@ public class WheelSeat : NetworkBehaviour
     [SerializeField] [Required] private ConfigurableJoint _wheelJoint;
 
     [SerializeField] private Cart _cart;
-    
+
     [Header("State")]
     [Tooltip("The player currently sitting in this seat")]
     [SyncVar(hook = nameof(OnSeatedPlayerChanged))]
     [SerializeField] [Sirenix.OdinInspector.ReadOnly] private NetworkIdentity _seatedPlayerIdentity;
 
     public PlayerController SeatedPlayer { get; private set; }
-    
+
     [SerializeField] [Required] private SphereCollider _sphereCollider;
-    
+
     private float _lastUnsitTime = -Mathf.Infinity;
 
     public Vector3 SeatedPosition => transform.position + Vector3.up * (_sphereCollider.radius * transform.lossyScale.y);
-
+    
     public override void OnStartClient()
     {
         base.OnStartClient();
@@ -50,10 +51,10 @@ public class WheelSeat : NetworkBehaviour
     public void CmdTrySitPlayer(NetworkConnectionToClient sender = null)
     {
         if (SeatedPlayer || Time.time < _lastUnsitTime + _sitCooldown) return;
-        
+
         var player = sender!.identity.GetComponent<PlayerController>();
         if (player.HeldObject?.StateData is Item.HeldStateData) return; // dont allow sitting while holding an item
-        
+
         _seatedPlayerIdentity = player.netIdentity; //synced to all clients
     }
 
@@ -95,6 +96,17 @@ public class WheelSeat : NetworkBehaviour
             if (SeatedPlayer.isLocalPlayer)
             {
                 Highlight.SetHighlightable("Item", false);
+
+                if (!HintPrompt.HasShown.CaravanControls)
+                {
+                    HintPrompt.HasShown.CaravanControls = true;
+                    HintPrompt.RequestNew(new HintPrompt.HintPromptData
+                    {
+                        Title = "It takes two!",
+                        Description = "Work together to steer your caravan. Teamwork may be the only way to the top!\n\n" +
+                                      "Steering is relative to the camera direction, similar to when on-foot.",
+                    });
+                }
             }
         }
     }
@@ -125,18 +137,24 @@ public class WheelSeat : NetworkBehaviour
         {
             _wheelJoint.connectedBody = _cartRb;
         }
-        
+
         if (!_sphereCollider)
         {
             _sphereCollider = GetComponentInChildren<SphereCollider>();
         }
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        // propagate to Cart for events/sfx/whatnot
+        _cart.OnCollisionEnter(collision);
+    }
+
     private void FixedUpdate()
     {
         if (!isServer) return;
         if (!SeatedPlayer) return;
-        
+
         var torqueAxis = Vector3.Cross(Vector3.up, SeatedPlayer.WorldSpaceMoveDir);
         _wheelRb.AddTorque(torqueAxis * (MoveForce * Mathf.Min(SeatedPlayer.AnalogueMoveScale, 1f)));
     }

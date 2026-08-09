@@ -76,7 +76,6 @@ namespace Game
         [SerializeField] private Transform _itemSpawnEnd;
         [SerializeField] private int _maxAvailableItems;
 
-        private Transform _uiCanvas;
         [SerializeField] private CanvasGroup[] _hiddenUIElements;
 
         //Wwise Thangs
@@ -154,7 +153,6 @@ namespace Game
 
             _camera = FindAnyObjectByType<Camera>(FindObjectsInactive.Include);
             _zoomController = _camera.GetComponent<CameraZoomController>();
-            _uiCanvas = GameObject.FindGameObjectWithTag("UICanvas").transform;
 
             // replace sack's ItemData with ItemRegistry version so pointer comparison works, todo this sucks, clean up entire system
             SackItem.ItemData = ItemRegistry.FirstOrDefault(kvp => kvp.Value.name == SackItem.ItemData.name).Value;
@@ -335,10 +333,12 @@ namespace Game
                 var t = cappedItemCount == 1 ? 0.5f : (float)i / (cappedItemCount - 1);
                 var spawnPos = Vector3.Lerp(_itemSpawnStart.position, _itemSpawnEnd.position, t);
 
+                const float counterItemScaleFactor = 0.5f;
+                
                 var newItem = Instantiate(itemToSpawn.Prefab, spawnPos, _itemSpawnStart.rotation);
                 newItem.Rb.isKinematic = true; // force immediate kinematic before state change to prevent any possible physics tick
                 newItem.ServerSetState(new Item.FrozenStateData());
-                newItem.transform.localScale = Vector3.one * 0.5f;
+                newItem.transform.localScale = Vector3.one * (newItem.GlobalDisplayScale * counterItemScaleFactor);
                 newItem.Pickuppable = false;
 
                 NetworkServer.Spawn(newItem.gameObject);
@@ -365,12 +365,6 @@ namespace Game
                 var item = AvailableItems[i];
                 if (!item) continue;
 
-                var t = count == 1 ? 0.5f : (float)i / (count - 1);
-                Physics.SyncTransforms();
-
-                item.ServerSetState(new Item.FrozenStateData());
-                item.Rb.position = Vector3.Lerp(_itemSpawnStart.position, _itemSpawnEnd.position, t);
-                item.Rb.rotation = _itemSpawnStart.rotation;
                 item.transform.localScale = Vector3.one * 0.5f;
                 item.Pickuppable = false;
             }
@@ -410,9 +404,20 @@ namespace Game
             //Show UI
             if (!_shopUIInstance)
             {
-                _shopUIInstance = Instantiate(_shopUIPrefab, _uiCanvas);
+                _shopUIInstance = Instantiate(_shopUIPrefab, UIGlobals.MainCanvas.transform);
                 _shopUIInstance.Build(this);
                 _shopEnter.Post(gameObject);
+            }
+
+            // Show prompt
+            if (!HintPrompt.HasShown.Shop)
+            {
+                HintPrompt.HasShown.Shop = true;
+                HintPrompt.RequestNew(new HintPrompt.HintPromptData
+                {
+                    Title = "See something you like?",
+                    Description = "Those treasures you've been collecting might have some value! Trade for useful items to aid on your journey.",
+                });
             }
 
             // Enable item outlines
@@ -554,7 +559,7 @@ namespace Game
                 {
                     _shopBuy.Post(gameObject);
                     itemData.BuySfx?.Post(gameObject);
-                    
+
                     if (itemData != SackItem.ItemData) LeaveShop();
                     break;
                 }
@@ -638,7 +643,7 @@ namespace Game
 
             if (!_enterPromptInstance && localPlayer && canShowEnterPrompt)
             {
-                _enterPromptInstance = Instantiate(_enterPromptPrefab, _uiCanvas);
+                _enterPromptInstance = Instantiate(_enterPromptPrefab, UIGlobals.MainCanvas.transform);
                 _enterPromptInstance.Build(_enterPromptConfig);
                 _enterPromptInstance.WorldFollowUI.TrackingTarget = _enterPromptPosition;
             }

@@ -7,10 +7,23 @@ using UnityEngine;
 
 public class InteractDetection : MonoBehaviour
 {
-    private Camera _camera;
-    private Transform _uiCanvas;
+    private struct InteractionData
+    {
+        public Transform Transform;
+        public Item Item;
+        public UpgradeSack Sack;
+        public bool ValidPickupTarget;
+        public bool ValidPutdownTarget;
+        public bool ValidHookTarget;
+        public bool ValidPullTarget;
 
-    [SerializeField] private float _maxInteractDistance = 4.0f;
+        public bool AnyValid => ValidPickupTarget || ValidPutdownTarget || ValidHookTarget || ValidPullTarget;
+    }
+
+    private Camera _camera;
+
+    [SerializeField] private float _maxInteractDistance = 3.0f;
+    [SerializeField] private float _fallbackRadiusDistance = 4.0f;
     [SerializeField] private float _maxPutdownDistance = 8.0f;
 
     [Header("UI")] [SerializeField] [Required]
@@ -39,7 +52,6 @@ public class InteractDetection : MonoBehaviour
     private void Awake()
     {
         _camera = GetComponent<Camera>();
-        _uiCanvas = GameObject.FindGameObjectWithTag("UICanvas").transform;
     }
 
     private void CleanupInteractPrompt()
@@ -60,6 +72,35 @@ public class InteractDetection : MonoBehaviour
         _itemInfoCardInstance = null;
     }
 
+    private InteractionData EvaluateTarget(Interactable interactable, float dist)
+    {
+        var interactedTransform = interactable.InteractedTransform;
+        var sack = interactedTransform.GetComponent<UpgradeSack>();
+        var item = sack?.StoredItem ?? interactedTransform.GetComponent<Item>();
+
+        return new InteractionData
+        {
+            Transform = interactedTransform,
+            Item = item,
+            Sack = sack,
+            ValidPickupTarget = dist <= _maxInteractDistance
+                                && PlayerController.LocalPlayer.PickupAllowed
+                                && item
+                                && item.Pickuppable
+                                && item.StateData is Item.IdleStateData or Item.SackCarriedStateData,
+            ValidPutdownTarget = dist <= _maxPutdownDistance
+                                 && PlayerController.LocalPlayer.PutdownAllowed
+                                 && (interactedTransform.CompareTag("TreasureCarrier") || (sack && !sack.StoredItem)),
+            ValidHookTarget = dist <= _maxInteractDistance
+                              && PlayerController.LocalPlayer.UseAllowed
+                              && PlayerController.LocalPlayer.HeldObject is YarnEquipment { IsHooking: false }
+                              && interactedTransform.CompareTag("YarnHookTarget"),
+            ValidPullTarget = dist <= _maxInteractDistance
+                              && PlayerController.LocalPlayer.PickupAllowed
+                              && interactedTransform.gameObject.layer == LayerMask.NameToLayer("Rope")
+        };
+    }
+
     //LateUpdate so that it's after Cinemachine updates the camera
     private void LateUpdate()
     {
@@ -67,77 +108,63 @@ public class InteractDetection : MonoBehaviour
 
         var detectMask = LayerMask.GetMask("Item", "Cart", "Rope");
         var maxReach = Mathf.Max(_maxInteractDistance, _maxPutdownDistance);
+        var playerPos = PlayerController.LocalPlayer.transform.position + Vector3.up * 1f;
 
         var ray = _camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
-        var didRayHit = Physics.SphereCast(ray, 0.1f, out var rayHit, 100f, detectMask, QueryTriggerInteraction.Ignore);
+        var didRayHit = Physics.SphereCast(ray, 0.1f, out var rayHit, 100f, detectMask);
 
-        Interactable interactable = null;
-        var playerPos = PlayerController.LocalPlayer.transform.position;
-        var distanceToPlayer = Vector3.Distance(rayHit.point, playerPos);
-
-        // todo spherecast prevents fallback if it hits something it doesnt end up using, do full checks before deciding whether to do fallback 
+        InteractionData target = default;
+        var foundTarget = false;
 
         // Check if spherecast hit
-        if (!didRayHit || distanceToPlayer > maxReach || !rayHit.transform.TryGetComponent(out interactable))
+        if (didRayHit && rayHit.transform.TryGetComponent(out Interactable rayInteractable))
         {
-            // If not, check nearby
-            var hits = Physics.OverlapSphereNonAlloc(playerPos, maxReach / 2f, _nearbyHits, detectMask);
+            var distance = Vector3.Distance(rayHit.point, playerPos);
+            if (distance <= maxReach)
+            {
+                target = EvaluateTarget(rayInteractable, distance);
+                foundTarget = target.AnyValid;
+            }
+        }
 
+        // If not, check nearby
+        if (!foundTarget)
+        {
+            var hits = Physics.OverlapSphereNonAlloc(playerPos, _fallbackRadiusDistance, _nearbyHits, detectMask);
             var closest = float.MaxValue;
+
             for (var i = 0; i < hits; i++)
             {
                 var hitTransform = _nearbyHits[i].transform;
                 if (!hitTransform.TryGetComponent(out Interactable nearbyInteractable)) continue;
-                var distance = Vector3.Distance(hitTransform.position, playerPos);
+                var distance = Vector3.Distance(_nearbyHits[i].ClosestPoint(playerPos), playerPos);
 
                 if (distance >= closest) continue;
-                closest = distance;
-                interactable = nearbyInteractable;
-            }
 
-            if (interactable)
-            {
-                distanceToPlayer = closest;
-            }
-            else
-            {
-                TargetedTransform = null;
-                if (_interactPromptInstance) CleanupInteractPrompt();
-                if (_secondaryInteractPromptInstance) CleanupSecondaryInteractPrompt();
-                if (_itemInfoCardInstance) CleanupItemInfoPrompt();
-                return;
+                var nearbyTarget = EvaluateTarget(nearbyInteractable, distance);
+                if (nearbyTarget.AnyValid)
+                {
+                    target = nearbyTarget;
+                    closest = distance;
+                    foundTarget = true;
+                }
             }
         }
 
-        var interactedTransform = interactable.InteractedTransform;
+        if (!foundTarget)
+        {
+            TargetedTransform = null;
+            if (_interactPromptInstance) CleanupInteractPrompt();
+            if (_secondaryInteractPromptInstance) CleanupSecondaryInteractPrompt();
+            if (_itemInfoCardInstance) CleanupItemInfoPrompt();
+            return;
+        }
 
-        // New target
-        var sack = interactedTransform.GetComponent<UpgradeSack>();
-        var item = interactedTransform.GetComponent<Item>() ?? sack?.StoredItem;
-        var validPickupTarget = distanceToPlayer <= _maxInteractDistance
-                                && PlayerController.LocalPlayer.PickupAllowed
-                                && item
-                                && item.Pickuppable
-                                && item.StateData is Item.IdleStateData or Item.SackCarriedStateData;
-
-        var validPutdownTarget = distanceToPlayer <= _maxPutdownDistance
-                                 && PlayerController.LocalPlayer.PutdownAllowed
-                                 && (interactedTransform.CompareTag("TreasureCarrier") || (sack && !sack.StoredItem));
-
-        var validHookTarget = distanceToPlayer <= _maxInteractDistance
-                              && PlayerController.LocalPlayer.UseAllowed
-                              && PlayerController.LocalPlayer.HeldObject is YarnEquipment { IsHooking: false }
-                              && interactedTransform.CompareTag("YarnHookTarget");
-
-        var validPullTarget = distanceToPlayer <= _maxInteractDistance
-                              && PlayerController.LocalPlayer.PickupAllowed
-                              && interactedTransform.gameObject.layer == LayerMask.NameToLayer("Rope");
-
-        var showInteractPrompt = validPickupTarget || validPutdownTarget || validHookTarget || validPullTarget;
-        var showInfoCard = validPickupTarget && item.ShowInfoCard;
+        var showInteractPrompt = target.AnyValid;
+        var showInfoCard = target.ValidPickupTarget && target.Item.ShowInfoCard;
 
         if (!showInteractPrompt && _interactPromptInstance) CleanupInteractPrompt();
-        if (!validPullTarget && _secondaryInteractPromptInstance) CleanupSecondaryInteractPrompt();
+        if (!target.ValidPullTarget && _secondaryInteractPromptInstance) CleanupSecondaryInteractPrompt();
         if (!showInfoCard && _itemInfoCardInstance) CleanupItemInfoPrompt();
 
         if (!(showInteractPrompt || showInfoCard))
@@ -147,31 +174,31 @@ public class InteractDetection : MonoBehaviour
         }
 
         // check whether the new prompt types are different, even if the transform is the same
-        var targetMask = (validPickupTarget ? 1u : 0u) | (validPutdownTarget ? 2u : 0u) | (validHookTarget ? 4u : 0u) | (validPullTarget ? 8u : 0u);
+        var targetMask = (target.ValidPickupTarget ? 1u : 0u) | (target.ValidPutdownTarget ? 2u : 0u) | (target.ValidHookTarget ? 4u : 0u) | (target.ValidPullTarget ? 8u : 0u);
 
         // Build/update prompts for new state
-        if (interactedTransform != TargetedTransform || _lastTargetMask != targetMask)
+        if (target.Transform != TargetedTransform || _lastTargetMask != targetMask)
         {
-            TargetedTransform = interactable.InteractedTransform;
+            TargetedTransform = target.Transform;
             _lastTargetMask = targetMask;
 
-            if (!_interactPromptInstance) _interactPromptInstance = Instantiate(_interactPromptPrefab, _uiCanvas);
+            if (!_interactPromptInstance) _interactPromptInstance = Instantiate(_interactPromptPrefab, UIGlobals.MainCanvas.transform);
 
-            if (validPickupTarget) _interactPromptInstance.Build(_pickupConfig);
-            else if (validPutdownTarget) _interactPromptInstance.Build(sack ? _storeConfig : _putdownConfig);
-            else if (validHookTarget) _interactPromptInstance.Build(_attachHookConfig);
-            else if (validPullTarget)
+            if (target.ValidPickupTarget) _interactPromptInstance.Build(_pickupConfig);
+            else if (target.ValidPutdownTarget) _interactPromptInstance.Build(target.Sack ? _storeConfig : _putdownConfig);
+            else if (target.ValidHookTarget) _interactPromptInstance.Build(_attachHookConfig);
+            else if (target.ValidPullTarget)
             {
                 _interactPromptInstance.Build(_pullRopeConfig);
 
-                if (!_secondaryInteractPromptInstance) _secondaryInteractPromptInstance = Instantiate(_interactPromptPrefab, _uiCanvas);
+                if (!_secondaryInteractPromptInstance) _secondaryInteractPromptInstance = Instantiate(_interactPromptPrefab, UIGlobals.MainCanvas.transform);
                 _secondaryInteractPromptInstance.Build(_detachHookConfig);
                 _secondaryInteractPromptInstance.transform.localScale = Vector3.one * 0.75f;
             }
 
             _interactPromptInstance.WorldFollowUI.TrackingTarget = TargetedTransform;
 
-            if (validPickupTarget)
+            if (target.ValidPickupTarget)
             {
                 // Interact prompt to right
                 ((RectTransform)_interactPromptInstance.transform).pivot = new Vector2(0, 0.5f);
@@ -179,8 +206,9 @@ public class InteractDetection : MonoBehaviour
 
                 if (showInfoCard)
                 {
-                    if (!_itemInfoCardInstance) _itemInfoCardInstance = Instantiate(_itemInfoCardPrefab, _uiCanvas);
-                    _itemInfoCardInstance.Build(item.Data, item is Treasure ? ItemInfoCard.SubtextDisplayType.BuySpeculate : ItemInfoCard.SubtextDisplayType.UsageHint);
+                    if (!_itemInfoCardInstance) _itemInfoCardInstance = Instantiate(_itemInfoCardPrefab, UIGlobals.MainCanvas.transform);
+                    _itemInfoCardInstance.Build(target.Item.Data,
+                        target.Item is Treasure ? ItemInfoCard.SubtextDisplayType.BuySpeculate : ItemInfoCard.SubtextDisplayType.UsageHint);
 
                     // Info card below it
                     _itemInfoCardInstance.WorldFollowUI.TrackingTarget = TargetedTransform;
@@ -194,7 +222,7 @@ public class InteractDetection : MonoBehaviour
                 ((RectTransform)_interactPromptInstance.transform).pivot = new Vector2(0.5f, 0);
                 _interactPromptInstance.WorldFollowUI.UIPositionOffset = new Vector2(0, 16);
 
-                if (validPullTarget)
+                if (target.ValidPullTarget)
                 {
                     // Detach prompt below it
                     _secondaryInteractPromptInstance.WorldFollowUI.TrackingTarget = TargetedTransform;

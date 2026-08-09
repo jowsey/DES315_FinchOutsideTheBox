@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Text.RegularExpressions;
 using Gilzoide.RoundedCorners;
 using PrimeTween;
@@ -29,6 +28,8 @@ namespace UI.Menus
         [SerializeField] private Color _lightColour;
         [SerializeField] private Color _darkColour;
 
+        [SerializeField] private TextMeshProUGUI _versionText;
+
         private string _itemLink;
         private float _standardAnchoredY;
 
@@ -36,6 +37,41 @@ namespace UI.Menus
         private Sprite _generatedSprite;
 
         public void OpenLink() => Application.OpenURL(_itemLink);
+
+        private const string SemverPattern =
+            @"(?<major>0|[1-9]\d*)\.(?<minor>0|[1-9]\d*)\.(?<patch>0|[1-9]\d*)(?:-(?<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?";
+
+        // true if A is higher (newer) than B
+        private static bool CompareSemver(Match a, Match b)
+        {
+            // official semver regex. good grief
+            if (!a.Success)
+            {
+                Debug.LogWarning($"Failed to parse semver string: '{a}'");
+                return false;
+            }
+
+            if (!b.Success)
+            {
+                Debug.LogWarning($"Failed to parse semver string: '{b}'");
+                return false;
+            }
+
+            // we only care about major/minor/patch, because no fancier version will ever be published (hopefully)
+            var aMajor = int.Parse(a.Groups["major"].Value);
+            var bMajor = int.Parse(b.Groups["major"].Value);
+            if (aMajor != bMajor) return aMajor > bMajor;
+
+            var aMinor = int.Parse(a.Groups["minor"].Value);
+            var bMinor = int.Parse(b.Groups["minor"].Value);
+            if (aMinor != bMinor) return aMinor > bMinor;
+
+            var aPatch = int.Parse(a.Groups["patch"].Value);
+            var bPatch = int.Parse(b.Groups["patch"].Value);
+            if (aPatch != bPatch) return aPatch > bPatch;
+
+            return false;
+        }
 
         private async Awaitable<bool> AttemptPostDownload()
         {
@@ -47,8 +83,32 @@ namespace UI.Menus
                 var rssFeed = new System.Xml.XmlDocument();
                 rssFeed.LoadXml(req.downloadHandler.text);
 
-                var latestItemNode = rssFeed.SelectSingleNode("//item");
+                var items = rssFeed.SelectNodes("//item");
+                if (items == null) return false;
+                if (items.Count == 0) return false;
 
+                var localVersionMatch = Regex.Match(Application.version, SemverPattern);
+
+                // Find first post with title matching semver
+                for (var i = 0; i < items.Count; i++)
+                {
+                    var itemNode = items[i];
+
+                    var title = itemNode?.SelectSingleNode("title");
+                    if (title == null) continue;
+
+                    var text = title.InnerText;
+                    var semverMatch = Regex.Match(text, SemverPattern);
+                    if (semverMatch.Success && CompareSemver(semverMatch, localVersionMatch))
+                    {
+                        // Found a newer version post
+                        _versionText.text += $"\n<size=50%>New version available: <b>v{semverMatch.Value}</b>";
+                        break;
+                    }
+                }
+
+                // Display latest post
+                var latestItemNode = items![0];
                 if (latestItemNode == null) return false;
 
                 var titleNode = latestItemNode.SelectSingleNode("title");

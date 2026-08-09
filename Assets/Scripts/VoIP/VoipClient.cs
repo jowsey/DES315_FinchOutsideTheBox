@@ -271,6 +271,13 @@ namespace VoIP
             Debug.Log("Streaming stopped.");
         }
 
+        public void ResetMicReadingState()
+        {
+            _micReadPos = Microphone.GetPosition(_device);
+            _sendAccumulationBuffer?.Clear();
+            _opus.ResetEncoderState();
+        }
+        
         public void Update()
         {
             if (!isLocalPlayer)
@@ -301,9 +308,7 @@ namespace VoIP
                     }
 
                     //When starting a new PTT block, reset reading state
-                    _micReadPos = micWritePos;
-                    _sendAccumulationBuffer.Clear();
-                    _opus.ResetEncoderState();
+                    ResetMicReadingState();
                 }
                 else if (_pushToTalkAction.action.WasReleasedThisFrame())
                 {
@@ -315,18 +320,22 @@ namespace VoIP
             }
             else
             {
-                //Treat PTT action as toggle mute
-                if (_pushToTalkAction.action.WasPressedThisFrame())
+                if (Muted)
                 {
-                    Muted = !Muted;
-
-                    if (!Muted)
-                    {
-                        _micReadPos = micWritePos;
-                        _sendAccumulationBuffer.Clear();
-                        _opus.ResetEncoderState();
-                    }
+                    Muted = false;
+                    ResetMicReadingState();
                 }
+                    
+                //Treat PTT action as toggle mute
+                // if (_pushToTalkAction.action.WasPressedThisFrame())
+                // {
+                //     Muted = !Muted;
+                //
+                //     if (!Muted)
+                //     {
+                //         ResetMicReadingState();
+                //     }
+                // }
             }
 
             Sprite idealSprite = Muted ? _mutedMicSprite : _defaultMicSprite;
@@ -403,13 +412,13 @@ namespace VoIP
         }
 
         [Command(channel = Channels.Unreliable)]
-        void CmdSendAudio(uint seq, ArraySegment<byte> opusPacket)
+        private void CmdSendAudio(uint seq, ArraySegment<byte> opusPacket)
         {
             RpcReceiveAudio(seq, opusPacket);
         }
 
         [ClientRpc(channel = Channels.Unreliable, includeOwner = false)]
-        void RpcReceiveAudio(uint seq, ArraySegment<byte> opusPacket)
+        private void RpcReceiveAudio(uint seq, ArraySegment<byte> opusPacket)
         {
             // UDP out-of-order check
             if (seq <= _lastReceivedSequence)
@@ -443,7 +452,18 @@ namespace VoIP
             }
         }
 
-        void OnAudioFilterRead(float[] data, int channels)
+        private static float SoftClip(float x)
+        {
+            const float threshold = 0.7f;
+            var abs = Mathf.Abs(x);
+            if (abs <= threshold) return x;
+
+            var sign = Mathf.Sign(x);
+            var excess = (abs - threshold) / (1f - threshold);
+            return sign * (threshold + (1f - threshold) * (float)Math.Tanh(excess));
+        }
+
+        private void OnAudioFilterRead(float[] data, int channels)
         {
             if (isLocalPlayer) return;
 
@@ -512,7 +532,7 @@ namespace VoIP
             //Copy samples into data, duplicating for each channel
             for (int s = 0; s < samplesRead; s++)
             {
-                float multipliedSample = _playbackSamplesBuffer[s] * voiceVolQuadratic; // apply quadratic gain
+                float multipliedSample = SoftClip(_playbackSamplesBuffer[s] * voiceVolQuadratic); // apply soft-clipped quadratic gain
                 for (int c = 0; c < channels; c++)
                 {
                     data[s * channels + c] = multipliedSample;

@@ -81,7 +81,7 @@ namespace UI.Shop
             if (Vector3.Distance(Cart.Instance.transform.position, _shop.transform.position) > MaxCartSellDistance)
             {
                 _sellAllButton.interactable = false;
-                _sellAllEstimateText.text = "Bring the cart closer to sell.";
+                _sellAllEstimateText.text = "Bring the caravan closer to sell.";
             }
             else
             {

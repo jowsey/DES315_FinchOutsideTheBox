@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +10,6 @@ using UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[RequireComponent(typeof(Rigidbody))]
 public class Cart : NetworkBehaviour
 {
     public Rigidbody Rb;
@@ -34,9 +32,6 @@ public class Cart : NetworkBehaviour
     [Tooltip("Exponent for how much the amount of tilt-correction increases in response to tilting. 1 means consistent, higher makes it kick in far more when tilting more.")]
     [SerializeField] private float _tiltCorrectionScaling = 2f;
 
-    // UI
-    private Transform _uiCanvas;
-
     // Treasure carrying
     [SerializeField] [Required] private Collider _carryBounds;
 
@@ -57,8 +52,11 @@ public class Cart : NetworkBehaviour
     [SerializeField] [Required] private AK.Wwise.Event _carSound;
     [SerializeField] [Required] private AK.Wwise.Event _carOnSurface;
     [SerializeField] [Required] private AK.Wwise.Event _glassInVehicle;
+    [SerializeField] [Required] private AK.Wwise.Event _collisionSfx;
     [SerializeField] [Required] private AK.Wwise.RTPC _cartSpeedRTPC;
     [SerializeField] [Required] private AK.Wwise.RTPC _numCarriedTreasuresRTPC;
+
+    [SerializeField] private float _minimumCollisionMagnitudeForSfx = 2f;
 
     //Velocity doesn't exist on non-authed client, so we use this to calculate our own rough speed
     private Vector3 _positionLastFrame;
@@ -72,15 +70,13 @@ public class Cart : NetworkBehaviour
 
     private void Awake()
     {
-        Rb = GetComponent<Rigidbody>();
-        _uiCanvas = GameObject.FindGameObjectWithTag("UICanvas").transform;
         IsPuppet = false;
         Instance = this;
 
         foreach (var pos in SackPositions) pos.gameObject.SetActive(false);
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-        _wheelSeats = GetComponentsInChildren<WheelSeat>();
+        _wheelSeats = transform.parent.GetComponentsInChildren<WheelSeat>();
 #endif
     }
 
@@ -244,14 +240,32 @@ public class Cart : NetworkBehaviour
         if (!isServer && !IsPuppet) return;
         // Re-center rotation around local Z axis
         var localWorldUp = transform.InverseTransformDirection(Vector3.up);
+        var correctionMultiplier = Mathf.Max(0, localWorldUp.y);
+        // correctionMultiplier = Mathf.SmoothStep(0f, 1f, uprightAmount * 2f); 
         var rollError = -Mathf.Atan2(localWorldUp.x, localWorldUp.y) * Mathf.Rad2Deg;
         var rotExp = Mathf.Sign(rollError) * Mathf.Pow(Mathf.Abs(rollError), _tiltCorrectionScaling);
-        Rb.AddTorque(_tiltCorrection * rotExp * transform.forward);
+        Rb.AddTorque(_tiltCorrection * rotExp * correctionMultiplier * transform.forward);
+    }
+
+    public void OnCollisionEnter(Collision collision)
+    {
+        if (!isServer) return;
+        if (collision.relativeVelocity.magnitude < _minimumCollisionMagnitudeForSfx) return;
+        if (collision.collider.CompareTag("Player") || collision.collider.CompareTag("Item")) return;
+
+        RpcPlayCollisionSfx();
+    }
+
+    [ClientRpc]
+    private void RpcPlayCollisionSfx()
+    {
+        _collisionSfx?.Post(gameObject);
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (!isServer) return;
+
         if (!other.CompareTag("Checkpoint")) return;
 
         var checkpoint = other.GetComponent<Checkpoint>();
@@ -277,28 +291,27 @@ public class Cart : NetworkBehaviour
 
         Transform newTransform = target.CartSpawnPoint;
 
-        var rbs = GetComponentsInChildren<Rigidbody>();
-        var wasNonKinematic = new List<Rigidbody>();
+        var chassis = transform;
+        var parent = chassis.parent;
 
-        foreach (var rb in rbs)
-        {
-            if (rb.isKinematic) continue;
-
-            rb.isKinematic = true;
-            wasNonKinematic.Add(rb);
-        }
+        var rbs = parent.GetComponentsInChildren<Rigidbody>();
+        var parentRelativePositions = rbs.Select(rb => chassis.InverseTransformPoint(rb.transform.position)).ToList();
 
         transform.position = newTransform.position;
         transform.rotation = newTransform.rotation;
 
-        Physics.SyncTransforms();
-
-        foreach (var rb in wasNonKinematic)
+        for (var i = 0; i < parentRelativePositions.Count; i++)
         {
-            rb.isKinematic = false;
+            var relativePosition = parentRelativePositions[i];
+            var rb = rbs[i];
+
+            if (!rb) continue;
             rb.linearVelocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
+            rb.transform.position = chassis.TransformPoint(relativePosition);
         }
+
+        Physics.SyncTransforms();
     }
 
     [Server]
@@ -364,10 +377,21 @@ public class Cart : NetworkBehaviour
     {
         if (target is Checkpoint checkpoint && Checkpoints.IndexOf(checkpoint) > 0)
         {
-            var checkpointBanner = Instantiate(_checkpointBannerPrefab, _uiCanvas.transform);
+            var checkpointBanner = Instantiate(_checkpointBannerPrefab, UIGlobals.MainCanvas.transform);
             checkpointBanner.Checkpoint = checkpoint;
 
             checkpoint.ActivateVFX();
+
+            if (!HintPrompt.HasShown.ReachCheckpoint)
+            {
+                HintPrompt.HasShown.ReachCheckpoint = true;
+                HintPrompt.RequestNew(new HintPrompt.HintPromptData
+                {
+                    Title = "A place to rest?",
+                    Description = "It's important to rest and take stock!\n\n" +
+                                  "Checkpoints save your progress: the items and upgrades you had are always returned to you upon respawning."
+                });
+            }
         }
 
         if (!isServer) return;

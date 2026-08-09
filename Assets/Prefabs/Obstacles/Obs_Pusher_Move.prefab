@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2611024980486026817}
   - component: {fileID: 6057183558340305729}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Spline
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -123,7 +123,7 @@ GameObject:
   - component: {fileID: 5405758946321278333}
   - component: {fileID: 8807375640964112514}
   - component: {fileID: 6240907959370784}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Obs_Pusher_Move
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -236,7 +236,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7639044903814401847}
   - component: {fileID: 4111271709971970591}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Mesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -337,6 +337,14 @@ PrefabInstance:
     - target: {fileID: 2972194688653424028, guid: 33b239776493d064098578ddc215d1ac, type: 3}
       propertyPath: m_Name
       value: Cube_Pusher_Obstacle_Mesh_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 2972194688653424028, guid: 33b239776493d064098578ddc215d1ac, type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 5618368042492172297, guid: 33b239776493d064098578ddc215d1ac, type: 3}
+      propertyPath: m_Layer
+      value: 15
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

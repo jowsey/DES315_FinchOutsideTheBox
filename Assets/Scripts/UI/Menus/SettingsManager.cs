@@ -10,6 +10,7 @@ using PrimeTween;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 using VoIP;
 using Random = UnityEngine.Random;
@@ -23,6 +24,7 @@ namespace UI
         public string PlayerName;
         public float FirstPersonFov = 80f;
         public float FirstPersonSensPercent = 25f;
+        public bool HideTutorialPrompts = false;
 
         // Audio
         public float MasterVolumePercent = 100.0f;
@@ -32,6 +34,11 @@ namespace UI
         public bool NoiseSuppression = true;
         public bool PushToTalkSfx = true;
         public string InputDevice = null;
+        
+        // Video
+        public bool Fullscreen = true;
+        public bool VerticalSync = true;
+        public float UpscalingPercent = 100.0f;
 
         public Dictionary<string, float> PlayerVoiceVolumePercents = new();
 
@@ -66,7 +73,8 @@ namespace UI
         [SerializeField] [Required] private TMP_InputField _playerNameText;
         [SerializeField] [Required] private Slider _firstPersonFovSlider;
         [SerializeField] [Required] private Slider _firstPersonSensitivitySlider;
-
+        [SerializeField] [Required] private Toggle _showTutorialPromptsToggle;
+        
         // Audio
         [SerializeField] [Required] private Slider _masterVolumeSlider;
         [SerializeField] [Required] private Slider _musicVolumeSlider;
@@ -81,6 +89,11 @@ namespace UI
         [SerializeField] [Required] private RTPC _masterVolumeRtpc;
         [SerializeField] [Required] private RTPC _musicVolumeRtpc;
         [SerializeField] [Required] private RTPC _sfxVolumeRtpc;
+        
+        // Video
+        [SerializeField] [Required] private TMP_Dropdown _windowModeDropdown;
+        [SerializeField] [Required] private Toggle _vsyncToggle;
+        [SerializeField] [Required] private Slider _upscalerPercentSlider;
 
         private static string _sessionRandomName;
 
@@ -107,6 +120,7 @@ namespace UI
             _playerNameText.onValueChanged.AddListener(OnPlayerNameChanged);
             _firstPersonFovSlider.onValueChanged.AddListener(OnFirstPersonFovChanged);
             _firstPersonSensitivitySlider.onValueChanged.AddListener(OnFirstPersonSensitivityChanged);
+            _showTutorialPromptsToggle.onValueChanged.AddListener(OnShowTutorialPromptsChanged);
 
             // Audio
             _masterVolumeSlider.onValueChanged.AddListener(OnMasterVolumeChanged);
@@ -117,6 +131,11 @@ namespace UI
             _pttSfxToggle.onValueChanged.AddListener(OnPttSfxToggleChanged);
             _noiseSuppressionToggle.onValueChanged.AddListener(OnNoiseSuppressionToggleChanged);
             _inputDeviceDropdown.onValueChanged.AddListener(OnInputDeviceChanged);
+            
+            // Video
+            _windowModeDropdown.onValueChanged.AddListener(OnWindowModeChanged);
+            _vsyncToggle.onValueChanged.AddListener(OnVsyncToggleChanged);
+            _upscalerPercentSlider.onValueChanged.AddListener(OnUpscalerPercentChanged);
         }
 
         private void OnDisable()
@@ -127,6 +146,7 @@ namespace UI
             _playerNameText.onValueChanged.RemoveListener(OnPlayerNameChanged);
             _firstPersonFovSlider.onValueChanged.RemoveListener(OnFirstPersonFovChanged);
             _firstPersonSensitivitySlider.onValueChanged.RemoveListener(OnFirstPersonSensitivityChanged);
+            _showTutorialPromptsToggle.onValueChanged.RemoveListener(OnShowTutorialPromptsChanged);
 
             // Audio
             _masterVolumeSlider.onValueChanged.RemoveListener(OnMasterVolumeChanged);
@@ -138,6 +158,11 @@ namespace UI
             _noiseSuppressionToggle.onValueChanged.RemoveListener(OnNoiseSuppressionToggleChanged);
             _inputDeviceDropdown.onValueChanged.RemoveListener(OnInputDeviceChanged);
             _inputDeviceDropdown.ClearOptions();
+            
+            // Video
+            _windowModeDropdown.onValueChanged.RemoveListener(OnWindowModeChanged);
+            _vsyncToggle.onValueChanged.RemoveListener(OnVsyncToggleChanged);
+            _upscalerPercentSlider.onValueChanged.RemoveListener(OnUpscalerPercentChanged);
         }
 
         private void Start()
@@ -199,6 +224,12 @@ namespace UI
             QueueSaveToDisk();
         }
 
+        private void OnShowTutorialPromptsChanged(bool val)
+        {
+            ActiveSettings.HideTutorialPrompts = val;
+            QueueSaveToDisk();
+        }
+
         private void OnMasterVolumeChanged(float val)
         {
             ActiveSettings.MasterVolumePercent = val;
@@ -246,6 +277,30 @@ namespace UI
             string uiText = _inputDeviceDropdown.options[val].text;
             SetInputDevice(uiText == "None" ? null : uiText);
             QueueSaveToDisk();
+        }
+
+        private void OnWindowModeChanged(int val)
+        {
+            ActiveSettings.Fullscreen = val == 0;
+            QueueSaveToDisk();
+
+            Screen.fullScreenMode = val == 0 ? FullScreenMode.FullScreenWindow : FullScreenMode.Windowed;
+        }
+
+        private void OnVsyncToggleChanged(bool val)
+        {
+            ActiveSettings.VerticalSync = val;
+            QueueSaveToDisk();
+
+            QualitySettings.vSyncCount = val ? 1 : 0;
+        }
+
+        private void OnUpscalerPercentChanged(float val)
+        {
+            ActiveSettings.UpscalingPercent = val;
+            QueueSaveToDisk();
+
+            DynamicResolutionHandler.SetDynamicResScaler(() => val, DynamicResScalePolicyType.ReturnsPercentage);
         }
 
         private void ResetSettings()
@@ -297,23 +352,12 @@ namespace UI
                 ActiveSettings = new UserSettings();
                 QueueSaveToDisk();
             }
-
-            if (!Microphone.devices.Contains(ActiveSettings.InputDevice))
-            {
-                ActiveSettings.InputDevice = null;
-            }
-
-            SetInputDevice(ActiveSettings.InputDevice);
-
-            ApplySettings();
-        }
-
-        private void ApplySettings()
-        {
+            
             // Game
             _playerNameText.text = ActiveSettings.PlayerName;
             _firstPersonFovSlider.value = ActiveSettings.FirstPersonFov;
             _firstPersonSensitivitySlider.value = ActiveSettings.FirstPersonSensPercent;
+            _showTutorialPromptsToggle.isOn = ActiveSettings.HideTutorialPrompts;
 
             if (CameraZoomController.FirstPerson && Camera.main)
             {
@@ -329,6 +373,9 @@ namespace UI
             _pttToggle.isOn = ActiveSettings.PushToTalk;
             _pttSfxToggle.isOn = ActiveSettings.PushToTalkSfx;
 
+            if (!Microphone.devices.Contains(ActiveSettings.InputDevice)) ActiveSettings.InputDevice = null;
+            SetInputDevice(ActiveSettings.InputDevice);
+
             _inputDeviceDropdown.ClearOptions();
             _inputDeviceDropdown.AddOptions(new List<string> { "None" });
             _inputDeviceDropdown.AddOptions(Microphone.devices.ToList());
@@ -337,6 +384,11 @@ namespace UI
             _masterVolumeRtpc.SetGlobalValue((ActiveSettings.MasterVolumePercent / 100) * MaxRtpcVolume);
             _musicVolumeRtpc.SetGlobalValue((ActiveSettings.MusicVolumePercent / 100) * MaxRtpcVolume);
             _sfxVolumeRtpc.SetGlobalValue((ActiveSettings.SfxVolumePercent / 100) * MaxRtpcVolume);
+            
+            // Video
+            _windowModeDropdown.value = ActiveSettings.Fullscreen ? 0 : 1;
+            _vsyncToggle.isOn = ActiveSettings.VerticalSync;
+            _upscalerPercentSlider.value = ActiveSettings.UpscalingPercent;
         }
     }
 }
