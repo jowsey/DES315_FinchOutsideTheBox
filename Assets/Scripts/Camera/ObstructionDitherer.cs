@@ -9,13 +9,18 @@ public class ObstructionDitherer : MonoBehaviour
     [SerializeField] private float _fadeEndTime;
     [SerializeField] private float _fadeStartValue;
     [SerializeField] private float _fadeEndValue;
+    [SerializeField] private float _castThickness;
     [SerializeField] private LayerMask _obstructionMask;
     private Camera _camera;
     public static Transform PlayerTransform; //Set in PlayerController.OnStartLocalPlayer()
-    private readonly Dictionary<Renderer, float> _activeRenderers = new(); //All renderers currently active (value = time that they have been active)
-    private readonly HashSet<Renderer> _hitsThisFrame = new();
+    private readonly Dictionary<Material, float> _activeMaterials = new(); //All materials currently active (value = time that they have been active)
+    private readonly HashSet<Material> _hitsThisFrame = new();
     private readonly RaycastHit[] _hitBuffer = new RaycastHit[32];
-    private readonly Dictionary<Renderer, Material> _materialInstances = new();
+    
+    private readonly List<Material> _activeKeys = new();
+    private readonly List<Material> _sharedMaterialBuffer = new();
+    private readonly List<Material> _materialBuffer = new();
+    private readonly List<Material> _toRemove = new();
 
     private void Start()
     {
@@ -32,7 +37,7 @@ public class ObstructionDitherer : MonoBehaviour
         //Sphere cast from camera towards player
         Vector3 dir = PlayerTransform.position - _camera.transform.position;
         float dist = dir.magnitude;
-        int hits = Physics.SphereCastNonAlloc(_camera.transform.position, 0.25f, dir.normalized, _hitBuffer, dist, _obstructionMask, QueryTriggerInteraction.Ignore);
+        int hits = Physics.SphereCastNonAlloc(_camera.transform.position, _castThickness, dir.normalized, _hitBuffer, dist, _obstructionMask, QueryTriggerInteraction.Ignore);
         for (int i = 0; i < hits; ++i)
         {
             //prevent over-extending slightly past player from sphere-cast radius
@@ -44,88 +49,100 @@ public class ObstructionDitherer : MonoBehaviour
             Renderer r = _hitBuffer[i].collider.GetComponentInChildren<Renderer>();
             if (!r) { continue; }
 
-            if (r.sharedMaterial.shader.name != "Shader Graphs/Dithered" &&
-                r.sharedMaterial.shader.name != "Shader Graphs/DitheredPBR" &&
-                r.sharedMaterial.shader.name != "Shader Graphs/DitheredPBRTriplanar")
+            r.GetSharedMaterials(_sharedMaterialBuffer);
+            bool hasDitheredMaterial = false;
+            foreach (Material sharedMat in _sharedMaterialBuffer)
             {
-                continue;
+                if (sharedMat && sharedMat.shader.name is "Shader Graphs/Dithered" or "Shader Graphs/DitheredPBR" or "Shader Graphs/DitheredPBRTriplanar")
+                {
+                    hasDitheredMaterial = true;
+                    break;
+                }
             }
+            if (!hasDitheredMaterial) { continue; }
 
-            _hitsThisFrame.Add(r);
+            //Get or create material instances
+            r.GetMaterials(_materialBuffer);
+            foreach (Material mat in _materialBuffer)
+            {
+                if (!mat || mat.shader.name is not ("Shader Graphs/Dithered" or "Shader Graphs/DitheredPBR" or "Shader Graphs/DitheredPBRTriplanar")) { continue; }
 
-            //Get or create material instance
-            if (!_materialInstances.TryGetValue(r, out Material mat))
-            {
-                mat = r.material;
-                _materialInstances[r] = mat;
-            }
+                _hitsThisFrame.Add(mat);
 
-            //Update time if entry already exists, or create new one if it doesn't
-            if (_activeRenderers.TryGetValue(r, out float _))
-            {
-                _activeRenderers[r] += Time.deltaTime;
-                _activeRenderers[r] = Mathf.Clamp(_activeRenderers[r], 0.0f, _fadeEndTime);
-            }
-            else
-            {
-                _activeRenderers.Add(r, 0.0f);
+                //Update time if entry already exists, or create new one if it doesn't
+                if (_activeMaterials.TryGetValue(mat, out float _))
+                {
+                    _activeMaterials[mat] += Time.deltaTime;
+                    _activeMaterials[mat] = Mathf.Clamp(_activeMaterials[mat], 0.0f, _fadeEndTime);
+                }
+                else
+                {
+                    _activeMaterials.Add(mat, 0.0f);
+                }
             }
         }
 
-        //Restore renderers not being hit
-        List<Renderer> keys = new(_activeRenderers.Keys); //because we're modifying the values (?) (weird language...)
-        List<Renderer> toRemove = new(); //shoutout iterator invalidation for this one
-        foreach (Renderer r in keys)
+        //Restore materials not being hit
+        _activeKeys.Clear();
+        _activeKeys.AddRange(_activeMaterials.Keys); //because we're modifying the values (?) (weird language...)
+        _toRemove.Clear();
+        foreach (Material mat in _activeKeys)
         {
-            //Skip if renderer was hit this frame
-            if (_hitsThisFrame.Contains(r)) { continue; }
-            
-            //Remove if the renderer doesn't exist anymore
-            if (!r)
+            //Skip if material was hit this frame
+            if (_hitsThisFrame.Contains(mat)) { continue; }
+
+            //Remove if the material doesn't exist anymore
+            if (!mat)
             {
-                toRemove.Add(r);
+                _toRemove.Add(mat);
                 continue;
             }
 
             //Update time to unfade
-            _activeRenderers[r] -= Time.deltaTime;
+            _activeMaterials[mat] -= Time.deltaTime;
 
             //If time has reached <= 0, fade has disappeared (no dither), remove
-            if (_activeRenderers[r] <= 0.0f)
+            if (_activeMaterials[mat] <= 0.0f)
             {
-                toRemove.Add(r);
+                _toRemove.Add(mat);
                 continue;
             }
         }
 
-        foreach (Renderer r in toRemove)
+        foreach (Material mat in _toRemove)
         {
-            _activeRenderers.Remove(r);
-            _materialInstances.Remove(r);
+            _activeMaterials.Remove(mat);
+            if (mat) { RestoreAlpha(mat); }
         }
 
         //Calculate dither based on active time
-        foreach (KeyValuePair<Renderer, float> r in _activeRenderers)
+        foreach (KeyValuePair<Material, float> mat in _activeMaterials)
         {
-            float t = Mathf.Clamp01(Mathf.InverseLerp(_fadeStartTime, _fadeEndTime, _activeRenderers[r.Key]));
+            float t = Mathf.Clamp01(Mathf.InverseLerp(_fadeStartTime, _fadeEndTime, _activeMaterials[mat.Key]));
             float dither = Mathf.Lerp(_fadeStartValue, _fadeEndValue, t);
 
-            Color colour = r.Key.material.GetColor(BaseColour);
+            Color colour = mat.Key.GetColor(BaseColour);
             colour.a = dither;
-            _materialInstances[r.Key].SetColor(BaseColour, colour);
+            mat.Key.SetColor(BaseColour, colour);
         }
     }
 
-    //Called when first person mode is entered
     public void RemoveAllActiveDithers()
     {
-        foreach (KeyValuePair<Renderer, Material> r in _materialInstances)
+        _activeKeys.Clear();
+        _activeKeys.AddRange(_activeMaterials.Keys);
+        foreach (Material mat in _activeKeys)
         {
-            Color colour = r.Key.material.GetColor(BaseColour);
-            colour.a = 1.0f;
-            r.Value.SetColor(BaseColour, colour);
+            if (mat) { RestoreAlpha(mat); }
         }
-        _materialInstances.Clear();
-        _activeRenderers.Clear();
+        _activeMaterials.Clear();
+        _hitsThisFrame.Clear();
+    }
+
+    private static void RestoreAlpha(Material mat)
+    {
+        Color colour = mat.GetColor(BaseColour);
+        colour.a = 1.0f;
+        mat.SetColor(BaseColour, colour);
     }
 }
