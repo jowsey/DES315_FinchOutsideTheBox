@@ -81,6 +81,8 @@ namespace Game.Items
         [field: SerializeField] public bool ShowInfoCard { get; protected set; } = true;
         [field: SerializeField] public bool ForceMoveOnHeld { get; protected set; } = true;
 
+        [field: SerializeField] public float GlobalDisplayScale { get; private set; } = 1f;
+        
         protected virtual void Awake()
         {
             Rb = GetComponent<Rigidbody>();

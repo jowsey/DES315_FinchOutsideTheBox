@@ -29,16 +29,20 @@ namespace Game
             _fullSack.SetActive(false);
         }
 
-        private void OnStoredItemChanged(Item oldValue, Item newValue)
+        private void OnStoredItemChanged(Item oldItem, Item newItem)
         {
-            _emptySack.SetActive(!newValue);
-            _fullSack.SetActive(newValue);
+            _emptySack.SetActive(!newItem);
+            _fullSack.SetActive(newItem);
 
             _sackInOut.Post(gameObject);
 
             if (isServer)
             {
                 Cart.Instance.ReevaluateTotalItemSellPrice();
+
+                const float sackItemScaleFactor = 0.8f;
+                if (oldItem) oldItem.transform.localScale = Vector3.one;
+                if (newItem) newItem.transform.localScale = Vector3.one * newItem.GlobalDisplayScale * sackItemScaleFactor;
             }
         }
 

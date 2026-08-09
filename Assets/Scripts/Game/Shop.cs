@@ -333,10 +333,12 @@ namespace Game
                 var t = cappedItemCount == 1 ? 0.5f : (float)i / (cappedItemCount - 1);
                 var spawnPos = Vector3.Lerp(_itemSpawnStart.position, _itemSpawnEnd.position, t);
 
+                const float counterItemScaleFactor = 0.5f;
+                
                 var newItem = Instantiate(itemToSpawn.Prefab, spawnPos, _itemSpawnStart.rotation);
                 newItem.Rb.isKinematic = true; // force immediate kinematic before state change to prevent any possible physics tick
                 newItem.ServerSetState(new Item.FrozenStateData());
-                newItem.transform.localScale = Vector3.one * 0.5f;
+                newItem.transform.localScale = Vector3.one * (newItem.GlobalDisplayScale * counterItemScaleFactor);
                 newItem.Pickuppable = false;
 
                 NetworkServer.Spawn(newItem.gameObject);
