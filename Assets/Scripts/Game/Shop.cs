@@ -363,12 +363,6 @@ namespace Game
                 var item = AvailableItems[i];
                 if (!item) continue;
 
-                var t = count == 1 ? 0.5f : (float)i / (count - 1);
-                Physics.SyncTransforms();
-
-                item.ServerSetState(new Item.FrozenStateData());
-                item.Rb.position = Vector3.Lerp(_itemSpawnStart.position, _itemSpawnEnd.position, t);
-                item.Rb.rotation = _itemSpawnStart.rotation;
                 item.transform.localScale = Vector3.one * 0.5f;
                 item.Pickuppable = false;
             }
