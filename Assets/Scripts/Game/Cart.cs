@@ -250,8 +250,14 @@ public class Cart : NetworkBehaviour
     public void OnCollisionEnter(Collision collision)
     {
         if (!isServer) return;
-        if (collision.relativeVelocity.magnitude < _minimumCollisionMagnitudeForSfx) return;
-        if (collision.collider.CompareTag("Player") || collision.collider.CompareTag("Item")) return;
+
+        var layerName = LayerMask.LayerToName(collision.gameObject.layer);
+        if (layerName is "Player" or "Item") return;
+
+        var normalVelocity = Mathf.Abs(Vector3.Dot(collision.relativeVelocity, collision.contacts[0].normal));
+        if (normalVelocity < _minimumCollisionMagnitudeForSfx) return;
+
+        // Debug.Log($"Collided with {collision.gameObject.name} at {normalVelocity} m/s");
 
         RpcPlayCollisionSfx();
     }
