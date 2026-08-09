@@ -13,6 +13,8 @@ namespace Game.Items.Equipments
         [SerializeField] private Renderer _cartBoundsRenderer;
         [SerializeField] private LayerMask _collisionLayers;
 
+        private const float GroundedTolerance = 0.8f;
+
         public bool ValidPosition { get; private set; }
 
         private void Awake()
@@ -20,24 +22,27 @@ namespace Game.Items.Equipments
             _mpb = new MaterialPropertyBlock();
         }
 
+        private Vector3 GetScaledCenter() => _cartBoundsCollider.transform.TransformPoint(_cartBoundsCollider.center);
+        private Vector3 GetScaledHalfExtents() => Vector3.Scale(_cartBoundsCollider.size, _cartBoundsCollider.transform.lossyScale) * 0.5f;
+
         private bool GetIsGrounded()
         {
-            var bounds = _cartBoundsCollider.bounds;
-            var distance = bounds.extents.y + 0.5f;
-            var forward = _cartBoundsCollider.transform.forward;
+            var rotation = _cartBoundsCollider.transform.rotation;
+            var bottom = GetScaledCenter() - (rotation * Vector3.up * GetScaledHalfExtents().y);
+            var forward = rotation * Vector3.forward * GetScaledHalfExtents().z;
 
-            var center = Physics.Raycast(bounds.center, Vector3.down, out _, distance, _collisionLayers, QueryTriggerInteraction.Ignore);
-            var front = Physics.Raycast(bounds.center + bounds.extents.z * forward, Vector3.down, out _, distance, _collisionLayers, QueryTriggerInteraction.Ignore);
-            var back = Physics.Raycast(bounds.center - bounds.extents.z * forward, Vector3.down, out _, distance, _collisionLayers, QueryTriggerInteraction.Ignore);
+            var center = Physics.Raycast(bottom, Vector3.down, out _, GroundedTolerance, _collisionLayers, QueryTriggerInteraction.Ignore);
+            var front = Physics.Raycast(bottom + forward, Vector3.down, out _, GroundedTolerance, _collisionLayers, QueryTriggerInteraction.Ignore);
+            var back = Physics.Raycast(bottom - forward, Vector3.down, out _, GroundedTolerance, _collisionLayers, QueryTriggerInteraction.Ignore);
 
-            return front && center && back;
+            return center && front && back;
         }
 
         private int GetNumOverlapHits()
         {
             return Physics.OverlapBoxNonAlloc(
-                _cartBoundsCollider.bounds.center,
-                _cartBoundsCollider.bounds.extents,
+                GetScaledCenter(),
+                GetScaledHalfExtents(),
                 _hits,
                 _cartBoundsCollider.transform.rotation,
                 _collisionLayers,
