@@ -11,8 +11,6 @@ namespace Game.Items
 {
     public class Treasure : Item
     {
-        public bool Smashable;
-
         [Serializable]
         public class TreasureMeshPair
         {
@@ -40,14 +38,6 @@ namespace Game.Items
             {
                 _randomMeshIndex = Random.Range(0, _randomMeshOptions.Count);
             }
-
-            RespawnTarget.OnRespawn.AddListener(OnRespawn);
-        }
-
-        public override void OnStopServer()
-        {
-            base.OnStopServer();
-            RespawnTarget.OnRespawn.RemoveListener(OnRespawn);
         }
 
         protected override void OnValidate()
@@ -79,11 +69,6 @@ namespace Game.Items
             _meshCollider.sharedMesh = null;
         }
 
-        private void OnRespawn(RespawnTarget target)
-        {
-            Smashable = false;
-        }
-
         protected override void UpdateState(ItemStateData oldState, ItemStateData newState)
         {
             // Transition out
@@ -92,11 +77,6 @@ namespace Game.Items
                 // No longer holding
                 case HeldStateData heldData:
                 {
-                    if (isServer)
-                    {
-                        Smashable = true;
-                    }
-
                     if (heldData.Holder.isLocalPlayer)
                     {
                         Highlight.SetHighlightable("TreasureCarrier", false);
@@ -111,11 +91,6 @@ namespace Game.Items
             {
                 case HeldStateData heldData:
                 {
-                    if (isServer)
-                    {
-                        Smashable = false;
-                    }
-
                     if (heldData.Holder.isLocalPlayer)
                     {
                         Highlight.SetHighlightable("TreasureCarrier", true);
@@ -182,8 +157,6 @@ namespace Game.Items
         private void OnCollisionEnter(Collision col)
         {
             if (!isServer) return;
-            if (!Smashable) return;
-
             if (col.relativeVelocity.magnitude < SmashSpeed) return;
 
             var otherLayerName = LayerMask.LayerToName(col.collider.gameObject.layer);
