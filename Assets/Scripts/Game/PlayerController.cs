@@ -4,6 +4,7 @@ using System.Linq;
 using Game;
 using Game.Items;
 using Game.Items.Equipments;
+using JetBrains.Annotations;
 using Mirror;
 using Sirenix.OdinInspector;
 using TMPro;
@@ -79,6 +80,9 @@ public class PlayerController : NetworkBehaviour
     [SyncVar(hook = nameof(OnPlayerNameChanged))] [ReadOnly] public string PlayerName;
     [SyncVar] [ReadOnly] public int PlayerSkinIndex;
 
+    [NonSerialized] [CanBeNull] public string CutsceneNameOverride;
+    [NonSerialized] public int? CutsceneSkinIndexOverride;
+    
     [Header("Components")]
     public Rigidbody Rb { get; private set; }
 
@@ -497,7 +501,7 @@ public class PlayerController : NetworkBehaviour
         _playerRbIds.Remove(Rb.GetInstanceID());
     }
 
-    private void OnPlayerNameChanged(string oldValue, string newValue)
+    public void OnPlayerNameChanged(string oldValue, string newValue)
     {
         name = $"Player ({newValue})";
 

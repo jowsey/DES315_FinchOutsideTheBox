@@ -82,7 +82,7 @@ public class CutsceneStart : NetworkBehaviour
 
         var firstOtherPlayer = FindObjectsByType<PlayerController>(FindObjectsInactive.Include, FindObjectsSortMode.None)
             .FirstOrDefault(p => !p.IsPuppet && !p.CutscenePlayer && p != PlayerController.LocalPlayer);
-
+        
         if (firstOtherPlayer)
         {
             _puppeteer.BuildPlayer(1, firstOtherPlayer.PlayerName, firstOtherPlayer.PlayerSkinIndex);

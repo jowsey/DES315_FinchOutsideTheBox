@@ -28,10 +28,11 @@ public class CutscenePuppeteer : MonoBehaviour
 
     public void BuildPlayer(int index, string name, int skinIndex)
     {
-        _players[index].PlayerName = name;
-        _players[index].PlayerNameText.text = name;
+        _players[index].CutsceneNameOverride = name;
+        _players[index].CutsceneSkinIndexOverride = skinIndex;
+
+        _players[index].OnPlayerNameChanged(null, name);
         
-        _players[index].PlayerSkinIndex = skinIndex;
         foreach (Renderer renderer in _players[index].SkinnedRenderers)
         {
             if (renderer.transform.name == "eyes_MESH") { continue; }
