@@ -63,7 +63,7 @@ public class Cart : NetworkBehaviour
 
     public bool IsPuppet;
 
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#if DEV_KEYS || UNITY_EDITOR
     private WheelSeat[] _wheelSeats;
     [SerializeField] private InputActionReference _alternateWheelMoveAction;
 #endif
@@ -75,7 +75,7 @@ public class Cart : NetworkBehaviour
 
         foreach (var pos in SackPositions) pos.gameObject.SetActive(false);
 
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#if DEV_KEYS || UNITY_EDITOR
         _wheelSeats = transform.parent.GetComponentsInChildren<WheelSeat>();
 #endif
     }
@@ -201,7 +201,7 @@ public class Cart : NetworkBehaviour
 
     private void Update()
     {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#if DEV_KEYS || UNITY_EDITOR
         if (_devCheckpointBackAction.action.WasPressedThisFrame() && GetPreviousRespawnTarget(CurrentRespawnTarget, out var prevTarget))
         {
             CmdInvokeRespawnEvent(prevTarget);
@@ -218,8 +218,8 @@ public class Cart : NetworkBehaviour
 
         _cartSpeedRTPC.SetGlobalValue(linearVelocity.magnitude * 20);
 
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-        if (PlayerController.ControlEnabled(PlayerController.ControlBlockerFlags.Move))
+#if DEV_KEYS || UNITY_EDITOR
+        if (PlayerController.ControlEnabled(PlayerController.ControlBlockerFlags.Move) && isServer)
         {
             var altMove = _alternateWheelMoveAction.action.ReadValue<Vector2>();
             if (altMove.sqrMagnitude > 0)
@@ -414,7 +414,7 @@ public class Cart : NetworkBehaviour
         CurrentRespawnTarget.NumCarriedItemsOnReach = TotalCarriedItems;
     }
 
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#if DEV_KEYS || UNITY_EDITOR
     [Command(requiresAuthority = false)]
 #else
     [Command]
