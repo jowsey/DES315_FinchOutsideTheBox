@@ -339,6 +339,8 @@ public class PlayerController : NetworkBehaviour
     {
         LoadedSkins ??= Resources.LoadAll<SkinData>("PlayerSkins");
 
+        _camera = FindAnyObjectByType<Camera>(FindObjectsInactive.Include);
+        
         foreach (CinemachineCamera cam in FindObjectsByType<CinemachineCamera>(FindObjectsInactive.Include, FindObjectsSortMode.None))
         {
             if (cam.CompareTag("FreeLookCam"))
@@ -366,46 +368,6 @@ public class PlayerController : NetworkBehaviour
         _statusEffectList = GameObject.FindGameObjectWithTag("StatusEffectList").transform;
     }
 
-    private void Start()
-    {
-        // can't be in awake because camera has a NetworkIdentity meaning it's inactive until network ready
-        _camera = Camera.main;
-
-        PlayableDirector director = FindAnyObjectByType<PlayableDirector>();
-        if (director)
-        {
-            director.played += OnCutsceneStarted;
-            director.stopped += OnCutsceneStopped;
-        }
-
-        if (director.state == PlayState.Paused && director.time == director.initialTime)
-        {
-            //The cutscene hasn't started yet
-            if (NetworkServer.connections.Count == 1)
-            {
-                //We are player 1
-                CutscenePuppeteer puppeteer = FindAnyObjectByType<CutscenePuppeteer>();
-                puppeteer.SetPlayer1Name(PlayerName);
-
-                //Default (in case you somehow beat the game by yourself without anybody else joining?)
-                puppeteer.SetPlayer2Name("Cat");
-                puppeteer.SetPlayer2SkinIndex(1);
-            }
-            else if (NetworkServer.connections.Count == 2)
-            {
-                //We are player 2
-                CutscenePuppeteer puppeteer = FindAnyObjectByType<CutscenePuppeteer>();
-                puppeteer.SetPlayer2Name(PlayerName);
-                puppeteer.SetPlayer2SkinIndex(PlayerSkinIndex);
-            }
-        }
-        else
-        {
-            //The cutscene has already started
-            OnCutsceneStarted(director);
-        }
-    }
-
     public override void OnStartClient()
     {
         foreach (Renderer renderer in SkinnedRenderers)
@@ -421,6 +383,17 @@ public class PlayerController : NetworkBehaviour
         {
             NameplateIcon.sprite = LoadedSkins[PlayerSkinIndex].VCIcon;
             OnPlayerReady.Invoke(this);
+        }
+        
+        // Setup cutscene
+        PlayableDirector director = FindAnyObjectByType<PlayableDirector>();
+        director.played += OnCutsceneStarted;
+        director.stopped += OnCutsceneStopped;
+
+        if (director.state != PlayState.Paused || director.time != director.initialTime)
+        {
+            //The cutscene has already started
+            OnCutsceneStarted(director);
         }
     }
 
@@ -1000,7 +973,7 @@ public class PlayerController : NetworkBehaviour
         }
 
         if (HeldObject) HeldObject.ServerSetState(new Item.IdleStateData());
-
+        
         var newRotation = Quaternion.LookRotation(Cart.Instance.transform.position - newPosition, Vector3.up);
         newRotation = Quaternion.Euler(0, newRotation.eulerAngles.y, 0); // flatten angle
         GetComponent<NetworkTransformBase>().CmdTeleport(newPosition, newRotation);

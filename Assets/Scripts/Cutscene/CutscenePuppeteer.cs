@@ -28,26 +28,17 @@ public class CutscenePuppeteer : MonoBehaviour
 
     [SerializeField] [Required] private Credits _creditsPrefab;
 
-    public void SetPlayer2SkinIndex(int index)
+    public void BuildPlayer(int index, string name, int skinIndex)
     {
-        _players[1].PlayerSkinIndex = index;
-        foreach (Renderer renderer in _players[1].SkinnedRenderers)
+        _players[index].PlayerName = name;
+        _players[index].PlayerNameText.text = name;
+        
+        _players[index].PlayerSkinIndex = skinIndex;
+        foreach (Renderer renderer in _players[index].SkinnedRenderers)
         {
             if (renderer.transform.name == "eyes_MESH") { continue; }
-            renderer.sharedMaterial = PlayerController.LoadedSkins[index].Material;
+            renderer.sharedMaterial = PlayerController.LoadedSkins[skinIndex].Material;
         }
-    }
-
-    public void SetPlayer1Name(string name)
-    {
-        _players[0].PlayerName = name;
-        _players[0].PlayerNameText.text = name;
-    }
-
-    public void SetPlayer2Name(string name)
-    {
-        _players[1].PlayerName = name;
-        _players[1].PlayerNameText.text = name;
     }
 
     public void MakePuppets()

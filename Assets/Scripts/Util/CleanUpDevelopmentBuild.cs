@@ -11,7 +11,6 @@ namespace Util
             if (Debug.isDebugBuild)
             {
                 Debug.developerConsoleEnabled = false;
-                Watermark.showDeveloperWatermark = false;
             }
         }
     }

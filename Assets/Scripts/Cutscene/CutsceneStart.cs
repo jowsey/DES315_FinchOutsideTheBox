@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Game.Items;
 using Mirror;
 using UnityEngine;
@@ -14,6 +15,8 @@ public class CutsceneStart : NetworkBehaviour
     [SerializeField] private Transform _cartStartTransform;
 
     [SerializeField] private CanvasGroup[] _hiddenWhilePlaying;
+
+    [SerializeField] private CutscenePuppeteer _puppeteer;
 
     //todo: maybe remove if we decide to have the cutscene triggered by button prompt instead? so that players can watch it multiple times
     private bool _played;
@@ -70,11 +73,25 @@ public class CutsceneStart : NetworkBehaviour
     //Wasn't sure where to chuck these
     private void OnCutsceneStarted(PlayableDirector _)
     {
+        _puppeteer.BuildPlayer(0, PlayerController.LocalPlayer.PlayerName, PlayerController.LocalPlayer.PlayerSkinIndex);
+
+        var firstOtherPlayer = FindObjectsByType<PlayerController>(FindObjectsInactive.Include, FindObjectsSortMode.None)
+            .FirstOrDefault(p => !p.IsPuppet && !p.CutscenePlayer && p != PlayerController.LocalPlayer);
+
+        if (firstOtherPlayer)
+        {
+            _puppeteer.BuildPlayer(1, firstOtherPlayer.PlayerName, firstOtherPlayer.PlayerSkinIndex);
+        }
+        else
+        {
+            _puppeteer.BuildPlayer(1, "Cat", (PlayerController.LocalPlayer.PlayerSkinIndex + 1) % PlayerController.LoadedSkins.Length);
+        }
+
         CutsceneActive = true;
-        
+
         GloballyHiddenGroup.AddHideSource(this);
         PlayerController.AddControlBlockerFlags(this, PlayerController.ControlBlockerFlags.All);
-        
+
         Camera.main.GetComponent<ObstructionDitherer>().enabled = false;
         Camera.main.GetComponent<InteractDetection>().enabled = false;
         Camera.main.GetComponent<AkAudioListener>().enabled = true;
@@ -84,7 +101,7 @@ public class CutsceneStart : NetworkBehaviour
     {
         GloballyHiddenGroup.RemoveHideSource(this);
         PlayerController.RemoveAllControlBlockerFlags(this);
-        
+
         Camera.main.GetComponent<ObstructionDitherer>().enabled = true;
         Camera.main.GetComponent<InteractDetection>().enabled = true;
         Camera.main.GetComponent<AkAudioListener>().enabled = false;
