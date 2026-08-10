@@ -117,9 +117,8 @@ public class CameraZoomController : MonoBehaviour
     private void OnDestroy()
     {
         FirstPerson = false;
-        _director.stopped += OnRestorePreActionFirstPersonState;
+        _director.stopped -= OnRestorePreActionFirstPersonState;
     }
-
 
     //todo: i feel like there's a proper dsa for all this stuff below
 

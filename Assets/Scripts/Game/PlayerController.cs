@@ -386,7 +386,7 @@ public class PlayerController : NetworkBehaviour
         }
         
         // Setup cutscene
-        PlayableDirector director = FindAnyObjectByType<PlayableDirector>();
+        PlayableDirector director = FindAnyObjectByType<PlayableDirector>(FindObjectsInactive.Include);
         director.played += OnCutsceneStarted;
         director.stopped += OnCutsceneStopped;
 
@@ -458,11 +458,11 @@ public class PlayerController : NetworkBehaviour
     {
         RespawnTarget.OnRespawn.RemoveListener(OnRespawn);
 
-        PlayableDirector director = FindAnyObjectByType<PlayableDirector>();
+        PlayableDirector director = FindAnyObjectByType<PlayableDirector>(FindObjectsInactive.Include);
         if (director)
         {
-            director.played += OnCutsceneStarted;
-            director.stopped += OnCutsceneStopped;
+            director.played -= OnCutsceneStarted;
+            director.stopped -= OnCutsceneStopped;
         }
     }
 
