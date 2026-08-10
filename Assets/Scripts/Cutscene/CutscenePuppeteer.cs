@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Game.Items;
 using Sirenix.OdinInspector;
 using UI;
 using UnityEngine;
@@ -24,7 +23,6 @@ public class CutscenePuppeteer : MonoBehaviour
     [SerializeField] private Transform[] _playerRunTargets;
 
     private Dictionary<ConfigurableJoint, (ConfigurableJointMotion x, ConfigurableJointMotion y, ConfigurableJointMotion z, ConfigurableJointMotion angX, ConfigurableJointMotion angY, ConfigurableJointMotion angZ)> _savedJointMotions = new();
-    private List<(Treasure treasure, Transform originalParent)> _parentedTreasures = new();
 
     [SerializeField] [Required] private Credits _creditsPrefab;
 

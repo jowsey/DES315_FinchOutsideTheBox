@@ -61,13 +61,18 @@ public class CutsceneStart : NetworkBehaviour
                 }
 
                 Physics.SyncTransforms();
+                RpcPlayCutscene();
             }
-
-            Camera.main.GetComponent<CameraZoomController>().OnForceThirdPersonActionStarted();
-
-            _director.Play();
-            _played = true;
         }
+    }
+
+    [ClientRpc]
+    private void RpcPlayCutscene()
+    {
+        Camera.main.GetComponent<CameraZoomController>().OnForceThirdPersonActionStarted();
+
+        _director.Play();
+        _played = true;
     }
 
     //Wasn't sure where to chuck these
