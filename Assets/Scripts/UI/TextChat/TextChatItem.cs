@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using Gilzoide.RoundedCorners;
 using PrimeTween;
 using Sirenix.OdinInspector;
 using TMPro;
@@ -12,7 +11,7 @@ namespace UI
     public class TextChatItem : MonoBehaviour
     {
         [SerializeField] [Required] private CanvasGroup _canvasGroup;
-        [SerializeField] [Required] private RoundedImage _catFaceIcon;
+        [SerializeField] [Required] private Image _catFaceIcon;
         [SerializeField] [Required] private TextMeshProUGUI _playerNameText;
         [SerializeField] [Required] private TextMeshProUGUI _messageText;
 
@@ -25,7 +24,7 @@ namespace UI
 
         public void Build(PlayerController player, string message)
         {
-            _catFaceIcon.Sprite = PlayerController.LoadedSkins[player.PlayerSkinIndex].Icon;
+            _catFaceIcon.sprite = PlayerController.LoadedSkins[player.PlayerSkinIndex].VCIcon;
             _playerNameText.text = player.PlayerName;
 
             var playerInfos = FindObjectsByType<PlayerController>(FindObjectsSortMode.None)
