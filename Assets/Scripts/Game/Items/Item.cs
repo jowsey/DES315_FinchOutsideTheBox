@@ -442,5 +442,25 @@ namespace Game.Items
                 transform.SetPositionAndRotation(sackCarriedData.Sack.StorePosition.position, sackCarriedData.Sack.StorePosition.rotation);
             }
         }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (!isServer) return;
+
+            if (other.CompareTag("TreasureCarrier"))
+            {
+                Cart.Instance.AddCarriedItem(this);
+            }
+        }
+
+        private void OnTriggerExit(Collider other)
+        {
+            if (!isServer) return;
+
+            if (other.CompareTag("TreasureCarrier"))
+            {
+                Cart.Instance.RemoveCarriedItem(this);
+            }
+        }
     }
 }

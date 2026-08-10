@@ -191,28 +191,5 @@ namespace Game.Items
 
             ServerSetState(new SmashedStateData());
         }
-
-        private void OnTriggerEnter(Collider other)
-        {
-            if (!isServer) return;
-
-            if (other.CompareTag("TreasureCarrier"))
-            {
-                Cart cart = other.GetComponentInParent<Cart>();
-                cart.AddCarriedItem(this);
-                Smashable = true;
-            }
-        }
-
-        private void OnTriggerExit(Collider other)
-        {
-            if (!isServer) return;
-
-            if (other.CompareTag("TreasureCarrier"))
-            {
-                Cart cart = other.GetComponentInParent<Cart>();
-                cart.RemoveCarriedItem(this);
-            }
-        }
     }
 }
