@@ -14,6 +14,11 @@ namespace Util
 
         private Tween _alphaTween;
 
+        private const float MaxedOutOscillateAmplitude = 0.012f;
+        private const float MaxedOutOscillateSpeed = 60f;
+
+        private float _maxedOutTime;
+
         private void OnEnable()
         {
             _alphaTween = Tween.Custom(Color.clear, _line.sharedMaterial.color, 0.75f, col => _line.sharedMaterial.color = col, Ease.OutCubic);
@@ -24,10 +29,21 @@ namespace Util
             _alphaTween.Stop();
         }
 
-        public void Build(Rigidbody target, Vector3 impulse)
+        public void Build(Rigidbody target, Vector3 impulse, bool maxedOut = false)
         {
             _targetRb = target;
             _targetImpulse = impulse;
+
+            if (maxedOut)
+            {
+                _maxedOutTime += Time.deltaTime;
+                var multiplier = 1 + Mathf.Sin(_maxedOutTime * MaxedOutOscillateSpeed) * MaxedOutOscillateAmplitude;
+                _targetImpulse *= multiplier;
+            }
+            else
+            {
+                _maxedOutTime = 0f;
+            }
 
             RenderTrajectory();
         }

@@ -632,8 +632,9 @@ public class PlayerController : NetworkBehaviour
             
             if (_trajectoryRendererInstance)
             {
-                var impulseForce = Item.MaxThrowForce * Mathf.Clamp01(_throwHeldTime / _throwHoldMaxTime);
-                _trajectoryRendererInstance.Build(HeldObject.Rb, _throwDir * impulseForce);
+                var ratio = Mathf.Clamp01(_throwHeldTime / _throwHoldMaxTime);
+                var impulseForce = Item.MaxThrowForce * ratio;
+                _trajectoryRendererInstance.Build(HeldObject.Rb, _throwDir * impulseForce, ratio >= 1);
             }
         }
         else if (DropItemAction.action.WasReleasedThisFrame() && PutdownAllowed)
