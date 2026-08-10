@@ -657,11 +657,12 @@ public class PlayerController : NetworkBehaviour
         // Rope pulling
         if (InteractAction.action.IsPressed() && PickupAllowed)
         {
-            if (InteractDetection.TargetedTransform && InteractDetection.TargetedTransform.TryGetComponent<YarnSegment>(out var segment) && segment != ActivePullSegment)
+            if (!ActivePullSegment && InteractDetection.TargetedTransform && InteractDetection.TargetedTransform.TryGetComponent<YarnSegment>(out var segment))
             {
-                if (ActivePullSegment) ActivePullSegment.CmdStopPull();
                 ActivePullSegment = segment;
                 _lastPullAckTime = -Mathf.Infinity;
+                
+                AddControlBlockerFlags(this, ControlBlockerFlags.Move);
             }
 
             if (ActivePullSegment && Time.time - _lastPullAckTime > YarnSegment.MaxPullAckTimeout * 0.5f)
@@ -675,6 +676,8 @@ public class PlayerController : NetworkBehaviour
             ActivePullSegment.CmdStopPull();
             ActivePullSegment = null;
             _lastPullAckTime = -Mathf.Infinity;
+            
+            RemoveControlBlockerFlags(this, ControlBlockerFlags.Move);
         }
         
         // Prune completed status effects
