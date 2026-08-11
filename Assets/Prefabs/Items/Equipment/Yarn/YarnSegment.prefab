@@ -210,7 +210,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 3
 --- !u!153 &3318153292190278696
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -266,19 +266,19 @@ ConfigurableJoint:
   m_XDrive:
     serializedVersion: 4
     positionSpring: 10000000
-    positionDamper: 100000
+    positionDamper: 2000000
     maximumForce: 3.4028233e+38
     useAcceleration: 0
   m_YDrive:
     serializedVersion: 4
     positionSpring: 10000000
-    positionDamper: 100000
+    positionDamper: 2000000
     maximumForce: 3.4028233e+38
     useAcceleration: 0
   m_ZDrive:
     serializedVersion: 4
     positionSpring: 10000000
-    positionDamper: 100000
+    positionDamper: 2000000
     maximumForce: 3.4028233e+38
     useAcceleration: 0
   m_TargetRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -390,3 +390,5 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _maxPullSpeed: 4.5
+  _maxTemporalForceIncrease: 0.1
+  _minimumTemporalForceMultiplier: 0.1

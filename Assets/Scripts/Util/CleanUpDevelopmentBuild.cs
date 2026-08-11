@@ -2,12 +2,15 @@
 
 namespace Util
 {
-    public static class DisableDevelopmentBuildConsole
+    public static class CleanUpDevelopmentBuild
     {
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void DisableDeveloperConsole()
         {
-            if (Debug.isDebugBuild) Debug.developerConsoleEnabled = false;
+            if (Debug.isDebugBuild)
+            {
+                Debug.developerConsoleEnabled = false;
+            }
         }
     }
 }

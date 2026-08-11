@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using Gilzoide.RoundedCorners;
 using PrimeTween;
 using Sirenix.OdinInspector;
 using TMPro;
@@ -12,7 +11,7 @@ namespace UI
     public class TextChatItem : MonoBehaviour
     {
         [SerializeField] [Required] private CanvasGroup _canvasGroup;
-        [SerializeField] [Required] private RoundedImage _catFaceIcon;
+        [SerializeField] [Required] private Image _catFaceIcon;
         [SerializeField] [Required] private TextMeshProUGUI _playerNameText;
         [SerializeField] [Required] private TextMeshProUGUI _messageText;
 
@@ -25,18 +24,21 @@ namespace UI
 
         public void Build(PlayerController player, string message)
         {
-            _catFaceIcon.Sprite = PlayerController.LoadedSkins[player.PlayerSkinIndex].Icon;
-            _playerNameText.text = player.PlayerName;
+            var effectiveSkinIndex = player.CutsceneSkinIndexOverride ?? player.PlayerSkinIndex;
+            var effectiveName = player.CutsceneNameOverride ?? player.PlayerName;
+
+            _catFaceIcon.sprite = PlayerController.LoadedSkins[effectiveSkinIndex].VCIcon;
+            _playerNameText.text = effectiveName;
 
             var playerInfos = FindObjectsByType<PlayerController>(FindObjectsSortMode.None)
-                .Select(p => (p.PlayerName, PlayerController.LoadedSkins[p.PlayerSkinIndex].AccentColor));
+                .Select(p => (name: p.CutsceneNameOverride ?? p.PlayerName, color: PlayerController.LoadedSkins[p.CutsceneSkinIndexOverride ?? p.PlayerSkinIndex].AccentColor));
 
             _messageText.text = message;
             foreach (var i in playerInfos)
             {
                 _messageText.text = _messageText.text.Replace(
-                    $"@{i.PlayerName}",
-                    $"<color=#{ColorUtility.ToHtmlStringRGB(i.AccentColor)}><b>@{i.PlayerName}</b></color>",
+                    $"@{i.name}",
+                    $"<color=#{ColorUtility.ToHtmlStringRGB(i.color)}><b>@{i.name}</b></color>",
                     StringComparison.OrdinalIgnoreCase
                 );
             }

@@ -63,7 +63,7 @@ public class Cart : NetworkBehaviour
 
     public bool IsPuppet;
 
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#if DEV_KEYS || UNITY_EDITOR
     private WheelSeat[] _wheelSeats;
     [SerializeField] private InputActionReference _alternateWheelMoveAction;
 #endif
@@ -75,7 +75,7 @@ public class Cart : NetworkBehaviour
 
         foreach (var pos in SackPositions) pos.gameObject.SetActive(false);
 
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#if DEV_KEYS || UNITY_EDITOR
         _wheelSeats = transform.parent.GetComponentsInChildren<WheelSeat>();
 #endif
     }
@@ -137,16 +137,16 @@ public class Cart : NetworkBehaviour
         RespawnTarget.OnReachNewTarget.RemoveListener(OnReachNewTarget);
     }
 
-    private bool GetPreviousRespawnTarget(RespawnTarget target, out RespawnTarget previousTarget)
+    private bool GetPreviousRespawnTarget(RespawnTarget current, out RespawnTarget previousTarget)
     {
-        if (target is Sandcastle sandcastle)
+        if (current is Sandcastle sandcastle)
         {
             var siblingIndex = sandcastle.Parent.Sandcastles.IndexOf(sandcastle);
             previousTarget = siblingIndex > 0 ? sandcastle.Parent.Sandcastles[siblingIndex - 1] : sandcastle.Parent;
             return true;
         }
 
-        if (target is Checkpoint checkpoint)
+        if (current is Checkpoint checkpoint)
         {
             var index = Checkpoints.IndexOf(checkpoint);
             if (index > 0)
@@ -160,14 +160,14 @@ public class Cart : NetworkBehaviour
             return false;
         }
 
-        Debug.LogWarning($"Current respawn target {target} is not a checkpoint or sandcastle, can't get previous");
+        Debug.LogWarning($"Current respawn target {current} is not a checkpoint or sandcastle, can't get previous");
         previousTarget = null;
         return false;
     }
 
-    private bool GetNextRespawnTarget(RespawnTarget target, out RespawnTarget nextTarget)
+    private bool GetNextRespawnTarget(RespawnTarget current, out RespawnTarget nextTarget)
     {
-        if (target is Sandcastle sandcastle)
+        if (current is Sandcastle sandcastle)
         {
             var siblingIndex = sandcastle.Parent.Sandcastles.IndexOf(sandcastle);
             if (siblingIndex < sandcastle.Parent.Sandcastles.Count - 1)
@@ -178,10 +178,10 @@ public class Cart : NetworkBehaviour
 
             var parentIndex = Checkpoints.IndexOf(sandcastle.Parent);
             nextTarget = parentIndex < Checkpoints.Count - 1 ? Checkpoints[parentIndex + 1] : null;
-            return true;
+            return nextTarget;
         }
 
-        if (target is Checkpoint checkpoint)
+        if (current is Checkpoint checkpoint)
         {
             if (checkpoint.Sandcastles.Count > 0)
             {
@@ -191,17 +191,17 @@ public class Cart : NetworkBehaviour
 
             var index = Checkpoints.IndexOf(checkpoint);
             nextTarget = index < Checkpoints.Count - 1 ? Checkpoints[index + 1] : null;
-            return true;
+            return nextTarget;
         }
 
-        Debug.LogWarning($"Current respawn target {target} is not a checkpoint or sandcastle, can't get next");
+        Debug.LogWarning($"Current respawn target {current} is not a checkpoint or sandcastle, can't get next");
         nextTarget = null;
         return false;
     }
 
     private void Update()
     {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#if DEV_KEYS || UNITY_EDITOR
         if (_devCheckpointBackAction.action.WasPressedThisFrame() && GetPreviousRespawnTarget(CurrentRespawnTarget, out var prevTarget))
         {
             CmdInvokeRespawnEvent(prevTarget);
@@ -218,8 +218,8 @@ public class Cart : NetworkBehaviour
 
         _cartSpeedRTPC.SetGlobalValue(linearVelocity.magnitude * 20);
 
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-        if (PlayerController.ControlEnabled(PlayerController.ControlBlockerFlags.Move))
+#if DEV_KEYS || UNITY_EDITOR
+        if (PlayerController.ControlEnabled(PlayerController.ControlBlockerFlags.Move) && isServer)
         {
             var altMove = _alternateWheelMoveAction.action.ReadValue<Vector2>();
             if (altMove.sqrMagnitude > 0)
@@ -250,8 +250,14 @@ public class Cart : NetworkBehaviour
     public void OnCollisionEnter(Collision collision)
     {
         if (!isServer) return;
-        if (collision.relativeVelocity.magnitude < _minimumCollisionMagnitudeForSfx) return;
-        if (collision.collider.CompareTag("Player") || collision.collider.CompareTag("Item")) return;
+
+        var layerName = LayerMask.LayerToName(collision.gameObject.layer);
+        if (layerName is "Player" or "Item") return;
+
+        var normalVelocity = Mathf.Abs(Vector3.Dot(collision.relativeVelocity, collision.contacts[0].normal));
+        if (normalVelocity < _minimumCollisionMagnitudeForSfx) return;
+
+        // Debug.Log($"Collided with {collision.gameObject.name} at {normalVelocity} m/s");
 
         RpcPlayCollisionSfx();
     }
@@ -289,16 +295,20 @@ public class Cart : NetworkBehaviour
     {
         if (!isServer) return;
 
-        Transform newTransform = target.CartSpawnPoint;
+        ServerTeleportTo(target.CartSpawnPoint);
+    }
 
+    [Server]
+    public void ServerTeleportTo(Transform target)
+    {
         var chassis = transform;
         var parent = chassis.parent;
 
         var rbs = parent.GetComponentsInChildren<Rigidbody>();
         var parentRelativePositions = rbs.Select(rb => chassis.InverseTransformPoint(rb.transform.position)).ToList();
 
-        transform.position = newTransform.position;
-        transform.rotation = newTransform.rotation;
+        transform.position = target.position;
+        transform.rotation = target.rotation;
 
         for (var i = 0; i < parentRelativePositions.Count; i++)
         {
@@ -404,7 +414,7 @@ public class Cart : NetworkBehaviour
         CurrentRespawnTarget.NumCarriedItemsOnReach = TotalCarriedItems;
     }
 
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#if DEV_KEYS || UNITY_EDITOR
     [Command(requiresAuthority = false)]
 #else
     [Command]

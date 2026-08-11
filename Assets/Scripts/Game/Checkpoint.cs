@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using Game.Items.Equipments;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace Game
 {
@@ -27,6 +26,7 @@ namespace Game
 
         public void ActivateVFX()
         {
+            if (!VFX) return;
             VFX.SetActive(true);
         }
     }

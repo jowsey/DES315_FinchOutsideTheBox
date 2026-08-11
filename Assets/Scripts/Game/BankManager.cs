@@ -1,13 +1,12 @@
 using Game;
 using Mirror;
 using Sirenix.OdinInspector;
-using ReadOnlyAttribute = Sirenix.OdinInspector.ReadOnlyAttribute;
 
 public class BankManager : NetworkBehaviour
 {
     public static BankManager Instance { get; private set; }
 
-    [SyncVar, ReadOnly] public int Balance;
+    [SyncVar, DisableInPlayMode] public int Balance;
 
     private void Awake()
     {

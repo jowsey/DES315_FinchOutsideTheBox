@@ -177,6 +177,16 @@
                     "priority": 0
                 },
                 {
+                    "name": "Pause",
+                    "type": "Button",
+                    "id": "b05c5be9-9ae1-4e48-a0ef-361ffb56cbcb",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
+                },
+                {
                     "name": "OpenTextChat",
                     "type": "Button",
                     "id": "eca1d4e4-8d59-4475-bd6d-b1c3aee0464e",
@@ -550,12 +560,34 @@
                 },
                 {
                     "name": "",
-                    "id": "14f837dd-3dca-4802-b166-3c2c7c05d087",
-                    "path": "<Gamepad>/start",
+                    "id": "8603d484-7c4f-45aa-87bf-96014ce603bf",
+                    "path": "<Gamepad>/buttonEast",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Gamepad",
                     "action": "BackUI",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6c0cb686-e599-4826-8a11-0ab1d2de5be9",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6a2f80b9-e2d9-443b-966e-f11de3b035b3",
+                    "path": "<Gamepad>/start",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "Pause",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -682,6 +714,17 @@
                 },
                 {
                     "name": "",
+                    "id": "88eacac1-c2bb-4d1c-b49d-778a5e91cedc",
+                    "path": "<Gamepad>/leftShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "OpenEmoteWheel",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "9811777e-9920-4c80-bd8d-dd6d347053c3",
                     "path": "<Mouse>/leftButton",
                     "interactions": "",
@@ -748,11 +791,33 @@
                 },
                 {
                     "name": "",
+                    "id": "ca269306-5aeb-42e0-b60f-4318bb053dd6",
+                    "path": "<Gamepad>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "DropItem",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "312a92d3-63d8-460d-ba6b-458778fc901d",
                     "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
+                    "action": "UseItem",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a9d68a1c-0a69-478f-9475-ac26fdff2694",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
                     "action": "UseItem",
                     "isComposite": false,
                     "isPartOfComposite": false

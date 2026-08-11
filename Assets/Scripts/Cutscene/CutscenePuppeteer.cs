@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Game.Items;
 using Sirenix.OdinInspector;
 using UI;
 using UnityEngine;
@@ -24,30 +23,21 @@ public class CutscenePuppeteer : MonoBehaviour
     [SerializeField] private Transform[] _playerRunTargets;
 
     private Dictionary<ConfigurableJoint, (ConfigurableJointMotion x, ConfigurableJointMotion y, ConfigurableJointMotion z, ConfigurableJointMotion angX, ConfigurableJointMotion angY, ConfigurableJointMotion angZ)> _savedJointMotions = new();
-    private List<(Treasure treasure, Transform originalParent)> _parentedTreasures = new();
 
     [SerializeField] [Required] private Credits _creditsPrefab;
 
-    public void SetPlayer2SkinIndex(int index)
+    public void BuildPlayer(int index, string name, int skinIndex)
     {
-        _players[1].PlayerSkinIndex = index;
-        foreach (Renderer renderer in _players[1].SkinnedRenderers)
+        _players[index].CutsceneNameOverride = name;
+        _players[index].CutsceneSkinIndexOverride = skinIndex;
+
+        _players[index].OnPlayerNameChanged(null, name);
+        
+        foreach (Renderer renderer in _players[index].SkinnedRenderers)
         {
             if (renderer.transform.name == "eyes_MESH") { continue; }
-            renderer.sharedMaterial = PlayerController.LoadedSkins[index].Material;
+            renderer.sharedMaterial = PlayerController.LoadedSkins[skinIndex].Material;
         }
-    }
-
-    public void SetPlayer1Name(string name)
-    {
-        _players[0].PlayerName = name;
-        _players[0].PlayerNameText.text = name;
-    }
-
-    public void SetPlayer2Name(string name)
-    {
-        _players[1].PlayerName = name;
-        _players[1].PlayerNameText.text = name;
     }
 
     public void MakePuppets()
@@ -62,18 +52,18 @@ public class CutscenePuppeteer : MonoBehaviour
         }
         _cart.IsPuppet = true;
 
-        foreach (Rigidbody rb in _cart.GetComponentsInChildren<Rigidbody>())
+        foreach (Rigidbody rb in _cart.transform.parent.GetComponentsInChildren<Rigidbody>())
         {
             if (rb.gameObject.CompareTag("Item")) { continue; }
 
+            rb.isKinematic = true;
             rb.interpolation = RigidbodyInterpolation.None;
             rb.position = rb.transform.position;
             rb.rotation = rb.transform.rotation;
-            rb.isKinematic = true;
         }
 
         _savedJointMotions.Clear();
-        foreach (ConfigurableJoint joint in _cart.GetComponentsInChildren<ConfigurableJoint>())
+        foreach (ConfigurableJoint joint in _cart.transform.parent.GetComponentsInChildren<ConfigurableJoint>())
         {
             _savedJointMotions[joint] = (
                 joint.xMotion, joint.yMotion, joint.zMotion,
@@ -149,7 +139,7 @@ public class CutscenePuppeteer : MonoBehaviour
 
         _cart.GetComponent<Animator>().enabled = false;
 
-        foreach (Rigidbody rb in _cart.GetComponentsInChildren<Rigidbody>())
+        foreach (Rigidbody rb in _cart.transform.parent.GetComponentsInChildren<Rigidbody>())
         {
             if (rb.gameObject.CompareTag("Item")) { continue; }
             rb.position = rb.transform.position;
@@ -160,7 +150,7 @@ public class CutscenePuppeteer : MonoBehaviour
 
         foreach (var kvp in _savedJointMotions)
         {
-            if (kvp.Key != null)
+            if (kvp.Key)
             {
                 kvp.Key.xMotion = kvp.Value.x;
                 kvp.Key.yMotion = kvp.Value.y;
@@ -258,7 +248,7 @@ public class CutscenePuppeteer : MonoBehaviour
     private IEnumerator NudgeCartCoroutine()
     {
         Vector3 dir = Vector3.ProjectOnPlane(_cartNudgeDirection.forward, Vector3.up).normalized;
-        WheelSeat[] wheels = _cart.GetComponentsInChildren<WheelSeat>();
+        WheelSeat[] wheels = _cart.transform.parent.GetComponentsInChildren<WheelSeat>();
 
         float timer = 0f;
         while (timer < _cartNudgeDuration)

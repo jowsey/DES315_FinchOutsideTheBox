@@ -2,6 +2,7 @@
 using PrimeTween;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
 
 namespace UI
 {
@@ -17,7 +18,7 @@ namespace UI
         [SerializeField] private EmoteWheelItem.EmoteInfo[] _emoteOptions;
         [SerializeField] private CanvasGroup _canvasGroup;
         [SerializeField] private EmoteWheelItem _itemPrefab;
-
+        
         [SerializeField] private AK.Wwise.Event _hoverSfx;
 
         private List<EmoteWheelItem> _activeItems = new();
@@ -73,7 +74,17 @@ namespace UI
                 }
                 case ShowState.Open:
                 {
-                    var mouseDirection = Mouse.current.position.ReadValue() - new Vector2(Screen.width, Screen.height) / 2;
+                    Vector2 mouseDirection;
+                    var screenSize = new Vector2(Screen.width, Screen.height);
+                    if (InputIconManager.LastActiveDevice is Gamepad gamepad)
+                    {
+                        mouseDirection = gamepad.leftStick.ReadValue() * screenSize;
+                    }
+                    else
+                    {
+                        mouseDirection = Mouse.current.position.ReadValue() - screenSize / 2;
+                    }
+                    
                     if (mouseDirection.magnitude > _deadzoneRadius)
                     {
                         var angle = Mathf.Atan2(mouseDirection.y, mouseDirection.x);

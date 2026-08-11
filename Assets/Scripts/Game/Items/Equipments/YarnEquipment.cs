@@ -141,6 +141,9 @@ namespace Game.Items.Equipments
             {
                 _distanceVisualInstance = Instantiate(_distanceVisualPrefab, UIGlobals.MainCanvas.transform);
                 _distanceVisualInstance.Build(this);
+
+                // update control UI
+                HasUseAbility = true;
             }
         }
 
@@ -159,6 +162,8 @@ namespace Game.Items.Equipments
             {
                 Destroy(_distanceVisualInstance.gameObject);
                 _distanceVisualInstance = null;
+
+                HasUseAbility = false;
             }
         }
 

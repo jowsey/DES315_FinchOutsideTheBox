@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 9164378470871577631}
   - component: {fileID: 2494113768066970008}
   - component: {fileID: 7591407701522137805}
+  - component: {fileID: 5847997541681970324}
+  - component: {fileID: 8923451849733682908}
   m_Layer: 5
   m_Name: CartDistanceWarning
   m_TagString: Untagged
@@ -97,6 +99,30 @@ MonoBehaviour:
   _warningDistance: 50
   _iconAnimationScale: 1.05
   _cart: {fileID: 0}
+--- !u!225 &5847997541681970324
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6467746537177464261}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &8923451849733682908
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6467746537177464261}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28c70104e0d443ffb1ca9f63370236d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Util.GloballyHiddenGroup
 --- !u!1 &6692557396442684477
 GameObject:
   m_ObjectHideFlags: 0
