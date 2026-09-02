@@ -111,7 +111,7 @@ namespace UI
             _lobbyBrowserButton.Button.interactable = false;
             yield return new WaitUntil(() => EOSSDKComponent.LocalUserProductId != null);
             _lobbyBrowserButton.Button.interactable = true;
-            
+
             InvokeRepeating(nameof(PruneOldServers), ServerPruneInterval, ServerPruneInterval);
         }
 
@@ -209,7 +209,7 @@ namespace UI
 
         private void OnServerFound(ServerResponse info)
         {
-            Debug.Log($"Discovered server at: {info.EndPoint.Address}");
+            // Debug.Log("Received server response from: " + info.EndPoint.Address);
 
             var timedInfo = new TimedServerResponse
             {
@@ -219,22 +219,22 @@ namespace UI
 
             if (DiscoveredServers.TryAdd(info.serverId, timedInfo))
             {
-                Debug.Log("Server is new!");
+                Debug.Log($"Discovered new server at: {info.EndPoint.Address}");
             }
             else
             {
-                Debug.Log("Server already known, updating info");
+                // Debug.Log("Server already known, updating info");
                 DiscoveredServers[info.serverId] = timedInfo;
             }
         }
-        
+
         private void PruneOldServers()
         {
             var now = Time.time;
             var oldServers = DiscoveredServers.Where(kvp => now - kvp.Value.TimeReceived > ServerPruneInterval).Select(kvp => kvp.Key).ToList();
             foreach (var serverId in oldServers)
             {
-                Debug.Log($"Removed old server with ID: {serverId}");
+                // Debug.Log($"Removed old server with ID: {serverId}");
                 DiscoveredServers.Remove(serverId);
             }
         }
