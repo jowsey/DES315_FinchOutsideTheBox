@@ -46,7 +46,7 @@ namespace UI
         {
             PlayerPresenceFeed.OnPlayerLeave.RemoveListener(OnPlayerLeave);
         }
-
+        
         private void OnPlayerLeave(PlayerController player)
         {
             if (_player == player)
@@ -67,6 +67,11 @@ namespace UI
         {
             SettingsManager.ActiveSettings.PlayerVoiceVolumePercents[_player.PlayerUID] = value;
             SettingsManager.QueueSaveToDisk();
+        }
+
+        private void Update()
+        {
+            _playerNameText.text = _player.PlayerName;
         }
     }
 }
