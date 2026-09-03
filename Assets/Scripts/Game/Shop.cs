@@ -407,7 +407,7 @@ namespace Game
                 var item = AvailableItems[i];
                 if (!item) continue;
 
-                item.transform.localScale = Vector3.one * 0.5f;
+                item.transform.localScale = Vector3.one * (item.GlobalDisplayScale * 0.5f);
                 item.Pickuppable = false;
             }
         }
