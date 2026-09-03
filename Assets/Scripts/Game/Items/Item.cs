@@ -210,6 +210,15 @@ namespace Game.Items
 
                     break;
                 }
+                case SmashedStateData:
+                case InactiveStateData:
+                {
+                    foreach (Collider col in _colliders) col.enabled = true;
+                    foreach (Renderer rend in _renderers) rend.enabled = true;
+                    foreach (Light l in _lights) l.enabled = true;
+
+                    break;
+                }
                 case SackCarriedStateData sackData:
                 {
                     if (isServer && sackData.Sack.StoredItem == this)
