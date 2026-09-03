@@ -38,6 +38,8 @@ namespace Game
 
         [SerializeField] private InputActionReference _enterAction;
         [SerializeField] private InputActionReference _buyAction;
+        [SerializeField] private InputActionReference _cycleLeftAction;
+        [SerializeField] private InputActionReference _cycleRightAction;
 
         [Tooltip("The transform that the camera will be moved to when the shop is entered")]
         [SerializeField] private Transform _cameraLockLocation;
@@ -235,7 +237,7 @@ namespace Game
                 {
                     mousePos = Mouse.current.position.ReadValue();
                 }
-                
+
                 var extents = new Vector2(0.05f, 0.075f);
                 _rotationComposer.Composition.ScreenPosition = new Vector2(
                     Mathf.Lerp(extents.x, -extents.x, mousePos.x / Screen.width),
@@ -248,33 +250,64 @@ namespace Game
         {
             if (!_shopUIInstance) return;
 
-            var ray = _camera.ScreenPointToRay(Mouse.current.position.ReadValue());
-            var hitItem = Physics.Raycast(ray, out var hit, 100f, _itemHoverMask, QueryTriggerInteraction.Ignore)
-                ? hit.collider.GetComponentInParent<ShopCounterItem>()
-                : null;
+            var cycledLeft = _cycleLeftAction.action.WasPressedThisFrame();
+            var cycledRight = _cycleRightAction.action.WasPressedThisFrame();
+            var dir = (cycledRight ? 1 : 0) - (cycledLeft ? 1 : 0);
+            if (dir != 0) CycleHover(dir);
 
-            if (hitItem && _buyAction.action.WasPressedThisFrame())
+            if (!cycledLeft && !cycledRight && InputIconManager.LastActiveDevice is not (Gamepad or Keyboard))
             {
-                if (hitItem == SackItem && BankManager.Instance.Balance >= SackItem.ItemData.BuyPrice)
-                {
-                    CmdTryBuySack();
-                }
-                else
-                {
-                    var index = AvailableItems.IndexOf(hitItem.GetComponent<Item>());
-                    if (index != -1) CmdTryBuy(index);
-                }
+                var ray = _camera.ScreenPointToRay(Mouse.current.position.ReadValue());
+                var hitItem = Physics.Raycast(ray, out var hit, 100f, _itemHoverMask, QueryTriggerInteraction.Ignore)
+                    ? hit.collider.GetComponentInParent<ShopCounterItem>()
+                    : null;
+
+                SetHoveredItem(hitItem);
             }
 
-            if (hitItem == _hoveredItem) return;
+            if (_buyAction.action.WasPressedThisFrame()) TryBuy(_hoveredItem);
+        }
+
+        private void TryBuy(ShopCounterItem item)
+        {
+            if (!item) return;
+            if (item == SackItem)
+            {
+                CmdTryBuySack();
+                return;
+            }
+
+            var index = AvailableItems.IndexOf(item.GetComponent<Item>());
+            if (index != -1) CmdTryBuy(index);
+        }
+
+        private void SetHoveredItem(ShopCounterItem item)
+        {
+            if (item == _hoveredItem) return;
 
             if (_hoveredItem) _hoveredItem.SetSelected(false);
-            _hoveredItem = hitItem;
+            _hoveredItem = item;
             if (_hoveredItem)
             {
                 _hoveredItem.SetSelected(true);
                 _itemHoverOverSFX.Post(gameObject);
             }
+        }
+
+        private void CycleHover(int direction)
+        {
+            var items = AvailableItems
+                .Select(i => i ? i.GetComponent<ShopCounterItem>() : null)
+                .Append(SackItem)
+                .Where(c => c && c.gameObject.activeSelf)
+                .ToList();
+            if (items.Count == 0) return;
+
+            var index = items.IndexOf(_hoveredItem);
+            index = index == -1
+                ? (direction > 0 ? 0 : items.Count - 1)
+                : (index + direction + items.Count) % items.Count;
+            SetHoveredItem(items[index]);
         }
 
         [Command(requiresAuthority = false)]
@@ -343,7 +376,7 @@ namespace Game
                 var spawnPos = Vector3.Lerp(_itemSpawnStart.position, _itemSpawnEnd.position, t);
 
                 const float counterItemScaleFactor = 0.5f;
-                
+
                 var newItem = Instantiate(itemToSpawn.Prefab, spawnPos, _itemSpawnStart.rotation);
                 newItem.Rb.isKinematic = true; // force immediate kinematic before state change to prevent any possible physics tick
                 newItem.ServerSetState(new Item.FrozenStateData());
@@ -437,6 +470,8 @@ namespace Game
                 var counterItem = item.GetComponent<ShopCounterItem>();
                 if (counterItem) counterItem.enabled = true;
             }
+
+            if (InputIconManager.LastActiveDevice is Gamepad or Keyboard) CycleHover(1);
 
             //Hide action UIs & enter prompt
             GloballyHiddenGroup.AddHideSource(this);
