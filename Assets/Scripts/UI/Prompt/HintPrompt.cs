@@ -28,7 +28,7 @@ namespace UI
             public bool PressurePlate;
         }
 
-        public static readonly TutorialPromptShownStates HasShown = new();
+        public static TutorialPromptShownStates HasShown = new();
 
         [SerializeField] private TextMeshProUGUI _titleText;
         [SerializeField] private TextMeshProUGUI _bodyText;

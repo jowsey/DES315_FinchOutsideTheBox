@@ -74,6 +74,7 @@ namespace UI
         {
             Cursor.lockState = CursorLockMode.None;
             PlayerController.ClearAllControlBlockerFlags();
+            HintPrompt.HasShown = new HintPrompt.TutorialPromptShownStates();
 
             // Clean up previously-used transport if we're coming back from the game
             ResetTransports();
