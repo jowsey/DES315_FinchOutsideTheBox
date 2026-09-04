@@ -200,7 +200,7 @@ namespace Game
         [Server]
         private void RunNextTelescopeTween()
         {
-            if (!gameObject) return;
+            if (!this || !gameObject) return;
 
             Tween.CompleteAll(_telescopeRotationTween);
 
