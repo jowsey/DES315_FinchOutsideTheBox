@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using PrimeTween;
 using Sirenix.OdinInspector;
 using TMPro;
+using UI.Menus;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
@@ -26,6 +27,17 @@ namespace UI
         public float FirstPersonSensPercent = 25f;
         public bool HideTutorialPrompts = false;
 
+#if DEV_KEYS || UNITY_EDITOR
+        [Serializable]
+        public class DebugSettings
+        {
+            public bool EnableDebugKeys = true;
+            public int StartingCheckpoint = 1;
+        }
+
+        public DebugSettings Debug = new();
+#endif
+
         // Audio
         public float MasterVolumePercent = 100.0f;
         public float MusicVolumePercent = 75.0f;
@@ -34,7 +46,7 @@ namespace UI
         public bool NoiseSuppression = true;
         public bool PushToTalkSfx = true;
         public string InputDevice = null;
-        
+
         // Video
         public bool Fullscreen = true;
         public bool VerticalSync = true;
@@ -70,11 +82,16 @@ namespace UI
         [SerializeField] [Required] private Button _resetButton;
 
         // Game
+        [SerializeField] [Required] private RectTransform _gameList;
         [SerializeField] [Required] private TMP_InputField _playerNameText;
         [SerializeField] [Required] private Slider _firstPersonFovSlider;
         [SerializeField] [Required] private Slider _firstPersonSensitivitySlider;
         [SerializeField] [Required] private Toggle _showTutorialPromptsToggle;
-        
+#if DEV_KEYS || UNITY_EDITOR
+        [SerializeField] [Required] private DebugSettings _debugOptionsPrefab;
+        private DebugSettings _debugOptionsInstance;
+#endif
+
         // Audio
         [SerializeField] [Required] private Slider _masterVolumeSlider;
         [SerializeField] [Required] private Slider _musicVolumeSlider;
@@ -89,7 +106,7 @@ namespace UI
         [SerializeField] [Required] private RTPC _masterVolumeRtpc;
         [SerializeField] [Required] private RTPC _musicVolumeRtpc;
         [SerializeField] [Required] private RTPC _sfxVolumeRtpc;
-        
+
         // Video
         [SerializeField] [Required] private TMP_Dropdown _windowModeDropdown;
         [SerializeField] [Required] private Toggle _vsyncToggle;
@@ -121,6 +138,10 @@ namespace UI
             _firstPersonFovSlider.onValueChanged.AddListener(OnFirstPersonFovChanged);
             _firstPersonSensitivitySlider.onValueChanged.AddListener(OnFirstPersonSensitivityChanged);
             _showTutorialPromptsToggle.onValueChanged.AddListener(OnShowTutorialPromptsChanged);
+#if DEV_KEYS || UNITY_EDITOR
+            _debugOptionsInstance.StartingCheckpointSlider.onValueChanged.AddListener(OnStartingCheckpointChanged);
+            _debugOptionsInstance.EnableDebugKeysToggle.onValueChanged.AddListener(OnEnableDebugKeysChanged);
+#endif
 
             // Audio
             _masterVolumeSlider.onValueChanged.AddListener(OnMasterVolumeChanged);
@@ -131,7 +152,7 @@ namespace UI
             _pttSfxToggle.onValueChanged.AddListener(OnPttSfxToggleChanged);
             _noiseSuppressionToggle.onValueChanged.AddListener(OnNoiseSuppressionToggleChanged);
             _inputDeviceDropdown.onValueChanged.AddListener(OnInputDeviceChanged);
-            
+
             // Video
             _windowModeDropdown.onValueChanged.AddListener(OnWindowModeChanged);
             _vsyncToggle.onValueChanged.AddListener(OnVsyncToggleChanged);
@@ -147,6 +168,10 @@ namespace UI
             _firstPersonFovSlider.onValueChanged.RemoveListener(OnFirstPersonFovChanged);
             _firstPersonSensitivitySlider.onValueChanged.RemoveListener(OnFirstPersonSensitivityChanged);
             _showTutorialPromptsToggle.onValueChanged.RemoveListener(OnShowTutorialPromptsChanged);
+#if DEV_KEYS || UNITY_EDITOR
+            _debugOptionsInstance.StartingCheckpointSlider.onValueChanged.RemoveListener(OnStartingCheckpointChanged);
+            _debugOptionsInstance.EnableDebugKeysToggle.onValueChanged.RemoveListener(OnEnableDebugKeysChanged);
+#endif
 
             // Audio
             _masterVolumeSlider.onValueChanged.RemoveListener(OnMasterVolumeChanged);
@@ -158,7 +183,7 @@ namespace UI
             _noiseSuppressionToggle.onValueChanged.RemoveListener(OnNoiseSuppressionToggleChanged);
             _inputDeviceDropdown.onValueChanged.RemoveListener(OnInputDeviceChanged);
             _inputDeviceDropdown.ClearOptions();
-            
+
             // Video
             _windowModeDropdown.onValueChanged.RemoveListener(OnWindowModeChanged);
             _vsyncToggle.onValueChanged.RemoveListener(OnVsyncToggleChanged);
@@ -229,6 +254,20 @@ namespace UI
             ActiveSettings.HideTutorialPrompts = val;
             QueueSaveToDisk();
         }
+
+#if DEV_KEYS || UNITY_EDITOR
+        private void OnStartingCheckpointChanged(float val)
+        {
+            ActiveSettings.Debug.StartingCheckpoint = Mathf.RoundToInt(val);
+            QueueSaveToDisk();
+        }
+
+        private void OnEnableDebugKeysChanged(bool val)
+        {
+            ActiveSettings.Debug.EnableDebugKeys = val;
+            QueueSaveToDisk();
+        }
+#endif
 
         private void OnMasterVolumeChanged(float val)
         {
@@ -352,12 +391,34 @@ namespace UI
                 ActiveSettings = new UserSettings();
                 QueueSaveToDisk();
             }
-            
+
             // Game
             _playerNameText.text = ActiveSettings.PlayerName;
             _firstPersonFovSlider.value = ActiveSettings.FirstPersonFov;
             _firstPersonSensitivitySlider.value = ActiveSettings.FirstPersonSensPercent;
             _showTutorialPromptsToggle.isOn = ActiveSettings.HideTutorialPrompts;
+
+#if DEV_KEYS || UNITY_EDITOR
+            ActiveSettings.Debug ??= new UserSettings.DebugSettings();
+            if (!_debugOptionsInstance) _debugOptionsInstance = Instantiate(_debugOptionsPrefab, _gameList, false);
+
+            if (_debugOptionsInstance.EnableDebugKeysToggle)
+            {
+                _debugOptionsInstance.EnableDebugKeysToggle.isOn = ActiveSettings.Debug.EnableDebugKeys;
+            }
+
+            if (_debugOptionsInstance.StartingCheckpointSlider)
+            {
+                var cart = FindAnyObjectByType<Cart>(FindObjectsInactive.Include);
+                if (cart)
+                {
+                    _debugOptionsInstance.StartingCheckpointSlider.maxValue = cart.Checkpoints.Count;
+                    ActiveSettings.Debug.StartingCheckpoint = Mathf.Clamp(ActiveSettings.Debug.StartingCheckpoint, 1, cart.Checkpoints.Count);
+                }
+
+                _debugOptionsInstance.StartingCheckpointSlider.value = ActiveSettings.Debug.StartingCheckpoint;
+            }
+#endif
 
             if (CameraZoomController.FirstPerson && Camera.main)
             {
@@ -384,7 +445,7 @@ namespace UI
             _masterVolumeRtpc.SetGlobalValue((ActiveSettings.MasterVolumePercent / 100) * MaxRtpcVolume);
             _musicVolumeRtpc.SetGlobalValue((ActiveSettings.MusicVolumePercent / 100) * MaxRtpcVolume);
             _sfxVolumeRtpc.SetGlobalValue((ActiveSettings.SfxVolumePercent / 100) * MaxRtpcVolume);
-            
+
             // Video
             _windowModeDropdown.value = ActiveSettings.Fullscreen ? 0 : 1;
             _vsyncToggle.isOn = ActiveSettings.VerticalSync;

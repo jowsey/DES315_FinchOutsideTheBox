@@ -1,5 +1,7 @@
+using System.Net;
+using System.Net.Sockets;
+using EpicTransport;
 using Mirror;
-using PrimeTween;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -20,6 +22,9 @@ namespace UI
 
         public AK.Wwise.RTPC RTPCMenuOnOff;
 
+        private bool IsOnline => Transport.active is EosTransport && Networking.NetworkManager.singleton?.EosLobby?.ConnectedToLobby == true;
+        private string _localIpAddress = string.Empty;
+
         private void OnEnable()
         {
             _canvasGroup = GetComponent<CanvasGroup>();
@@ -32,10 +37,7 @@ namespace UI
                 _hostLeaveDisbandWarning.gameObject.SetActive(false);
             }
 
-            var isOnline = Networking.NetworkManager.singleton?.EosLobby?.ConnectedToLobby == true;
-
-            _lobbyIdText.gameObject.SetActive(isOnline);
-            if (isOnline)
+            if (IsOnline)
             {
                 var visibility = Networking.NetworkManager.singleton.GetLobbyVisibility();
                 var joinCode = Networking.NetworkManager.singleton.GetLobbyJoinCode();
@@ -47,13 +49,22 @@ namespace UI
                 _lobbyIdText.text = $"<b>Join code</b>: {formattedJoinCode}\n" +
                                     $"This lobby is <b>{visibility}</b>.";
             }
+            else
+            {
+                using var socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0);
+                socket.Connect("8.8.8.8", 53);
+                var endPoint = socket.LocalEndPoint as IPEndPoint;
+                _localIpAddress = endPoint?.Address.ToString() ?? string.Empty;
+
+                _lobbyIdText.text = $"<b>Local IP</b>: {_localIpAddress}";
+            }
         }
 
         public void CopyLobbyId()
         {
             if (!NetworkClient.active) return;
 
-            var joinCode = Networking.NetworkManager.singleton.GetLobbyJoinCode();
+            var joinCode = IsOnline ? Networking.NetworkManager.singleton.GetLobbyJoinCode() : _localIpAddress;
             GUIUtility.systemCopyBuffer = joinCode;
         }
 
@@ -78,7 +89,7 @@ namespace UI
         private void OnOpen(bool active)
         {
             if (active && !PlayerController.LocalPlayer) return; // don't open until client has finished joining
-            
+
             _isActive = active;
 
             Cursor.lockState = active ? CursorLockMode.None : CursorLockMode.Locked;

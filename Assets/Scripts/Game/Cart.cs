@@ -106,10 +106,18 @@ public class Cart : NetworkBehaviour
         // wait for it, since the snapshot code sets syncvars and whatnot
         IEnumerator SetInitialRespawnTarget()
         {
-            yield return new WaitUntil(() => Checkpoints[0].isServer);
+#if DEV_KEYS || UNITY_EDITOR
+            var startIndex = Mathf.Clamp((SettingsManager.ActiveSettings?.Debug.StartingCheckpoint ?? 1) - 1, 0, Checkpoints.Count - 1);
+#else
+            var startIndex = 0;
+#endif
+            yield return new WaitUntil(() => Checkpoints[startIndex].isServer);
 
-            Debug.Log($"Hit checkpoint 0: {Checkpoints[0].AreaName}");
-            SetActiveRespawnTarget(Checkpoints[0]);
+            Debug.Log($"Force-hit checkpoint {startIndex}: {Checkpoints[startIndex].AreaName}");
+            SetActiveRespawnTarget(Checkpoints[startIndex]);
+#if DEV_KEYS || UNITY_EDITOR
+            ServerTeleportTo(Checkpoints[startIndex].CartSpawnPoint);
+#endif
         }
     }
 
@@ -202,13 +210,16 @@ public class Cart : NetworkBehaviour
     private void Update()
     {
 #if DEV_KEYS || UNITY_EDITOR
-        if (_devCheckpointBackAction.action.WasPressedThisFrame() && GetPreviousRespawnTarget(CurrentRespawnTarget, out var prevTarget))
+        if (SettingsManager.ActiveSettings?.Debug?.EnableDebugKeys == true)
         {
-            CmdInvokeRespawnEvent(prevTarget);
-        }
-        else if (_devCheckpointForwardAction.action.WasPressedThisFrame() && GetNextRespawnTarget(CurrentRespawnTarget, out var nextTarget))
-        {
-            CmdInvokeRespawnEvent(nextTarget);
+            if (_devCheckpointBackAction.action.WasPressedThisFrame() && GetPreviousRespawnTarget(CurrentRespawnTarget, out var prevTarget))
+            {
+                CmdInvokeRespawnEvent(prevTarget);
+            }
+            else if (_devCheckpointForwardAction.action.WasPressedThisFrame() && GetNextRespawnTarget(CurrentRespawnTarget, out var nextTarget))
+            {
+                CmdInvokeRespawnEvent(nextTarget);
+            }
         }
 #endif
 
@@ -219,7 +230,7 @@ public class Cart : NetworkBehaviour
         _cartSpeedRTPC.SetGlobalValue(linearVelocity.magnitude * 20);
 
 #if DEV_KEYS || UNITY_EDITOR
-        if (PlayerController.ControlEnabled(PlayerController.ControlBlockerFlags.Move) && isServer)
+        if (isServer && SettingsManager.ActiveSettings?.Debug?.EnableDebugKeys == true && PlayerController.ControlEnabled(PlayerController.ControlBlockerFlags.Move))
         {
             var altMove = _alternateWheelMoveAction.action.ReadValue<Vector2>();
             if (altMove.sqrMagnitude > 0)

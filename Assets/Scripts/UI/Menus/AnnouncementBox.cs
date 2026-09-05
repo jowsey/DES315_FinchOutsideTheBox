@@ -124,8 +124,8 @@ namespace UI.Menus
                 var descMatch = Regex.Match(descText, "<p>(.*?)</p>");
                 var extractedDesc = descMatch.Groups[1].Value;
 
-                if (titleNode != null) _titleText.text = titleText;
-                if (descriptionNode != null) _bodyText.text = extractedDesc;
+                _titleText.text = titleText;
+                _bodyText.text = extractedDesc;
 
                 var imgMatch = Regex.Match(descText, "<img[^>]+src=\"([^\"]+)\"");
                 var imageUrl = imgMatch.Success ? imgMatch.Groups[1].Value : null;

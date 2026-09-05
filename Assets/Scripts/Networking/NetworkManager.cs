@@ -85,6 +85,7 @@ namespace Networking
 
         public void StartHostLoading() => AnimateLoadInto(StartHost, () => PlayerController.LocalPlayer || !NetworkServer.active);
         public void StartClientLoading() => AnimateLoadInto(StartClient, () => PlayerController.LocalPlayer || !NetworkClient.active);
+        public void StartClientLoading(Uri uri) => AnimateLoadInto(() => StartClient(uri), () => PlayerController.LocalPlayer || !NetworkClient.active);
 
         public override void OnClientConnect()
         {

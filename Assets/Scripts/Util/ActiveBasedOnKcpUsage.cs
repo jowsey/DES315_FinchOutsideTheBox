@@ -12,13 +12,13 @@ namespace Util
     [InfoBox("Sets the attached button to interactive based on whether the KCP port is in use")]
     public class ActiveBasedOnKcpUsage : MonoBehaviour
     {
-        public enum ActiveIf
+        public enum BehaviourType
         {
-            Free,
-            InUse
+            Host,
+            Join
         }
 
-        [SerializeField] private ActiveIf _activeIf = ActiveIf.InUse;
+        [SerializeField] private BehaviourType _behaviourType;
         [SerializeField] private Button _button;
         private float _checkInterval = 1.0f;
 
@@ -61,8 +61,12 @@ namespace Util
 
             try
             {
-                var portInUse = IsUdpPortInUse(_kcpTransport.Port);
-                _button.interactable = _activeIf == ActiveIf.Free ? !portInUse : portInUse;
+                _button.interactable = _behaviourType switch
+                {
+                    BehaviourType.Host => !IsUdpPortInUse(_kcpTransport.Port),
+                    BehaviourType.Join => Menu.DiscoveredServers.Count > 0,
+                    _ => throw new ArgumentOutOfRangeException()
+                };
             }
             catch (NotImplementedException)
             {
