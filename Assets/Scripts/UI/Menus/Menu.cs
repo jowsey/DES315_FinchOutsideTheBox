@@ -8,6 +8,7 @@ using Mirror.Discovery;
 using Mirror.FizzySteam;
 using PrimeTween;
 using Sirenix.OdinInspector;
+using Steamworks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -227,6 +228,10 @@ namespace UI
             _networkManager.gameObject.SetActive(true);
 
             _networkManager.StartHostLoading();
+
+            string mySteamId = SteamUser.GetSteamID().m_SteamID.ToString();
+            SteamFriends.SetRichPresence("connect", $"+connect {mySteamId}");
+            SteamFriends.SetRichPresence("status", "Being silly");
         }
 
         public void JoinSteam(string hostSteamId64)

@@ -4,6 +4,7 @@ using Game;
 using Game.Items.Equipments;
 using Networking;
 using Sirenix.OdinInspector;
+using Steamworks;
 using UI;
 using UnityEngine;
 using Client = Discord.Sdk.Client;
@@ -146,6 +147,9 @@ namespace Util
         {
             _presenceMode = PresenceMode.Menu;
             RebuildPresence();
+
+            //todo: temp
+            SteamFriends.SetRichPresence("connect", "");
         }
 
         private void OnPlayerJoin(PlayerController player)

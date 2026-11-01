@@ -13,6 +13,7 @@ using UnityEngine;
 #if !DISABLESTEAMWORKS
 using System.Collections;
 using Steamworks;
+using UI;
 #endif
 
 //
@@ -24,6 +25,8 @@ public class SteamManager : MonoBehaviour
 {
 #if !DISABLESTEAMWORKS
     protected static bool s_EverInitialized = false;
+
+    protected Menu menu;
 
     protected static SteamManager s_instance;
     protected static SteamManager Instance
@@ -57,6 +60,8 @@ public class SteamManager : MonoBehaviour
     {
         Debug.LogWarning(pchDebugText);
     }
+
+    private Callback<GameRichPresenceJoinRequested_t> m_GameRichPresenceJoinRequested;
 
 #if UNITY_2019_3_OR_NEWER
     // In case of disabled Domain Reload, reset static members before entering Play Mode.
@@ -162,6 +167,22 @@ public class SteamManager : MonoBehaviour
             m_SteamAPIWarningMessageHook = new SteamAPIWarningMessageHook_t(SteamAPIDebugTextHook);
             SteamClient.SetWarningMessageHook(m_SteamAPIWarningMessageHook);
         }
+
+        m_GameRichPresenceJoinRequested = Callback<GameRichPresenceJoinRequested_t>.Create(OnGameRichPresenceJoinRequested);
+    }
+
+    private void OnGameRichPresenceJoinRequested(GameRichPresenceJoinRequested_t callback)
+    {
+        string connectString = callback.m_rgchConnect;
+        string steamId = connectString.Replace("+connect ", "").Trim();
+        menu.JoinSteam(steamId);
+    }
+
+    [Sirenix.OdinInspector.Button]
+    public void OpenInviteDialog()
+    {
+        string mySteamId = SteamUser.GetSteamID().m_SteamID.ToString();
+        SteamFriends.ActivateGameOverlayInviteDialogConnectString($"+connect {mySteamId}");
     }
 
     // OnApplicationQuit gets called too early to shutdown the SteamAPI.
