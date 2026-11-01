@@ -5,6 +5,7 @@ using EpicTransport;
 using kcp2k;
 using Mirror;
 using Mirror.Discovery;
+using Mirror.FizzySteam;
 using PrimeTween;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -24,9 +25,11 @@ namespace UI
 
         [SerializeField] [Required] private EosTransport _eosTransportPrefab;
         [SerializeField] [Required] private KcpTransport _kcpTransportPrefab;
+        [SerializeField] [Required] private FizzySteamworks _steamTransportPrefab;
 
         private static EosTransport _eosTransport;
         private static KcpTransport _kcpTransport;
+        private static FizzySteamworks _steamTransport;
 
         [SerializeField] private NetworkDiscovery _networkDiscovery;
 
@@ -90,6 +93,12 @@ namespace UI
             {
                 _kcpTransport = Instantiate(_kcpTransportPrefab);
                 DontDestroyOnLoad(_kcpTransport);
+            }
+
+            if (!_steamTransport)
+            {
+                _steamTransport = Instantiate(_steamTransportPrefab);
+                DontDestroyOnLoad(_steamTransport);
             }
 
             _networkDiscovery = _kcpTransport.GetComponent<NetworkDiscovery>();
@@ -206,6 +215,30 @@ namespace UI
 
             _networkDiscovery.StopDiscovery();
             _networkManager.StartClientLoading(lastServer.Value.Response.uri);
+        }
+
+        public void HostSteam()
+        {
+            Debug.Log("Hosting new Steam game");
+            ResetTransports();
+
+            _networkManager.transport = _steamTransport;
+            Transport.active = _steamTransport;
+            _networkManager.gameObject.SetActive(true);
+
+            _networkManager.StartHostLoading();
+        }
+
+        public void JoinSteam(string hostSteamId64)
+        {
+            Debug.Log($"Joining Steam game at {hostSteamId64}");
+            ResetTransports();
+
+            _networkManager.transport = _steamTransport;
+            Transport.active = _steamTransport;
+            _networkManager.gameObject.SetActive(true);
+
+            _networkManager.StartClientLoading(hostSteamId64);
         }
 
         private void OnServerFound(ServerResponse info)

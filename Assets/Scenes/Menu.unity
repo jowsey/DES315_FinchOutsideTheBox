@@ -30943,7 +30943,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8646296107593699131, guid: 1e96c141f3463634a8a8226224cfd577, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: HostLocal
+      value: HostSteam
       objectReference: {fileID: 0}
     - target: {fileID: 8646296107593699131, guid: 1e96c141f3463634a8a8226224cfd577, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
@@ -143471,6 +143471,7 @@ MonoBehaviour:
   _networkManager: {fileID: 1588567270}
   _eosTransportPrefab: {fileID: 4070830675402241784, guid: 795b261fb515c4776bfd4570dde3de40, type: 3}
   _kcpTransportPrefab: {fileID: 7301187032649126459, guid: a68773bfa6c024ebcafb811197593d02, type: 3}
+  _steamTransportPrefab: {fileID: -5013752141759674827, guid: cc3ec879cbf1bcd4e838237078504a40, type: 3}
   _networkDiscovery: {fileID: 0}
   _mainCanvasGroup: {fileID: 1176561678}
   _lobbyBrowser: {fileID: 92337950}
@@ -242797,7 +242798,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8646296107593699131, guid: 1e96c141f3463634a8a8226224cfd577, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 1
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8646296107593699131, guid: 1e96c141f3463634a8a8226224cfd577, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -242809,11 +242810,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8646296107593699131, guid: 1e96c141f3463634a8a8226224cfd577, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: JoinLocal
+      value: JoinSteam
       objectReference: {fileID: 0}
     - target: {fileID: 8646296107593699131, guid: 1e96c141f3463634a8a8226224cfd577, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: UI.Menu, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 8646296107593699131, guid: 1e96c141f3463634a8a8226224cfd577, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
+      value: 76561198194928895
       objectReference: {fileID: 0}
     - target: {fileID: 8646296107593699131, guid: 1e96c141f3463634a8a8226224cfd577, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
