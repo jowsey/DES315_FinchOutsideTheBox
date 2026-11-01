@@ -14,6 +14,7 @@ using UnityEngine;
 using System.Collections;
 using Steamworks;
 using UI;
+using UnityEngine.InputSystem;
 #endif
 
 //
@@ -210,6 +211,11 @@ public class SteamManager : MonoBehaviour
         if (!m_bInitialized)
         {
             return;
+        }
+
+        if (Keyboard.current.minusKey.wasPressedThisFrame)
+        {
+            OpenInviteDialog();
         }
 
         // Run Steam client callbacks
